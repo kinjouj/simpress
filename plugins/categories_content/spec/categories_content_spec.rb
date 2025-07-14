@@ -12,9 +12,7 @@ describe Simpress::Plugin::Preprocessor::CategoriesContent do
     Dir.glob(File.join(File.expand_path(".", __dir__), "/*.cache")) {|file| FileUtils.rm_rf(file) }
   end
 
-  let(:category) {
-    Simpress::Model::Category.new("test")
-  }
+  let(:category) { Simpress::Model::Category.new("test") }
 
   it "successful" do
     Simpress::Plugin::Preprocessor::CategoriesContent.run(nil, nil, { test: category })

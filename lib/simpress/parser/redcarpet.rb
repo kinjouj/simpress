@@ -14,7 +14,10 @@ module Simpress
       }.freeze
 
       def self.render(data)
-        markdown = Simpress::Parser::Redcarpet::Markdown.new(Simpress::Parser::Redcarpet::Renderer.new, REDCARPET_OPTIONS)
+        markdown = Simpress::Parser::Redcarpet::Markdown.new(
+          Simpress::Parser::Redcarpet::Renderer.new,
+          REDCARPET_OPTIONS
+        )
         markdown.render(data)
       end
     end

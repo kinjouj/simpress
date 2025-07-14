@@ -14,7 +14,7 @@ describe Simpress::Plugin::Preprocessor do
 
   it "test1" do
     expect(Simpress::Logger).to receive(:debug).exactly(2)
-    allow(Simpress::Config.instance).to receive(:preprocessors).and_return(["test1_preprocessor", "hostname"])
+    allow(Simpress::Config.instance).to receive(:preprocessors).and_return(%w[test1_preprocessor hostname])
 
     module Simpress
       module Plugin
