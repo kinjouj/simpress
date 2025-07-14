@@ -8,7 +8,7 @@ module Simpress
       params, body = Simpress::Markdown.parse(File.read(file))
       raise "parse failed: #{file}" unless params && body
 
-      basename = File.basename(file, ".markdown")
+      basename = File.basename(file, ".*")
       content, image, toc = Simpress::Parser::Redcarpet.render(body)
       params[:content]   = content
       params[:layout]    = params.fetch(:layout, :post).to_sym
