@@ -12,7 +12,5 @@
     "**/.rubocop.yml": true,
     "**/.rspec": true,
     "**/.simplecov": true
-  },
-  "terminal.integrated.shellIntegration.decorationsEnabled": "both",
-  "problems.defaultViewMode": "tree"
+  }
 }

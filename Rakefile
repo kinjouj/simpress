@@ -12,7 +12,7 @@ RSpec::Core::RakeTask.new("spec")
 CLEAN.include("public/*")
 
 require "simpress"
-mode = Simpress::Config.instance.mode
+mode       = Simpress::Config.instance.mode
 output_dir = Simpress::Config.instance.output_dir
 
 desc "build"
