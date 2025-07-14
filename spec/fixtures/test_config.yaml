@@ -1,0 +1,6 @@
+default:
+  debug: false
+  logging: false
+  mode: "html"
+  host: "localhost"
+  paginate: 10

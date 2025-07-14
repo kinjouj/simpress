@@ -1,0 +1,11 @@
+public
+coverage
+pkg
+source/*
+!source/.gitkeep
+static/*
+!static/.gitkeep
+logs/*
+!logs/.gitkeep
+.cache/*.cache
+category_indexes.json

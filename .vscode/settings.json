@@ -1,0 +1,18 @@
+{
+  "files.exclude": {
+    ".ruby-version": true,
+    ".gitmodules": true,
+    ".cache": true,
+    "public": true,
+    "source": true,
+    "logs": true,
+    "**/.gitignore": true,
+    "**/coverage": true,
+    "**/Gemfile.lock": true,
+    "**/.rubocop.yml": true,
+    "**/.rspec": true,
+    "**/.simplecov": true
+  },
+  "terminal.integrated.shellIntegration.decorationsEnabled": "both",
+  "problems.defaultViewMode": "tree"
+}

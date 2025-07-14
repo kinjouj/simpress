@@ -1,0 +1,16 @@
+default:
+  debug: true
+  logging: false
+  mode: "html"
+  host: "https://kinjouj.github.io"
+  paginate: 10
+  source_dir: "source"
+  plugin_dir: "plugins"
+  output_dir: "public"
+  theme_dir: "themes"
+  cache_dir: ".cache"
+  preprocessors:
+    - hostname
+    - categories_content
+    - html_loader
+    - recent_posts
