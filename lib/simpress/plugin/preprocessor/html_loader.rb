@@ -6,6 +6,10 @@ module Simpress
       class HtmlLoader
         extend Simpress::Plugin::Preprocessor
 
+        def self.priority
+          1
+        end
+
         def self.run(*_args)
           return unless config.mode.to_s == "html"
 

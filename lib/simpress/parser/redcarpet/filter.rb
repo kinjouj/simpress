@@ -35,11 +35,12 @@ module Simpress
         attr_reader :register_classes
 
         def initialize
-          @register_classes = Set.new
+          @register_classes = []
         end
 
         def self.register_class(klass)
           instance.register_classes << klass
+          Simpress::Logger.debug(klass.to_s)
         end
       end
 

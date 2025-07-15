@@ -124,7 +124,7 @@ MARKDOWN
 ---
 title: test
 date: 2000-01-01 00:00:00
-cover: /test.png
+cover: /images/test.png
 ---
 
 
@@ -133,7 +133,7 @@ MARKDOWN
     }
     post = Simpress::Parser.parse("dummy.markdown")
     expect(post).not_to be_nil
-    expect(post.cover).to eq("/test.png")
+    expect(post.cover).to eq("/images/test.png")
   end
 
   it "markdownの画像タグがある場合" do
@@ -144,13 +144,13 @@ title: test
 date: 2000-01-01 00:00:00
 ---
 
-![](/test.jpg)
+![](/images/test.jpg)
 MARKDOWN
     }
 
     post = Simpress::Parser.parse("dummy.markdown")
     expect(post).not_to be_nil
-    expect(post.cover).to eq("/test.jpg")
+    expect(post.cover).to eq("/images/test.jpg")
   end
 
   it "categoriesが配列表記じゃない場合" do

@@ -13,8 +13,8 @@ module Simpress
         permalink: %r{\A/},
         categories: Array,
         cover: String,
-        layout: CH::G.enum(:post, :page),
         published: TrueClass,
+        layout: CH::G.enum(:post, :page),
         description: [ :optional, String ]
       }.freeze
 

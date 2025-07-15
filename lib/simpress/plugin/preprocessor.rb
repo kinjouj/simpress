@@ -9,6 +9,10 @@ module Simpress
         raise "ERROR"
       end
 
+      def priority
+        99
+      end
+
       def config
         Simpress::Config.instance
       end
@@ -17,29 +21,29 @@ module Simpress
         Simpress::Context.update(args)
       end
 
-      def self.extended(klass)
-        super
-        Inner.register_class(klass)
-      end
-
-      def self.process(*args)
-        plugins = Set.new(Simpress::Config.instance.preprocessors || []).map do |preprocessor|
-          next unless preprocessor.is_a?(String)
-
-          klassname = preprocessor.split("_").map(&:capitalize).join
-          Simpress::Plugin::Preprocessor.const_get(klassname)
+      class << self
+        def extended(klass)
+          super
+          Inner.register_class(klass)
         end
 
-        Inner.instance.register_classes.each do |klass|
-          next unless plugins.include?(klass)
+        def process(*args)
+          plugins = (Simpress::Config.instance.preprocessors || []).map do |preprocessor|
+            next unless preprocessor.is_a?(String)
 
-          Simpress::Logger.debug(klass.to_s)
-          klass.run(*args)
+            klassname = preprocessor.split("_").map(&:capitalize).join
+            Simpress::Plugin::Preprocessor.const_get(klassname)
+          end
+
+          (Inner.instance.register_classes & plugins).sort_by(&:priority).each do |klass|
+            Simpress::Logger.debug(klass.to_s)
+            klass.run(*args)
+          end
         end
-      end
 
-      def self.finish
-        Singleton.__init__(Inner)
+        def finish
+          Singleton.__init__(Inner)
+        end
       end
 
       class Inner
@@ -47,7 +51,7 @@ module Simpress
         attr_reader :register_classes
 
         def initialize
-          @register_classes = Set.new
+          @register_classes = []
         end
 
         def self.register_class(klass)

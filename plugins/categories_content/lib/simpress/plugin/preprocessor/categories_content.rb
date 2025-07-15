@@ -7,6 +7,10 @@ module Simpress
         extend Simpress::Plugin::Preprocessor
         KEY = :sidebar_categories_content
 
+        def self.priority
+          999
+        end
+
         def self.run(_, _, categories)
           return unless config.mode.to_s == "html"
           return unless Simpress::Theme.template_exist?("sidebar_categories")

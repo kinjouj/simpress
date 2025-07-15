@@ -18,13 +18,13 @@ output_dir = Simpress::Config.instance.output_dir
 desc "build"
 task :build do
   Rake::Task["clean"].invoke
-  Rake::Task["build_assets"].invoke
   result = Benchmark.realtime do
+    Rake::Task["build_assets"].invoke
     GC.disable
     Simpress.build
     GC.enable
+    Rake::Task["build_sitemap"].invoke if mode == "html"
   end
-  Rake::Task["build_sitemap"].invoke if mode == "html"
   puts "build time: #{result}"
 end
 
@@ -34,6 +34,7 @@ task :build_assets do
   Rake::Task["build_scss"].invoke
 end
 
+desc "build_scss"
 task :build_scss do
   FileUtils.mkdir_p("#{output_dir}/css")
   files = Dir.glob("scss/*")
