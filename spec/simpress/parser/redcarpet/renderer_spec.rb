@@ -40,6 +40,8 @@ describe Simpress::Parser::Redcarpet::Renderer do
     end
 
     it "#preprocess" do
+      expect(Simpress::Logger).to receive(:debug).once
+
       class TestFilter
         extend Simpress::Parser::Redcarpet::Filter
 

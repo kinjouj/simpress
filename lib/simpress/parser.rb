@@ -13,7 +13,7 @@ module Simpress
       params[:content]   = content
       params[:layout]    = params.fetch(:layout, :post).to_sym
       params[:published] = params.fetch(:published, true)
-      params[:cover]     = params.fetch(:cover, image || DEFAULT_COVER)
+      params[:cover]     = image || DEFAULT_COVER unless params[:cover]
       params[:toc]       = toc || []
 
       if params[:date].nil?

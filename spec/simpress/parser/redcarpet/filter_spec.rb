@@ -12,6 +12,8 @@ describe Simpress::Parser::Redcarpet::Filter do
 
   context "Filterプラグインのテスト" do
     it "Simpress::Parser::Redcarpet::Filterを継承したクラスが正常にプラグインとして作動すること" do
+      expect(Simpress::Logger).to receive(:debug).once
+
       class TestFilter
         extend Simpress::Parser::Redcarpet::Filter
 
@@ -24,6 +26,8 @@ describe Simpress::Parser::Redcarpet::Filter do
     end
 
     it "preprocessメソッドが定義されてない場合" do
+      expect(Simpress::Logger).to receive(:debug).once
+
       class TestFilter
         extend Simpress::Parser::Redcarpet::Filter
       end
@@ -32,6 +36,8 @@ describe Simpress::Parser::Redcarpet::Filter do
     end
 
     it "preprocessメソッドの返り値がStringではない場合" do
+      expect(Simpress::Logger).to receive(:debug).once
+
       class TestFilter
         extend Simpress::Parser::Redcarpet::Filter
         def self.preprocess(_)

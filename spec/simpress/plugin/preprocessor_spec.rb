@@ -65,10 +65,4 @@ describe Simpress::Plugin::Preprocessor do
 
     expect { Simpress::Plugin::Preprocessor.process }.to raise_error(RuntimeError)
   end
-
-  it "test3" do
-    allow(Simpress::Config.instance).to receive(:preprocessors).and_return([[]])
-
-    expect { Simpress::Plugin::Preprocessor.process }.not_to raise_error
-  end
 end

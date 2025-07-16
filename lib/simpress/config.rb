@@ -19,7 +19,7 @@ module Simpress
         output_dir: [ :optional, String ],
         theme_dir: [ :optional, String ],
         cache_dir: [ :optional, String ],
-        preprocessors: [ :optional, Array ]
+        preprocessors: [ :optional, [[String]] ]
       }
     }.freeze
 

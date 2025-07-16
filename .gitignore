@@ -7,6 +7,8 @@ static/*
 !static/.gitkeep
 logs/*
 !logs/.gitkeep
+plugins/*
+!plugins/.gitkeep
 .cache/*.cache
 .cache/posts
 category_indexes.json

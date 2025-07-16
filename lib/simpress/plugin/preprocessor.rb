@@ -10,7 +10,7 @@ module Simpress
       end
 
       def priority
-        99
+        1
       end
 
       def config
@@ -29,13 +29,12 @@ module Simpress
 
         def process(*args)
           plugins = (Simpress::Config.instance.preprocessors || []).map do |preprocessor|
-            next unless preprocessor.is_a?(String)
-
-            klassname = preprocessor.split("_").map(&:capitalize).join
+            klassname = preprocessor.to_s.split("_").map(&:capitalize).join
             Simpress::Plugin::Preprocessor.const_get(klassname)
           end
 
-          (Inner.instance.register_classes & plugins).sort_by(&:priority).each do |klass|
+          register_classes = (Inner.instance.register_classes & plugins).sort_by {|klass| -klass.priority }
+          register_classes.each do |klass|
             Simpress::Logger.debug(klass.to_s)
             klass.run(*args)
           end
