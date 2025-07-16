@@ -18,6 +18,7 @@ git clone https://github.com/kinjouj/simpress.git blog
 cd blog
 git submodule update --init
 bundle install
+cp config.yaml.bak config.yaml
 rake build
 ```
 
@@ -57,7 +58,7 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 * categories: カテゴリー。配列形式じゃなくても指定可能
 
 
-### Configuration
+### Configuration(config.yaml)
 
 
 ```yaml
@@ -74,7 +75,6 @@ default:
   cache_dir: ".cache"
   preprocessors:
     - hostname
-    - categories_content
     - html_loader
     - recent_posts
 ```

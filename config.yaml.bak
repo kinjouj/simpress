@@ -2,7 +2,7 @@ default:
   debug: true
   logging: false
   mode: "html"
-  host: "https://kinjouj.github.io"
+  host: "http://example.com"
   paginate: 10
   source_dir: "./source"
   plugin_dir: "plugins"
@@ -11,6 +11,5 @@ default:
   cache_dir: ".cache"
   preprocessors:
     - hostname
-    - categories_content
     - html_loader
     - recent_posts

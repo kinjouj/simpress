@@ -11,4 +11,5 @@ plugins/*
 !plugins/.gitkeep
 .cache/*.cache
 .cache/posts
+config.yaml
 category_indexes.json
