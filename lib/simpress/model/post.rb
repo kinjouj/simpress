@@ -8,11 +8,11 @@ module Simpress
       SCHEMA = {
         title: String,
         content: String,
-        toc: Array,
+        toc: [[[[Integer, String]]]],
         date: DateTime,
         permalink: %r{\A/},
         categories: [[Simpress::Model::Category]],
-        cover: %r{\A\/},
+        cover: %r{\A/},
         published: TrueClass,
         layout: CH::G.enum(:post, :page),
         description: [ :optional, String ]
@@ -36,7 +36,11 @@ module Simpress
 
       def description
         description = @description || @content
-        description.gsub(%r{</?[^>]+?>}, "").strip.slice(0..99).tr("\s", "").tr("　", "").tr("\n", "")
+        description.gsub(%r{</?[^>]+?>}, "")
+                   .strip.slice(0..99)
+                   .tr("\s", "")
+                   .tr("　", "")
+                   .tr("\n", "")
       end
 
       private

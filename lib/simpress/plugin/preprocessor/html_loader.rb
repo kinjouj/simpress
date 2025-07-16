@@ -11,7 +11,7 @@ module Simpress
 
           Dir["#{Simpress::Theme::THEME_DIR}/html/**/*.html"].each do |file|
             basename = File.basename(file, ".html")
-            register_context("html_#{basename}": File.read(file))
+            register_context("html_#{basename.tr('.', '')}": File.read(file))
           end
         end
       end

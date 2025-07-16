@@ -19,19 +19,14 @@ desc "build"
 task :build do
   Rake::Task["clean"].invoke
   result = Benchmark.realtime do
-    Rake::Task["build_assets"].invoke
+    cp_r "static/.", output_dir
+    # Rake::Task["build_scss"].invoke
     GC.disable
     Simpress.build
     GC.enable
     Rake::Task["build_sitemap"].invoke if mode == "html"
   end
   puts "build time: #{result}"
-end
-
-desc "build_assets"
-task :build_assets do
-  cp_r "static/.", output_dir
-  Rake::Task["build_scss"].invoke
 end
 
 desc "build_scss"

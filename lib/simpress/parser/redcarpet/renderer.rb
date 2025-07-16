@@ -14,7 +14,7 @@ module Simpress
         end
 
         def header(text, header_level)
-          @toc << [ @toc.size + 1, text ] if header_level == 4
+          @toc << [ (@toc.size + 1).to_i, text ] if header_level == 4
           "<h4>#{text}</h4>"
         end
 
