@@ -11,8 +11,8 @@ module Simpress
         toc: Array,
         date: DateTime,
         permalink: %r{\A/},
-        categories: Array,
-        cover: String,
+        categories: [[Simpress::Model::Category]],
+        cover: %r{\A\/},
         published: TrueClass,
         layout: CH::G.enum(:post, :page),
         description: [ :optional, String ]

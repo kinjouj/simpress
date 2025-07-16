@@ -12,13 +12,13 @@ module Simpress
         debug: TrueClass,
         logging: TrueClass,
         mode: CH::G.enum("html", "json"),
-        host: String,
+        host: %r{\Ahttp},
         paginate: [ :optional, Integer ],
-        source_dir: [ :optional, String ],
-        plugin_dir: [ :optional, String ],
-        output_dir: [ :optional, String ],
-        theme_dir: [ :optional, String ],
-        cache_dir: [ :optional, String ],
+        source_dir: [ :optional, %r{\A[^\/]} ],
+        plugin_dir: [ :optional, %r{\A[^\/]} ],
+        output_dir: [ :optional, %r{\A[^\/]} ],
+        theme_dir: [ :optional, %r{\A[^\/]} ],
+        cache_dir: [ :optional, %r{\A[^\/]} ],
         preprocessors: [ :optional, [[String]] ]
       }
     }.freeze

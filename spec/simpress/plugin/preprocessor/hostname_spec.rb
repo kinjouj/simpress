@@ -20,7 +20,7 @@ describe Simpress::Plugin::Preprocessor::Hostname do
   context "run" do
     it "successful" do
       Simpress::Plugin::Preprocessor::Hostname.run
-      expect(Simpress::Context[:hostname]).to eq("localhost")
+      expect(Simpress::Context[:hostname]).to eq("http://localhost")
     end
 
     it "modeがhtmlじゃない場合" do

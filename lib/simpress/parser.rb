@@ -10,11 +10,11 @@ module Simpress
 
       basename = File.basename(file, ".*")
       content, image, toc = Simpress::Parser::Redcarpet.render(body)
-      params[:content]   = content
-      params[:layout]    = params.fetch(:layout, :post).to_sym
-      params[:published] = params.fetch(:published, true)
-      params[:cover]     = image || DEFAULT_COVER unless params[:cover]
-      params[:toc]       = toc || []
+      params[:content]    = content
+      params[:layout]     = params.fetch(:layout, :post).to_sym
+      params[:published]  = params.fetch(:published, true)
+      params[:cover]      = image || DEFAULT_COVER unless params[:cover]
+      params[:toc]        = toc || []
 
       if params[:date].nil?
         y, m, d = basename.scan(/\A([\d]{4})-([\d]{1,2})-([\d]{1,2})/).flatten
