@@ -1,5 +1,7 @@
 $color: blue;
+$maxp: 100%;
 
 body {
+  width: $maxp;
   color: $color;
 }

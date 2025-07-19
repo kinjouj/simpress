@@ -20,7 +20,7 @@ task :build do
   Rake::Task["clean"].invoke
   result = Benchmark.realtime do
     cp_r "static/.", output_dir
-    # Rake::Task["build_scss"].invoke
+    Rake::Task["build_scss"].invoke
     GC.disable
     Simpress.build
     GC.enable

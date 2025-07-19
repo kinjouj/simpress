@@ -137,17 +137,6 @@ end
 ```
 
 
-### Plugin: Hostname
-
-
-erbで@hostnameでconfig.yamlで設定したhostを参照できる
-
-
-```erb
-<%= @hostname %>
-```
-
-
 ### Plugin: HtmlLoader
 
 

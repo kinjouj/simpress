@@ -30,8 +30,8 @@ module Simpress
                   :published
 
       def initialize(params)
-        CH.validate(params, SCHEMA, strict: true)
-        bind_values(params)
+        CH.validate(params, SCHEMA, strict: true, verbose: true)
+        params.each {|key, value| instance_variable_set("@#{key}", value) }
       end
 
       def description
@@ -41,12 +41,6 @@ module Simpress
                    .tr("\s", "")
                    .tr("　", "")
                    .tr("\n", "")
-      end
-
-      private
-
-      def bind_values(values)
-        values.each {|key, value| instance_variable_set("@#{key}", value) }
       end
     end
   end

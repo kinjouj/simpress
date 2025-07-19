@@ -2,7 +2,7 @@ default:
   debug: true
   logging: false
   mode: "html"
-  host: "http://localhost"
+  host: "http://example.com"
   paginate: 10
   source_dir: "./source"
   plugin_dir: "plugins"
@@ -10,6 +10,5 @@ default:
   theme_dir: "themes"
   cache_dir: ".cache"
   preprocessors:
-    - hostname
     - html_loader
     - recent_posts

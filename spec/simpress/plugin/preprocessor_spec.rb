@@ -4,7 +4,6 @@ require "simpress/config"
 require "simpress/context"
 require "simpress/plugin"
 require "simpress/plugin/preprocessor"
-require "simpress/plugin/preprocessor/hostname"
 require "simpress/logger"
 
 describe Simpress::Plugin::Preprocessor do
@@ -13,8 +12,8 @@ describe Simpress::Plugin::Preprocessor do
   end
 
   it "test1" do
-    expect(Simpress::Logger).to receive(:debug).exactly(2)
-    allow(Simpress::Config.instance).to receive(:preprocessors).and_return(%w[test1_preprocessor hostname])
+    expect(Simpress::Logger).to receive(:debug).exactly(1)
+    allow(Simpress::Config.instance).to receive(:preprocessors).and_return(%w[test1_preprocessor])
 
     module Simpress
       module Plugin

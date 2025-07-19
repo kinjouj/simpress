@@ -2,6 +2,7 @@
 
 require "simpress/config"
 require "simpress/theme"
+require "simpress/model/category"
 require "simpress/model/post"
 
 describe Simpress::Model::Post do

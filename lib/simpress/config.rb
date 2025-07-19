@@ -38,19 +38,13 @@ module Simpress
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true)
       CH.validate(config, SCHEMA, strict: true)
-      bind_values(config[:default])
+      @@attrs.each do |key|
+        instance_variable_set("@#{key}", config[:default][key]) if config[:default].include?(key)
+      end
     end
 
     def self.clear
       Singleton.__init__(Simpress::Config)
-    end
-
-    private
-
-    def bind_values(config)
-      @@attrs.each do |key|
-        instance_variable_set("@#{key}", config[key]) if config.include?(key)
-      end
     end
   end
 end

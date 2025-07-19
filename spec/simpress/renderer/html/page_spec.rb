@@ -35,9 +35,6 @@ describe Simpress::Renderer::Html::Page do
 
   it "test" do
     allow(File).to receive(:write).with(create_filepath("public/test.html"), anything)
-    Simpress::Renderer::Html::Page.build(
-      post,
-      Simpress::Paginator::Post.new(0, [ post ])
-    )
+    Simpress::Renderer::Html::Page.build(post)
   end
 end
