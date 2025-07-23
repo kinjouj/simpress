@@ -11,13 +11,14 @@ module Simpress
         raise "category is empty" if !name || name.empty?
 
         @name     = name
+        @key      = name.to_url
         @count    = 1
         @children = {}
         @moved    = false
       end
 
       def to_url
-        @name.to_url
+        @key
       end
 
       def increment
@@ -30,6 +31,10 @@ module Simpress
 
       def hash
         @name.to_url.hash
+      end
+
+      def exclude_jsonable
+        [ :moved ]
       end
     end
   end

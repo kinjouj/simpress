@@ -5,8 +5,7 @@ module Simpress
     module Html
       PAGINATE = Simpress::Config.instance.paginate || 10
 
-      def self.generate(data)
-        posts, pages      = data
+      def self.generate(posts, pages, _)
         page_size         = posts.size.quo(PAGINATE).ceil
         monthly_archives  = {}
         category_posts    = {}
@@ -21,8 +20,8 @@ module Simpress
             position = (page * PAGINATE) + index
             Simpress::Renderer::Html::Post.build(post, Simpress::Paginator::Post.new(position, posts))
             date = Time.new(post.date.year, post.date.month, 1)
-            monthly_archives[date.to_time.to_i] ||= []
-            monthly_archives[date.to_time.to_i] << post
+            monthly_archives[date] ||= []
+            monthly_archives[date] << post
             archives << post
             Simpress::Logger.info("#{position + 1}: #{post.permalink}")
           end
@@ -44,8 +43,7 @@ module Simpress
           generate_indexes(posts, paginator, category_name)
         end
 
-        monthly_archives.each do |time, posts_by_monthly|
-          date      = Time.at(time).to_datetime
+        monthly_archives.each do |date, posts_by_monthly|
           maxpage   = posts_by_monthly.size.quo(PAGINATE).ceil
           paginator = Simpress::Paginator::Index.new(1, maxpage, "/archives/#{date.year}/#{format('%02d', date.month)}")
           generate_indexes(posts_by_monthly, paginator, "#{date.year}/#{date.month}")

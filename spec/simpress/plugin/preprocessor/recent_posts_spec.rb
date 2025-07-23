@@ -10,6 +10,7 @@ describe Simpress::Plugin::Preprocessor::RecentPosts do
   before do
     stub_const("Simpress::Theme::THEME_DIR", File.expand_path(".", __dir__))
     stub_const("Simpress::Theme::CACHE_DIR", File.expand_path(".", __dir__))
+    allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
   end
 
   after do

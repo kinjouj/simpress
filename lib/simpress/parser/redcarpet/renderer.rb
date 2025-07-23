@@ -13,13 +13,13 @@ module Simpress
           @toc = []
         end
 
+        def preprocess(markdown)
+          Simpress::Parser::Redcarpet::Filter.run(markdown)
+        end
+
         def header(text, header_level)
           @toc << [ (@toc.size + 1).to_i, text ] if header_level == 4
           "<h4>#{text}</h4>"
-        end
-
-        def preprocess(markdown)
-          Simpress::Parser::Redcarpet::Filter.run(markdown)
         end
 
         def paragraph(text)

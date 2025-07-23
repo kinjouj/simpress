@@ -1,7 +1,7 @@
 default:
-  debug: true
-  logging: false
   mode: "html"
+  debug: false
+  logging: false
   host: "http://example.com"
   paginate: 10
   source_dir: "./source"
@@ -11,4 +11,3 @@ default:
   cache_dir: ".cache"
   preprocessors:
     - html_loader
-    - recent_posts

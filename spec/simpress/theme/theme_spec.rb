@@ -18,7 +18,7 @@ describe Simpress::Theme do
   it :render do
     data = Simpress::Theme.render("post", { post: { title: "test" } })
     expect(data).not_to be_empty
-    expect(File.exist?(create_filepath("post.erb.cache"))).to be_truthy
+    expect(File.exist?(create_filepath("post.cache"))).to be_truthy
   end
 
   it :render_index do

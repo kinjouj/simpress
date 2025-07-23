@@ -13,6 +13,7 @@ describe Simpress::Plugin::Preprocessor do
 
   it "test1" do
     expect(Simpress::Logger).to receive(:debug).exactly(1)
+    allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
     allow(Simpress::Config.instance).to receive(:preprocessors).and_return(%w[test1_preprocessor])
 
     module Simpress
@@ -44,7 +45,7 @@ describe Simpress::Plugin::Preprocessor do
     end
 
     Simpress::Plugin::Preprocessor.process
-    expect(Simpress::Context[:mode]).to eq("html")
+    expect(Simpress::Context[:mode]).to eq(:html)
     expect { Simpress::Context[:msg] }.to raise_error("msg missing")
   end
 

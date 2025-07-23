@@ -12,7 +12,7 @@ module Simpress
         date: DateTime,
         permalink: %r{\A/},
         categories: [[Simpress::Model::Category]],
-        cover: %r{\A/},
+        cover: String,
         published: TrueClass,
         layout: CH::G.enum(:post, :page),
         description: [ :optional, String ]

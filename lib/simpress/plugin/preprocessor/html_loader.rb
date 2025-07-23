@@ -10,8 +10,8 @@ module Simpress
           return unless config.mode.to_s == "html"
 
           Dir["#{Simpress::Theme::THEME_DIR}/html/**/*.html"].each do |file|
-            basename = File.basename(file, ".html")
-            register_context("html_#{basename.tr('.', '')}": File.read(file))
+            basename = File.basename(file, ".html").scan(/([\w]+)/).join
+            register_context("html_#{basename}": File.read(file))
           end
         end
       end

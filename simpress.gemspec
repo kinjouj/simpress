@@ -15,4 +15,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "classy_hash"
   spec.add_dependency "erubis", "2.7.0"
   spec.add_dependency "redcarpet", "3.6.1"
+  spec.add_dependency "stringex"
 end

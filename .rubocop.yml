@@ -6,6 +6,9 @@ AllCops:
   NewCops: enable
   SuggestExtensions: false
 
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+
 Metrics/AbcSize:
   Enabled: false
 

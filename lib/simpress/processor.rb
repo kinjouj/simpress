@@ -20,7 +20,7 @@ module Simpress
             categories[key].increment
           end
 
-          categories[key].last_update = data.date
+          # categories[key].last_update = data.date
         end
 
         Simpress::Logger.info("PARSE COMPLETE: #{file}")
@@ -32,6 +32,7 @@ module Simpress
       Simpress::Plugin::Preprocessor.process(posts, pages, categories)
       Simpress::Renderer.generate(posts, pages, categories)
       Simpress::Context.clear
+      Simpress::Theme.clear
     end
   end
 end

@@ -12,7 +12,7 @@ module Simpress
         debug: TrueClass,
         logging: TrueClass,
         mode: CH::G.enum("html", "json"),
-        host: /\Ahttp/,
+        host: String,
         paginate: [ :optional, 1..10 ],
         source_dir: [ :optional, %r{\A[^\/]} ],
         plugin_dir: [ :optional, %r{\A[^\/]} ],
@@ -38,9 +38,7 @@ module Simpress
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true)
       CH.validate(config, SCHEMA, strict: true)
-      @@attrs.each do |key|
-        instance_variable_set("@#{key}", config[:default][key]) if config[:default].include?(key)
-      end
+      @@attrs.each {|key| instance_variable_set("@#{key}", config[:default][key]) if config[:default].include?(key) }
     end
 
     def self.clear

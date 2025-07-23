@@ -8,6 +8,7 @@ require "classy_hash"
 require "erubis"
 require "redcarpet"
 require "jsonable"
+require "stringex"
 
 require "simpress/config"
 require "simpress/context"
