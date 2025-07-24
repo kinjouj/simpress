@@ -4,7 +4,7 @@ require "simpress"
 
 describe Simpress do
   before do
-    allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
+    stub_const("Simpress::Renderer::MODE", "html")
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("./themes"))
     stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
     stub_const("Simpress::Theme::CACHE_DIR", create_filepath("./cache"))
