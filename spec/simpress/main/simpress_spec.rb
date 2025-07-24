@@ -6,7 +6,7 @@ describe Simpress do
   before do
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("./themes"))
-    stub_const("Simpress::Theme::OUTPUT_DIR", create_filepath("./public"))
+    stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
     stub_const("Simpress::Theme::CACHE_DIR", create_filepath("./cache"))
     stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./source"))
     stub_const("Simpress::Plugin::PLUGIN_DIR", create_filepath("./plugins"))

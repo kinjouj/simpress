@@ -7,12 +7,7 @@ module Simpress
     class << self
       def write(file, data, create_dir: true)
         filepath = File.join(OUTPUT_DIR, file)
-
-        if create_dir
-          dirname = File.dirname(filepath)
-          FileUtils.mkdir_p(dirname)
-        end
-
+        FileUtils.mkdir_p(File.dirname(filepath)) if create_dir
         File.write(filepath, data)
         filepath
       end

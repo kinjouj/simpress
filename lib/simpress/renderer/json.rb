@@ -9,6 +9,7 @@ module Simpress
       class << self
         def generate(posts, _, categories)
           category_posts = {}
+          monthly_posts  = {}
           sliced_posts = posts.each_slice(10).to_a
           sliced_posts.each.with_index(1) do |sliced_post, page|
             archives = []
@@ -28,6 +29,9 @@ module Simpress
                 cover: post.cover,
                 path: filename
               }
+              date = Time.new(post.date.year, post.date.month, 1)
+              monthly_posts[date] ||= []
+              monthly_posts[date] << post
               archives << archive
             end
 
@@ -35,6 +39,7 @@ module Simpress
           end
 
           generate_category_posts(category_posts)
+          generate_monthly_posts(monthly_posts)
           generate_categories(categories)
           generate_pageinfo(sliced_posts.size)
         end
@@ -44,6 +49,13 @@ module Simpress
         def generate_category_posts(categories)
           categories.each do |category, posts|
             Simpress::Writer.write("/archives/category/#{category.to_url}.json", posts.to_json)
+          end
+        end
+
+        def generate_monthly_posts(monthly_posts)
+          monthly_posts.each do |date, posts|
+            filename = date.strftime("%Y/%02m.json")
+            Simpress::Writer.write("/archives/#{filename}", posts.to_json)
           end
         end
 

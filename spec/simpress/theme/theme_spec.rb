@@ -7,7 +7,7 @@ require "simpress/context"
 describe Simpress::Theme do
   before do
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("."))
-    stub_const("Simpress::Theme::OUTPUT_DIR", create_filepath("."))
+    stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("."))
     stub_const("Simpress::Theme::CACHE_DIR", create_filepath("."))
   end
 
