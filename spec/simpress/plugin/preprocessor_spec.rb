@@ -44,7 +44,7 @@ describe Simpress::Plugin::Preprocessor do
       end
     end
 
-    Simpress::Plugin::Preprocessor.process
+    Simpress::Plugin::Preprocessor.process(nil, nil, nil)
     expect(Simpress::Context[:mode]).to eq(:html)
     expect { Simpress::Context[:msg] }.to raise_error("msg missing")
   end
@@ -63,6 +63,6 @@ describe Simpress::Plugin::Preprocessor do
       end
     end
 
-    expect { Simpress::Plugin::Preprocessor.process }.to raise_error(RuntimeError)
+    expect { Simpress::Plugin::Preprocessor.process(nil, nil, nil) }.to raise_error(RuntimeError)
   end
 end

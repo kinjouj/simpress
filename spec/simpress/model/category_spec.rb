@@ -21,13 +21,6 @@ describe Simpress::Model::Category do
       end
     end
 
-    context "#increment" do
-      it "successful" do
-        expect(category.count).to eq(1)
-        expect { category.increment }.to change { category.count }.from(1).to(2)
-      end
-    end
-
     context "#eql" do
       it "successful" do
         other = Simpress::Model::Category.new("Ruby")

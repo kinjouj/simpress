@@ -2,7 +2,7 @@
 
 module Simpress
   class Config
-    include ::Singleton
+    include Singleton
     include Jsonable
 
     CONFIG_FILE = File.expand_path("../../config.yaml", __dir__)

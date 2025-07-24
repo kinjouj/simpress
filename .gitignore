@@ -9,7 +9,10 @@ logs/*
 !logs/.gitkeep
 plugins/*
 !plugins/.gitkeep
+themes/*
+!themes/.gitkeep
 .cache/*.cache
 .cache/posts
 config.yaml
+!config.yaml.bak
 category_indexes.json

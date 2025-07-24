@@ -7,7 +7,6 @@ require "simpress/plugin/preprocessor"
 require "simpress/plugin/preprocessor/html_loader"
 
 describe Simpress::Plugin::Preprocessor::HtmlLoader do
-
   before do
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
   end

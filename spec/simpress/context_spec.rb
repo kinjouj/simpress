@@ -26,12 +26,6 @@ describe Simpress::Context do
       expect(Simpress::Context[:key]).to eq("test")
       expect(Simpress::Context[:version]).to eq(1)
     end
-
-    context "引数がHashじゃない場合" do
-      it "例外が発生すること" do
-        expect { Simpress::Context.update([]) }.to raise_error(ArgumentError)
-      end
-    end
   end
 
   describe "#clear" do

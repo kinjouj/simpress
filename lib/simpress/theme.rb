@@ -28,7 +28,7 @@ module Simpress
       end
 
       def template_exist?(template)
-        File.exist?("#{THEME_DIR}/#{template}.erb")
+        Template.exist?(template)
       end
 
       class Template
@@ -60,6 +60,10 @@ module Simpress
           erubis.render(data)
         end
 
+        def self.exist?(template)
+          File.exist?("#{THEME_DIR}/#{template}.erb")
+        end
+
         def self.clear
           @@erubis_caches = {}
         end
@@ -71,10 +75,7 @@ module Simpress
 
       def write_file(template, file, data)
         result = render(template, data)
-        filepath = File.join(OUTPUT_DIR, file)
-        FileUtils.mkdir_p(File.dirname(filepath))
-        File.open(filepath, "w") {|file| file.puts(result) }
-        filepath
+        Simpress::Writer.write(file, result)
       end
     end
   end

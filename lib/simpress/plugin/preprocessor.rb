@@ -3,8 +3,6 @@
 module Simpress
   module Plugin
     module Preprocessor
-      attr_accessor :params
-
       def run(*_args)
         raise "ERROR"
       end
@@ -17,7 +15,7 @@ module Simpress
         Simpress::Config.instance
       end
 
-      def register_context(**args)
+      def register_context(args)
         Simpress::Context.update(args)
       end
 
@@ -27,16 +25,15 @@ module Simpress
           Inner.register_class(klass)
         end
 
-        def process(*args)
+        def process(posts, pages, categories)
           plugins = (Simpress::Config.instance.preprocessors || []).map do |preprocessor|
             klassname = preprocessor.to_s.split("_").map(&:capitalize).join
             Simpress::Plugin::Preprocessor.const_get(klassname)
           end
 
-          register_classes = (Inner.instance.register_classes & plugins).sort_by {|klass| -klass.priority }
-          register_classes.each do |klass|
+          (Inner.instance.register_classes & plugins).sort_by {|klass| -klass.priority }.each do |klass|
             Simpress::Logger.debug(klass.to_s)
-            klass.run(*args)
+            klass.run(posts, pages, categories)
           end
         end
 

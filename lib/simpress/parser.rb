@@ -6,7 +6,7 @@ module Simpress
 
     def self.parse(file)
       params, body = Simpress::Markdown.parse(File.read(file))
-      raise "parse failed: #{file}" unless params && body
+      raise "parse failed: #{file}" if !params || !body
 
       basename = File.basename(file, ".*")
       content, image, toc = Simpress::Parser::Redcarpet.render(body)

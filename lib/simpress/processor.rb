@@ -17,7 +17,7 @@ module Simpress
           if categories[key].nil?
             categories[key] = category
           else
-            categories[key].increment
+            categories[key].count += 1
           end
 
           # categories[key].last_update = data.date

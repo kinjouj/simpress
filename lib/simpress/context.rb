@@ -10,8 +10,6 @@ module Simpress
       end
 
       def update(obj)
-        raise ArgumentError unless obj.is_a?(Hash)
-
         instance.update(obj)
       end
 

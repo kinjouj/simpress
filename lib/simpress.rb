@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "date"
+require "logger"
 require "singleton"
 require "psych"
 
@@ -9,6 +10,7 @@ require "erubis"
 require "redcarpet"
 require "jsonable"
 require "stringex"
+require "tee"
 
 require "simpress/config"
 require "simpress/context"
@@ -36,6 +38,7 @@ require "simpress/renderer/html/index"
 require "simpress/renderer/html/page"
 require "simpress/renderer/json"
 require "simpress/theme"
+require "simpress/writer"
 
 module Simpress
   def self.build

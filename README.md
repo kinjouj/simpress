@@ -23,6 +23,28 @@ rake build
 ```
 
 
+### Configuration(config.yaml)
+
+
+```yaml
+default:
+  debug: false
+  logging: false
+  mode: "html"
+  host: "https://example.com"
+  paginate: 10
+  source_dir: "source"
+  plugin_dir: "plugins"
+  output_dir: "public"
+  theme_dir: "themes"
+  cache_dir: ".cache"
+  preprocessors:
+    - hostname
+    - html_loader
+    - recent_posts
+```
+
+
 ### Markdown Format
 
 
@@ -56,28 +78,6 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 * published: 記事を出力するかのフラグ。デフォルトはtrue
 * description: meta description値。無い場合はコンテンツから抽出生成される
 * categories: カテゴリー。配列形式じゃなくても指定可能
-
-
-### Configuration(config.yaml)
-
-
-```yaml
-default:
-  debug: false
-  logging: false
-  mode: "html"
-  host: "https://example.com"
-  paginate: 10
-  source_dir: "source"
-  plugin_dir: "plugins"
-  output_dir: "public"
-  theme_dir: "themes"
-  cache_dir: ".cache"
-  preprocessors:
-    - hostname
-    - html_loader
-    - recent_posts
-```
 
 
 ### Theme(index.erb) Variables

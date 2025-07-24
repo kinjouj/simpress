@@ -11,3 +11,4 @@ default:
   cache_dir: ".cache"
   preprocessors:
     - html_loader
+    - recent_posts
