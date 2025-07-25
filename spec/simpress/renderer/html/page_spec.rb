@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require "simpress/config"
+require "simpress/context"
+require "simpress/logger"
+require "simpress/model/category"
 require "simpress/model/post"
 require "simpress/renderer/html/page"
 require "simpress/paginator/post"
 require "simpress/theme"
-require "simpress/context"
+require "simpress/writer"
 
 describe Simpress::Renderer::Html::Page do
   before do

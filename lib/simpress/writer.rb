@@ -9,7 +9,7 @@ module Simpress
         filepath = File.join(OUTPUT_DIR, file)
         FileUtils.mkdir_p(File.dirname(filepath)) if create_dir
         File.write(filepath, data)
-        filepath
+        yield filepath if block_given?
       end
     end
   end

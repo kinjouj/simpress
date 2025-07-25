@@ -16,12 +16,11 @@ require "simpress/paginator/post"
 describe Simpress::Processor do
   before do
     stub_const("Simpress::Config::CONFIG_FILE", create_filepath("./test_config.yaml"))
-    Simpress::Config.clear
-    stub_const("Simpress::Renderer::MODE", "html")
     stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./source"))
     stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("./themes"))
     stub_const("Simpress::Theme::CACHE_DIR", create_filepath("./cache"))
+    Simpress::Config.clear
   end
 
   after do

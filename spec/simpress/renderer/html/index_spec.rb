@@ -2,10 +2,13 @@
 
 require "simpress/config"
 require "simpress/context"
+require "simpress/logger"
+require "simpress/model/category"
 require "simpress/model/post"
 require "simpress/theme"
 require "simpress/renderer/html/index"
 require "simpress/paginator/index"
+require "simpress/writer"
 
 describe Simpress::Renderer::Html::Index do
   before do

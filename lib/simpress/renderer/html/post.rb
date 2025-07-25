@@ -5,8 +5,10 @@ module Simpress
     module Html
       class Post
         def self.build(post, paginator)
-          filepath = Simpress::Theme.render_post(post.permalink, post: post, paginator: paginator)
-          FileUtils.touch(filepath, mtime: post.date.to_time)
+          result = Simpress::Theme.render("post", post: post, paginator: paginator)
+          Simpress::Writer.write(post.permalink, result) do |filepath|
+            FileUtils.touch(filepath, mtime: post.date.to_time)
+          end
         end
       end
     end

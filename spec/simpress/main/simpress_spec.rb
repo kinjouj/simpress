@@ -4,7 +4,8 @@ require "simpress"
 
 describe Simpress do
   before do
-    stub_const("Simpress::Renderer::MODE", "html")
+    stub_const("Simpress::Config::CONFIG_FILE", fixture("test_config.yaml").path)
+    Simpress::Config.clear
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("./themes"))
     stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
     stub_const("Simpress::Theme::CACHE_DIR", create_filepath("./cache"))

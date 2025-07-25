@@ -6,18 +6,6 @@ module Simpress
     CACHE_DIR  = Simpress::Config.instance.cache_dir  || ".cache"
 
     class << self
-      def render_index(file, data)
-        write_file("index", file, data)
-      end
-
-      def render_post(file, data)
-        write_file("post", file, data)
-      end
-
-      def render_page(file, data)
-        write_file("page", file, data)
-      end
-
       def render(template, data = {})
         Template.render(template, data)
       end

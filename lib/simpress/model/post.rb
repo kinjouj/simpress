@@ -42,6 +42,12 @@ module Simpress
                    .tr("　", "")
                    .tr("\n", "")
       end
+
+      # :nocov:
+      def exclude_jsonable
+        [ :published ]
+      end
+      # :nocov:
     end
   end
 end

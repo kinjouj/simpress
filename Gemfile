@@ -8,6 +8,7 @@ gem "benchmark"
 gem "classy_hash"
 gem "erubis"
 gem "guard-rake"
+gem "jsonable", path: "vendor/libs/ruby-jsonable"
 gem "only_blank"
 gem "rake"
 gem "redcarpet"
@@ -16,8 +17,6 @@ gem "sitemap_generator"
 gem "stringex"
 gem "tee"
 gem "webrick"
-
-gem "jsonable", path: "vendor/libs/ruby-jsonable"
 
 group :test do
   gem "rspec"

@@ -6,7 +6,7 @@ module Simpress
     LOGFILE = File.expand_path("../../logs/build.log", __dir__)
 
     def initialize
-      tee = ::Tee.open(LOGFILE)
+      tee = Tee.open(LOGFILE)
       @logger = ::Logger.new(tee)
       $stdout = tee
     end

@@ -29,9 +29,11 @@ module Simpress
         @key.hash
       end
 
+      # :nocov:
       def exclude_jsonable
-        [ :moved ]
+        [ :moved, :children ]
       end
+      # :nocov:
     end
   end
 end

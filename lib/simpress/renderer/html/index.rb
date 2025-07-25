@@ -5,7 +5,8 @@ module Simpress
     module Html
       class Index
         def self.build(posts, paginator, key = nil)
-          Simpress::Theme.render_index(paginator.current_page, key: key, posts: posts, paginator: paginator)
+          result = Simpress::Theme.render("index", key: key, posts: posts, paginator: paginator)
+          Simpress::Writer.write(paginator.current_page, result)
         end
       end
     end
