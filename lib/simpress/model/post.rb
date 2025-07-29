@@ -30,7 +30,7 @@ module Simpress
                   :published
 
       def initialize(params)
-        CH.validate(params, SCHEMA, strict: true, verbose: true)
+        CH.validate(params, SCHEMA, strict: true)
         params.each {|key, value| instance_variable_set("@#{key}", value) }
       end
 

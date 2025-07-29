@@ -23,7 +23,7 @@ describe Simpress::Plugin::Preprocessor do
             extend Simpress::Plugin::Preprocessor
 
             def self.run(*_args)
-              register_context(mode: config.mode)
+              bind_context(mode: config.mode)
             end
           end
         end
@@ -37,7 +37,7 @@ describe Simpress::Plugin::Preprocessor do
             extend Simpress::Plugin::Preprocessor
 
             def self.run(*_args)
-              register_context(msg: "hoge")
+              bind_context(msg: "hoge")
             end
           end
         end

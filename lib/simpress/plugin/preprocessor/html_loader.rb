@@ -11,7 +11,7 @@ module Simpress
 
           Dir["#{Simpress::Theme::THEME_DIR}/html/**/*.html"].each do |file|
             basename = File.basename(file.downcase, ".html").scan(/([\w]+)/).join
-            register_context("html_#{basename}": File.read(file))
+            bind_context("html_#{basename}": File.read(file))
           end
         end
       end

@@ -7,8 +7,8 @@ module Simpress
 
     def initialize
       tee = Tee.open(LOGFILE)
-      @logger = ::Logger.new(tee)
       $stdout = tee
+      @logger = ::Logger.new(tee)
     end
 
     def info(message)

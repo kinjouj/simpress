@@ -15,7 +15,7 @@ module Simpress
         Simpress::Config.instance
       end
 
-      def register_context(args)
+      def bind_context(args)
         Simpress::Context.update(args)
       end
 

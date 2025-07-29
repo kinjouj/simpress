@@ -9,6 +9,7 @@ require "rake/clean"
 require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new("spec")
 CLEAN.include("public/*")
+CLEAN.include("logs/build.log")
 
 require "simpress"
 OUTPUT_DIR = Simpress::Config.instance.output_dir
@@ -16,9 +17,9 @@ OUTPUT_DIR = Simpress::Config.instance.output_dir
 desc "build"
 task :build do
   Rake::Task["clean"].invoke
-  cp_r "static/.", OUTPUT_DIR
   result = Benchmark.realtime do
     GC.disable
+    cp_r "static/.", OUTPUT_DIR
     Rake::Task["build_scss"].invoke
     Simpress.build
     GC.enable

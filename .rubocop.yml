@@ -6,6 +6,9 @@ AllCops:
   NewCops: enable
   SuggestExtensions: false
 
+Style/SymbolArray:
+  Enabled: false
+
 Style/RegexpLiteral:
   EnforcedStyle: mixed
 

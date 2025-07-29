@@ -17,13 +17,6 @@ module Simpress
       def template_exist?(template)
         Template.exist?(template)
       end
-
-      private
-
-      def write_file(template, file, data)
-        result = render(template, data)
-        Simpress::Writer.write(file, result)
-      end
     end
 
     class Template

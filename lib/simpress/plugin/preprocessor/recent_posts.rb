@@ -10,7 +10,7 @@ module Simpress
           return unless config.mode.to_s == "html"
           return unless Simpress::Theme.template_exist?("sidebar_recent_posts")
 
-          register_context(
+          bind_context(
             sidebar_recent_posts_content: Simpress::Theme.render(
               "sidebar_recent_posts",
               recent_posts: posts.take(Simpress::Config.instance.paginate || 8)
