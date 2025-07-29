@@ -18,7 +18,7 @@ git clone https://github.com/kinjouj/simpress.git blog
 cd blog
 git submodule update --init
 bundle install
-cp config.yaml.bak config.yaml
+cp config.yaml.orig config.yaml
 rake build
 ```
 
