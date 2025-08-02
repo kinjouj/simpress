@@ -15,7 +15,7 @@ module Simpress
       end
 
       def template_exist?(template)
-        Template.exist?(template)
+        File.exist?("#{THEME_DIR}/#{template}.erb")
       end
     end
 
@@ -33,23 +33,19 @@ module Simpress
       end
 
       def self.cache(template)
-        obj = @@erubis_caches["#{THEME_DIR}/#{template}.erb"]
+        erubis = @@erubis_caches["#{THEME_DIR}/#{template}.erb"]
 
-        if obj.nil?
-          obj = new(template)
-          @@erubis_caches["#{THEME_DIR}/#{template}.erb"] = obj
+        if erubis.blank?
+          erubis = new(template)
+          @@erubis_caches["#{THEME_DIR}/#{template}.erb"] = erubis
         end
 
-        obj
+        erubis
       end
 
       def self.render(template, data)
         erubis = cache(template)
         erubis.render(data)
-      end
-
-      def self.exist?(template)
-        File.exist?("#{THEME_DIR}/#{template}.erb")
       end
 
       def self.clear

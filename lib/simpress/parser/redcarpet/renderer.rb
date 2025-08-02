@@ -8,7 +8,7 @@ module Simpress
         attr_reader :primary_image, :toc
 
         def initialize(options = RENDERER_OPTIONS)
-          super(**options)
+          super
           @primary_image = nil
           @toc = []
         end
@@ -18,7 +18,7 @@ module Simpress
         end
 
         def header(text, header_level)
-          @toc << [ (@toc.size + 1).to_i, text ] if header_level == 4
+          @toc << text if header_level == 4
           "<h4>#{text}</h4>"
         end
 

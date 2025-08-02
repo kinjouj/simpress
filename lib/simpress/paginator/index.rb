@@ -18,14 +18,14 @@ module Simpress
         (@page - 1).positive?
       end
 
+      def next_page_exist?
+        @page < @maxpage
+      end
+
       def previous_page
         raise "Not Found previous page" unless previous_page_exist?
 
         @page - 1 > 1 ? "#{@prefix}/#{@page - 1}.html" : File.dirname(first_page)
-      end
-
-      def next_page_exist?
-        @page < @maxpage
       end
 
       def next_page

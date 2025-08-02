@@ -33,7 +33,7 @@ module Simpress
 
     def self.debug(message)
       caller = caller_locations(1, 1)[0]
-      Simpress::Logger.instance.debug("#{caller.path}##{caller.lineno}: #{message}") if Simpress::Config.instance.debug
+      Simpress::Logger.instance.debug("#{caller.path}: #{message}") if Simpress::Config.instance.debug
     end
   end
 end

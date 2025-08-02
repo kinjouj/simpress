@@ -8,21 +8,21 @@ module Simpress
 
         next_post, prev_post = array_around_by_index(reversed_array, index)
         @previous_page = prev_post
-        @next_page = next_post
+        @next_page     = next_post
       end
 
       def previous_page_exist?
-        !@previous_page.nil?
+        !@previous_page.blank?
+      end
+
+      def next_page_exist?
+        !@next_page.blank?
       end
 
       def previous_page
         raise "Not Found previous page" unless previous_page_exist?
 
         @previous_page
-      end
-
-      def next_page_exist?
-        !@next_page.nil?
       end
 
       def next_page

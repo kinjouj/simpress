@@ -18,7 +18,7 @@ module Simpress
 
       if params[:date].nil?
         y, m, d = basename.scan(/\A([\d]{4})-([\d]{1,2})-([\d]{1,2})/).flatten
-        params[:date] = DateTime.new(y.to_i, m.to_i, d.to_i) if !y.nil? && !m.nil? && !d.nil?
+        params[:date] = DateTime.new(y.to_i, m.to_i, d.to_i) unless [ y, m, d ].include?(nil)
         raise "invalid date" unless params[:date]
       else
         params[:date] = if params[:date].respond_to?(:to_datetime)
@@ -28,7 +28,7 @@ module Simpress
                         end
       end
 
-      params[:permalink]  = "/#{params[:date].strftime('%Y/%m')}/#{basename}.html" if params[:permalink].nil?
+      params[:permalink]  = "/#{params[:date].strftime('%Y/%m')}/#{basename}.html" if params[:permalink].blank?
       params[:categories] = [ params[:categories] ].compact unless params[:categories].respond_to?(:map)
       params[:categories].map!(&Simpress::Model::Category.method(:new))
       Simpress::Model::Post.new(params)

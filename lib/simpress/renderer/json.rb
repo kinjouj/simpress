@@ -16,10 +16,10 @@ module Simpress
             sliced_post.each do |post|
               basename = File.basename(post.permalink, ".*")
               filename = File.join(File.dirname(post.permalink), "#{basename}.json")
-              post.categories = post.categories.map do |category|
+              post.categories.map! do |category|
                 category_posts[category.name] ||= []
                 category_posts[category.name] << post
-                categories[category.to_url]
+                categories[category.key]
               end
 
               Simpress::Writer.write(filename, post.to_json)

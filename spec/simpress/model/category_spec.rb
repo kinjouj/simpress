@@ -9,15 +9,10 @@ describe Simpress::Model::Category do
     context "#new" do
       it "successful" do
         expect(category).not_to be_nil
+        expect(category.key).to eq("ruby")
         expect(category.name).to eq("Ruby")
         expect(category.moved).to eq(false)
         expect(category.count).to eq(1)
-      end
-    end
-
-    context "#to_url" do
-      it "successful" do
-        expect(category.to_url).to eq("ruby")
       end
     end
 

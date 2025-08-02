@@ -18,7 +18,7 @@ describe Simpress::Parser do
     expect(post.permalink).to eq("/test.html")
     expect(post.layout).to eq(:post)
     expect(post.published).to be_truthy
-    expect(post.categories).to eql(["test"])
+    expect(post.categories).to eql([Simpress::Model::Category.new("test")])
   end
 
   it "permalinkが無い場合" do
@@ -168,7 +168,7 @@ MARKDOWN
 
     post = Simpress::Parser.parse("dummy.markdown")
     expect(post).not_to be_nil
-    expect(post.categories).to eql(["test"])
+    expect(post.categories).to eql([Simpress::Model::Category.new("test")])
   end
 
   it "markdownの解析に失敗した場合" do

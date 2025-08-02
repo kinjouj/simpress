@@ -4,25 +4,21 @@ module Simpress
   module Model
     class Category
       include Jsonable
-      attr_reader :name
+      attr_reader :key, :name
       attr_accessor :count, :children, :moved, :last_update
 
       def initialize(name)
-        raise "category is empty" if !name || name.empty?
+        raise "category is empty" if name.blank?
 
-        @name     = name
         @key      = name.to_url
+        @name     = name
         @count    = 1
         @children = {}
         @moved    = false
       end
 
-      def to_url
-        @key
-      end
-
       def eql?(other)
-        @key == other.to_url
+        @key == other.key
       end
 
       def hash

@@ -8,7 +8,7 @@ module Simpress
       SCHEMA = {
         title: String,
         content: String,
-        toc: [[[[Integer, String]]]],
+        toc: [[[String]]],
         date: DateTime,
         permalink: %r{\A/},
         categories: [[Simpress::Model::Category]],

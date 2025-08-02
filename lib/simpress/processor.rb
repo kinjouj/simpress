@@ -9,10 +9,10 @@ module Simpress
       categories = {}
       Dir["#{SOURCE_DIR}/**/*.{md,markdown}"].each do |file|
         data = Simpress::Parser.parse(file)
-        next if data.nil? || !data.published
+        next if data.blank? || !data.published
 
         data.categories.each do |category|
-          key = category.to_url
+          key = category.key
 
           if categories[key].nil?
             categories[key] = category
@@ -20,7 +20,7 @@ module Simpress
             categories[key].count += 1
           end
 
-          # categories[key].last_update = data.date
+          categories[key].last_update = data.date
         end
 
         Simpress::Logger.info("PARSE COMPLETE: #{file}")
