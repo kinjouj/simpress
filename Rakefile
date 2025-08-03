@@ -40,12 +40,12 @@ end
 
 desc "build_scss"
 task :build_scss do
-  FileUtils.mkdir_p("#{OUTPUT_DIR}/css")
-  Dir["scss/*.scss"].each do |file|
+  cd("scss") { Dir["**/*.scss"] }.each do |file|
+    dirname  = File.dirname(file)
     basename = File.basename(file, ".scss")
-    outfile  = "#{OUTPUT_DIR}/css/#{basename}.css"
-    scss = Sass.compile(file, verbose: true)
-    File.write(outfile, scss.css)
+    outfile  = File.join(OUTPUT_DIR, "css", dirname, "#{basename}.css")
+    FileUtils.mkdir_p(File.dirname(outfile))
+    sh "scss -C --sourcemap=none scss/#{file} #{outfile}"
   end
 end
 

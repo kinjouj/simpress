@@ -13,6 +13,7 @@ themes/*
 !themes/.gitkeep
 .cache/*.cache
 .cache/posts
+.sass-cache
 config.yaml
 !config.yaml.bak
 category_indexes.json
