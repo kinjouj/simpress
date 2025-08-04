@@ -44,6 +44,7 @@ module Simpress
 
       class Inner
         include Singleton
+
         attr_reader :register_classes
 
         def initialize

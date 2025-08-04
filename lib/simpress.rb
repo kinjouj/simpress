@@ -4,14 +4,12 @@ require "date"
 require "logger"
 require "singleton"
 require "psych"
-
 require "classy_hash"
 require "erubis"
 require "redcarpet"
 require "jsonable"
 require "stringex"
 require "tee"
-
 require "simpress/config"
 require "simpress/context"
 require "simpress/model/category"
@@ -44,5 +42,6 @@ module Simpress
   def self.build
     Simpress::Plugin.load
     Simpress::Processor.generate
+    yield if block_given?
   end
 end

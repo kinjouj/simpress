@@ -40,6 +40,7 @@ describe Simpress::Parser::Redcarpet::Filter do
 
       class TestFilter
         extend Simpress::Parser::Redcarpet::Filter
+
         def self.preprocess(_)
           {}
         end

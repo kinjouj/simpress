@@ -39,7 +39,6 @@ default:
   theme_dir: "themes"
   cache_dir: ".cache"
   preprocessors:
-    - hostname
     - html_loader
     - recent_posts
 ```
@@ -70,35 +69,41 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 適切に設定推奨。以下参照
 
 
-* title: タイトル
-* date: 日付(DateTime)。無い場合はファイル名から算出。ファイル名から算出できない場合はエラーになる
-* permalink: パスURL。無い場合はファイル名などから算出
-* cover: サムネイル画像。指定しない場合は/images/no_image.pngが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される
-* layout: 記事の種類。postかpageで指定。指定しない場合はpost(pageはインデックスが作成されない)
-* published: 記事を出力するかのフラグ。デフォルトはtrue
-* description: meta description値。無い場合はコンテンツから抽出生成される
-* categories: カテゴリー。配列形式じゃなくても指定可能
+|parameter  |Description|
+|:-------:  |-----------|
+|title      |タイトル   |
+|date       |日付(DateTime)。無い場合はファイル名から算出。ファイル名から算出できない場合はエラーになる|
+|permalink  |パスURL。無い場合はファイル名などから算出|
+|cover      |サムネイル画像。指定しない場合は/images/no_image.pngが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される|
+|layout     |記事の種類。postかpageで指定。指定しない場合はpost(pageはインデックスが作成されない)|
+|published  |記事を出力するかのフラグ。デフォルトはtrue|
+|description|meta description値。無い場合はコンテンツから抽出生成される|
+|categories |カテゴリー。配列形式じゃなくても指定可能|
+
+
+---
 
 
 ### Theme(index.erb) Variables
 
 
-* @posts: Array[Simpress::Model::Post]
-* @paginator: Simpress::Paginator::Index instance
-* @key: String optional
+|variable  |Description|
+|:--------:|-----------|
+|@posts    |Array[Simpress::Model::Post]|
+|@paginator|Simpress::Paginator::Index instance|
+|@key      |String optional|
 
 
-### Theme(post.erb) Variables
+### Theme(post.erb or page.erb) Variables
 
 
-* @post: Simpress::Model::Post instance
-* @paginagtor: Simpress::Paginator::Post instance
+|variable|Description|
+|:---------:|-----------|
+|@post      |Simpress::Model::Post instance|
+|@paginagtor|Simpress::Paginator::Post instance|
 
 
-### Theme(page.erb) Variables
-
-
-Theme(post.erb)とほぼ同じ。ただし、@paginatorは無い
+※page.erbに@paginatorは無い
 
 
 ### Custom Markdown Filter

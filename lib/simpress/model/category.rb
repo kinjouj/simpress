@@ -4,6 +4,7 @@ module Simpress
   module Model
     class Category
       include Jsonable
+
       attr_reader :key, :name
       attr_accessor :count, :children, :moved, :last_update
 

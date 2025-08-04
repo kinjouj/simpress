@@ -9,7 +9,6 @@ require "rake/clean"
 require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new("spec")
 CLEAN.include("public/*")
-CLEAN.include("logs/build.log")
 
 require "simpress"
 OUTPUT_DIR = Simpress::Config.instance.output_dir
@@ -19,11 +18,12 @@ task :build do
   Rake::Task["clean"].invoke
   result = Benchmark.realtime do
     GC.disable
-    cp_r "static/.", OUTPUT_DIR
-    Rake::Task["build_scss"].invoke
-    Simpress.build
+    cp_r("static/.", OUTPUT_DIR)
+    Simpress.build do
+      Rake::Task["build_scss"].invoke
+      Rake::Task["build_#{Simpress::Config.instance.mode}"].invoke
+    end
     GC.enable
-    Rake::Task["build_#{Simpress::Config.instance.mode}"].invoke
   end
 
   puts "build time: #{result}"
@@ -41,11 +41,11 @@ end
 desc "build_scss"
 task :build_scss do
   cd("scss") { Dir["**/*.scss"] }.each do |file|
-    dirname  = File.dirname(file)
     basename = File.basename(file, ".scss")
-    outfile  = File.join(OUTPUT_DIR, "css", dirname, "#{basename}.css")
+    outfile  = File.join(OUTPUT_DIR, "css", File.dirname(file), "#{basename}.css")
+    scss     = Sass.compile(File.join("scss", file), verbose: true)
     FileUtils.mkdir_p(File.dirname(outfile))
-    sh "scss -C --sourcemap=none scss/#{file} #{outfile}"
+    File.write(outfile, scss.css)
   end
 end
 
@@ -56,9 +56,7 @@ task :build_sitemap do
   SitemapGenerator::Sitemap.sitemaps_path = "./"
   SitemapGenerator::Sitemap.adapter = SitemapGenerator::FileAdapter.new
   SitemapGenerator::Sitemap.create(compress: false) do
-    files.sort.each do |file|
-      next if file.match(/^archive|category/)
-
+    files.sort.find_all {|s| !s.match(/^archive|category/) }.each do |file|
       add file, changefreq: "always", priority: "1.0", lastmod: File.mtime("#{OUTPUT_DIR}/#{file}")
     end
   end
@@ -97,12 +95,13 @@ task :server do
     Process.kill(9, httpd_pid) rescue Errno::ESRCH
     exit 0
   end
+
   Process.wait(httpd_pid)
 end
 
 desc "github deploy"
 task :github_deploy do
-  cd OUTPUT_DIR do
+  cd(OUTPUT_DIR) do
     sh "git add -A", verbose: false
     sh "git commit -m \"Site updated at #{Time.now.utc}\"", verbose: false
     sh "git push origin master", verbose: false
