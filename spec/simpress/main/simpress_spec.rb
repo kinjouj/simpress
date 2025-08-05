@@ -8,7 +8,6 @@ describe Simpress do
     Simpress::Config.clear
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("./themes"))
     stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
-    stub_const("Simpress::Theme::CACHE_DIR", create_filepath("./cache"))
     stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./source"))
     stub_const("Simpress::Plugin::PLUGIN_DIR", create_filepath("./plugins"))
     stub_const("Simpress::Renderer::Html::PAGINATE", 1)
@@ -16,7 +15,6 @@ describe Simpress do
 
   after do
     Dir.glob(create_filepath("./public/*")) {|file| FileUtils.rm_rf(file) }
-    Dir.glob(create_filepath("./cache/*")) {|file| FileUtils.rm_rf(file) }
   end
 
   it do

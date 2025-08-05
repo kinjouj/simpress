@@ -18,7 +18,6 @@ module Simpress
         plugin_dir: [:optional, %r{\A[^\/]}],
         output_dir: [:optional, %r{\A[^\/]}],
         theme_dir: [:optional, %r{\A[^\/]}],
-        cache_dir: [:optional, %r{\A[^\/]}],
         preprocessors: [:optional, [[String]]]
       }
     }.freeze
@@ -32,7 +31,6 @@ module Simpress
                           :plugin_dir,
                           :output_dir,
                           :theme_dir,
-                          :cache_dir,
                           :preprocessors
 
     def initialize

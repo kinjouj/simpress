@@ -3,7 +3,6 @@
 module Simpress
   class Theme
     THEME_DIR  = Simpress::Config.instance.theme_dir  || "themes"
-    CACHE_DIR  = Simpress::Config.instance.cache_dir  || ".cache"
 
     class << self
       def render(template, data = {})
@@ -23,7 +22,7 @@ module Simpress
       @@erubis_caches = {}
 
       def initialize(template)
-        @erubis = Erubis::Eruby.load_file("#{THEME_DIR}/#{template}.erb", cachename: "#{CACHE_DIR}/#{template}.cache")
+        @erubis = Erubis::FastEruby.new(File.read("#{THEME_DIR}/#{template}.erb"))
       end
 
       def render(data)

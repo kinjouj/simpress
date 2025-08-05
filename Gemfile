@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-ruby "3.1.7"
+ruby "3.2.9"
 
 gem "benchmark"
 gem "classy_hash"

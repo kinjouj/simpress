@@ -9,23 +9,19 @@ module Simpress
       params, body = Simpress::Markdown.parse(File.read(file))
       raise "parse failed: #{file}" if params.blank? || body.blank?
 
-      basename = File.basename(file, ".*")
       content, image, toc = Simpress::Parser::Redcarpet.render(body)
       params[:layout]     = (params[:layout] || DEFAULT_LAYOUT).to_sym
       params[:cover]      = image || DEFAULT_COVER unless params[:cover]
       params[:published]  = params.fetch(:published, true)
       params[:content]    = content
       params[:toc]        = toc || []
+      basename = File.basename(file, ".*")
 
       if params[:date].blank?
         y, m, d = basename.scan(/\A([\d]{4})-([\d]{1,2})-([\d]{1,2})/).flatten
         params[:date] = DateTime.new(y.to_i, m.to_i, d.to_i) unless [y, m, d].include?(nil)
       else
-        params[:date] = if params[:date].respond_to?(:to_datetime)
-                          params[:date].to_datetime
-                        else
-                          DateTime.parse(params[:date])
-                        end
+        params[:date] = params[:date].respond_to?(:to_datetime) ? params[:date].to_datetime : DateTime.parse(params[:date])
       end
 
       raise "invalid date" unless params[:date]

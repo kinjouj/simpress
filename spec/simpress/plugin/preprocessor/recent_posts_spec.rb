@@ -9,12 +9,10 @@ require "simpress/plugin/preprocessor/recent_posts"
 describe Simpress::Plugin::Preprocessor::RecentPosts do
   before do
     stub_const("Simpress::Theme::THEME_DIR", File.expand_path(".", __dir__))
-    stub_const("Simpress::Theme::CACHE_DIR", File.expand_path(".", __dir__))
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
   end
 
   after do
-    Dir.glob(File.expand_path("./*.cache", __dir__)) {|file| FileUtils.rm_rf(file) }
     Simpress::Context.clear
   end
 

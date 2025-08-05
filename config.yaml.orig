@@ -8,7 +8,6 @@ default:
   plugin_dir: "plugins"
   output_dir: "public"
   theme_dir: "themes"
-  cache_dir: ".cache"
   preprocessors:
     - html_loader
     - recent_posts
