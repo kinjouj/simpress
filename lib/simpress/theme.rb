@@ -2,7 +2,7 @@
 
 module Simpress
   class Theme
-    THEME_DIR  = Simpress::Config.instance.theme_dir  || "themes"
+    THEME_DIR = Simpress::Config.instance.theme_dir || "themes"
 
     class << self
       def render(template, data = {})
