@@ -13,13 +13,13 @@ module Simpress
         logging: TrueClass,
         mode: CH::G.enum("html", "json"),
         host: String,
-        paginate: [ :optional, 1..10 ],
-        source_dir: [ :optional, %r{\A[^\/]} ],
-        plugin_dir: [ :optional, %r{\A[^\/]} ],
-        output_dir: [ :optional, %r{\A[^\/]} ],
-        theme_dir: [ :optional, %r{\A[^\/]} ],
-        cache_dir: [ :optional, %r{\A[^\/]} ],
-        preprocessors: [ :optional, [[String]] ]
+        paginate: [:optional, 1..10],
+        source_dir: [:optional, %r{\A[^\/]}],
+        plugin_dir: [:optional, %r{\A[^\/]}],
+        output_dir: [:optional, %r{\A[^\/]}],
+        theme_dir: [:optional, %r{\A[^\/]}],
+        cache_dir: [:optional, %r{\A[^\/]}],
+        preprocessors: [:optional, [[String]]]
       }
     }.freeze
 

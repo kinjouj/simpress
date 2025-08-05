@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
 require "date"
+require "json"
 require "logger"
 require "singleton"
 require "psych"
+
 require "classy_hash"
 require "erubis"
+require "only_blank"
 require "redcarpet"
 require "jsonable"
 require "stringex"
 require "tee"
+
 require "simpress/config"
 require "simpress/context"
 require "simpress/model/category"
@@ -42,6 +46,8 @@ module Simpress
   def self.build
     Simpress::Plugin.load
     Simpress::Processor.generate
+    # :nocov:
     yield if block_given?
+    # :nocov:
   end
 end

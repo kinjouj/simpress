@@ -23,7 +23,6 @@ module Simpress
       @@erubis_caches = {}
 
       def initialize(template)
-        Simpress::Logger.debug("load: #{template}.erb")
         @erubis = Erubis::Eruby.load_file("#{THEME_DIR}/#{template}.erb", cachename: "#{CACHE_DIR}/#{template}.cache")
       end
 

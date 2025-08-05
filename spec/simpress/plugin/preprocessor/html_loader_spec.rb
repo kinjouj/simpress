@@ -17,19 +17,19 @@ describe Simpress::Plugin::Preprocessor::HtmlLoader do
 
   context "run" do
     it "successful" do
-      allow(Dir).to receive(:[]).and_return([ fixture("preprocessor/html_loader/test.html").path ])
+      allow(Dir).to receive(:[]).and_return([fixture("preprocessor/html_loader/test.html").path])
       Simpress::Plugin::Preprocessor::HtmlLoader.run
       expect(Simpress::Context[:html_test]).to eq("test\n")
     end
 
     it "ファイル名がtest.txt.htmlの場合" do
-      allow(Dir).to receive(:[]).and_return([ fixture("preprocessor/html_loader/test.txt.html").path ])
+      allow(Dir).to receive(:[]).and_return([fixture("preprocessor/html_loader/test.txt.html").path])
       Simpress::Plugin::Preprocessor::HtmlLoader.run
       expect(Simpress::Context[:html_testtxt]).to eq("TEXT\n")
     end
 
     it "ファイル名がtest-file.htmlの場合" do
-      allow(Dir).to receive(:[]).and_return([ fixture("preprocessor/html_loader/test-file.html").path ])
+      allow(Dir).to receive(:[]).and_return([fixture("preprocessor/html_loader/test-file.html").path])
       Simpress::Plugin::Preprocessor::HtmlLoader.run
       expect(Simpress::Context[:html_testfile]).to eq("test file\n")
     end

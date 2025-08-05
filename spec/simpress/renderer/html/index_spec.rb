@@ -38,17 +38,11 @@ describe Simpress::Renderer::Html::Index do
 
   it do
     allow(File).to receive(:write).with(create_filepath("public/index.html"), anything)
-    Simpress::Renderer::Html::Index.build(
-      [ post ],
-      Simpress::Paginator::Index.new(1, 1)
-    )
+    Simpress::Renderer::Html::Index.build([post], Simpress::Paginator::Index.new(1, 1))
   end
 
   it do
     allow(File).to receive(:write).with(create_filepath("public/archives/page/2.html"), anything)
-    Simpress::Renderer::Html::Index.build(
-      [ post ],
-      Simpress::Paginator::Index.new(2, 10)
-    )
+    Simpress::Renderer::Html::Index.build([post], Simpress::Paginator::Index.new(2, 10))
   end
 end

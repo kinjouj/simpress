@@ -3,7 +3,7 @@
 $LOAD_PATH.unshift "./lib"
 
 require "bundler/setup"
-Bundler.require(:default, :test)
+Bundler.require
 
 require "rake/clean"
 require "rspec/core/rake_task"
@@ -15,13 +15,13 @@ OUTPUT_DIR = Simpress::Config.instance.output_dir
 
 desc "build"
 task :build do
-  Rake::Task["clean"].invoke
+  Rake::Task["clean"].execute
   result = Benchmark.realtime do
     GC.disable
     cp_r("static/.", OUTPUT_DIR)
     Simpress.build do
-      Rake::Task["build_scss"].invoke
-      Rake::Task["build_#{Simpress::Config.instance.mode}"].invoke
+      Rake::Task["build_scss"].execute
+      Rake::Task["build_#{Simpress::Config.instance.mode}"].execute
     end
     GC.enable
   end
@@ -30,7 +30,7 @@ task :build do
 end
 
 task :build_html do
-  Rake::Task["build_sitemap"].invoke
+  Rake::Task["build_sitemap"].execute
 end
 
 desc "build_json"
@@ -41,11 +41,9 @@ end
 desc "build_scss"
 task :build_scss do
   cd("scss") { Dir["**/*.scss"] }.each do |file|
-    basename = File.basename(file, ".scss")
-    outfile  = File.join(OUTPUT_DIR, "css", File.dirname(file), "#{basename}.css")
-    scss     = Sass.compile(File.join("scss", file), verbose: true)
-    FileUtils.mkdir_p(File.dirname(outfile))
-    File.write(outfile, scss.css)
+    outfile  = File.join("css", File.dirname(file), "#{File.basename(file, '.scss')}.css")
+    scss     = Sass.compile("scss/#{file}", style: :compressed, verbose: true)
+    Simpress::Writer.write(outfile, scss.css) {|filepath| Simpress::Logger.info("scss -> css: #{filepath}") }
   end
 end
 
@@ -60,6 +58,17 @@ task :build_sitemap do
       add file, changefreq: "always", priority: "1.0", lastmod: File.mtime("#{OUTPUT_DIR}/#{file}")
     end
   end
+end
+
+desc "server"
+task :server do
+  httpd_pid = Process.spawn("ruby -run -e httpd #{OUTPUT_DIR} -p 4000")
+  trap("INT") do
+    Process.kill(9, httpd_pid) rescue Errno::ESRCH
+    exit 0
+  end
+
+  Process.wait(httpd_pid)
 end
 
 desc "watch"
@@ -86,17 +95,6 @@ task :preview do
       Rake::Task["server"].execute
     end
   end
-end
-
-desc "server"
-task :server do
-  httpd_pid = Process.spawn("ruby -run -e httpd #{OUTPUT_DIR} -p 4000")
-  trap("INT") do
-    Process.kill(9, httpd_pid) rescue Errno::ESRCH
-    exit 0
-  end
-
-  Process.wait(httpd_pid)
 end
 
 desc "github deploy"

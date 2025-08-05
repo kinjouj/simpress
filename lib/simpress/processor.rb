@@ -23,8 +23,8 @@ module Simpress
           categories[key].last_update = data.date
         end
 
-        Simpress::Logger.info("PARSE COMPLETE: #{file}")
         posts << data
+        Simpress::Logger.info("PARSE COMPLETE: #{file}")
       end
 
       posts, pages = posts.partition {|post| post.layout == :post }
