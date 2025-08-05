@@ -7,7 +7,7 @@ a simple static blog generator
 ### Requirement
 
 
-* Ruby3.1.7
+* Ruby3.2.9
 
 
 ### Installation
@@ -37,7 +37,6 @@ default:
   plugin_dir: "plugins"
   output_dir: "public"
   theme_dir: "themes"
-  cache_dir: ".cache"
   preprocessors:
     - html_loader
     - recent_posts
