@@ -7,7 +7,7 @@ a simple static blog generator
 ### Requirement
 
 
-* Ruby3.2.9
+* Ruby3.x
 
 
 ### Installation

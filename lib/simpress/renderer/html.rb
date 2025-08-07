@@ -13,34 +13,34 @@ module Simpress
           archives = []
           slice_posts.each.with_index do |post, index|
             post.categories.each do |category|
-              category_posts[category.name] ||= []
-              category_posts[category.name] << post
+              category_posts[category] ||= []
+              category_posts[category] << post
             end
 
             position = (page * PAGINATE) + index
-            Simpress::Renderer::Html::Post.build(post, Simpress::Paginator::Post.new(position, posts))
+            generate_permalink(post, "post", Simpress::Paginator::Post.new(position, posts))
             date = Time.new(post.date.year, post.date.month, 1)
             monthly_archives[date] ||= []
             monthly_archives[date] << post
             archives << post
-            Simpress::Logger.info("#{position + 1}: #{post.permalink}")
+            Simpress::Logger.info("#{position + 1}: #{post}")
           end
 
           paginator = Simpress::Paginator::Index.new(page + 1, page_size)
-          Simpress::Renderer::Html::Index.build(archives, paginator)
+          generate_index(archives, paginator)
           Simpress::Logger.info("create index: #{paginator.current_page}")
         end
 
         pages.each do |page|
-          Simpress::Renderer::Html::Page.build(page)
+          generate_permalink(page, "page")
           Simpress::Logger.info("create page: #{page.permalink}")
         end
 
-        category_posts.each do |category_name, posts|
+        category_posts.each do |category, posts|
           posts.sort_by! { |v| -v.date.to_time.to_i }
           maxpage   = posts.size.quo(PAGINATE).ceil
-          paginator = Simpress::Paginator::Index.new(1, maxpage, "/archives/category/#{category_name.to_url}")
-          generate_indexes(posts, paginator, category_name)
+          paginator = Simpress::Paginator::Index.new(1, maxpage, "/archives/category/#{category.key}")
+          generate_indexes(posts, paginator, category.name)
         end
 
         monthly_archives.each do |date, posts_by_monthly|
@@ -50,10 +50,22 @@ module Simpress
         end
       end
 
+      def self.generate_permalink(post, template, paginator = nil)
+        result = Simpress::Theme.render(template, post: post, paginator: paginator)
+        Simpress::Writer.write(post.permalink, result) do |filepath|
+          FileUtils.touch(filepath, mtime: post.date.to_time)
+        end
+      end
+
+      def self.generate_index(posts, paginator, key = nil)
+        result = Simpress::Theme.render("index", key: key, posts: posts, paginator: paginator)
+        Simpress::Writer.write(paginator.current_page, result)
+      end
+
       def self.generate_indexes(posts, paginator, key = nil)
         posts.each_slice(PAGINATE).each.with_index(1) do |slice_posts, page|
           paginator.page = page
-          Simpress::Renderer::Html::Index.build(slice_posts, paginator, key)
+          generate_index(slice_posts, paginator, key)
           Simpress::Logger.info("create index: #{paginator.current_page}")
         end
       end

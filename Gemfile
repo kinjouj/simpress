@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-ruby "3.2.9"
+ruby "3.3.9"
 
 gem "benchmark"
 gem "classy_hash"
@@ -17,6 +17,10 @@ gem "sitemap_generator"
 gem "stringex"
 gem "tee"
 gem "webrick"
+
+# rubocop
+gem "rubocop", require: false
+gem "rubocop-performance", require: false
 
 group :test do
   gem "rspec"

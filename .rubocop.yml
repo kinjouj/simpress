@@ -1,8 +1,8 @@
+plugins:
+  - rubocop-performance
+
 AllCops:
-  TargetRubyVersion: 3.2
-  Exclude:
-    - '**/*.gemspec'
-    - '*.gemspec'
+  TargetRubyVersion: 3.3
   NewCops: enable
   SuggestExtensions: false
 

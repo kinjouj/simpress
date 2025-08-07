@@ -22,7 +22,8 @@ module Simpress
       @@erubis_caches = {}
 
       def initialize(template)
-        @erubis = Erubis::FastEruby.new(File.read("#{THEME_DIR}/#{template}.erb"))
+        @erubis = Erubis::Eruby.new(File.read("#{THEME_DIR}/#{template}.erb"))
+        @erubis.filename = "#{THEME_DIR}/#{template}.erb"
       end
 
       def render(data)

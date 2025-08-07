@@ -6,7 +6,7 @@ module Simpress
       class Markdown < ::Redcarpet::Markdown
         def render(data)
           body = super
-          [body, renderer.primary_image, renderer.toc]
+          [ body, renderer.primary_image, renderer.toc ]
         end
       end
     end

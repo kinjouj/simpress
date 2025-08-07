@@ -28,7 +28,7 @@ module Simpress
 
       # :nocov:
       def exclude_jsonable
-        [:moved, :children]
+        [ :moved, :children ]
       end
       # :nocov:
     end

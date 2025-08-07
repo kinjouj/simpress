@@ -28,7 +28,7 @@ module Simpress
 
       params[:permalink]  = "/#{params[:date].strftime('%Y/%m')}/#{basename}.html" if params[:permalink].blank?
       params[:categories] = [params[:categories]].compact unless params[:categories].respond_to?(:map)
-      params[:categories].map!(&Simpress::Model::Category.method(:new))
+      params[:categories].map! {|category| Simpress::Model::Category.new(category) }
       Simpress::Model::Post.new(params)
     end
   end

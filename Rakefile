@@ -18,7 +18,7 @@ task :build do
   Rake::Task["clean"].execute
   result = Benchmark.realtime do
     GC.disable
-    cp_r("static/.", OUTPUT_DIR)
+    cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
     Simpress.build do
       Rake::Task["build_scss"].execute
       Rake::Task["build_#{Simpress::Config.instance.mode}"].execute
@@ -40,16 +40,16 @@ end
 
 desc "build_scss"
 task :build_scss do
-  cd("scss") { Dir["**/*.scss"] }.each do |file|
-    outfile  = File.join("css", File.dirname(file), "#{File.basename(file, '.scss')}.css")
-    scss     = Sass.compile("scss/#{file}", style: :compressed, verbose: true)
+  cd("scss", verbose: false) { Dir["**/*.scss"] }.each do |file|
+    outfile = File.join("css", File.dirname(file), "#{File.basename(file, '.scss')}.css")
+    scss    = Sass.compile("scss/#{file}", style: :compressed, verbose: true)
     Simpress::Writer.write(outfile, scss.css) {|filepath| Simpress::Logger.info("scss -> css: #{filepath}") }
   end
 end
 
 desc "build_sitemap"
 task :build_sitemap do
-  files = cd(OUTPUT_DIR) { Dir["**/*.html"] }
+  files = cd(OUTPUT_DIR, verbose: false) { Dir["**/*.html"] }
   SitemapGenerator::Sitemap.default_host = Simpress::Config.instance.host
   SitemapGenerator::Sitemap.sitemaps_path = "./"
   SitemapGenerator::Sitemap.adapter = SitemapGenerator::FileAdapter.new
@@ -99,7 +99,7 @@ end
 
 desc "github deploy"
 task :github_deploy do
-  cd(OUTPUT_DIR) do
+  cd(OUTPUT_DIR, verbose: false) do
     sh "git add -A", verbose: false
     sh "git commit -m \"Site updated at #{Time.now.utc}\"", verbose: false
     sh "git push origin master", verbose: false

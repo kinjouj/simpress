@@ -8,7 +8,6 @@
     "**/.gitignore": true,
     "**/coverage": true,
     "**/Gemfile.lock": true,
-    "**/.rubocop.yml": true,
     "**/.rspec": true,
     "**/.simplecov": true
   }

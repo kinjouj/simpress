@@ -31,7 +31,7 @@ module Simpress
         end
 
         def image(path, _title = nil, _alt = nil)
-          @primary_image = path if @primary_image.nil?
+          @primary_image = path if @primary_image.blank?
           %(<img src="#{path}" alt="image" />)
         end
 
