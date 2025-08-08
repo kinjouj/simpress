@@ -1,5 +1,6 @@
 plugins:
   - rubocop-performance
+  - rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 3.3
@@ -60,4 +61,22 @@ Lint/ConstantDefinitionInBlock:
   Enabled: false
 
 Lint/MixedRegexpCaptureTypes:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/IndexedLet:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ReceiveMessages:
+  Enabled: false
+
+RSpec/ReturnFromStub:
   Enabled: false

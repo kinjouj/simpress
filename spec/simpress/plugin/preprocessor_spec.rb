@@ -8,61 +8,48 @@ require "simpress/logger"
 
 describe Simpress::Plugin::Preprocessor do
   after do
-    Simpress::Plugin::Preprocessor.finish
+    described_class.finish
   end
 
   it "test1" do
-    expect(Simpress::Logger).to receive(:debug).exactly(1)
+    allow(Simpress::Logger).to receive(:debug)
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
     allow(Simpress::Config.instance).to receive(:preprocessors).and_return(%w[test1_preprocessor])
 
-    module Simpress
-      module Plugin
-        module Preprocessor
-          class Test1Preprocessor
-            extend Simpress::Plugin::Preprocessor
+    test1_class = Class.new do
+      extend Simpress::Plugin::Preprocessor
 
-            def self.run(*_args)
-              bind_context(mode: config.mode)
-            end
-          end
-        end
+      def self.run(*_args)
+        bind_context(mode: config.mode)
       end
     end
 
-    module Simpress
-      module Plugin
-        module Preprocessor
-          class HogePreprocessor
-            extend Simpress::Plugin::Preprocessor
+    hoge_class = Class.new do
+      extend Simpress::Plugin::Preprocessor
 
-            def self.run(*_args)
-              bind_context(msg: "hoge")
-            end
-          end
-        end
+      def self.run(*_args)
+        bind_context(msg: "hoge")
       end
     end
 
-    Simpress::Plugin::Preprocessor.process(nil, nil, nil)
+    stub_const("Simpress::Plugin::Preprocessor::Test1Preprocessor", test1_class)
+    stub_const("Simpress::Plugin::Preprocessor::HogePreprocessor", hoge_class)
+
+    described_class.process(nil, nil, nil)
     expect(Simpress::Context[:mode]).to eq(:html)
     expect { Simpress::Context[:msg] }.to raise_error("msg missing")
+    expect(Simpress::Logger).to have_received(:debug).exactly(1)
   end
 
   it "test2" do
-    expect(Simpress::Logger).to receive(:debug).once
-    allow(Simpress::Config.instance).to receive(:preprocessors).and_return(["test2_plugin"])
-
-    module Simpress
-      module Plugin
-        module Preprocessor
-          class Test2Plugin
-            extend Simpress::Plugin::Preprocessor
-          end
-        end
-      end
+    test2_plugin = Class.new do
+      extend Simpress::Plugin::Preprocessor
     end
 
-    expect { Simpress::Plugin::Preprocessor.process(nil, nil, nil) }.to raise_error(RuntimeError)
+    allow(Simpress::Logger).to receive(:debug)
+    allow(Simpress::Config.instance).to receive(:preprocessors).and_return(["test2_plugin"])
+    stub_const("Simpress::Plugin::Preprocessor::Test2Plugin", test2_plugin)
+    expect { described_class.process(nil, nil, nil) }.to raise_error(RuntimeError)
+    expect(Simpress::Logger).to have_received(:debug).once
   end
 end

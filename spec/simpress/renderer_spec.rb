@@ -10,8 +10,8 @@ describe Simpress::Renderer do
     Simpress::Config.clear
   end
 
-  it do
+  it "test" do # rubocop:disable RSpec/NoExpectationExample
     allow(Simpress::Renderer::Html).to receive(:generate).with([], [], [])
-    Simpress::Renderer.generate([], [], [])
+    described_class.generate([], [], [])
   end
 end

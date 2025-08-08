@@ -6,15 +6,14 @@ require "simpress/parser/redcarpet/filter"
 
 describe Simpress::Parser::Redcarpet::Filter do
   after do
-    Object.send(:remove_const, :TestFilter) if defined?(TestFilter)
-    Simpress::Parser::Redcarpet::Filter.clear
+    described_class.clear
   end
 
   context "Filterプラグインのテスト" do
     it "Simpress::Parser::Redcarpet::Filterを継承したクラスが正常にプラグインとして作動すること" do
-      expect(Simpress::Logger).to receive(:debug).once
+      allow(Simpress::Logger).to receive(:debug)
 
-      class TestFilter
+      test_filter = Class.new do
         extend Simpress::Parser::Redcarpet::Filter
 
         def self.preprocess(body)
@@ -22,23 +21,27 @@ describe Simpress::Parser::Redcarpet::Filter do
         end
       end
 
-      expect(Simpress::Parser::Redcarpet::Filter.run("test")).to eq("Test")
+      stub_const("TestFilter", test_filter)
+      expect(described_class.run("test")).to eq("Test")
+      expect(Simpress::Logger).to have_received(:debug).once
     end
 
     it "preprocessメソッドが定義されてない場合" do
-      expect(Simpress::Logger).to receive(:debug).once
+      allow(Simpress::Logger).to receive(:debug)
 
-      class TestFilter
+      test_filter = Class.new do
         extend Simpress::Parser::Redcarpet::Filter
       end
 
-      expect { Simpress::Parser::Redcarpet::Filter.run("dummy") }.to raise_error(RuntimeError)
+      stub_const("TestFilter", test_filter)
+      expect { described_class.run("dummy") }.to raise_error(RuntimeError)
+      expect(Simpress::Logger).to have_received(:debug).once
     end
 
     it "preprocessメソッドの返り値がStringではない場合" do
-      expect(Simpress::Logger).to receive(:debug).once
+      allow(Simpress::Logger).to receive(:debug)
 
-      class TestFilter
+      test_filter = Class.new do
         extend Simpress::Parser::Redcarpet::Filter
 
         def self.preprocess(_)
@@ -46,7 +49,9 @@ describe Simpress::Parser::Redcarpet::Filter do
         end
       end
 
-      expect(Simpress::Parser::Redcarpet::Filter.run("test")).to eq("test")
+      stub_const("TestFilter", test_filter)
+      expect(described_class.run("test")).to eq("test")
+      expect(Simpress::Logger).to have_received(:debug).once
     end
   end
 end

@@ -3,37 +3,35 @@
 require "simpress/model/category"
 
 describe Simpress::Model::Category do
-  describe "メソッドのテスト" do
-    let(:category) { Simpress::Model::Category.new("Ruby") }
+  let(:category) { described_class.new("Ruby") }
 
-    context "#new" do
-      it "successful" do
-        expect(category).not_to be_nil
-        expect(category.key).to eq("ruby")
-        expect(category.name).to eq("Ruby")
-        expect(category.moved).to eq(false)
-        expect(category.count).to eq(1)
-      end
+  describe "#new" do
+    it "successful" do
+      expect(category).not_to be_nil
+      expect(category.key).to eq("ruby")
+      expect(category.name).to eq("Ruby")
+      expect(category.moved).to be_falsy
+      expect(category.count).to eq(1)
     end
+  end
 
-    context "#eql" do
-      it "successful" do
-        other = Simpress::Model::Category.new("Ruby")
-        expect(category).to eql(other)
-      end
+  describe "#eql" do
+    it "successful" do
+      other = described_class.new("Ruby")
+      expect(category).to eql(other)
     end
+  end
 
-    context "#hash" do
-      it "successful" do
-        other = Simpress::Model::Category.new("Ruby")
-        expect(category.hash).to eq(other.hash)
-      end
+  describe "#hash" do
+    it "successful" do
+      other = described_class.new("Ruby")
+      expect(category.hash).to eq(other.hash)
     end
   end
 
   context "Hash or Setのキーにオブジェクトを指定した場合" do
-    let(:category1) { Simpress::Model::Category.new("test") }
-    let(:category2) { Simpress::Model::Category.new("test") }
+    let(:category1) { described_class.new("test") }
+    let(:category2) { described_class.new("test") }
 
     it "Hashに同じカテゴリーを追加しても１つしか入らないこと" do
       hash = {}
@@ -53,8 +51,8 @@ describe Simpress::Model::Category do
 
   context "引数がnilな場合" do
     it "例外が発生すること" do
-      expect { Simpress::Model::Category.new(nil) }.to raise_error("category is empty")
-      expect { Simpress::Model::Category.new("") }.to  raise_error("category is empty")
+      expect { described_class.new(nil) }.to raise_error("category is empty")
+      expect { described_class.new("") }.to  raise_error("category is empty")
     end
   end
 end

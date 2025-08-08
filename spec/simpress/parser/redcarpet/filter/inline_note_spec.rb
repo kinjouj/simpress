@@ -9,7 +9,7 @@ describe Simpress::Parser::Redcarpet::Filter::InlineNote do
 [^]: Hello World
 MARKDOWN
 
-      res = Simpress::Parser::Redcarpet::Filter::InlineNote.preprocess(markdown)
+      res = described_class.preprocess(markdown)
       expect(res).to eq(%(<div class="note"><span class="material-symbols-outlined">info</span>Hello World</div>))
     end
 
@@ -18,7 +18,7 @@ MARKDOWN
 [^]:Hello World
 MARKDOWN
 
-      res = Simpress::Parser::Redcarpet::Filter::InlineNote.preprocess(markdown)
+      res = described_class.preprocess(markdown)
       expect(res).to eq(%(<div class="note"><span class="material-symbols-outlined">info</span>Hello World</div>))
     end
   end

@@ -21,6 +21,7 @@ gem "webrick"
 # rubocop
 gem "rubocop", require: false
 gem "rubocop-performance", require: false
+gem "rubocop-rspec", require: false
 
 group :test do
   gem "rspec"

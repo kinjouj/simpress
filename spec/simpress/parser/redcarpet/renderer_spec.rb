@@ -6,8 +6,12 @@ require "simpress/parser/redcarpet/renderer"
 require "simpress/logger"
 
 describe Simpress::Parser::Redcarpet::Renderer do
+  after do
+    Simpress::Parser::Redcarpet::Filter.clear
+  end
+
   context "メソッドのテスト" do
-    let(:renderer) { Simpress::Parser::Redcarpet::Renderer.new }
+    let(:renderer) { described_class.new }
 
     it "#paragraph" do
       expect(renderer.paragraph("test")).to eq("<p>test</p>")
@@ -40,9 +44,9 @@ describe Simpress::Parser::Redcarpet::Renderer do
     end
 
     it "#preprocess" do
-      expect(Simpress::Logger).to receive(:debug).once
+      allow(Simpress::Logger).to receive(:debug)
 
-      class TestFilter
+      test_filter = Class.new do
         extend Simpress::Parser::Redcarpet::Filter
 
         def self.preprocess(data)
@@ -50,9 +54,11 @@ describe Simpress::Parser::Redcarpet::Renderer do
         end
       end
 
+      stub_const("TestFilter", test_filter)
       markdown = renderer.preprocess(fixture("parser_redcarpet_test.markdown").read)
       expect(markdown).not_to be_nil
       expect(markdown).to start_with("#### TEST1")
+      expect(Simpress::Logger).to have_received(:debug).once
     end
   end
 end

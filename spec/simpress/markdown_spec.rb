@@ -15,9 +15,9 @@ categories:
 test
 MARKDOWN
 
-    metadata, body = Simpress::Markdown.parse(data)
+    metadata, body = described_class.parse(data)
     expect(metadata).not_to be_nil
     expect(body).not_to be_nil
-    expect { Simpress::Markdown.parse("") }.to raise_error("PARSE ERROR")
+    expect { described_class.parse("") }.to raise_error("PARSE ERROR")
   end
 end

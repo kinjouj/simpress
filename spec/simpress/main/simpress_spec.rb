@@ -18,9 +18,10 @@ describe Simpress do
   end
 
   it do
+    allow(Simpress::Logger).to receive(:info)
     allow(Simpress::Config.instance).to receive(:preprocessors).and_return([])
-    expect(Simpress::Logger).to receive(:info).at_least(1).times
-    Simpress.build
+    described_class.build
+    expect(Simpress::Logger).to have_received(:info).at_least(1).times
     expect(File).to exist(create_filepath("./public/test.html"))
     expect(File).to exist(create_filepath("./public/test2.html"))
     expect(File).to exist(create_filepath("./public/index.html"))

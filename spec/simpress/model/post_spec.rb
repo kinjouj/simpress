@@ -20,28 +20,28 @@ describe Simpress::Model::Post do
     }
   end
 
-  context "#new" do
+  describe "#new" do
     it "successful" do
-      post = Simpress::Model::Post.new(params)
+      post = described_class.new(params)
       expect(post.title).to eq("title")
     end
   end
 
-  context "#description" do
+  describe "#description" do
     it "コンストラクタパラメータにdescriptionがある場合" do
       params[:description] = "TEST"
-      post = Simpress::Model::Post.new(params)
+      post = described_class.new(params)
       expect(post.description).to eq("TEST")
     end
 
     it "descriptionによってタグ・スペース等が除去されていること" do
-      post = Simpress::Model::Post.new(params)
+      post = described_class.new(params)
       expect(post.description).to eq("content123")
     end
 
     it "descriptionが指定している文字列が100文字以上の場合切り捨てられること" do
       params[:content] = "A" * 300
-      post = Simpress::Model::Post.new(params)
+      post = described_class.new(params)
       expect(post.description).to eq("A" * 100)
       expect(post.description.size).to eq(100)
     end

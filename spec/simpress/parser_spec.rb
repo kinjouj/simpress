@@ -12,7 +12,7 @@ require "simpress/model/post"
 
 describe Simpress::Parser do
   it do
-    post = Simpress::Parser.parse(fixture("test.markdown").path)
+    post = described_class.parse(fixture("test.markdown").path)
     expect(post).not_to be_nil
     expect(post.title).to eq("test1")
     expect(post.permalink).to eq("/test.html")
@@ -32,7 +32,7 @@ date: 2000-01-01 00:00:00
 test
 MARKDOWN
     }
-    post = Simpress::Parser.parse("dummy.markdown")
+    post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
     expect(post.permalink).to eq("/2000/01/dummy.html")
   end
@@ -47,7 +47,7 @@ title: test
 test
 MARKDOWN
     }
-    post = Simpress::Parser.parse("2010-01-01-dummy.markdown")
+    post = described_class.parse("2010-01-01-dummy.markdown")
     expect(post).not_to be_nil
   end
 
@@ -61,7 +61,7 @@ title: test
 test
 MARKDOWN
     }
-    expect { Simpress::Parser.parse("dummy.markdown") }.to raise_error("invalid date")
+    expect { described_class.parse("dummy.markdown") }.to raise_error("invalid date")
   end
 
   it "dateが不正値な場合" do
@@ -75,7 +75,7 @@ date: 2020-01-01 00:00
 test
 MARKDOWN
     }
-    post = Simpress::Parser.parse("dummy.markdown")
+    post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
     expect(post.date).not_to be_nil
     expect(post.date).to eq(Date.new(2020, 1, 1).to_datetime)
@@ -96,7 +96,7 @@ test
 MARKDOWN
     }
     file = File.expand_path("test4.markdown", __dir__)
-    post = Simpress::Parser.parse(file)
+    post = described_class.parse(file)
     expect(post).not_to be_nil
     expect(post.layout).to eq(:page)
   end
@@ -113,7 +113,7 @@ published: false
 test
 MARKDOWN
     }
-    post = Simpress::Parser.parse("dummy.markdown")
+    post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
     expect(post.published).to be_falsey
   end
@@ -131,7 +131,7 @@ cover: /images/test.png
 test
 MARKDOWN
     }
-    post = Simpress::Parser.parse("dummy.markdown")
+    post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
     expect(post.cover).to eq("/images/test.png")
   end
@@ -148,7 +148,7 @@ date: 2000-01-01 00:00:00
 MARKDOWN
     }
 
-    post = Simpress::Parser.parse("dummy.markdown")
+    post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
     expect(post.cover).to eq("/images/test.jpg")
   end
@@ -166,14 +166,14 @@ test
 MARKDOWN
     }
 
-    post = Simpress::Parser.parse("dummy.markdown")
+    post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
     expect(post.categories).to eql([Simpress::Model::Category.new("test")])
   end
 
   it "markdownの解析に失敗した場合" do
     allow(File).to receive(:read)
-    allow(Simpress::Markdown).to receive(:parse) { nil }
-    expect { Simpress::Parser.parse("dummy.markdown") }.to raise_error("parse failed: dummy.markdown")
+    allow(Simpress::Markdown).to receive(:parse).and_return(nil)
+    expect { described_class.parse("dummy.markdown") }.to raise_error("parse failed: dummy.markdown")
   end
 end

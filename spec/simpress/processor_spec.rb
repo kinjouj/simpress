@@ -15,20 +15,20 @@ require "simpress/paginator/post"
 
 describe Simpress::Processor do
   before do
-    stub_const("Simpress::Config::CONFIG_FILE", create_filepath("./test_config.yaml"))
+    stub_const("Simpress::Config::CONFIG_FILE", create_filepath("./processor/test_config.yaml"))
     Simpress::Config.clear
-    stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./source"))
-    stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
-    stub_const("Simpress::Theme::THEME_DIR", create_filepath("./themes"))
+    stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./processor/source"))
+    stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./processor/public"))
+    stub_const("Simpress::Theme::THEME_DIR", create_filepath("./processor/themes"))
   end
 
   after do
-    Dir.glob(create_filepath("public/*")) {|file| FileUtils.rm_rf(file) }
+    Dir.glob(create_filepath("processor/public/*")) {|file| FileUtils.rm_rf(file) }
   end
 
-  it do
-    Simpress::Processor.generate
-    expect(File).to exist(create_filepath("public/2000/01/test.html"))
+  it "test" do
+    described_class.generate
+    expect(File).to exist(create_filepath("processor/public/2000/01/test.html"))
   end
 
   it "if Simpress::Parser.parse published=false" do
@@ -45,7 +45,7 @@ describe Simpress::Processor do
         published: false
       )
     }
-    Simpress::Processor.generate
-    expect(File).not_to exist(create_filepath("public/2000/01/test.html"))
+    described_class.generate
+    expect(File).not_to exist(create_filepath("processor/public/2000/01/test.html"))
   end
 end
