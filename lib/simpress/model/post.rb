@@ -18,13 +18,12 @@ module Simpress
         description: [ :optional, String ]
       }.freeze
 
-      attr_writer :categories
+      attr_accessor :categories
       attr_reader :title,
                   :content,
                   :toc,
                   :date,
                   :permalink,
-                  :categories,
                   :cover,
                   :layout,
                   :published

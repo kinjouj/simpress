@@ -64,7 +64,7 @@ desc "server"
 task :server do
   httpd_pid = Process.spawn("ruby -run -e httpd #{OUTPUT_DIR} -p 4000")
   trap("INT") do
-    Process.kill(9, httpd_pid) rescue Errno::ESRCH
+    Process.kill(9, httpd_pid) rescue Errno::ESRCH # rubocop:disable Style/RescueModifier
     exit 0
   end
 
