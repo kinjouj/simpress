@@ -23,14 +23,14 @@ describe Simpress::Parser do
 
   it "permalinkが無い場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
-date: 2000-01-01 00:00:00
----
+      <<~MARKDOWN
+        ---
+        title: test
+        date: 2000-01-01 00:00:00
+        ---
 
-test
-MARKDOWN
+        test
+      MARKDOWN
     }
     post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
@@ -39,13 +39,13 @@ MARKDOWN
 
   it "dateが無い場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
----
+      <<~MARKDOWN
+        ---
+        title: test
+        ---
 
-test
-MARKDOWN
+        test
+      MARKDOWN
     }
     post = described_class.parse("2010-01-01-dummy.markdown")
     expect(post).not_to be_nil
@@ -53,27 +53,27 @@ MARKDOWN
 
   it "dateがなくてファイル名にも日付要素がない場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
----
+      <<~MARKDOWN
+        ---
+        title: test
+        ---
 
-test
-MARKDOWN
+        test
+      MARKDOWN
     }
     expect { described_class.parse("dummy.markdown") }.to raise_error("invalid date")
   end
 
   it "dateが不正値な場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
-date: 2020-01-01 00:00
----
+      <<~MARKDOWN
+        ---
+        title: test
+        date: 2020-01-01 00:00
+        ---
 
-test
-MARKDOWN
+        test
+      MARKDOWN
     }
     post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
@@ -83,17 +83,17 @@ MARKDOWN
 
   it "layoutがある場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
-date: 2000-01-01 00:00:00
-layout: page
-categories: "test"
----
+      <<~MARKDOWN
+        ---
+        title: test
+        date: 2000-01-01 00:00:00
+        layout: page
+        categories: "test"
+        ---
 
 
-test
-MARKDOWN
+        test
+      MARKDOWN
     }
     file = File.expand_path("test4.markdown", __dir__)
     post = described_class.parse(file)
@@ -103,15 +103,15 @@ MARKDOWN
 
   it "publishedがある場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
-date: 2000-01-01 00:00:00
-published: false
----
+      <<~MARKDOWN
+        ---
+        title: test
+        date: 2000-01-01 00:00:00
+        published: false
+        ---
 
-test
-MARKDOWN
+        test
+      MARKDOWN
     }
     post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
@@ -120,16 +120,16 @@ MARKDOWN
 
   it "cover headerがある場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
-date: 2000-01-01 00:00:00
-cover: /images/test.png
----
+      <<~MARKDOWN
+        ---
+        title: test
+        date: 2000-01-01 00:00:00
+        cover: /images/test.png
+        ---
 
 
-test
-MARKDOWN
+        test
+      MARKDOWN
     }
     post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
@@ -138,14 +138,14 @@ MARKDOWN
 
   it "markdownの画像タグがある場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
-date: 2000-01-01 00:00:00
----
+      <<~MARKDOWN
+        ---
+        title: test
+        date: 2000-01-01 00:00:00
+        ---
 
-![](/images/test.jpg)
-MARKDOWN
+        ![](/images/test.jpg)
+      MARKDOWN
     }
 
     post = described_class.parse("dummy.markdown")
@@ -155,15 +155,15 @@ MARKDOWN
 
   it "categoriesが配列表記じゃない場合" do
     allow(File).to receive(:read) {
-      <<MARKDOWN
----
-title: test
-date: 2000-01-01 00:00:00
-categories: test
----
+      <<~MARKDOWN
+        ---
+        title: test
+        date: 2000-01-01 00:00:00
+        categories: test
+        ---
 
-test
-MARKDOWN
+        test
+      MARKDOWN
     }
 
     post = described_class.parse("dummy.markdown")

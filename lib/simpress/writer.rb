@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Simpress
-  class Writer
+  module Writer
     OUTPUT_DIR = Simpress::Config.instance.output_dir || "public"
 
     def self.write(file, data)

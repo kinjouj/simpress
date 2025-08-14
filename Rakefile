@@ -16,9 +16,9 @@ OUTPUT_DIR = Simpress::Config.instance.output_dir
 desc "build"
 task :build do
   Rake::Task["clean"].execute
+  cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
   result = Benchmark.realtime do
     GC.disable
-    cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
     Simpress.build do
       Rake::Task["build_scss"].execute
       Rake::Task["build_#{Simpress::Config.instance.mode}"].execute
@@ -35,7 +35,7 @@ end
 
 desc "build_json"
 task :build_json do
-  # sh "npm run build"
+  # noop
 end
 
 desc "build_scss"

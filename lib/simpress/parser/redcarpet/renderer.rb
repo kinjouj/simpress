@@ -37,10 +37,10 @@ module Simpress
 
         def block_code(code, lang = "text")
           escape_code = code.gsub("&", "&amp;")
-                            .gsub("<", "&lt;")
-                            .gsub(">", "&gt;")
                             .gsub("\"", "&quot;")
                             .gsub("'", "&apos;")
+                            .gsub("<", "&lt;")
+                            .gsub(">", "&gt;")
 
           %(<pre class="line-numbers"><code class="language-#{lang}">#{escape_code}</code></pre>)
         end

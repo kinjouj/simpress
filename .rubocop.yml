@@ -7,15 +7,9 @@ AllCops:
   NewCops: enable
   SuggestExtensions: false
 
-Layout/HeredocIndentation:
-  Enabled: false
-
 Layout/LineLength:
   Max: 125
   AllowHeredoc: true
-
-Layout/SpaceInsideArrayLiteralBrackets:
-  Enabled: false
 
 Layout/SpaceInsideBlockBraces:
   Enabled: false

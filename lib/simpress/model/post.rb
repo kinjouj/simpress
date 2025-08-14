@@ -8,14 +8,14 @@ module Simpress
       SCHEMA = {
         title: String,
         content: String,
-        toc: [[ String ]],
+        toc: [[String]],
         date: DateTime,
         permalink: %r{\A/},
-        categories: [[ Simpress::Model::Category ]],
+        categories: [[Simpress::Model::Category]],
         cover: String,
         published: TrueClass,
         layout: CH::G.enum(:post, :page),
-        description: [ :optional, String ]
+        description: [:optional, String]
       }.freeze
 
       attr_accessor :categories
@@ -44,7 +44,7 @@ module Simpress
 
       # :nocov:
       def exclude_jsonable
-        [ :published ]
+        [:published]
       end
       # :nocov:
 

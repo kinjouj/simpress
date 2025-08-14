@@ -27,7 +27,8 @@ GEM
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     ffi (1.17.2-x86_64-linux-musl)
-    formatador (1.1.1)
+    formatador (1.2.0)
+      reline
     google-protobuf (4.31.1)
       bigdecimal
       rake (>= 13)
@@ -69,6 +70,7 @@ GEM
     guard-rake (1.0.0)
       guard
       rake
+    io-console (0.8.1)
     json (2.13.2)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
@@ -100,7 +102,9 @@ GEM
     rb-inotify (0.11.1)
       ffi (~> 1.0)
     redcarpet (3.6.1)
-    regexp_parser (2.11.0)
+    regexp_parser (2.11.2)
+    reline (0.6.2)
+      io-console (~> 0.5)
     rspec (3.13.1)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
