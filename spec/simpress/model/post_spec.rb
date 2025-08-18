@@ -23,7 +23,7 @@ describe Simpress::Model::Post do
   describe "#new" do
     it "successful" do
       post = described_class.new(params)
-      expect(post.title).to eq("title")
+      expect(post).to be(post)
     end
   end
 

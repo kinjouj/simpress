@@ -27,7 +27,9 @@ module Simpress
               archive = {
                 title: post.title,
                 cover: post.cover,
-                path: filename
+                date: post.date,
+                path: filename,
+                categories: post.categories
               }
               date = Time.new(post.date.year, post.date.month, 1)
               monthly_posts[date] ||= []

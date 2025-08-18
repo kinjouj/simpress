@@ -10,6 +10,7 @@
     "**/coverage": true,
     "**/Gemfile.lock": true,
     "**/.rspec": true,
-    "**/.simplecov": true
+    "**/.simplecov": true,
+    "solargraph.useBundler": false
   }
 }

@@ -37,7 +37,7 @@ describe Simpress::Plugin::Preprocessor do
 
     described_class.process(nil, nil, nil)
     expect(Simpress::Context[:mode]).to eq(:html)
-    expect { Simpress::Context[:msg] }.to raise_error("msg missing")
+    expect { Simpress::Context[:msg] }.to raise_error("'msg' missing")
     expect(Simpress::Logger).to have_received(:debug).exactly(1)
   end
 

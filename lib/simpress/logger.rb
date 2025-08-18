@@ -36,5 +36,9 @@ module Simpress
       caller = caller_locations(1, 1)[0]
       Simpress::Logger.instance.debug("#{caller.path}: #{message}") if Simpress::Config.instance.debug
     end
+
+    def self.clear
+      Singleton.__init__(Simpress::Logger)
+    end
   end
 end

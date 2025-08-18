@@ -5,7 +5,7 @@ require "simpress/logger"
 
 describe Simpress::Logger do
   before do
-    Singleton.__init__(described_class)
+    described_class.clear
     allow(Simpress::Config.instance).to receive(:logging).and_return(true)
     allow(Simpress::Config.instance).to receive(:debug).and_return(true)
   end

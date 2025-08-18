@@ -10,12 +10,12 @@ describe Simpress::Context do
   describe "[] and []=" do
     context "値をつっこんだり取得してみたりした場合" do
       it "successful" do
-        described_class.instance[:key] = "hoge"
+        described_class[:key] = "hoge"
         expect(described_class[:key]).to eq("hoge")
       end
 
       it "存在しないキーを指定した場合、例外が発生すること" do
-        expect { described_class[:key] }.to raise_error("key missing")
+        expect { described_class[:key] }.to raise_error("'key' missing")
       end
     end
   end
@@ -31,10 +31,10 @@ describe Simpress::Context do
   describe "#clear" do
     context "値をつっこんだあとでclearを呼んだ場合" do
       it "ちゃんと値が消えていること" do
-        described_class.instance[:key] = "hoge"
+        described_class[:key] = "hoge"
         expect(described_class[:key]).to eq("hoge")
         described_class.clear
-        expect { described_class[:key] }.to raise_error("key missing")
+        expect { described_class[:key] }.to raise_error("'key' missing")
       end
     end
   end

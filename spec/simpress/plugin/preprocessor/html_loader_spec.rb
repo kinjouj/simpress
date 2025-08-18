@@ -9,9 +9,6 @@ require "simpress/plugin/preprocessor/html_loader"
 describe Simpress::Plugin::Preprocessor::HtmlLoader do
   before do
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
-  end
-
-  after do
     Simpress::Context.clear
   end
 
@@ -37,7 +34,7 @@ describe Simpress::Plugin::Preprocessor::HtmlLoader do
     it "MODEがhtmlじゃない場合" do
       allow(Simpress::Config.instance).to receive(:mode).and_return(:json)
       described_class.run
-      expect { Simpress::Context[:html_test] }.to raise_error("html_test missing")
+      expect { Simpress::Context[:html_test] }.to raise_error("'html_test' missing")
     end
   end
 end

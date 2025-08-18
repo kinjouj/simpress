@@ -17,8 +17,9 @@ module Simpress
               category_posts[category] << post
             end
 
-            position = (page * PAGINATE) + index
-            generate_permalink(post, "post", Simpress::Paginator::Post.new(position, posts))
+            position  = (page * PAGINATE) + index
+            paginator = Simpress::Paginator.builder.page(position).posts(posts).build
+            generate_permalink(post, "post", paginator)
             date = Time.new(post.date.year, post.date.month, 1)
             monthly_archives[date] ||= []
             monthly_archives[date] << post
@@ -26,7 +27,10 @@ module Simpress
             Simpress::Logger.info("#{position + 1}: #{post}")
           end
 
-          paginator = Simpress::Paginator::Index.new(page + 1, page_size)
+          paginator = Simpress::Paginator.builder
+                                         .page(page + 1)
+                                         .maxpage(page_size)
+                                         .build
           generate_index(archives, paginator)
           Simpress::Logger.info("create index: #{paginator.current_page}")
         end
@@ -39,13 +43,21 @@ module Simpress
         category_posts.each do |category, posts|
           posts.sort_by! { |v| -v.date.to_time.to_i }
           maxpage   = posts.size.quo(PAGINATE).ceil
-          paginator = Simpress::Paginator::Index.new(1, maxpage, "/archives/category/#{category.key}")
+          paginator = Simpress::Paginator.builder
+                                         .page(1)
+                                         .maxpage(maxpage)
+                                         .prefix("/archives/category/#{category.key}")
+                                         .build
           generate_indexes(posts, paginator, category.name)
         end
 
         monthly_archives.each do |date, posts_by_monthly|
           maxpage   = posts_by_monthly.size.quo(PAGINATE).ceil
-          paginator = Simpress::Paginator::Index.new(1, maxpage, "/archives/#{date.year}/#{format('%02d', date.month)}")
+          paginator = Simpress::Paginator.builder
+                                         .page(1)
+                                         .maxpage(maxpage)
+                                         .prefix("/archives/#{date.year}/#{format('%02d', date.month)}")
+                                         .build
           generate_indexes(posts_by_monthly, paginator, "#{date.year}/#{date.month}")
         end
       end

@@ -6,7 +6,11 @@ module Simpress
 
     class << self
       def [](key)
-        instance[key.to_sym] or raise "#{key} missing"
+        instance[key.to_sym] or raise "'#{key}' missing"
+      end
+
+      def []=(key, value)
+        instance[key.to_sym] = value
       end
 
       def update(obj)
