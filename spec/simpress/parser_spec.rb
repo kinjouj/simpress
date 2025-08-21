@@ -12,7 +12,7 @@ require "simpress/model/post"
 
 describe Simpress::Parser do
   it do
-    post = described_class.parse(fixture("test.markdown").path)
+    post = described_class.parse(fixture("parser/test.markdown").path)
     expect(post).not_to be_nil
     expect(post.title).to eq("test1")
     expect(post.permalink).to eq("/test.html")

@@ -19,7 +19,7 @@ describe Simpress::Processor do
     Simpress::Config.clear
     stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./processor/source"))
     stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./processor/public"))
-    stub_const("Simpress::Theme::THEME_DIR", create_filepath("./processor/themes"))
+    stub_const("Simpress::Theme::THEME_DIR", create_filepath("./processor/theme"))
   end
 
   after do

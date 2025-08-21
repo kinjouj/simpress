@@ -7,7 +7,7 @@ require "simpress/parser/redcarpet/renderer"
 require "simpress/parser/redcarpet"
 
 describe Simpress::Parser::Redcarpet do
-  let(:data) { fixture("parser_redcarpet_test.markdown").read }
+  let(:data) { fixture("parser/redcarpet/parser_redcarpet_test.markdown").read }
 
   describe "#render" do
     it do

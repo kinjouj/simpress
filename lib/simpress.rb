@@ -8,6 +8,7 @@ require "singleton"
 require "psych"
 
 require "classy_hash"
+require "colorize"
 require "erubis"
 require "only_blank"
 require "redcarpet"

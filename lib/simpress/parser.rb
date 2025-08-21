@@ -26,7 +26,8 @@ module Simpress
 
       raise "invalid date" unless params[:date]
 
-      params[:permalink]  = "/#{params[:date].strftime('%Y/%m')}/#{basename}.html" if params[:permalink].blank?
+      params[:permalink] = "/#{params[:date].strftime('%Y/%m')}/#{basename}" if params[:permalink].blank?
+      params[:permalink] = "#{params[:permalink]}.html"
       params[:categories] = [params[:categories]].compact unless params[:categories].respond_to?(:map)
       params[:categories].map! {|category| Simpress::Model::Category.new(category) }
       Simpress::Model::Post.new(params)

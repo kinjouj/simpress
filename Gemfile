@@ -6,6 +6,7 @@ ruby "3.3.9"
 
 gem "benchmark"
 gem "classy_hash"
+gem "colorize"
 gem "erubis"
 gem "guard-rake"
 gem "jsonable", path: "vendor/libs/ruby-jsonable"

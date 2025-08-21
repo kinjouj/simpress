@@ -11,8 +11,6 @@ describe Simpress::Parser::Redcarpet::Filter do
 
   context "Filterプラグインのテスト" do
     it "Simpress::Parser::Redcarpet::Filterを継承したクラスが正常にプラグインとして作動すること" do
-      allow(Simpress::Logger).to receive(:debug)
-
       test_filter = Class.new do
         extend Simpress::Parser::Redcarpet::Filter
 
@@ -23,24 +21,18 @@ describe Simpress::Parser::Redcarpet::Filter do
 
       stub_const("TestFilter", test_filter)
       expect(described_class.run("test")).to eq("Test")
-      expect(Simpress::Logger).to have_received(:debug).once
     end
 
     it "preprocessメソッドが定義されてない場合" do
-      allow(Simpress::Logger).to receive(:debug)
-
       test_filter = Class.new do
         extend Simpress::Parser::Redcarpet::Filter
       end
 
       stub_const("TestFilter", test_filter)
       expect { described_class.run("dummy") }.to raise_error(RuntimeError)
-      expect(Simpress::Logger).to have_received(:debug).once
     end
 
     it "preprocessメソッドの返り値がStringではない場合" do
-      allow(Simpress::Logger).to receive(:debug)
-
       test_filter = Class.new do
         extend Simpress::Parser::Redcarpet::Filter
 
@@ -51,7 +43,6 @@ describe Simpress::Parser::Redcarpet::Filter do
 
       stub_const("TestFilter", test_filter)
       expect(described_class.run("test")).to eq("test")
-      expect(Simpress::Logger).to have_received(:debug).once
     end
   end
 end

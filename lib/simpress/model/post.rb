@@ -49,7 +49,7 @@ module Simpress
       # :nocov:
 
       def to_s
-        "#{@title}:#{@permalink}"
+        "#{@title}: #{@permalink}"
       end
     end
   end

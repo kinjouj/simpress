@@ -6,7 +6,7 @@ describe Simpress do
   before do
     stub_const("Simpress::Config::CONFIG_FILE", fixture("test_config.yaml").path)
     Simpress::Config.clear
-    stub_const("Simpress::Theme::THEME_DIR", create_filepath("./themes"))
+    stub_const("Simpress::Theme::THEME_DIR", create_filepath("./theme"))
     stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
     stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./source"))
     stub_const("Simpress::Plugin::PLUGIN_DIR", create_filepath("./plugins"))

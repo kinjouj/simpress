@@ -24,7 +24,7 @@ module Simpress
         end
 
         posts << data
-        Simpress::Logger.info("PARSE COMPLETE: #{file}")
+        Simpress::Logger.info("PARSE COMPLETE: #{file.colorize(:light_yellow)}")
       end
 
       posts, pages = posts.partition {|post| post.layout == :post }

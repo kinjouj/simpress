@@ -4,23 +4,39 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "rake:build",
             "type": "shell",
             "command": "rake build",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": false
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
             }
         },
         {
-            "label": "test",
+            "label": "rake:spec",
             "type": "shell",
             "command": "rake spec",
             "problemMatcher": [],
             "group": {
-                "kind": "test",
-                "isDefault": true
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
             }
         }
     ]

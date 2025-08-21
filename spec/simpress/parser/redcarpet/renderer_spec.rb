@@ -44,8 +44,6 @@ describe Simpress::Parser::Redcarpet::Renderer do
     end
 
     it "#preprocess" do
-      allow(Simpress::Logger).to receive(:debug)
-
       test_filter = Class.new do
         extend Simpress::Parser::Redcarpet::Filter
 
@@ -55,10 +53,9 @@ describe Simpress::Parser::Redcarpet::Renderer do
       end
 
       stub_const("TestFilter", test_filter)
-      markdown = renderer.preprocess(fixture("parser_redcarpet_test.markdown").read)
+      markdown = renderer.preprocess(fixture("parser/redcarpet/parser_redcarpet_test.markdown").read)
       expect(markdown).not_to be_nil
       expect(markdown).to start_with("#### TEST1")
-      expect(Simpress::Logger).to have_received(:debug).once
     end
   end
 end

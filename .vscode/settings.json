@@ -3,7 +3,6 @@
     ".ruby-version": true,
     ".gitmodules": true,
     "public": true,
-    "source": true,
     "logs": true,
     ".cache": true,
     "**/.gitignore": true,

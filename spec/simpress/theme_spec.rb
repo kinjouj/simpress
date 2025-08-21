@@ -8,7 +8,7 @@ require "simpress/writer"
 
 describe Simpress::Theme do
   before do
-    stub_const("Simpress::Theme::THEME_DIR", fixture(".").path)
+    stub_const("Simpress::Theme::THEME_DIR", fixture("theme").path)
   end
 
   it :render do

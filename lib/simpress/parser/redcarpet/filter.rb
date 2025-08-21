@@ -41,7 +41,6 @@ module Simpress
 
         def self.register_class(klass)
           instance.register_classes << klass
-          Simpress::Logger.debug(klass.to_s)
         end
       end
 

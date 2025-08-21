@@ -21,7 +21,7 @@ module Simpress
     end
 
     def debug(message)
-      @logger.debug(message)
+      @logger.debug(message.colorize(:light_blue))
     end
 
     def self.info(message)

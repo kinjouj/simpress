@@ -9,7 +9,7 @@ logs/*
 !logs/.gitkeep
 plugins/*
 !plugins/.gitkeep
-themes/*
-!themes/.gitkeep
+theme/*
+!theme/.gitkeep
 config.yaml
 category_indexes.json
