@@ -1,5 +1,5 @@
 default:
-  debug: false
+  debug: true
   logging: false
   mode: "html"
   host: "http://localhost"

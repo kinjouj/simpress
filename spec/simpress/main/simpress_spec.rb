@@ -9,7 +9,7 @@ describe Simpress do
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("./theme"))
     stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
     stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./source"))
-    stub_const("Simpress::Plugin::PLUGIN_DIR", create_filepath("./plugins"))
+    stub_const("Simpress::Preprocessor::PLUGIN_DIR", create_filepath("./plugins"))
     stub_const("Simpress::Renderer::Html::PAGINATE", 1)
   end
 

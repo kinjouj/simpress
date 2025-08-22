@@ -31,10 +31,8 @@ require "simpress/parser/redcarpet/filter"
 require "simpress/parser/redcarpet/filter/inline_note"
 require "simpress/parser/redcarpet/markdown"
 require "simpress/parser/redcarpet/renderer"
-require "simpress/plugin"
-require "simpress/plugin/preprocessor"
-require "simpress/plugin/preprocessor/html_loader"
-require "simpress/plugin/preprocessor/recent_posts"
+require "simpress/preprocessor"
+require "simpress/preprocessor/recent_posts"
 require "simpress/processor"
 require "simpress/renderer"
 require "simpress/renderer/html"
@@ -44,7 +42,7 @@ require "simpress/writer"
 
 module Simpress
   def self.build
-    Simpress::Plugin.load
+    Simpress::Preprocessor.load
     Simpress::Processor.generate
     # :nocov:
     yield if block_given?

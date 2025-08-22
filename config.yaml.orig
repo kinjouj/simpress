@@ -7,7 +7,6 @@ default:
   source_dir: "./source"
   plugin_dir: "plugins"
   output_dir: "public"
-  theme_dir: "themes"
+  theme_dir: "theme"
   preprocessors:
-    - html_loader
     - recent_posts

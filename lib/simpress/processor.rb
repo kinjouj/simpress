@@ -29,7 +29,7 @@ module Simpress
 
       posts, pages = posts.partition {|post| post.layout == :post }
       posts.sort_by! {|post| -post.date.to_time.to_i }
-      Simpress::Plugin::Preprocessor.process(posts, pages, categories)
+      Simpress::Preprocessor.process(posts, pages, categories)
       Simpress::Renderer.generate(posts, pages, categories)
       Simpress::Context.clear
       Simpress::Theme.clear

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Simpress
-  module Plugin
     module Preprocessor
+      PLUGIN_DIR = Simpress::Config.instance.plugin_dir || "plugins"
+
       def run(*_args)
         raise "ERROR"
       end
@@ -20,6 +21,10 @@ module Simpress
       end
 
       class << self
+        def load
+          Dir["#{PLUGIN_DIR}/**/lib/**/*.rb"].each {|plugin| Kernel.load(plugin) }
+        end
+
         def extended(klass)
           super
           Inner.register_class(klass)
@@ -28,7 +33,7 @@ module Simpress
         def process(posts, pages, categories)
           plugins = (Simpress::Config.instance.preprocessors || []).map do |preprocessor|
             klassname = preprocessor.to_s.split("_").map(&:capitalize).join
-            Simpress::Plugin::Preprocessor.const_get(klassname)
+            Simpress::Preprocessor.const_get(klassname)
           end
 
           (Inner.instance.register_classes & plugins).sort_by {|klass| -klass.priority }.each do |klass|
@@ -58,5 +63,4 @@ module Simpress
 
       private_constant :Inner
     end
-  end
 end
