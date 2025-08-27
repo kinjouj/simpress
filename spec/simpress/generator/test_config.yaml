@@ -2,5 +2,5 @@ default:
   debug: false
   logging: false
   mode: "html"
-  host: "https://kinjouj.github.io"
+  host: "http://localhost"
   paginate: 10

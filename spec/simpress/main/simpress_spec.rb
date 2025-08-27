@@ -8,8 +8,8 @@ describe Simpress do
     Simpress::Config.clear
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("./theme"))
     stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
-    stub_const("Simpress::Processor::SOURCE_DIR", create_filepath("./source"))
-    stub_const("Simpress::Preprocessor::PLUGIN_DIR", create_filepath("./plugins"))
+    stub_const("Simpress::Generator::SOURCE_DIR", create_filepath("./source"))
+    stub_const("Simpress::Plugin::PLUGIN_DIR", create_filepath("./plugins"))
     stub_const("Simpress::Renderer::Html::PAGINATE", 1)
   end
 
@@ -19,9 +19,10 @@ describe Simpress do
 
   it do
     allow(Simpress::Logger).to receive(:info)
-    allow(Simpress::Config.instance).to receive(:preprocessors).and_return([])
+    allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
     described_class.build
     expect(Simpress::Logger).to have_received(:info).at_least(1).times
+    expect(File).to exist(create_filepath("./public/count.txt"))
     expect(File).to exist(create_filepath("./public/test.html"))
     expect(File).to exist(create_filepath("./public/test2.html"))
     expect(File).to exist(create_filepath("./public/index.html"))

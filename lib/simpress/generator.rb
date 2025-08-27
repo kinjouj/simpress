@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Simpress
-  module Processor
+  module Generator
     SOURCE_DIR = Simpress::Config.instance.source_dir || "source"
 
     def self.generate
@@ -9,7 +9,7 @@ module Simpress
       categories = {}
       Dir["#{SOURCE_DIR}/**/*.{md,markdown}"].each do |file|
         data = Simpress::Parser.parse(file)
-        next if data.blank? || !data.published
+        next unless data.published
 
         data.categories.each do |category|
           key = category.key
@@ -23,13 +23,13 @@ module Simpress
           categories[key].last_update = data.date
         end
 
+        Simpress::Logger.info("PARSE COMPLETE: #{file}")
         posts << data
-        Simpress::Logger.info("PARSE COMPLETE: #{file.colorize(:light_yellow)}")
       end
 
       posts, pages = posts.partition {|post| post.layout == :post }
       posts.sort_by! {|post| -post.date.to_time.to_i }
-      Simpress::Preprocessor.process(posts, pages, categories)
+      Simpress::Plugin.process(posts, pages, categories)
       Simpress::Renderer.generate(posts, pages, categories)
       Simpress::Context.clear
       Simpress::Theme.clear

@@ -8,7 +8,6 @@ require "singleton"
 require "psych"
 
 require "classy_hash"
-require "colorize"
 require "erubis"
 require "only_blank"
 require "redcarpet"
@@ -18,6 +17,7 @@ require "tee"
 
 require "simpress/config"
 require "simpress/context"
+require "simpress/generator"
 require "simpress/model/category"
 require "simpress/model/post"
 require "simpress/logger"
@@ -31,9 +31,8 @@ require "simpress/parser/redcarpet/filter"
 require "simpress/parser/redcarpet/filter/inline_note"
 require "simpress/parser/redcarpet/markdown"
 require "simpress/parser/redcarpet/renderer"
-require "simpress/preprocessor"
-require "simpress/preprocessor/recent_posts"
-require "simpress/processor"
+require "simpress/plugin"
+require "simpress/plugin/recent_posts"
 require "simpress/renderer"
 require "simpress/renderer/html"
 require "simpress/renderer/json"
@@ -42,8 +41,8 @@ require "simpress/writer"
 
 module Simpress
   def self.build
-    Simpress::Preprocessor.load
-    Simpress::Processor.generate
+    Simpress::Plugin.load
+    Simpress::Generator.generate
     # :nocov:
     yield if block_given?
     # :nocov:

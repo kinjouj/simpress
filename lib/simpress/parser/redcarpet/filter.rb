@@ -9,14 +9,16 @@ module Simpress
         end
 
         class << self
+          @@register_classes = []
+
           def extended(klass)
             super
-            Inner.register_class(klass)
+            @@register_classes << klass
           end
 
           def run(body)
             data = body.dup
-            Inner.instance.register_classes.each do |klass|
+            @@register_classes.each do |klass|
               res  = klass.preprocess(data)
               data = res if res.is_a?(String)
             end
@@ -25,26 +27,10 @@ module Simpress
           end
 
           def clear
-            Singleton.__init__(Inner)
+            @@register_classes = []
           end
         end
       end
-
-      class Inner
-        include Singleton
-
-        attr_reader :register_classes
-
-        def initialize
-          @register_classes = []
-        end
-
-        def self.register_class(klass)
-          instance.register_classes << klass
-        end
-      end
-
-      private_constant :Inner
     end
   end
 end

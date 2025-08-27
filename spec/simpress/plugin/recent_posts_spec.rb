@@ -2,11 +2,11 @@
 
 require "simpress/config"
 require "simpress/context"
-require "simpress/preprocessor"
-require "simpress/preprocessor/recent_posts"
+require "simpress/plugin"
+require "simpress/plugin/recent_posts"
 require "simpress/theme"
 
-describe Simpress::Preprocessor::RecentPosts do
+describe Simpress::Plugin::RecentPosts do
   before do
     stub_const("Simpress::Theme::THEME_DIR", File.expand_path(".", __dir__))
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)

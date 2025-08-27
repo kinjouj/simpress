@@ -18,24 +18,24 @@ module Simpress
         plugin_dir: [:optional, %r{\A[^\/]}],
         output_dir: [:optional, %r{\A[^\/]}],
         theme_dir: [:optional, %r{\A[^\/]}],
-        preprocessors: [:optional, [[String]]]
+        plugins: [:optional, [[String]]]
       }
     }.freeze
 
     @@attrs = attr_reader :debug,
                           :logging,
-                          :mode,
                           :host,
+                          :mode,
                           :paginate,
-                          :source_dir,
                           :plugin_dir,
+                          :source_dir,
                           :output_dir,
                           :theme_dir,
-                          :preprocessors
+                          :plugins
 
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true)
-      CH.validate(config, SCHEMA, strict: true)
+      CH.validate(config, SCHEMA, strict: true, full: true)
       @@attrs.each {|key| instance_variable_set("@#{key}", config[:default][key]) if config[:default].include?(key) }
     end
 

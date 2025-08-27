@@ -5,7 +5,7 @@ module Simpress
     THEME_DIR = Simpress::Config.instance.theme_dir || "theme"
 
     class << self
-      def render(template, data = {})
+      def render(template, data)
         Template.render(template, data)
       end
 
@@ -22,8 +22,9 @@ module Simpress
       @@erubis_caches = {}
 
       def initialize(template)
-        @erubis = Erubis::Eruby.new(File.read("#{THEME_DIR}/#{template}.erb"))
-        @erubis.filename = "#{THEME_DIR}/#{template}.erb"
+        filename = "#{THEME_DIR}/#{template}.erb"
+        @erubis = Erubis::Eruby.new(File.read(filename))
+        @erubis.filename = filename
       end
 
       def render(data)
@@ -31,24 +32,20 @@ module Simpress
         @erubis.evaluate(Simpress::Context.instance)
       end
 
-      def self.cache(template)
-        erubis = @@erubis_caches["#{THEME_DIR}/#{template}.erb"]
+      def self.render(template, data)
+        filename = "#{THEME_DIR}/#{template}.erb"
+        erubis = @@erubis_caches[filename]
 
-        if erubis.blank?
+        if erubis.nil?
           erubis = new(template)
-          @@erubis_caches["#{THEME_DIR}/#{template}.erb"] = erubis
+          @@erubis_caches[filename] = erubis
         end
 
-        erubis
-      end
-
-      def self.render(template, data)
-        erubis = cache(template)
         erubis.render(data)
       end
 
       def self.clear
-        @@erubis_caches = {}
+        @@erubis_caches.clear
       end
     end
 

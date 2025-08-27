@@ -23,12 +23,6 @@ describe Simpress::Logger do
     end
   end
 
-  describe "#warn" do
-    it "warnのテスト" do
-      expect { described_class.warn("test") }.to output(/WARN -- : test\n$/).to_stdout
-    end
-  end
-
   describe "#debug" do
     it "debugのテスト" do
       expect { described_class.debug("test") }.to output.to_stdout

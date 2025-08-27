@@ -40,9 +40,9 @@ module Simpress
       if !@posts.blank?
         return Simpress::Paginator::Post.new(@index, @posts)
       elsif @maxpage.positive?
-        argv = [@index, @maxpage]
-        argv << @prefix unless @prefix.blank?
-        return Simpress::Paginator::Index.new(*argv)
+        args = [@index, @maxpage]
+        args << @prefix unless @prefix.blank?
+        return Simpress::Paginator::Index.new(*args)
       else
         raise "ERROR"
       end

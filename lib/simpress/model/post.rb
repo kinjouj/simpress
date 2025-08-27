@@ -36,10 +36,10 @@ module Simpress
       def description
         description = @description || @content
         description.gsub(%r{</?[^>]+?>}, "")
-                   .strip.slice(0..99)
                    .tr("\s", "")
                    .tr("　", "")
                    .tr("\n", "")
+                   .strip.slice(0..99)
       end
 
       # :nocov:

@@ -8,5 +8,5 @@ default:
   plugin_dir: "plugins"
   output_dir: "public"
   theme_dir: "theme"
-  preprocessors:
+  plugins:
     - recent_posts

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Simpress
-  module Preprocessor
+  module Plugin
     class RecentPosts
-      extend Simpress::Preprocessor
+      extend Simpress::Plugin
 
       def self.run(posts, *_args)
         return unless config.mode.to_s == "html"

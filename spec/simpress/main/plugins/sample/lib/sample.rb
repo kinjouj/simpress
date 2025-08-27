@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
-class Sample
-  extend Simpress::Preprocessor
+module Simpress
+  module Plugin
+    class Sample
+      extend Simpress::Plugin
 
-  def run; end
+      def self.run(posts, _, _)
+        Simpress::Writer.write("count.txt", posts.size)
+      end
+    end
+  end
 end

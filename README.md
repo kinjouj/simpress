@@ -37,8 +37,7 @@ default:
   plugin_dir: "plugins"
   output_dir: "public"
   theme_dir: "themes"
-  preprocessors:
-    - html_loader
+  plugins:
     - recent_posts
 ```
 
@@ -125,15 +124,14 @@ end
 into plugins directory ruby project structures(plugins/sample_filter/lib/sample_filter.rb)
 
 
-### Custom Preprocessor
+### Custom Plugin
 
 
 ```ruby
 module Simpress
- module Plugin
-  module Preprocessor
+  module Plugin
     class Sample
-      extend Simpress::Plugin::Preprocessor
+      extend Simpress::Plugin
 
       def self.run(posts, pages, categories)
         # TODO
@@ -141,17 +139,6 @@ module Simpress
     end
   end
 end
-```
-
-
-### Plugin: HtmlLoader
-
-
-themes/htmlにhtmlファイルを置くとerbで"html_ファイル名"で参照できる。例えばthemes/html/test.htmlとすると
-
-
-```erb
-<%= @html_test %>
 ```
 
 

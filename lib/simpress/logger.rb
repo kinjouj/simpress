@@ -16,20 +16,12 @@ module Simpress
       @logger.info(message)
     end
 
-    def warn(message)
-      @logger.warn(message)
-    end
-
     def debug(message)
-      @logger.debug(message.colorize(:light_blue))
+      @logger.debug(message)
     end
 
     def self.info(message)
       Simpress::Logger.instance.info(message) if Simpress::Config.instance.logging
-    end
-
-    def self.warn(message)
-      Simpress::Logger.instance.warn(message)
     end
 
     def self.debug(message)
