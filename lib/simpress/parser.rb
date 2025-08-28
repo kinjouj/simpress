@@ -27,7 +27,7 @@ module Simpress
 
     def self.parse_datetime(params, basename)
       if params[:date].blank?
-        y, m, d = basename.scan(/\A([\d]{4})-([\d]{1,2})-([\d]{1,2})/).flatten
+        y, m, d = basename.scan(/\A(\d{4})-(\d{1,2})-(\d{1,2})/).flatten
         params[:date] = DateTime.new(y.to_i, m.to_i, d.to_i) unless [y, m, d].include?(nil)
         raise "invalid date" if params[:date].blank?
       else
