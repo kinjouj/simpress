@@ -111,8 +111,8 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 
 
 ```ruby
-module A
-  extend Simpress::Parser::Redcarpet::Filter
+class SampleFilter
+  extend Simpress::Markdown::Filter
 
   def self.preprocess(markdown)
     # TODO
