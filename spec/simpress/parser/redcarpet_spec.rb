@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 require "simpress/config"
-require "simpress/parser/redcarpet/filter"
-require "simpress/parser/redcarpet/markdown"
+require "simpress/markdown/filter"
 require "simpress/parser/redcarpet/renderer"
 require "simpress/parser/redcarpet"
 

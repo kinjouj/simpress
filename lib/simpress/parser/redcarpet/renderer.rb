@@ -14,7 +14,7 @@ module Simpress
         end
 
         def preprocess(markdown)
-          Simpress::Parser::Redcarpet::Filter.run(markdown)
+          Simpress::Markdown::Filter.run(markdown)
         end
 
         def header(text, header_level)

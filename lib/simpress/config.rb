@@ -22,7 +22,7 @@ module Simpress
       }
     }.freeze
 
-    @@attrs = attr_reader :debug,
+    @@attrs = attr_reader :debug, # rubocop:disable Style/ClassVars
                           :logging,
                           :host,
                           :mode,

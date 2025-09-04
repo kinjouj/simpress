@@ -29,9 +29,6 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Enabled: false
 
-Style/ClassVars:
-  Enabled: false
-
 Style/Documentation:
   Enabled: false
 
@@ -58,7 +55,4 @@ RSpec/ReceiveMessages:
   Enabled: false
 
 RSpec/ReturnFromStub:
-  Enabled: false
-
-RSpec/SpecFilePathFormat:
   Enabled: false

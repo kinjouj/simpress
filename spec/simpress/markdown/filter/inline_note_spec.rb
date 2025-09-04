@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/parser/redcarpet/filter/inline_note"
+require "simpress/markdown/filter/inline_note"
 
-describe Simpress::Parser::Redcarpet::Filter::InlineNote do
+describe Simpress::Markdown::Filter::InlineNote do
   describe "#preprocess" do
     it "successful" do
       markdown = <<~MARKDOWN

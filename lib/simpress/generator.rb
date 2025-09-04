@@ -7,7 +7,7 @@ module Simpress
     def self.generate
       posts      = []
       categories = {}
-      Dir["#{SOURCE_DIR}/**/*.{md,markdown}"].each do |file|
+      find_sources.each do |file|
         data = Simpress::Parser.parse(file)
         next unless data.published
 
@@ -33,6 +33,10 @@ module Simpress
       Simpress::Renderer.generate(posts, pages, categories)
       Simpress::Context.clear
       Simpress::Theme.clear
+    end
+
+    def self.find_sources
+      Dir["#{Simpress::Config.instance.source_dir}/**/*.{md,markdown}"]
     end
   end
 end

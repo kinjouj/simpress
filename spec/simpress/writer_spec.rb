@@ -5,7 +5,7 @@ require "simpress/writer"
 
 describe Simpress::Writer do
   before do
-    stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("."))
+    allow(Simpress::Config.instance).to receive(:output_dir).and_return(create_filepath("."))
   end
 
   after do

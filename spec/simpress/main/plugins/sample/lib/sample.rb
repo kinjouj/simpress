@@ -7,6 +7,7 @@ module Simpress
 
       def self.run(posts, _, _)
         Simpress::Writer.write("count.txt", posts.size)
+        bind_context(sample: "size:: #{posts.size}")
       end
     end
   end

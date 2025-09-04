@@ -7,10 +7,10 @@ describe Simpress do
     stub_const("Simpress::Config::CONFIG_FILE", fixture("test_config.yaml").path)
     Simpress::Config.clear
     stub_const("Simpress::Theme::THEME_DIR", create_filepath("./theme"))
-    stub_const("Simpress::Writer::OUTPUT_DIR", create_filepath("./public"))
-    stub_const("Simpress::Generator::SOURCE_DIR", create_filepath("./source"))
     stub_const("Simpress::Plugin::PLUGIN_DIR", create_filepath("./plugins"))
     stub_const("Simpress::Renderer::Html::PAGINATE", 1)
+    allow(Simpress::Config.instance).to receive(:source_dir).and_return(create_filepath("./source"))
+    allow(Simpress::Config.instance).to receive(:output_dir).and_return(create_filepath("./public"))
   end
 
   after do

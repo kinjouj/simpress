@@ -10,6 +10,12 @@ describe Simpress::Plugin do
     described_class.clear
   end
 
+  it "#load" do
+    stub_const("Simpress::Plugin::PLUGIN_DIR", fixture("./plugins").path)
+    described_class.load
+    expect(described_class.all).not_to be_empty
+  end
+
   it "test1" do
     allow(Simpress::Logger).to receive(:debug)
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
@@ -33,11 +39,10 @@ describe Simpress::Plugin do
 
     stub_const("Simpress::Plugin::Test1Plugin", test1_class)
     stub_const("Simpress::Plugin::HogePlugin", hoge_class)
-
     described_class.process
     expect(Simpress::Context[:mode]).to eq(:html)
     expect { Simpress::Context[:msg] }.to raise_error("'msg' missing")
-    expect(Simpress::Logger).to have_received(:debug).exactly(1)
+    expect(Simpress::Logger).to have_received(:debug).once
   end
 
   it "test2" do

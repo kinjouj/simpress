@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Simpress
-  class Markdown
+  module Markdown
     PERMITTED_CLASSES = [Date, Time, Symbol].freeze
 
     def self.parse(txt)

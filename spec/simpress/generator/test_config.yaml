@@ -4,3 +4,4 @@ default:
   mode: "html"
   host: "http://localhost"
   paginate: 10
+  output_dir: ./

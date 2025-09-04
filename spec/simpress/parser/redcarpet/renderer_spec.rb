@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require "simpress/config"
-require "simpress/parser/redcarpet/filter"
+require "simpress/markdown/filter"
 require "simpress/parser/redcarpet/renderer"
 require "simpress/logger"
 
 describe Simpress::Parser::Redcarpet::Renderer do
   after do
-    Simpress::Parser::Redcarpet::Filter.clear
+    Simpress::Markdown::Filter.clear
   end
 
   context "メソッドのテスト" do
@@ -45,7 +45,7 @@ describe Simpress::Parser::Redcarpet::Renderer do
 
     it "#preprocess" do
       test_filter = Class.new do
-        extend Simpress::Parser::Redcarpet::Filter
+        extend Simpress::Markdown::Filter
 
         def self.preprocess(data)
           data.upcase

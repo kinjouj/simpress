@@ -15,13 +15,9 @@ module Simpress
       params[:layout]     = (params[:layout] || "post").to_sym
       params[:cover]      = image || DEFAULT_COVER unless params[:cover]
       params[:published]  = params.fetch(:published, true)
-
       parse_datetime(params, basename)
-
-      params[:permalink] = "/#{params[:date].strftime('%Y/%m')}/#{basename}" if params[:permalink].blank?
-      params[:permalink] = "#{params[:permalink]}.html"
-      params[:categories] = [params[:categories]].compact unless params[:categories].respond_to?(:map)
-      params[:categories].map! {|category| Simpress::Model::Category.new(category) }
+      parse_permalink(params, basename)
+      parse_categories(params)
       Simpress::Model::Post.new(params)
     end
 
@@ -33,6 +29,16 @@ module Simpress
       else
         params[:date] = params[:date].respond_to?(:to_datetime) ? params[:date].to_datetime : DateTime.parse(params[:date])
       end
+    end
+
+    def self.parse_permalink(params, basename)
+      params[:permalink] = "/#{params[:date].strftime('%Y/%m')}/#{basename}" if params[:permalink].blank?
+      params[:permalink] = "#{params[:permalink]}.html"
+    end
+
+    def self.parse_categories(params)
+      params[:categories] = [params[:categories]].compact unless params[:categories].respond_to?(:map)
+      params[:categories].map! {|category| Simpress::Model::Category.new(category) }
     end
   end
 end

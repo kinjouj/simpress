@@ -2,10 +2,9 @@
 
 require "simpress/config"
 require "simpress/markdown"
+require "simpress/markdown/filter"
 require "simpress/parser"
 require "simpress/parser/redcarpet"
-require "simpress/parser/redcarpet/filter"
-require "simpress/parser/redcarpet/markdown"
 require "simpress/parser/redcarpet/renderer"
 require "simpress/model/category"
 require "simpress/model/post"

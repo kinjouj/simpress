@@ -14,8 +14,15 @@ module Simpress
       }.freeze
 
       def self.render(data)
-        parser = Simpress::Parser::Redcarpet::Markdown.new(Simpress::Parser::Redcarpet::Renderer.new, REDCARPET_OPTIONS)
+        parser = Markdown.new(Simpress::Parser::Redcarpet::Renderer.new, REDCARPET_OPTIONS)
         parser.render(data)
+      end
+
+      class Markdown < ::Redcarpet::Markdown
+        def render(data)
+          body = super
+          [body, renderer.primary_image, renderer.toc]
+        end
       end
     end
   end

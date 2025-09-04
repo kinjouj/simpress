@@ -2,9 +2,9 @@
 
 require "simpress/config"
 require "simpress/logger"
-require "simpress/parser/redcarpet/filter"
+require "simpress/markdown/filter"
 
-describe Simpress::Parser::Redcarpet::Filter do
+describe Simpress::Markdown::Filter do
   after do
     described_class.clear
   end
@@ -12,7 +12,7 @@ describe Simpress::Parser::Redcarpet::Filter do
   context "Filterプラグインのテスト" do
     it "Simpress::Parser::Redcarpet::Filterを継承したクラスが正常にプラグインとして作動すること" do
       test_filter = Class.new do
-        extend Simpress::Parser::Redcarpet::Filter
+        extend Simpress::Markdown::Filter
 
         def self.preprocess(body)
           body.capitalize
@@ -25,7 +25,7 @@ describe Simpress::Parser::Redcarpet::Filter do
 
     it "preprocessメソッドが定義されてない場合" do
       test_filter = Class.new do
-        extend Simpress::Parser::Redcarpet::Filter
+        extend Simpress::Markdown::Filter
       end
 
       stub_const("TestFilter", test_filter)
@@ -34,7 +34,7 @@ describe Simpress::Parser::Redcarpet::Filter do
 
     it "preprocessメソッドの返り値がStringではない場合" do
       test_filter = Class.new do
-        extend Simpress::Parser::Redcarpet::Filter
+        extend Simpress::Markdown::Filter
 
         def self.preprocess(_)
           {}

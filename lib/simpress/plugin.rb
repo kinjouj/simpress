@@ -21,15 +21,18 @@ module Simpress
     end
 
     class << self
-      @@register_classes = []
-
       def load
         Dir["#{PLUGIN_DIR}/**/lib/**/*.rb"].each {|plugin| Kernel.load(plugin) }
       end
 
       def extended(klass)
         super
-        @@register_classes << klass
+        Thread.current[:plugin_classes] ||= []
+        Thread.current[:plugin_classes] << klass
+      end
+
+      def all
+        Thread.current[:plugin_classes] || []
       end
 
       def process(posts = [], pages = [], categories = {})
@@ -38,14 +41,14 @@ module Simpress
           Simpress::Plugin.const_get(klassname)
         end
 
-        (@@register_classes & plugins).sort_by {|klass| -klass.priority }.each do |klass|
+        (all & plugins).sort_by {|klass| -klass.priority }.each do |klass|
           Simpress::Logger.debug(klass.to_s)
           klass.run(posts, pages, categories)
         end
       end
 
       def clear
-        @@register_classes = []
+        Thread.current[:plugin_classes] = nil
       end
     end
   end
