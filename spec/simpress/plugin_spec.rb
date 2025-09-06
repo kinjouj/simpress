@@ -13,7 +13,7 @@ describe Simpress::Plugin do
   it "#load" do
     stub_const("Simpress::Plugin::PLUGIN_DIR", fixture("./plugins").path)
     described_class.load
-    expect(described_class.all).not_to be_empty
+    expect(described_class.register_plugins).not_to be_empty
   end
 
   it "test1" do

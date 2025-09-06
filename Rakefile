@@ -41,8 +41,9 @@ end
 desc "build_scss"
 task :build_scss do
   cd("scss", verbose: false) { Dir["**/*.scss"] }.each do |file|
-    outfile = File.join("css", File.dirname(file), "#{File.basename(file, '.scss')}.css")
-    scss    = Sass.compile("scss/#{file}", style: :compressed, verbose: true)
+    basename = File.basename(file, ".scss")
+    outfile  = File.join("css", File.dirname(file), "#{basename}.css")
+    scss     = Sass.compile("scss/#{file}", style: :compressed, verbose: true)
     Simpress::Writer.write(outfile, scss.css) {|filepath| Simpress::Logger.info("scss -> css: #{filepath}") }
   end
 end

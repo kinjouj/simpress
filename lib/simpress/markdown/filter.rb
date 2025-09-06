@@ -8,15 +8,17 @@ module Simpress
       end
 
       class << self
+        KEY = :simpress_filter_classes
+
         def extended(klass)
           super
-          Thread.current[:filter_classes] ||= []
-          Thread.current[:filter_classes] << klass
+          Thread.current[KEY] ||= Set.new
+          Thread.current[KEY] << klass
         end
 
         def run(body)
           data = body.dup
-          (Thread.current[:filter_classes] || []).each do |klass|
+          (Thread.current[KEY] || []).each do |klass|
             res  = klass.preprocess(data)
             data = res if res.is_a?(String)
           end
@@ -25,7 +27,7 @@ module Simpress
         end
 
         def clear
-          Thread.current[:filter_classes] = nil
+          Thread.current[KEY] = nil
         end
       end
     end

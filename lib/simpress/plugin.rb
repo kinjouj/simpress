@@ -21,34 +21,36 @@ module Simpress
     end
 
     class << self
+      KEY = :simpress_plugin_classes
+
       def load
         Dir["#{PLUGIN_DIR}/**/lib/**/*.rb"].each {|plugin| Kernel.load(plugin) }
       end
 
       def extended(klass)
         super
-        Thread.current[:plugin_classes] ||= []
-        Thread.current[:plugin_classes] << klass
+        Thread.current[KEY] ||= Set.new
+        Thread.current[KEY] << klass
       end
 
-      def all
-        Thread.current[:plugin_classes] || []
+      def register_plugins
+        Thread.current[KEY] || []
       end
 
       def process(posts = [], pages = [], categories = {})
-        plugins = (Simpress::Config.instance.plugins || []).map do |plugin|
+        allowed_plugins = (Simpress::Config.instance.plugins || []).map do |plugin|
           klassname = plugin.to_s.split("_").map(&:capitalize).join
           Simpress::Plugin.const_get(klassname)
         end
 
-        (all & plugins).sort_by {|klass| -klass.priority }.each do |klass|
-          Simpress::Logger.debug(klass.to_s)
+        (register_plugins & allowed_plugins).sort_by {|klass| -klass.priority }.each do |klass|
+          Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
           klass.run(posts, pages, categories)
         end
       end
 
       def clear
-        Thread.current[:plugin_classes] = nil
+        Thread.current[KEY] = nil
       end
     end
   end
