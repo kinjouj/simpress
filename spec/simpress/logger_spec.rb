@@ -7,7 +7,6 @@ describe Simpress::Logger do
   before do
     described_class.clear
     allow(Simpress::Config.instance).to receive(:logging).and_return(true)
-    allow(Simpress::Config.instance).to receive(:debug).and_return(true)
   end
 
   describe "#info" do
@@ -26,13 +25,6 @@ describe Simpress::Logger do
   describe "#debug" do
     it "debugのテスト" do
       expect { described_class.debug("test") }.to output.to_stdout
-    end
-
-    context "configでdebugがfalseの場合" do
-      it "ログが出力されないこと" do
-        allow(Simpress::Config.instance).to receive(:debug).and_return(false)
-        expect { described_class.debug("test") }.not_to output.to_stdout
-      end
     end
   end
 end

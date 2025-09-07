@@ -3,13 +3,11 @@
 module Simpress
   class Config
     include Singleton
-    include Jsonable
 
     CONFIG_FILE = File.expand_path("../../config.yaml", __dir__)
 
     SCHEMA = {
       default: {
-        debug: TrueClass,
         logging: TrueClass,
         mode: CH::G.enum("html", "json"),
         host: String,
@@ -22,8 +20,7 @@ module Simpress
       }
     }.freeze
 
-    @@attrs = attr_reader :debug, # rubocop:disable Style/ClassVars
-                          :logging,
+    @@attrs = attr_reader :logging, # rubocop:disable Style/ClassVars
                           :host,
                           :mode,
                           :paginate,

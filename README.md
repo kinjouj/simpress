@@ -28,7 +28,6 @@ rake build
 
 ```yaml
 default:
-  debug: false
   logging: false
   mode: "html"
   host: "https://example.com"

@@ -8,7 +8,7 @@ static/*
 logs/*
 !logs/.gitkeep
 plugins/*
-!plugins/.gitkeep
+!plugins/inline_note_filter
 theme/*
 !theme/.gitkeep
 config.yaml

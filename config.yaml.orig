@@ -1,6 +1,5 @@
 default:
   mode: "html"
-  debug: false
   logging: false
   host: "http://example.com"
   paginate: 10
