@@ -1,6 +1,6 @@
 default:
-  mode: "html"
   logging: false
+  mode: "html"
   host: "http://example.com"
   paginate: 10
   source_dir: "./source"
