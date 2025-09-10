@@ -3,7 +3,7 @@
 module Simpress
   module Renderer
     def self.generate(posts, pages, categories)
-      klass = const_get(Simpress::Config.instance.mode.to_s.capitalize)
+      klass = const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
       klass.generate(posts, pages, categories)
     end
   end

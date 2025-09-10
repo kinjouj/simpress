@@ -1,0 +1,57 @@
+PATH
+  remote: ../..
+  specs:
+    simpress (0.0.1)
+      classy_hash
+      erubis (= 2.7.0)
+      only_blank
+      redcarpet (= 3.6.1)
+      stringex
+      tee
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    classy_hash (1.0.0)
+    diff-lcs (1.6.2)
+    docile (1.4.1)
+    erubis (2.7.0)
+    fast_blank (1.0.1)
+    only_blank (1.2.2)
+      fast_blank (>= 1.0)
+    rake (13.3.0)
+    redcarpet (3.6.1)
+    rspec (3.13.1)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.5)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.5)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.2)
+    simplecov_json_formatter (0.1.4)
+    stringex (2.8.6)
+    tee (1.0.0)
+
+PLATFORMS
+  ruby
+  x86_64-linux
+
+DEPENDENCIES
+  rake
+  rspec
+  simplecov
+  simpress!
+
+BUNDLED WITH
+   2.7.1

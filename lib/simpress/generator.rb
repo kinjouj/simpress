@@ -2,8 +2,6 @@
 
 module Simpress
   module Generator
-    SOURCE_DIR = Simpress::Config.instance.source_dir || "source"
-
     def self.generate
       posts      = []
       categories = {}
@@ -36,7 +34,13 @@ module Simpress
     end
 
     def self.find_sources
-      Dir["#{Simpress::Config.instance.source_dir}/**/*.{md,markdown}"]
+      Dir["#{source_directory}/**/*.{md,markdown}"]
     end
+
+    def self.source_directory
+      Simpress::Config.instance.source_dir || "source"
+    end
+
+    private_class_method :source_directory
   end
 end

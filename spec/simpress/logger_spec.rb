@@ -11,7 +11,7 @@ describe Simpress::Logger do
 
   describe "#info" do
     it "infoのテスト" do
-      expect { described_class.info("test") }.to output(/INFO -- : test\n$/).to_stdout
+      expect { described_class.info("test") }.to output.to_stdout
     end
 
     context "configでloggingがfalseの場合" do

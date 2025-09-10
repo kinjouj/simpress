@@ -14,6 +14,7 @@ module Simpress
           super
           Thread.current[KEY] ||= Set.new
           Thread.current[KEY] << klass
+          Simpress::Logger.debug("REGISTER FILTER: #{klass}")
         end
 
         def run(body)

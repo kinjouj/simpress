@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "simpress/config"
+require "simpress/logger"
 require "simpress/markdown/filter"
 require "simpress/parser/redcarpet/renderer"
-require "simpress/logger"
 
 describe Simpress::Parser::Redcarpet::Renderer do
   after do

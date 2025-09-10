@@ -9,6 +9,7 @@ logs/*
 !logs/.gitkeep
 plugins/*
 !plugins/inline_note_filter
+!plugins/recent_posts
 theme/*
 !theme/.gitkeep
 config.yaml

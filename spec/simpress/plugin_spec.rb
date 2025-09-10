@@ -11,7 +11,7 @@ describe Simpress::Plugin do
   end
 
   it "#load" do
-    stub_const("Simpress::Plugin::PLUGIN_DIR", fixture("./plugins").path)
+    allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(fixture("plugins").path)
     described_class.load
     expect(described_class.register_plugins).not_to be_empty
   end

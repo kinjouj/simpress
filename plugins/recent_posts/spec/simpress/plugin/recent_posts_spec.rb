@@ -8,8 +8,8 @@ require "simpress/theme"
 
 describe Simpress::Plugin::RecentPosts do
   before do
-    stub_const("Simpress::Theme::THEME_DIR", File.expand_path(".", __dir__))
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
+    allow(Simpress::Config.instance).to receive(:theme_dir).and_return(File.expand_path(".", __dir__))
   end
 
   after do

@@ -8,7 +8,15 @@ require "simpress/writer"
 
 describe Simpress::Theme do
   before do
-    stub_const("Simpress::Theme::THEME_DIR", fixture("theme").path)
+    allow(Simpress::Config.instance).to receive(:theme_dir).and_return(fixture("theme").path)
+  end
+
+  it :create_erubis do
+    erubis = described_class.create_erubis("post")
+    expect(erubis).to eq(described_class.create_erubis("post"))
+    expect(Thread.current[Simpress::Theme::KEY]).not_to be_empty
+    described_class.clear
+    expect(Thread.current[Simpress::Theme::KEY]).to be_nil
   end
 
   it :render do

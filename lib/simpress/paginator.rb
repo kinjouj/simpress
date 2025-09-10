@@ -34,19 +34,17 @@ module Simpress
         self
       end
 
-      # rubocop:disable Style/RedundantReturn
       def build
         if !@posts.blank?
-          return Simpress::Paginator::Post.new(@index, @posts)
+          Simpress::Paginator::Post.new(@index, @posts)
         elsif @maxpage.positive?
           args = [@index, @maxpage]
           args << @prefix unless @prefix.blank?
-          return Simpress::Paginator::Index.new(*args)
+          Simpress::Paginator::Index.new(*args)
         else
           raise "ERROR"
         end
       end
     end
-    # rubocop:enable Style/RedundantReturn
   end
 end

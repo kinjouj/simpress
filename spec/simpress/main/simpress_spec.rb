@@ -4,13 +4,12 @@ require "simpress"
 
 describe Simpress do
   before do
-    stub_const("Simpress::Config::CONFIG_FILE", fixture("test_config.yaml").path)
-    Simpress::Config.clear
-    stub_const("Simpress::Theme::THEME_DIR", create_filepath("./theme"))
-    stub_const("Simpress::Plugin::PLUGIN_DIR", create_filepath("./plugins"))
     stub_const("Simpress::Renderer::Html::PAGINATE", 1)
+    allow(Simpress::Config.instance).to receive(:theme_dir).and_return(create_filepath("./theme"))
     allow(Simpress::Config.instance).to receive(:source_dir).and_return(create_filepath("./source"))
     allow(Simpress::Config.instance).to receive(:output_dir).and_return(create_filepath("./public"))
+    allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(create_filepath("./plugins"))
+    allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
   end
 
   after do
@@ -19,7 +18,6 @@ describe Simpress do
 
   it do
     allow(Simpress::Logger).to receive(:info)
-    allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
     described_class.build
     expect(Simpress::Logger).to have_received(:info).at_least(1).times
     expect(File).to exist(create_filepath("./public/count.txt"))

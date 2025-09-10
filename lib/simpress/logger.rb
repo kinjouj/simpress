@@ -4,10 +4,10 @@ module Simpress
   class Logger
     include Singleton
 
-    LOGFILE = File.expand_path("../../logs/build.log", __dir__)
+    LOG_FILE = File.expand_path("../../logs/build.log", __dir__)
 
     def initialize
-      tee = Tee.open(LOGFILE)
+      tee = Tee.open(LOG_FILE)
       @logger = ::Logger.new(tee)
       $stdout = tee
     end

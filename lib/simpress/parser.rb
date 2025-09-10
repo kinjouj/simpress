@@ -2,8 +2,6 @@
 
 module Simpress
   module Parser
-    DEFAULT_COVER = "/images/no_image.png"
-
     def self.parse(file)
       params, body = Simpress::Markdown.parse(File.read(file))
       raise "parse failed: #{file}" if params.blank? || body.blank?
@@ -13,11 +11,11 @@ module Simpress
       params[:content]    = content
       params[:toc]        = toc || []
       params[:layout]     = (params[:layout] || "post").to_sym
-      params[:cover]      = image || DEFAULT_COVER unless params[:cover]
+      params[:cover]      = image || "/images/no_image.png" unless params[:cover]
       params[:published]  = params.fetch(:published, true)
       parse_datetime(params, basename)
       parse_permalink(params, basename)
-      parse_categories(params)
+      parse_categories!(params)
       Simpress::Model::Post.new(params)
     end
 
@@ -36,9 +34,11 @@ module Simpress
       params[:permalink] = "#{params[:permalink]}.html"
     end
 
-    def self.parse_categories(params)
+    def self.parse_categories!(params)
       params[:categories] = [params[:categories]].compact unless params[:categories].respond_to?(:map)
       params[:categories].map! {|category| Simpress::Model::Category.new(category) }
     end
+
+    private_class_method :parse_datetime, :parse_permalink, :parse_categories!
   end
 end

@@ -31,13 +31,19 @@ module Simpress
                           :plugins
 
     def initialize
-      config = Psych.load_file(CONFIG_FILE, symbolize_names: true)
+      config = load_config
       CH.validate(config, SCHEMA, strict: true, full: true)
       @@attrs.each {|key| instance_variable_set("@#{key}", config[:default][key]) if config[:default].include?(key) }
     end
 
     def self.clear
       Singleton.__init__(Simpress::Config)
+    end
+
+    private
+
+    def load_config
+      Psych.load_file(CONFIG_FILE, symbolize_names: true)
     end
   end
 end

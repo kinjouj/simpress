@@ -24,6 +24,8 @@ module Simpress
           [body, renderer.primary_image, renderer.toc]
         end
       end
+
+      private_constant :Markdown
     end
   end
 end
