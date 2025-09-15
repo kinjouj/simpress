@@ -11,7 +11,7 @@ module Simpress
       def initialize(name)
         raise "category is empty" if name.blank?
 
-        @key      = name.to_url
+        @key      = Simpress::Model::Category.to_url(name)
         @name     = name
         @count    = 1
         @children = {}
@@ -31,6 +31,10 @@ module Simpress
         [:moved, :children]
       end
       # :nocov:
+
+      def self.to_url(str)
+        str.to_url
+      end
     end
   end
 end

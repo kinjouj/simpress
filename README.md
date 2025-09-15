@@ -29,13 +29,13 @@ rake build
 ```yaml
 default:
   logging: false
-  mode: "html"
-  host: "https://example.com"
+  mode: html
+  host: https://example.com
   paginate: 10
-  source_dir: "source"
-  plugin_dir: "plugins"
-  output_dir: "public"
-  theme_dir: "themes"
+  source_dir: source
+  plugin_dir: plugins
+  output_dir: public
+  theme_dir: themes
   plugins:
     - recent_posts
 ```

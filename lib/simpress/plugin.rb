@@ -22,7 +22,6 @@ module Simpress
       KEY = :simpress_plugin_classes
 
       def load
-        plugin_dir = Simpress::Config.instance.plugin_dir || "plugins"
         Dir["#{plugin_dir}/**/lib/**/*.rb"].each {|plugin| Kernel.load(plugin) }
       end
 
@@ -39,7 +38,7 @@ module Simpress
       def process(posts = [], pages = [], categories = {})
         allowed_plugins = (Simpress::Config.instance.plugins || []).map do |plugin|
           klassname = plugin.to_s.split("_").map(&:capitalize).join
-          Simpress::Plugin.const_get(klassname, false)
+          const_get(klassname, false)
         end
 
         (register_plugins & allowed_plugins).sort_by {|klass| -klass.priority }.each do |klass|
@@ -51,6 +50,12 @@ module Simpress
       def clear
         Thread.current[KEY] = nil
       end
+
+      def plugin_dir
+        Simpress::Config.instance.plugin_dir || "plugins"
+      end
     end
+
+    private_class_method :plugin_dir
   end
 end

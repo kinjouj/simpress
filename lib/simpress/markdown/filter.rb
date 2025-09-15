@@ -18,9 +18,9 @@ module Simpress
         end
 
         def run(body)
-          data = body.dup
+          data = body
           (Thread.current[KEY] || []).each do |klass|
-            res  = klass.preprocess(data)
+            res  = klass.preprocess(data.freeze)
             data = res if res.is_a?(String)
           end
 

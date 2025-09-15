@@ -43,7 +43,7 @@ module Simpress
     private
 
     def load_config
-      Psych.load_file(CONFIG_FILE, symbolize_names: true)
+      Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true)
     end
   end
 end

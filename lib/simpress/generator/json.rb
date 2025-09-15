@@ -2,10 +2,8 @@
 
 # :nocov:
 module Simpress
-  module Renderer
+  module Generator
     module Json
-      OUTPUT_DIR = Simpress::Config.instance.output_dir || "public"
-
       class << self
         def generate(posts, _, categories)
           category_posts = {}

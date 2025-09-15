@@ -10,6 +10,8 @@ logs/*
 plugins/*
 !plugins/inline_note_filter
 !plugins/recent_posts
+scss/*
+!scss/test.scss
 theme/*
 !theme/.gitkeep
 config.yaml

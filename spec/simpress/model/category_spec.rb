@@ -33,7 +33,7 @@ describe Simpress::Model::Category do
     let(:category1) { described_class.new("test") }
     let(:category2) { described_class.new("test") }
 
-    it "Hashに同じカテゴリーを追加しても１つしか入らないこと" do
+    it "Hashに同じカテゴリーを追加しても1つしか入らないこと" do
       hash = {}
       hash[category1] = 1
       expect(hash).to include(category2)
@@ -41,7 +41,7 @@ describe Simpress::Model::Category do
       expect(hash.size).to eq(1)
     end
 
-    it "Setに同じカテゴリー追加しても１つしか入らないこと" do
+    it "Setに同じカテゴリー追加しても1しか入らないこと" do
       set = Set.new
       set << category1
       set << category2

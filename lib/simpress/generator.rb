@@ -28,19 +28,18 @@ module Simpress
       posts, pages = posts.partition {|post| post.layout == :post }
       posts.sort_by! {|post| -post.date.to_time.to_i }
       Simpress::Plugin.process(posts, pages, categories)
-      Simpress::Renderer.generate(posts, pages, categories)
-      Simpress::Context.clear
+      const_get(Simpress::Config.instance.mode.to_s.capitalize, false).generate(posts, pages, categories)
       Simpress::Theme.clear
     end
 
     def self.find_sources
-      Dir["#{source_directory}/**/*.{md,markdown}"]
+      Dir["#{source_dir}/**/*.{md,markdown}"]
     end
 
-    def self.source_directory
+    def self.source_dir
       Simpress::Config.instance.source_dir || "source"
     end
 
-    private_class_method :source_directory
+    private_class_method :find_sources, :source_dir
   end
 end

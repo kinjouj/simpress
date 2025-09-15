@@ -8,15 +8,24 @@ require "simpress/writer"
 
 describe Simpress::Theme do
   before do
-    allow(Simpress::Config.instance).to receive(:theme_dir).and_return(fixture("theme").path)
+    allow(described_class).to receive(:theme_dir).and_return(fixture("theme").path)
   end
 
   it :create_erubis do
-    erubis = described_class.create_erubis("post")
-    expect(erubis).to eq(described_class.create_erubis("post"))
-    expect(Thread.current[Simpress::Theme::KEY]).not_to be_empty
+    create_erubis = ->(template) { described_class.send(:create_erubis, template) }
+
+    erubis1 = create_erubis.call("post")
+    expect(erubis1).to eq(create_erubis.call("post"))
+
+    erubis2 = create_erubis.call("post")
+    expect(erubis1).to eq(erubis2)
+
+    erubis3 = create_erubis.call("page")
+    expect(erubis1).not_to eq(erubis3)
+
+    expect(Thread.current[:erubis_caches]).not_to be_empty
     described_class.clear
-    expect(Thread.current[Simpress::Theme::KEY]).to be_nil
+    expect(Thread.current[:erubis_caches]).to be_nil
   end
 
   it :render do
@@ -24,7 +33,10 @@ describe Simpress::Theme do
     expect(data).not_to be_empty
   end
 
-  it :template_exist? do
-    expect(described_class).not_to be_template_exist("test")
+  describe "#template_exist?" do
+    it "successful" do
+      expect(described_class).to be_template_exist("post")
+      expect(described_class).not_to be_template_exist("test")
+    end
   end
 end
