@@ -22,7 +22,7 @@ module Simpress
     def self.parse_datetime!(params, basename)
       if params[:date].blank?
         y, m, d = basename.scan(/\A(\d{4})-(\d{1,2})-(\d{1,2})/).flatten
-        params[:date] = DateTime.new(y.to_i, m.to_i, d.to_i) unless [y, m, d].include?(nil)
+        params[:date] = DateTime.new(y.to_i, m.to_i, d.to_i) unless [ y, m, d ].include?(nil)
         raise "invalid date" if params[:date].blank?
       else
         params[:date] = params[:date].respond_to?(:to_datetime) ? params[:date].to_datetime : DateTime.parse(params[:date])
@@ -35,7 +35,7 @@ module Simpress
     end
 
     def self.parse_categories!(params)
-      params[:categories] = [params[:categories]].compact unless params[:categories].respond_to?(:map)
+      params[:categories] = [ params[:categories] ].compact unless params[:categories].respond_to?(:map)
       params[:categories].map! {|category| Simpress::Model::Category.new(category) }
     end
 

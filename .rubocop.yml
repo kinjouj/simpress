@@ -11,6 +11,9 @@ Layout/LineLength:
   Max: 125
   AllowHeredoc: true
 
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+
 Layout/SpaceInsideBlockBraces:
   Enabled: false
 
@@ -28,6 +31,9 @@ Metrics/MethodLength:
 
 Metrics/PerceivedComplexity:
   Enabled: false
+
+Style/BlockDelimiters:
+  AllowedPatterns: ["each"]
 
 Style/Documentation:
   Enabled: false

@@ -38,7 +38,7 @@ module Simpress
         if !@posts.blank?
           Simpress::Paginator::Post.new(@index, @posts)
         elsif @maxpage.positive?
-          args = [@index, @maxpage]
+          args = [ @index, @maxpage ]
           args << @prefix unless @prefix.blank?
           Simpress::Paginator::Index.new(*args)
         else

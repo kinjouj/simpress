@@ -26,7 +26,7 @@ describe Simpress::Parser::Redcarpet::Renderer do
       expect(renderer.toc).to eq(%w[test test3])
     end
 
-    it "#image and #images" do
+    it "#image" do
       expect(renderer.image("/test.jpg")).to eq(%(<img src="/test.jpg" alt="image" />))
       expect(renderer.primary_image).to eq("/test.jpg")
       renderer.image("/test2.jpg")

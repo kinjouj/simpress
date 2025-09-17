@@ -15,9 +15,9 @@ require "simpress/paginator/post"
 
 describe Simpress::Generator do
   before do
+    allow(described_class).to receive(:source_dir).and_return(fixture("generator/source").path)
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
     allow(Simpress::Config.instance).to receive(:theme_dir).and_return(fixture("generator/theme").path)
-    allow(Simpress::Config.instance).to receive(:source_dir).and_return(fixture("generator/source").path)
     allow(Simpress::Config.instance).to receive(:output_dir).and_return(fixture("generator/public").path)
     allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(fixture("generator/plugins").path)
     allow(Simpress::Config.instance).to receive(:plugins).and_return([])

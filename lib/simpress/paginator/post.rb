@@ -34,7 +34,7 @@ module Simpress
       def array_around_by_index(arr, index)
         prev_post = index.between?(0, arr.size - 1) && index - 1 >= 0 ? arr[index - 1] : nil
         next_post = arr[index + 1] || nil
-        [prev_post, next_post]
+        [ prev_post, next_post ]
       end
     end
   end
