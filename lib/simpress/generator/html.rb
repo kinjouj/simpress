@@ -16,7 +16,7 @@ module Simpress
             end
 
             position  = (page * paginate) + index
-            paginator = Simpress::Paginator.builder.index(position).posts(posts).build
+            paginator = Simpress::Paginator.builder.posts(posts).index(position).build
             generate_permalink(post, "post", paginator)
 
             date = Time.new(post.date.year, post.date.month, 1)
@@ -27,8 +27,8 @@ module Simpress
           end
 
           paginator = Simpress::Paginator.builder
-                                         .index(page + 1)
                                          .maxpage(page_size)
+                                         .page(page + 1)
                                          .build
 
           generate_index(archives, paginator)
@@ -43,8 +43,8 @@ module Simpress
         category_posts.each do |category, posts|
           posts.sort_by! { |v| -v.date.to_time.to_i }
           paginator = Simpress::Paginator.builder
-                                         .index(1)
                                          .maxpage(calculate_pagesize(posts))
+                                         .page(1)
                                          .prefix("/archives/category/#{category.key}")
                                          .build
 
@@ -53,8 +53,8 @@ module Simpress
 
         monthly_archives.each do |date, posts_by_monthly|
           paginator = Simpress::Paginator.builder
-                                         .index(1)
                                          .maxpage(calculate_pagesize(posts_by_monthly))
+                                         .page(1)
                                          .prefix("/archives/#{date.year}/#{format('%02d', date.month)}")
                                          .build
 

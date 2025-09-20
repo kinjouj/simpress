@@ -7,42 +7,54 @@ module Simpress
     end
 
     class Builder
-      def initialize
-        @index   = 0
-        @maxpage = 0
-        @prefix  = nil
-        @posts   = nil
-      end
-
-      def index(index)
-        @index = index
-        self
-      end
-
       def maxpage(maxpage)
-        @maxpage = maxpage
-        self
-      end
-
-      def prefix(prefix)
-        @prefix = prefix
-        self
+        IndexPaginatorBuilder.new(maxpage)
       end
 
       def posts(posts)
-        @posts = posts
-        self
+        PostPaginatorBuilder.new(posts)
       end
 
       def build
-        if !@posts.blank?
-          Simpress::Paginator::Post.new(@index, @posts)
-        elsif @maxpage.positive?
-          args = [ @index, @maxpage ]
+        raise "ERROR"
+      end
+
+      class IndexPaginatorBuilder
+        def initialize(maxpage)
+          @maxpage = maxpage
+        end
+
+        def page(page)
+          @page = page
+          self
+        end
+
+        def prefix(prefix)
+          @prefix = prefix
+          self
+        end
+
+        def build
+          @page ||= 1
+          args = [ @page, @maxpage ]
           args << @prefix unless @prefix.blank?
           Simpress::Paginator::Index.new(*args)
-        else
-          raise "ERROR"
+        end
+      end
+
+      class PostPaginatorBuilder
+        def initialize(posts)
+          @posts = posts
+        end
+
+        def index(index)
+          @index = index
+          self
+        end
+
+        def build
+          @index ||= 0
+          Simpress::Paginator::Post.new(@index, @posts)
         end
       end
     end
