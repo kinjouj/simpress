@@ -7,7 +7,6 @@ include:
 exclude:
 - spec/**/*
 - test/**/*
-- vendor/**/*
 - ".bundle/**/*"
 require: []
 domains: []

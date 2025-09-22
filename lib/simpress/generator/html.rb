@@ -91,6 +91,12 @@ module Simpress
       def self.output_file(file, data)
         Simpress::Writer.write(file, data) {|filepath| yield(filepath) if block_given? }
       end
+
+      private_class_method :calculate_pagesize,
+                           :generate_permalink,
+                           :generate_index,
+                           :generate_indexes,
+                           :output_file
     end
   end
 end
