@@ -7,7 +7,7 @@ module Simpress
 
       def self.run(posts, *_args)
         return unless config.mode.to_s == "html"
-        return unless Simpress::Theme.template_exist?("sidebar_recent_posts")
+        return unless Simpress::Theme.exist?("sidebar_recent_posts")
 
         bind_context(
           sidebar_recent_posts_content: Simpress::Theme.render(

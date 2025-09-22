@@ -8,6 +8,7 @@ require "simpress/model/post"
 describe Simpress::Model::Post do
   let(:params) do
     {
+      id: "abc",
       title: "title",
       content: "<p>content\n 123</p>",
       toc: [],

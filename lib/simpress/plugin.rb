@@ -3,7 +3,7 @@
 module Simpress
   module Plugin
     def run(*_args)
-      raise "ERROR"
+      raise NotImplementedError
     end
 
     def priority

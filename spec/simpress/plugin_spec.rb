@@ -62,7 +62,7 @@ describe Simpress::Plugin do
         allow(Simpress::Logger).to receive(:debug)
         allow(Simpress::Config.instance).to receive(:plugins).and_return(["test2_plugin"])
         stub_const("Simpress::Plugin::Test2Plugin", test2_plugin)
-        expect { described_class.process }.to raise_error(RuntimeError)
+        expect { described_class.process }.to raise_error(NotImplementedError)
         expect(Simpress::Logger).to have_received(:debug).once
       end
     end

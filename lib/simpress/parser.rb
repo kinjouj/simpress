@@ -22,8 +22,9 @@ module Simpress
         params[:date] = params[:date].respond_to?(:to_datetime) ? params[:date].to_datetime : DateTime.parse(params[:date])
       end
 
-      params[:permalink] = "/#{params[:date].strftime('%Y/%m')}/#{basename}" if params[:permalink].blank?
-      params[:permalink] = "#{params[:permalink]}.html"
+      params[:permalink]  = "/#{params[:date].strftime('%Y/%m')}/#{basename}" if params[:permalink].blank?
+      params[:permalink]  = "#{params[:permalink]}.html"
+      params[:id]         = Digest::SHA1.hexdigest("#{params[:title]}:#{params[:permalink]}")
       params[:categories] = [ params[:categories] ].compact unless params[:categories].respond_to?(:map)
       params[:categories].map! {|category| Simpress::Model::Category.new(category) }
 

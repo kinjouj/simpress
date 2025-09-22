@@ -2,7 +2,6 @@
 
 require "date"
 require "json"
-require "json/add/date"
 require "logger"
 require "singleton"
 require "psych"

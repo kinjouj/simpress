@@ -33,10 +33,10 @@ describe Simpress::Theme do
     expect(data).not_to be_empty
   end
 
-  describe "#template_exist?" do
+  describe "#exist?" do
     it "successful" do
-      expect(described_class).to be_template_exist("post")
-      expect(described_class).not_to be_template_exist("test")
+      expect(described_class).to exist("post")
+      expect(described_class).not_to exist("test")
     end
   end
 end

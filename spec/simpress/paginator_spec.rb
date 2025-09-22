@@ -17,6 +17,6 @@ describe Simpress::Paginator do
   end
 
   it "error" do
-    expect { described_class.builder.build }.to raise_error("ERROR")
+    expect { described_class.builder.build }.to raise_error(NotImplementedError)
   end
 end

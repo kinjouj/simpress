@@ -7,13 +7,14 @@ module Simpress
 
       def create_erubis(template)
         filename      = fetch_template_file(template)
+        cache_name    = Digest::SHA256.hexdigest(filename)
         erubis_caches = Thread.current[KEY] || {}
-        erubis        = erubis_caches[filename]
+        erubis        = erubis_caches[cache_name]
 
         if erubis.nil?
           erubis = Erubis::Eruby.new(File.read(filename))
           erubis.filename = filename
-          erubis_caches[filename] = erubis
+          erubis_caches[cache_name] = erubis
           Thread.current[KEY] = erubis_caches
         end
 
@@ -26,7 +27,7 @@ module Simpress
         erubis.evaluate(Simpress::Context.instance)
       end
 
-      def template_exist?(template)
+      def exist?(template)
         File.exist?(fetch_template_file(template))
       end
 

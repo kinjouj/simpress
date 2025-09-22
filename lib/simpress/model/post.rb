@@ -6,6 +6,7 @@ module Simpress
       include Jsonable
 
       SCHEMA = {
+        id: String,
         title: String,
         content: String,
         toc: [[ String ]],
@@ -19,7 +20,8 @@ module Simpress
       }.freeze
 
       attr_accessor :categories
-      attr_reader :title,
+      attr_reader :id,
+                  :title,
                   :content,
                   :toc,
                   :date,

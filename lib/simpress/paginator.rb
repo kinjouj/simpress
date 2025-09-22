@@ -16,7 +16,7 @@ module Simpress
       end
 
       def build
-        raise "ERROR"
+        raise NotImplementedError
       end
 
       class IndexPaginatorBuilder

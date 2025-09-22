@@ -37,6 +37,7 @@ describe Simpress::Generator do
   it "if Simpress::Parser.parse published=false" do
     allow(Simpress::Parser).to receive(:parse) {
       Simpress::Model::Post.new(
+        id: "test",
         title: "test",
         content: "test",
         toc: [],
