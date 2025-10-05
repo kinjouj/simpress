@@ -2,6 +2,7 @@
   "files.exclude": {
     ".ruby-version": true,
     ".gitmodules": true,
+    "yarn.lock": true,
     "public": true,
     "logs": true,
     ".cache": true,

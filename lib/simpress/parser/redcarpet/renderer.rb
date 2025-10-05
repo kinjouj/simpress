@@ -19,7 +19,7 @@ module Simpress
 
         def header(text, header_level)
           @toc << text if header_level == 4
-          "<h4>#{text}</h4>"
+          "<h#{header_level}>#{text}</h#{header_level}>"
         end
 
         def paragraph(text)

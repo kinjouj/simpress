@@ -8,7 +8,7 @@ module Simpress
         def generate(posts, _, categories)
           category_posts = {}
           monthly_posts  = {}
-          sliced_posts = posts.each_slice(10).to_a
+          sliced_posts   = posts.each_slice(10).to_a
           sliced_posts.each.with_index(1) do |sliced_post, page|
             archives = []
             sliced_post.each do |post|

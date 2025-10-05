@@ -20,7 +20,7 @@ describe Simpress::Parser::Redcarpet::Renderer do
     it "#header" do
       expect(renderer.header("test", 4)).to eq("<h4>test</h4>")
       expect(renderer.toc).to eq(["test"])
-      expect(renderer.header("test2", 3)).to eq("<h4>test2</h4>")
+      expect(renderer.header("test2", 3)).to eq("<h3>test2</h3>")
       expect(renderer.toc).to eq(["test"])
       expect(renderer.header("test3", 4)).to eq("<h4>test3</h4>")
       expect(renderer.toc).to eq(%w[test test3])

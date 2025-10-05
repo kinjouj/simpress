@@ -7,6 +7,6 @@ describe Simpress::Markdown do
     metadata, body = described_class.parse(fixture("test.markdown").read)
     expect(metadata).not_to be_nil
     expect(body).not_to be_nil
-    expect { described_class.parse("") }.to raise_error("PARSE ERROR")
+    expect { described_class.parse("") }.to raise_error("Markdown parse failed")
   end
 end
