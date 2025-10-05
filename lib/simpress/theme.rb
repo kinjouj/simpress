@@ -51,6 +51,6 @@ module Simpress
       end
     end
 
-    private_class_method :create_erubis, :theme_dir, :fetch_template_file
+    private_class_method :erubis_caches, :create_erubis, :theme_dir, :fetch_template_file
   end
 end
