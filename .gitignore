@@ -1,6 +1,6 @@
 public
 coverage
-pkg
+node_modules
 source/*
 !source/.gitkeep
 static/*
@@ -16,3 +16,4 @@ theme/*
 !theme/.gitkeep
 config.yaml
 category_indexes.json
+yarn.lock

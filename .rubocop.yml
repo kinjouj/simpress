@@ -11,7 +11,7 @@ Layout/EndOfLine:
   EnforcedStyle: lf
 
 Layout/LineLength:
-  Max: 125
+  Max: 130
   AllowHeredoc: true
 
 Layout/SpaceInsideArrayLiteralBrackets:
