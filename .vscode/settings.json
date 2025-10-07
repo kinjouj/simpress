@@ -6,6 +6,7 @@
     "public": true,
     "logs": true,
     ".cache": true,
+    "**/.gitkeep": true,
     "**/.gitignore": true,
     "**/coverage": true,
     "**/Gemfile.lock": true,
