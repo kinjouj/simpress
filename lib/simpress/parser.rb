@@ -45,6 +45,7 @@ module Simpress
 
       def parse_permalink!(params, basename)
         params[:permalink] = Pathname.new("/").join(params[:date].strftime("%Y/%m"), basename).to_s if params[:permalink].blank?
+        params[:permalink] = "#{params[:permalink]}.#{Simpress::Config.instance.mode.to_s}"
       end
 
       def parse_categories!(params)

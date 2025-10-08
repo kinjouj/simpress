@@ -72,7 +72,7 @@ module Simpress
 
       def self.generate_permalink(post, template, paginator = nil)
         result = Simpress::Theme.render(template, post: post, paginator: paginator)
-        output_file("#{post.permalink}.html", result) {|filepath| FileUtils.touch(filepath, mtime: post.date.to_time) }
+        output_file(post.permalink, result) {|filepath| FileUtils.touch(filepath, mtime: post.date.to_time) }
       end
 
       def self.generate_index(posts, paginator, key = nil)

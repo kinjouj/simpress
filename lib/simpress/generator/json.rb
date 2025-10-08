@@ -12,21 +12,19 @@ module Simpress
           sliced_posts.each.with_index(1) do |sliced_post, page|
             archives = []
             sliced_post.each do |post|
-              basename = File.basename(post.permalink, ".*")
-              filename = File.join(File.dirname(post.permalink), "#{basename}.json")
               post.categories.map! do |category|
                 category_posts[category.name] ||= []
                 category_posts[category.name] << post
                 categories[category.key]
               end
 
-              Simpress::Writer.write(filename, post.to_json)
-              Simpress::Logger.info("create page #{filename}")
+              Simpress::Writer.write(post.permalink, post.to_json)
+              Simpress::Logger.info("create page #{post.permalink}")
               archive = {
                 title: post.title,
                 cover: post.cover,
                 date: post.date,
-                path: filename,
+                path: post.permalink,
                 categories: post.categories
               }
               date = Time.new(post.date.year, post.date.month, 1)
