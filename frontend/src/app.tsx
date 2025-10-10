@@ -1,9 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import PostList from './components/post_list';
-import CategoryPostList from './components/category_post_list';
-import Post from './components/post';
+import PostList from './components/PostList';
+import CategoryPostList from './components/CategoryPostList';
+import Post from './components/Post';
 
 const container = document.getElementById('root');
 

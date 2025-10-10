@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "tsc --noEmit && vite build"
+    "build": "tsc --noEmit && npx eslint && vite build"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.4.0",

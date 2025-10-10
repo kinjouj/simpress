@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Simpress from '../simpress';
-import NotFound from './not_found';
-import Pager from './pager';
+import NotFound from './NotFound';
+import Pager from './Pager';
 import type { PostType } from '../types';
 
 const PostList = (): React.JSX.Element => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Simpress from '../simpress';
-import NotFound from './not_found';
+import NotFound from './NotFound';
 import type { PostType, CategoryType } from '../types';
 
 const Post = (): React.JSX.Element => {
