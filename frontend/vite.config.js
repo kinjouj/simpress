@@ -27,7 +27,7 @@ export default defineConfig({
         warn(warning);
       },
       input: {
-        app: resolve(__dirname, 'src/app.tsx'),
+        app: resolve(__dirname, 'src/index.tsx'),
       },
       output: {
         entryFileNames: 'app.js',

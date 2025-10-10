@@ -1,15 +1,11 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import PostList from './components/PostList';
 import CategoryPostList from './components/CategoryPostList';
 import Post from './components/Post';
 
-const container = document.getElementById('root');
-
-if (container != null) {
-  const root = createRoot(container);
-  root.render(
+const App = (): React.JSX.Element => {
+  return (
     <React.StrictMode>
       <div><h1>Simpress Demo</h1></div>
       <HashRouter>
@@ -20,8 +16,8 @@ if (container != null) {
           <Route path="/*" element={<Post />} />
         </Routes>
       </HashRouter>
-    </React.StrictMode>,
+    </React.StrictMode>
   );
-} else {
-  alert('ERROR');
-}
+};
+
+export default App;
