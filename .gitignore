@@ -1,6 +1,7 @@
 public
 coverage
 node_modules
+yarn.lock
 source/*
 !source/.gitkeep
 static/*
@@ -10,10 +11,7 @@ logs/*
 plugins/*
 !plugins/inline_note_filter
 !plugins/recent_posts
-scss/*
-!scss/test.scss
 theme/*
 !theme/.gitkeep
 config.yaml
 category_indexes.json
-yarn.lock

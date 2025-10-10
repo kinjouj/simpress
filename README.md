@@ -23,6 +23,15 @@ rake build
 ```
 
 
+jsonモード使う場合は以下も必要
+
+
+```bash
+cd frontend
+npm install
+```
+
+
 ### Configuration(config.yaml)
 
 

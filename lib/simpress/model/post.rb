@@ -44,6 +44,17 @@ module Simpress
                    .strip.slice(0..99)
       end
 
+      def to_hash_without_content
+        {
+          id: @id,
+          title: @title,
+          date: @date,
+          permalink: @permalink,
+          categories: @categories,
+          cover: @cover
+        }
+      end
+
       # :nocov:
       def exclude_jsonable
         [ :published ]

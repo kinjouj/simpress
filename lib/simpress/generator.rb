@@ -28,13 +28,14 @@ module Simpress
 
         posts, pages = posts.partition {|post| post.layout == :post }
         posts.sort_by! {|post| -post.date.to_time.to_i }
-        Simpress::Plugin.process(posts, pages, categories)
-        generator_by_mode.generate(posts, pages, categories)
+        generator_by_mode(posts, pages, categories)
         Simpress::Theme.clear
       end
 
-      def generator_by_mode
-        const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
+      def generator_by_mode(posts, pages, categories)
+        Simpress::Plugin.process(posts, pages, categories)
+        generator = const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
+        generator.generate(posts, pages, categories)
       end
 
       def find_sources

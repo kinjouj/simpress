@@ -14,23 +14,16 @@ module Simpress
             sliced_post.each do |post|
               post.categories.map! do |category|
                 category_posts[category.name] ||= []
-                category_posts[category.name] << post
+                category_posts[category.name] << post.to_hash_without_content
                 categories[category.key]
               end
 
               Simpress::Writer.write(post.permalink, post.to_json)
               Simpress::Logger.info("create page #{post.permalink}")
-              archive = {
-                title: post.title,
-                cover: post.cover,
-                date: post.date,
-                path: post.permalink,
-                categories: post.categories
-              }
               date = Time.new(post.date.year, post.date.month, 1)
               monthly_posts[date] ||= []
-              monthly_posts[date] << post
-              archives << archive
+              monthly_posts[date] << post.to_hash_without_content
+              archives << post.to_hash_without_content
             end
 
             Simpress::Writer.write("/archives/page/#{page}.json", archives.to_json)

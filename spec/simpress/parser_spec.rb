@@ -10,11 +10,15 @@ require "simpress/model/category"
 require "simpress/model/post"
 
 describe Simpress::Parser do
+  before do
+    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+  end
+
   it do
     post = described_class.parse(fixture("parser/test.markdown").path)
     expect(post).not_to be_nil
     expect(post.title).to eq("test1")
-    expect(post.permalink).to eq("/test")
+    expect(post.permalink).to eq("/test.html")
     expect(post.layout).to eq(:post)
     expect(post.published).to be_truthy
     expect(post.categories).to eql([Simpress::Model::Category.new("test")])
@@ -33,7 +37,7 @@ describe Simpress::Parser do
     }
     post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
-    expect(post.permalink).to eq("/2000/01/dummy")
+    expect(post.permalink).to eq("/2000/01/dummy.html")
   end
 
   it "dateが無い場合" do

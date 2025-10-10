@@ -11,7 +11,11 @@
     "**/coverage": true,
     "**/Gemfile.lock": true,
     "**/.rspec": true,
-    "**/.simplecov": true,
-    "solargraph.useBundler": false
+    "**/.simplecov": true
+  },
+  "solargraph.useBundler": false,
+  "[typescript]": {
+    "editor.indentSize": "tabSize",
+    "editor.tabSize": 2
   }
 }
