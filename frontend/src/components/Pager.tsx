@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Simpress from '../simpress';
+import { usePage } from '../hooks';
 
 const Pager = (): React.JSX.Element => {
   const [pages, setPages] = useState<number[]>([]);
-  const currentPage = Simpress.React.getPage();
+  const currentPage = usePage();
 
   useEffect(() => {
     Simpress.getPageInfo().then((page) => {
@@ -19,11 +20,11 @@ const Pager = (): React.JSX.Element => {
       {pages.map((page) => {
         if (page == currentPage) {
           return (
-            <span style={{ margin: '3px' }}>{page}</span>
+            <span key={page} style={{ margin: '3px' }}>{page}</span>
           );
         } else {
           return (
-            <Link to={`/page/${page}`} style={{ margin: '3px' }}>{page}</Link>
+            <Link key={page} to={`/page/${page}`} style={{ margin: '3px' }}>{page}</Link>
           );
         }
       })}

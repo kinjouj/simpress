@@ -1,4 +1,3 @@
-import { useParams } from 'react-router';
 import type { PostType, PageInfoType } from './types';
 
 export default class Simpress {
@@ -40,21 +39,4 @@ export default class Simpress {
       }).catch(reject);
     });
   }
-
-  public static React = class {
-    public static getPage(): number {
-      const { page = '1' } = useParams();
-      return parseInt(page, 10);
-    }
-
-    public static getCategory(): string | undefined {
-      const { category } = useParams();
-      return category;
-    }
-
-    public static getPermalink(): string | undefined {
-      const params = useParams();
-      return params['*'];
-    }
-  };
 }

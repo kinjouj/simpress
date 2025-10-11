@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Simpress from '../simpress';
 import NotFound from './NotFound';
 import type { PostType, CategoryType } from '../types';
 
+const usePermalink = (): string | undefined => {
+  const params = useParams();
+  return params['*'];
+};
+
 const Post = (): React.JSX.Element => {
-  const permalink = Simpress.React.getPermalink();
-
-  if (permalink == null) return <NotFound />;
-
+  const permalink = usePermalink();
   const [data, setData] = useState<PostType | null>(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (permalink == null) return;
+
     Simpress.getPost(permalink).then((data) => {
       setData(data);
       setIsError(false);
@@ -26,7 +31,7 @@ const Post = (): React.JSX.Element => {
     );
   }
 
-  if (isError || data == null) {
+  if (permalink == null || isError || data == null) {
     return (
       <NotFound />
     );

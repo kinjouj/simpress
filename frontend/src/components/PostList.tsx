@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Simpress from '../simpress';
 import NotFound from './NotFound';
 import Pager from './Pager';
+import { usePage } from '../hooks';
 import type { PostType } from '../types';
 
 const PostList = (): React.JSX.Element => {
   const [posts, setPosts] = useState<PostType[] | null>(null);
   const [isError, setIsError] = useState(false);
-  const pageNum = Simpress.React.getPage();
+  const pageNum = usePage();
 
   useEffect(() => {
     let isMounted = true;

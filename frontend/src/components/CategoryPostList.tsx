@@ -1,25 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import Simpress from '../simpress';
 import NotFound from './NotFound';
 import type { PostType } from '../types';
 
+const useCategory = (): string | undefined => {
+  const { category } = useParams();
+  return category;
+};
+
 const CategoryPostList = (): React.JSX.Element => {
-  const category = Simpress.React.getCategory();
-
-  if (category == null) return <NotFound />;
-
+  const category = useCategory();
   const [categoryPosts, setCategoryPosts] = useState<PostType[] | null>(null);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
+    if (category == null) return;
+
     Simpress.getPostsByCategory(category).then((categoryPosts) => {
       setCategoryPosts(categoryPosts);
       setIsError(false);
     }).catch(() => setIsError(true));
   }, [category]);
 
-  if (isError) return <NotFound />;
+  if (category == null || isError) return <NotFound />;
 
   return (
     <>
