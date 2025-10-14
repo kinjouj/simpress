@@ -1,6 +1,8 @@
 const NotFound = (): React.JSX.Element => {
   return (
-    <div>404</div>
+    <div className="container mt-5">
+      <h1>Not Found</h1>
+    </div>
   );
 };
 

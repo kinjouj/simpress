@@ -3,16 +3,20 @@ import type { PostType, PageInfoType } from './types';
 export default class Simpress {
   public static getPageInfo(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this.getData<PageInfoType>('/pageinfo.json').then((data) => {
-        const page = data.page;
-        resolve(page);
-      }).catch(reject);
+      this.getData<PageInfoType>('/pageinfo.json').then(data => resolve(data.page)).catch(reject);
     });
   }
 
   public static getPostsByPage(page: number): Promise<PostType[]> {
     return new Promise((resolve, reject) => {
       this.getData<PostType[]>(`/archives/page/${page}.json`).then(data => resolve(data)).catch(reject);
+    });
+  }
+
+  public static getPostsByArchive(year: number, month: number): Promise<PostType[]> {
+    return new Promise((resolve, reject) => {
+      const twoDigitMonth = month.toString().padStart(2, '0');
+      this.getData<PostType[]>(`/archives/${year}/${twoDigitMonth}.json`).then(data => resolve(data)).catch(reject);
     });
   }
 
@@ -31,9 +35,7 @@ export default class Simpress {
   private static getData<T>(path: string): Promise<T> {
     return new Promise((resolve, reject) => {
       fetch(path).then((res) => {
-        if (!res.ok) {
-          throw new Error('ERROR');
-        }
+        if (!res.ok) throw new Error('ERROR');
 
         res.json().then((data: T) => resolve(data)).catch(reject);
       }).catch(reject);

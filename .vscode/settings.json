@@ -16,6 +16,11 @@
   "solargraph.useBundler": false,
   "[typescript]": {
     "editor.indentSize": "tabSize",
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "typescript.preferences.quoteStyle": "single"
+  },
+  "[typescriptreact]": {
+    "editor.tabSize": 2,
+    "typescript.preferences.quoteStyle": "single"
   }
 }

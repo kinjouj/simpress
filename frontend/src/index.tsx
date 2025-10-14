@@ -4,13 +4,11 @@ import App from './App';
 
 const container = document.getElementById('root');
 
-if (container != null) {
-  const root = createRoot(container);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
-} else {
-  alert('ERROR');
-}
+if (container === null) throw new Error('container is missing');
+
+const root = createRoot(container);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

@@ -10,7 +10,6 @@ export default tseslint.config(
     files: ['**/*.{ts,tsx}'],
     plugins: { 'react': react, 'react-hooks': reactHooks, '@stylistic': stylistic },
     extends: [
-      eslint.configs.recommended,
       tseslint.configs.recommendedTypeChecked,
       stylistic.configs.recommended,
       tseslint.configs.stylisticTypeChecked,
@@ -31,6 +30,8 @@ export default tseslint.config(
       }
     },
     rules: {
+      'no-empty': ['error', { allowEmptyCatch: true }],
+      'no-constant-condition': 'error',
       "@stylistic/comma-dangle": [
         "error",
         {

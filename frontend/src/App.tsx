@@ -1,8 +1,10 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import PostList from './components/PostList';
-import CategoryPostList from './components/CategoryPostList';
-import Post from './components/Post';
+import PageToTopFloatingButton from './components/PageToTopFloatingButton';
+import PostList from './pages/PostListPage';
+import ArchivesPostList from './pages/ArchivesPostListPage';
+import CategoryPostList from './pages/CategoryPostListPage';
+import Post from './pages/PostPage';
 
 const App = (): React.JSX.Element => {
   return (
@@ -12,10 +14,12 @@ const App = (): React.JSX.Element => {
         <Routes>
           <Route path="/" element={<PostList />} />
           <Route path="/page/:page" element={<PostList />} />
-          <Route path="/category/:category" element={<CategoryPostList />} />
+          <Route path="/archives/:year/:month" element={<ArchivesPostList />} />
+          <Route path="/archives/category/:category" element={<CategoryPostList />} />
           <Route path="/*" element={<Post />} />
         </Routes>
       </HashRouter>
+      <PageToTopFloatingButton />
     </>
   );
 };

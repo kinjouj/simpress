@@ -4,3 +4,38 @@ export const usePage = (): number => {
   const { page = '1' } = useParams();
   return parseInt(page, 10);
 };
+
+export const useYearOfMonth = (): { year: number | null, month: number | null } => {
+  const { year, month } = useParams();
+  let parsedYear: number | null = null;
+  let parsedMonth: number | null = null;
+
+  if (typeof year === 'string') {
+    const y = parseInt(year, 10);
+    parsedYear = isNaN(y) ? null : y;
+  }
+
+  if (typeof month === 'string') {
+    const m = parseInt(month, 10);
+
+    if (!isNaN(m) && m >= 1 && m <= 12) parsedMonth = m;
+  }
+
+  return { year: parsedYear, month: parsedMonth };
+};
+
+export const useCategory = (): string | null => {
+  const { category } = useParams<{ category: string | undefined }>();
+
+  if (!category) return null;
+
+  return category;
+};
+
+export const usePermalink = (): string | null => {
+  const { '*': permalink } = useParams<{ '*': string | undefined }>();
+
+  if (!permalink) return null;
+
+  return permalink;
+};

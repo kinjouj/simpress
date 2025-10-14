@@ -1,50 +1,24 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Simpress from '../simpress';
-import NotFound from './NotFound';
-import Pager from './Pager';
-import { usePage } from '../hooks';
 import type { PostType } from '../types';
 
-const PostList = (): React.JSX.Element => {
-  const [posts, setPosts] = useState<PostType[] | null>(null);
-  const [isError, setIsError] = useState(false);
-  const pageNum = usePage();
-
-  useEffect(() => {
-    let isMounted = true;
-
-    if (isMounted) {
-      Simpress.getPostsByPage(pageNum).then((posts) => {
-        setPosts(posts);
-        setIsError(false);
-      }).catch(() => setIsError(true));
-    }
-
-    return (): void => {
-      isMounted = false;
-    };
-  }, [pageNum]);
-
-  if (isError) {
-    return (
-      <NotFound />
-    );
-  }
-
+const PostList = ({ posts = [] }: { posts: PostType[] }): React.JSX.Element => {
   return (
-    <>
-      {posts?.map((post) => {
-        return (
-          <div key={post.id}>
-            <h4 key={post.id}><Link to={post.permalink}>{post.title}</Link></h4>
-          </div>
-        );
-      })}
-      <div style={{ width: '500px', wordWrap: 'break-word' }}>
-        <Pager />
+    <div className="row">
+      <div className="col col-lg-8">
+        {posts.map((post) => {
+          return (
+            <div className="card m-4 mb-5" key={post.id}>
+              <img className="card-img-top" src={post.cover} />
+              <div className="card-body">
+                <h3 className="card-title">
+                  <Link to={post.permalink}>{post.title}</Link>
+                </h3>
+              </div>
+            </div>
+          );
+        })}
       </div>
-    </>
+    </div>
   );
 };
 
