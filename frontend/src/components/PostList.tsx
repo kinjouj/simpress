@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import type { PostType } from '../types';
 
-const PostList = ({ posts = [] }: { posts: PostType[] }): React.JSX.Element => {
+const PostList = ({ posts }: { posts: PostType[] }): React.JSX.Element => {
   return (
-    <div className="row">
+    <div className="row justify-content-center">
       <div className="col col-lg-8">
         {posts.map((post) => {
           return (

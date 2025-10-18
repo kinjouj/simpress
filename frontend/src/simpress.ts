@@ -1,44 +1,36 @@
 import type { PostType, PageInfoType } from './types';
 
 export default class Simpress {
-  public static getPageInfo(): Promise<number> {
-    return new Promise((resolve, reject) => {
-      this.getData<PageInfoType>('/pageinfo.json').then(data => resolve(data.page)).catch(reject);
-    });
+  public static async getPageInfo(): Promise<number> {
+    const data = await this.getData<PageInfoType>('/pageinfo.json');
+    return data.page;
   }
 
-  public static getPostsByPage(page: number): Promise<PostType[]> {
-    return new Promise((resolve, reject) => {
-      this.getData<PostType[]>(`/archives/page/${page}.json`).then(data => resolve(data)).catch(reject);
-    });
+  public static async getPostsByPage(page: number): Promise<PostType[]> {
+    return await this.getData<PostType[]>(`/archives/page/${page}.json`);
   }
 
-  public static getPostsByArchive(year: number, month: number): Promise<PostType[]> {
-    return new Promise((resolve, reject) => {
-      const twoDigitMonth = month.toString().padStart(2, '0');
-      this.getData<PostType[]>(`/archives/${year}/${twoDigitMonth}.json`).then(data => resolve(data)).catch(reject);
-    });
+  public static async getPostsByArchive(year: number, month: number): Promise<PostType[]> {
+    const twoDigitMonth = month.toString().padStart(2, '0');
+    return await this.getData<PostType[]>(`/archives/${year}/${twoDigitMonth}.json`);
   }
 
-  public static getPostsByCategory(category: string): Promise<PostType[]> {
-    return new Promise((resolve, reject) => {
-      this.getData<PostType[]>(`/archives/category/${category}.json`).then(data => resolve(data)).catch(reject);
-    });
+  public static async getPostsByCategory(category: string): Promise<PostType[]> {
+    return await this.getData<PostType[]>(`/archives/category/${category}.json`);
   }
 
-  public static getPost(permalink: string): Promise<PostType> {
-    return new Promise((resolve, reject) => {
-      this.getData<PostType>(`/${permalink}`).then(data => resolve(data)).catch(reject);
-    });
+  public static async getPost(permalink: string): Promise<PostType> {
+    return await this.getData<PostType>(`/${permalink}`);
   }
 
-  private static getData<T>(path: string): Promise<T> {
-    return new Promise((resolve, reject) => {
-      fetch(path).then((res) => {
-        if (!res.ok) throw new Error('ERROR');
+  private static async getData<T>(path: string): Promise<T> {
+    const res = await fetch(path);
 
-        res.json().then((data: T) => resolve(data)).catch(reject);
-      }).catch(reject);
-    });
+    if (!res.ok) {
+      return Promise.reject(new Error('ERROR'));
+    }
+
+    const data: T = await res.json() as T;
+    return data;
   }
 }

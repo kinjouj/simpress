@@ -32,7 +32,7 @@ module Simpress
 
         def image(path, _title = nil, _alt = nil)
           @primary_image = path if @primary_image.blank?
-          %(<img src="#{path}" alt="image" />)
+          %(<img src="#{path}" class="img-fluid" alt="image" />)
         end
 
         def block_code(code, lang = "text")

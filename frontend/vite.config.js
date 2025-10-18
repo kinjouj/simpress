@@ -14,7 +14,8 @@ export default defineConfig({
     })
   ],
   build: {
-    minify: 'esbuild',
+    //minify: 'esbuild',
+    minify: false,
     outDir: '../public/js',
     emptyOutDir: false,
     copyPublicDir: false,

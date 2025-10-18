@@ -18,7 +18,13 @@ export const useYearOfMonth = (): { year: number | null, month: number | null } 
   if (typeof month === 'string') {
     const m = parseInt(month, 10);
 
-    if (!isNaN(m) && m >= 1 && m <= 12) parsedMonth = m;
+    if (!isNaN(m) && m >= 1 && m <= 12) {
+      parsedMonth = m;
+    }
+  }
+
+  if (parsedYear === null || parsedMonth === null) {
+    return { year: null, month: null };
   }
 
   return { year: parsedYear, month: parsedMonth };
@@ -27,15 +33,11 @@ export const useYearOfMonth = (): { year: number | null, month: number | null } 
 export const useCategory = (): string | null => {
   const { category } = useParams<{ category: string | undefined }>();
 
-  if (!category) return null;
-
-  return category;
+  return category ?? null;
 };
 
 export const usePermalink = (): string | null => {
   const { '*': permalink } = useParams<{ '*': string | undefined }>();
 
-  if (!permalink) return null;
-
-  return permalink;
+  return permalink ?? null;
 };

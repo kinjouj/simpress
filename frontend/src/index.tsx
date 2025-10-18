@@ -4,7 +4,9 @@ import App from './App';
 
 const container = document.getElementById('root');
 
-if (container === null) throw new Error('container is missing');
+if (container === null) {
+  throw new Error('container is missing');
+}
 
 const root = createRoot(container);
 root.render(

@@ -5,9 +5,10 @@ const cssOverride: CSSProperties = {
   position: 'absolute',
   top: '50%',
   left: '50%',
+  transform: 'translate(-50%, -50%)',
 };
 
-const MyClipLoader = ({ loading = true }: { loading: boolean }): React.JSX.Element => {
+const MyClipLoader = ({ loading = true }: { loading?: boolean }): React.JSX.Element => {
   return <ClipLoader loading={loading} cssOverride={cssOverride} />;
 };
 

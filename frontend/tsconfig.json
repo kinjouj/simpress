@@ -6,6 +6,8 @@
     "moduleResolution": "Bundler",
     "strict": true,
     "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "types": ["jest"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*", "tests/**/*"]
 }

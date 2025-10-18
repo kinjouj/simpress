@@ -10,17 +10,15 @@ const ArchivesPostListPage = (): React.JSX.Element => {
   const { year, month } = useYearOfMonth();
   const [posts, setPosts] = useState<PostType[] | null>(null);
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     ((): void => {
       setPosts(null);
-      setIsLoading(true);
       setIsError(false);
     })();
 
     const setErrorState = (): void => {
-      setIsLoading(false);
+      setPosts(null);
       setIsError(true);
     };
 
@@ -29,19 +27,26 @@ const ArchivesPostListPage = (): React.JSX.Element => {
       return;
     }
 
-    Simpress.getPostsByArchive(year, month).then((posts) => {
-      setTimeout(() => {
-        setPosts(posts);
-        setIsLoading(false);
-        setIsError(false);
-      }, 1000);
-    }).catch(() => {
-      setErrorState();
-    });
+    void (async (): Promise<void> => {
+      try {
+        const posts = await Simpress.getPostsByArchive(year, month);
+        setTimeout(() => {
+          setPosts(posts);
+          setIsError(false);
+        }, 1000);
+      } catch {
+        setErrorState();
+      }
+    })();
   }, [year, month]);
 
-  if (isError) return <NotFound />;
-  if (isLoading || posts === null) return <MyClipLoader loading={isLoading} />;
+  if (isError) {
+    return <NotFound />;
+  }
+
+  if (posts === null) {
+    return <MyClipLoader />;
+  }
 
   return <PostList posts={posts} />;
 };

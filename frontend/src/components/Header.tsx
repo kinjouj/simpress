@@ -4,7 +4,7 @@ const Header = (): React.JSX.Element => {
       <nav className="navbar navbar-expand-lg p-0">
         <div className="container-fluid">
           <nav className="navbar-collapse collapse">
-            <div className="nav navbar-nav navbar-right ms-auto">
+            <ul className="nav navbar-nav navbar-right ms-auto">
               <li className="nav-item">
                 <form action="https://www.google.com/search" method="GET">
                   <input type="hidden" name="hl" value="ja" />
@@ -12,7 +12,7 @@ const Header = (): React.JSX.Element => {
                   <input type="search" name="q" className="form-control" />
                 </form>
               </li>
-            </div>
+            </ul>
           </nav>
         </div>
       </nav>

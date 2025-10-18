@@ -1,5 +1,6 @@
 const PageToTopFloatingButton = (): React.JSX.Element => {
   const onClickHandler = (): void => {
+    document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
     document.body.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

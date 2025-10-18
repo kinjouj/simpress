@@ -10,17 +10,15 @@ const CategoryPostListPage = (): React.JSX.Element => {
   const category = useCategory();
   const [categoryPosts, setCategoryPosts] = useState<PostType[] | null>(null);
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     ((): void => {
       setCategoryPosts(null);
-      setIsLoading(true);
       setIsError(false);
     })();
 
     const setErrorState = (): void => {
-      setIsLoading(false);
+      setCategoryPosts(null);
       setIsError(true);
     };
 
@@ -29,19 +27,26 @@ const CategoryPostListPage = (): React.JSX.Element => {
       return;
     }
 
-    Simpress.getPostsByCategory(category).then((categoryPosts) => {
-      setTimeout(() => {
-        setCategoryPosts(categoryPosts);
-        setIsLoading(false);
-        setIsError(false);
-      }, 1000);
-    }).catch(() => {
-      setErrorState();
-    });
+    void (async (): Promise<void> => {
+      try {
+        const categoryPosts = await Simpress.getPostsByCategory(category);
+        setTimeout(() => {
+          setCategoryPosts(categoryPosts);
+          setIsError(false);
+        }, 1000);
+      } catch {
+        setErrorState();
+      }
+    })();
   }, [category]);
 
-  if (isError) return <NotFound />;
-  if (isLoading || categoryPosts === null) return <MyClipLoader loading={isLoading} />;
+  if (isError) {
+    return <NotFound />;
+  }
+
+  if (categoryPosts === null) {
+    return <MyClipLoader />;
+  }
 
   return <PostList posts={categoryPosts} />;
 };
