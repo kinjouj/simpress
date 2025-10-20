@@ -5,7 +5,13 @@ const PageToTopFloatingButton = (): React.JSX.Element => {
   };
 
   return (
-    <button type="button" className="btn btn-info btn-floating btn-lg" id="btn-back-to-top" onClick={onClickHandler}>
+    <button
+      id="btn-back-to-top"
+      type="button"
+      className="btn btn-info btn-floating btn-lg"
+      onClick={onClickHandler}
+      aria-label="page to top"
+    >
       <i className="fas fa-arrow-up"></i>
     </button>
   );
