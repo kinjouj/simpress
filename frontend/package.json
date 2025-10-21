@@ -3,7 +3,7 @@
     "check": "tsc --noEmit",
     "lint": "npx eslint --cache",
     "build": "npm run check && npm run lint && vite build",
-    "test": "npx jest --coverage"
+    "test": "npx jest"
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",

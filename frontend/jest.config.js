@@ -7,5 +7,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   globals: {
     TextEncoder: TextEncoder
-  }
+  },
+  collectCoverage: true,
+  coverageReporters: [ 'text', 'html', 'lcov' ]
 };

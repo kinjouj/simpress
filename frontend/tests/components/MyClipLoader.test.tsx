@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import MyClipLoader from '../../src/components/MyClipLoader';
 
 jest.mock('react-spinners', () => ({
-  ClipLoader: jest.fn(({ loading, _cssOverride }) => {
+  ClipLoader: jest.fn(({ loading }) => {
     if (loading) {
       return <div>loading</div>;
     }
@@ -12,7 +12,7 @@ jest.mock('react-spinners', () => ({
 }));
 
 describe('MyClipLoader', () => {
-  test('<MyClipLoader> rendering test', () => {
+  test('<MyClipLoader> test', () => {
     const { container } = render(<MyClipLoader />);
     expect(container.innerHTML).toBe('<div>loading</div>');
   });

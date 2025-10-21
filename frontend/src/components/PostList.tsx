@@ -7,7 +7,7 @@ const PostList = ({ posts }: { posts: PostType[] }): React.JSX.Element => {
       <div className="col col-lg-8">
         {posts.map((post) => {
           return (
-            <div className="card m-4 mb-5" key={post.id} role="list">
+            <div className="card m-4 mb-5" key={post.id} role="list" aria-label="post">
               <img className="card-img-top" src={post.cover} />
               <div className="card-body">
                 <h3 className="card-title">

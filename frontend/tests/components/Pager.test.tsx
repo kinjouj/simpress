@@ -19,7 +19,7 @@ describe('Pager', () => {
     jest.clearAllMocks();
   });
 
-  test('<Pager /> test', async () => {
+  test('<Pager> test', async () => {
     mockUsePage.mockReturnValue(11);
     mockGetPageInfo.mockResolvedValue(30);
 
@@ -29,9 +29,10 @@ describe('Pager', () => {
       </MemoryRouter>
     );
 
-    const a = await screen.findByText('11');
-    expect(a).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '12' })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('11')).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: '12' })).toBeInTheDocument();
+    });
   });
 
   test('Simpress.getPageInfoがエラーだった場合', async () => {
@@ -43,6 +44,7 @@ describe('Pager', () => {
         <Pager />
       </MemoryRouter>
     );
+
     await waitFor(() => {
       expect(container).toBeEmptyDOMElement();
     });
@@ -57,6 +59,7 @@ describe('Pager', () => {
         <Pager />
       </MemoryRouter>
     );
+
     await waitFor(() => {
       const nav = screen.queryByRole('navigation');
       expect(nav).not.toBeInTheDocument();

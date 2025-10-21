@@ -33,9 +33,11 @@ const Post = (): React.JSX.Element => {
     void (async (): Promise<void> => {
       try {
         const post = await Simpress.getPost(permalink);
-        setPost(post);
-        setIsError(false);
-        setTimeout(Prism.highlightAll, 500);
+        setTimeout(() => {
+          setPost(post);
+          setIsError(false);
+          setTimeout(Prism.highlightAll, 500);
+        }, 1000);
       } catch {
         setErrorState();
       }
@@ -56,7 +58,7 @@ const Post = (): React.JSX.Element => {
         <div className="col col-lg-12"></div>
         <div className="col col-lg-8">
           <div id="content">
-            <div className="post">
+            <div className="post" role="main">
               <div className="post-date">
                 <CreatedAt dateString={post.date} />
               </div>

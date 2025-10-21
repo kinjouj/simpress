@@ -4,7 +4,7 @@ import CreatedAt from '../../src/components/CreatedAt';
 import '@testing-library/jest-dom';
 
 describe('CreatedAt Component', () => {
-  test('CreatedAt test', () => {
+  test('<CreatedAt> test', () => {
     render(
       <MemoryRouter>
         <CreatedAt dateString="2000-01-01T00:00:00" />
