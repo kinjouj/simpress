@@ -1,4 +1,4 @@
-import Simpress from '../src/simpress';
+import Simpress from '../../src/api/Simpress';
 
 describe('Simpress', () => {
   test('getPageInfo test', async () => {
@@ -48,9 +48,10 @@ describe('Simpress', () => {
     expect(post).not.toBeNull();
   });
 
-  /* eslint-disable */
   test('getData test', async () => {
-    const getData = (Simpress as any).getData.bind(Simpress);
+    /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any */
+    const getData: <T>(url: string) => Promise<T> = (Simpress as any).getData.bind(Simpress);
+    /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any */
     globalThis.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ test: true }),
@@ -59,7 +60,6 @@ describe('Simpress', () => {
     expect(result).toHaveProperty('test', true);
 
     globalThis.fetch = jest.fn().mockResolvedValue({ ok: false });
-    expect(async () => { await getData('/test') }).rejects.toThrow();
+    await expect(async () => { await getData('/test'); }).rejects.toThrow();
   });
-  /* eslint-enable */
 });

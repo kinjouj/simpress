@@ -1,12 +1,18 @@
 {
   "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.tsbuildinfo",
     "noEmit": true,
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
     "target": "es2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
+    "isolatedModules": true,
     "types": ["jest"]
   },
   "include": ["src/**/*", "tests/**/*"]

@@ -1,10 +1,5 @@
 import { useParams } from 'react-router-dom';
 
-export const usePage = (): number => {
-  const { page = '1' } = useParams();
-  return parseInt(page, 10);
-};
-
 export const useYearOfMonth = (): { year: number | null, month: number | null } => {
   const { year, month } = useParams();
   let parsedYear: number | null = null;
@@ -28,16 +23,4 @@ export const useYearOfMonth = (): { year: number | null, month: number | null } 
   }
 
   return { year: parsedYear, month: parsedMonth };
-};
-
-export const useCategory = (): string | null => {
-  const { category } = useParams<{ category: string | undefined }>();
-
-  return category ?? null;
-};
-
-export const usePermalink = (): string | null => {
-  const { '*': permalink } = useParams<{ '*': string | undefined }>();
-
-  return permalink ?? null;
 };

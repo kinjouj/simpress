@@ -33,10 +33,12 @@ module Simpress
       def initialize(params)
         CH.validate(params, SCHEMA, strict: true)
         params.each {|key, value| instance_variable_set("@#{key}", value) }
+        @description = description
       end
 
       def description
-        description = @description || @content
+        return @description if defined?(@description)
+        description = @content
         description.gsub(%r{</?[^>]+?>}, "")
                    .tr("\s", "")
                    .tr("　", "")

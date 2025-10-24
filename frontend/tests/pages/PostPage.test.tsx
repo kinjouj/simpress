@@ -1,15 +1,13 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import PostPage from '../../src/pages/PostPage';
-import type Simpress from '../../src/simpress';
-import type { PostType } from '../../src/types';
+import Simpress from '../../src/api/Simpress';
 import type { RenderResult } from '@testing-library/react';
+import type { PostType } from '../../src/types';
 import '@testing-library/jest-dom';
 
-const mockGetPost = jest.fn<Promise<PostType>, []>();
-jest.mock('../../src/simpress', (): Simpress => ({
-  getPost: () => mockGetPost(),
-}));
+jest.mock('../../src/api/Simpress');
+const SimpressMock = Simpress as jest.Mocked<typeof Simpress>;
 
 const testData: PostType = {
   id: '1',
@@ -34,7 +32,6 @@ const renderPostPage = (): RenderResult => {
 describe('PostPage', () => {
   beforeEach(() => {
     jest.useFakeTimers();
-    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -42,10 +39,10 @@ describe('PostPage', () => {
   });
 
   test('<PostPage> test', async () => {
-    mockGetPost.mockResolvedValue(testData);
+    SimpressMock.getPost.mockResolvedValue(testData);
     renderPostPage();
 
-    await waitFor(() => expect(mockGetPost).toHaveBeenCalled());
+    await waitFor(() => expect(SimpressMock.getPost).toHaveBeenCalled());
     await act(async () => {
       jest.advanceTimersByTime(1000);
       await Promise.resolve();
@@ -66,7 +63,7 @@ describe('PostPage', () => {
   });
 
   test('Simpress.getPostがエラーを出した場合', async () => {
-    mockGetPost.mockRejectedValue(new Error('ERROR'));
+    SimpressMock.getPost.mockRejectedValue(new Error('ERROR'));
     renderPostPage();
 
     await waitFor(() => {

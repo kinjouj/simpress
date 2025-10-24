@@ -1,22 +1,9 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import AppRoutes from '../src/AppRoutes';
-import type { PostType } from '../src/types';
-import Simpress from '../src/simpress';
+import AppRoutes from '../../src/routes/AppRoutes';
+import Simpress from '../../src/api/Simpress';
+import type { PostType } from '../../src/types';
 import '@testing-library/jest-dom';
-
-/*
-const mockGetPostsByPage = jest.fn<Promise<PostType[]>, [ number ]>();
-const mockGetPostsByCategory = jest.fn<Promise<PostType[]>, [ string ]>();
-const mockGetPostsByArchive = jest.fn<Promise<PostType[]>, [ number, number]>();
-const mockGetPost = jest.fn<Promise<PostType>, [ string ]>();
-jest.mock('../src/simpress', (): Simpress => ({
-  getPostsByPage: (page: number) => mockGetPostsByPage(page),
-  getPostsByCategory: (category: string) => mockGetPostsByCategory(category),
-  getPostsByArchive: (year: number, month: number) => mockGetPostsByArchive(year, month),
-  getPost: (path: string) => mockGetPost(path),
-}));
-*/
 
 const testData: PostType = {
   id: '1',
@@ -74,7 +61,7 @@ describe('AppRoutes', () => {
     });
     await waitFor(() => expect(dataSpy).toHaveBeenCalledTimes(2));
 
-    const posts = await screen.findAllByRole('list', { name: 'post' });
+    const posts = await screen.findAllByRole('listitem', { name: 'post' });
     expect(posts).toHaveLength(1);
   });
 
@@ -91,7 +78,7 @@ describe('AppRoutes', () => {
       await Promise.resolve();
     });
 
-    const posts = await screen.findAllByRole('list');
+    const posts = await screen.findAllByRole('listitem', { name: 'post' });
     expect(posts).toHaveLength(1);
   });
 
@@ -108,7 +95,7 @@ describe('AppRoutes', () => {
       await Promise.resolve();
     });
 
-    const posts = await screen.findAllByRole('list');
+    const posts = await screen.findAllByRole('listitem', { name: 'post' });
     expect(posts).toHaveLength(1);
   });
 

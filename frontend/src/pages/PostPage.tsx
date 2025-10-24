@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Prism from 'prismjs';
-import Simpress from '../simpress';
+import Simpress from '../api/Simpress';
 import CreatedAt from '../components/CreatedAt';
 import MyClipLoader from '../components/MyClipLoader';
 import NotFound from '../components/NotFound';
@@ -9,7 +9,7 @@ import { usePermalink } from '../hooks';
 import type { PostType, CategoryType } from '../types';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 
-const Post = (): React.JSX.Element => {
+const PostPage = (): React.JSX.Element => {
   const permalink = usePermalink();
   const [post, setPost] = useState<PostType | null>(null);
   const [isError, setIsError] = useState(false);
@@ -85,4 +85,4 @@ const Post = (): React.JSX.Element => {
   );
 };
 
-export default Post;
+export default PostPage;

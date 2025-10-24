@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { chunkIt } from '@array-utils/chunk-it';
-import Simpress from '../simpress';
+import Simpress from '../api/Simpress';
 import { usePage } from '../hooks';
 
 const PAGE_PER_SIZE = 10;
@@ -57,7 +57,6 @@ const Pager = (): React.JSX.Element | null => {
                 </li>
               );
             })}
-
             {maxPage > currentPage && (
               <li className="page-item" key="next-page">
                 <Link className="page-link" to={`/page/${currentPage + 1}`}>&gt;&gt;</Link>

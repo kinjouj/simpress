@@ -1,7 +1,7 @@
 import { HashRouter } from 'react-router-dom';
 import Header from './components/Header';
 import PageToTopFloatingButton from './components/PageToTopFloatingButton';
-import AppRoutes from './AppRoutes';
+import AppRoutes from './routes/AppRoutes';
 
 const App = (): React.JSX.Element => {
   return (

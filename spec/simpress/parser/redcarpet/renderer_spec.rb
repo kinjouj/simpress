@@ -27,7 +27,7 @@ describe Simpress::Parser::Redcarpet::Renderer do
     end
 
     it "#image" do
-      expect(renderer.image("/test.jpg")).to eq(%(<img src="/test.jpg" alt="image" />))
+      expect(renderer.image("/test.jpg")).to eq(%(<img src="/test.jpg" class="img-fluid" alt="image" />))
       expect(renderer.primary_image).to eq("/test.jpg")
       renderer.image("/test2.jpg")
       expect(renderer.primary_image).to eq("/test.jpg")

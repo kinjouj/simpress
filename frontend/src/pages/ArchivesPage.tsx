@@ -1,54 +1,54 @@
-import { useState, useEffect } from 'react';
-import Simpress from '../simpress';
+import { useEffect, useState } from 'react';
+import Simpress from '../api/Simpress';
 import MyClipLoader from '../components/MyClipLoader';
 import NotFound from '../components/NotFound';
 import PostList from '../components/PostList';
-import { useCategory } from '../hooks';
+import { useYearOfMonth } from '../hooks';
 import type { PostType } from '../types';
 
-const CategoryPostListPage = (): React.JSX.Element => {
-  const category = useCategory();
-  const [categoryPosts, setCategoryPosts] = useState<PostType[] | null>(null);
+const ArchivesPage = (): React.JSX.Element => {
+  const { year, month } = useYearOfMonth();
+  const [posts, setPosts] = useState<PostType[] | null>(null);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     ((): void => {
-      setCategoryPosts(null);
+      setPosts(null);
       setIsError(false);
     })();
 
     const setErrorState = (): void => {
-      setCategoryPosts(null);
+      setPosts(null);
       setIsError(true);
     };
 
-    if (category === null) {
+    if (year === null || month === null) {
       setErrorState();
       return;
     }
 
     void (async (): Promise<void> => {
       try {
-        const categoryPosts = await Simpress.getPostsByCategory(category);
+        const posts = await Simpress.getPostsByArchive(year, month);
         setTimeout(() => {
-          setCategoryPosts(categoryPosts);
+          setPosts(posts);
           setIsError(false);
         }, 1000);
       } catch {
         setErrorState();
       }
     })();
-  }, [category]);
+  }, [year, month]);
 
   if (isError) {
     return <NotFound />;
   }
 
-  if (categoryPosts === null) {
+  if (posts === null) {
     return <MyClipLoader />;
   }
 
-  return <PostList posts={categoryPosts} />;
+  return <PostList posts={posts} />;
 };
 
-export default CategoryPostListPage;
+export default ArchivesPage;

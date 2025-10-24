@@ -5,9 +5,9 @@ module.exports = {
   restoreMocks: true,
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  globals: {
+  collectCoverage: true,
+  coverageReporters: [ 'text', 'html', 'lcov' ],
+    globals: {
     TextEncoder: TextEncoder
   },
-  collectCoverage: true,
-  coverageReporters: [ 'text', 'html', 'lcov' ]
 };

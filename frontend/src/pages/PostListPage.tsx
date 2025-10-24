@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Simpress from '../simpress';
+import Simpress from '../api/Simpress';
 import MyClipLoader from '../components/MyClipLoader';
 import NotFound from '../components/NotFound';
 import PostList from '../components/PostList';

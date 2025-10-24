@@ -1,5 +1,5 @@
 import * as Router from 'react-router-dom';
-import { useCategory, usePage, usePermalink, useYearOfMonth } from '../src/hooks';
+import { useYearOfMonth } from '../../src/hooks/useYearOfMonth';
 
 /*
 import { renderHook } from '@testing-library/react';
@@ -32,19 +32,6 @@ jest.mock('react-router-dom', (): typeof Router => ({
 const mockedUseParams = Router.useParams as jest.Mock;
 
 describe('hooks', () => {
-  describe('usePage', () => {
-    test('usePage test', () => {
-      mockedUseParams.mockReturnValue({ page: 10 });
-      const page = usePage();
-      expect(page).toBe(10);
-    });
-
-    test('if useParams return null', () => {
-      mockedUseParams.mockReturnValue({});
-      expect(usePage()).toBe(1);
-    });
-  });
-
   describe('useYearOfMonth', () => {
     afterEach(() => {
       mockedUseParams.mockReset();
@@ -83,38 +70,6 @@ describe('hooks', () => {
       const yearOfMonth = useYearOfMonth();
       expect(yearOfMonth).toHaveProperty('year', null);
       expect(yearOfMonth).toHaveProperty('month', null);
-    });
-  });
-
-  describe('useCategor', () => {
-    afterEach(() => {
-      mockedUseParams.mockReset();
-    });
-
-    test('useCategory test', () => {
-      mockedUseParams.mockReturnValue({ category: 'test' });
-      expect(useCategory()).toBe('test');
-    });
-
-    test('categoryパラメーターが不正な場合', () => {
-      mockedUseParams.mockReturnValue({});
-      expect(useCategory()).toBeNull();
-    });
-  });
-
-  describe('usePermalink', () => {
-    afterEach(() => {
-      mockedUseParams.mockReset();
-    });
-
-    test('usePermalink', () => {
-      mockedUseParams.mockReturnValue({ '*': '2000/01/test.html' });
-      expect(usePermalink()).toBe('2000/01/test.html');
-    });
-
-    test('permalinkパラメーターが不正な場合', () => {
-      mockedUseParams.mockReturnValue({});
-      expect(usePermalink()).toBeNull();
     });
   });
 });

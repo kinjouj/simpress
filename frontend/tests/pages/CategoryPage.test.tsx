@@ -1,15 +1,13 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import CategoryPostListPage from '../../src/pages/CategoryPostListPage';
-import type Simpress from '../../src/simpress';
-import type { PostType } from '../../src/types';
+import CategoryPage from '../../src/pages/CategoryPage';
+import Simpress from '../../src/api/Simpress';
 import type { RenderResult } from '@testing-library/react';
+import type { PostType } from '../../src/types';
 import '@testing-library/jest-dom';
 
-const mockGetPostsByCategory = jest.fn<Promise<PostType[]>, [string]>();
-jest.mock('../../src/simpress', (): Simpress => ({
-  getPostsByCategory: (category: string) => mockGetPostsByCategory(category),
-}));
+jest.mock('../../src/api/Simpress');
+const SimpressMock = Simpress as jest.Mocked<typeof Simpress>;
 
 const testData: PostType = {
   id: '1',
@@ -25,40 +23,39 @@ const renderCategortPostListPage = (): RenderResult => {
   return render(
     <MemoryRouter initialEntries={['/archives/category/test']}>
       <Routes>
-        <Route path="/archives/category/:category" element={<CategoryPostListPage />} />
+        <Route path="/archives/category/:category" element={<CategoryPage />} />
       </Routes>
     </MemoryRouter>
   );
 };
 
-describe('CategoryPostListPage', () => {
+describe('CategoryPage', () => {
   beforeEach(() => {
     jest.useFakeTimers();
-    jest.clearAllMocks();
   });
 
   afterEach(() => {
     jest.useRealTimers();
   });
 
-  test('<CategoryPostListPage> test', async () => {
-    mockGetPostsByCategory.mockResolvedValue([testData]);
+  test('<CategoryPage> test', async () => {
+    SimpressMock.getPostsByCategory.mockResolvedValue([testData]);
     renderCategortPostListPage();
 
-    await waitFor(() => expect(mockGetPostsByCategory).toHaveBeenCalled());
+    await waitFor(() => expect(SimpressMock.getPostsByCategory).toHaveBeenCalled());
     await act(async () => {
       jest.advanceTimersByTime(1000);
       await Promise.resolve();
     });
 
-    const posts = await screen.findAllByRole('list');
+    const posts = await screen.findAllByRole('listitem', { name: 'post' });
     expect(posts).toHaveLength(1);
   });
 
   test('useCategoryがnullを返した場合', () => {
     render(
       <MemoryRouter>
-        <CategoryPostListPage />
+        <CategoryPage />
       </MemoryRouter>
     );
 
@@ -66,7 +63,7 @@ describe('CategoryPostListPage', () => {
   });
 
   test('Simpress.getPostsByCategoryがエラーを吐いた場合', async () => {
-    mockGetPostsByCategory.mockRejectedValue(new Error('ERROR'));
+    SimpressMock.getPostsByCategory.mockRejectedValue(new Error('ERROR'));
     renderCategortPostListPage();
 
     await waitFor(() => {

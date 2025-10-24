@@ -1,6 +1,4 @@
-export type PageInfoType = {
-  page: number
-};
+import type { CategoryType } from './category.type';
 
 export type PostType = {
   id: string
@@ -10,10 +8,4 @@ export type PostType = {
   cover: string
   content: string
   categories: CategoryType[]
-};
-
-export type CategoryType = {
-  key: string
-  name: string
-  count: number
 };

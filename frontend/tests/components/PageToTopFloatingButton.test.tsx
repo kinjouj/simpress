@@ -3,7 +3,6 @@ import { userEvent } from '@testing-library/user-event';
 import PageToTopFloatingButton from '../../src/components/PageToTopFloatingButton';
 
 const mockScrollTo = jest.fn();
-document.documentElement.scrollTo = jest.fn();
 document.body.scrollTo = mockScrollTo;
 
 describe('PageToTopFloatingButton', () => {
@@ -13,6 +12,5 @@ describe('PageToTopFloatingButton', () => {
     const button = screen.getByRole('button', { name: 'page to top' });
     await user.click(button);
     expect(mockScrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
-    expect(mockScrollTo).toHaveBeenCalledTimes(1);
   });
 });

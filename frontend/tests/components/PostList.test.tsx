@@ -24,7 +24,7 @@ describe('PostList', () => {
     );
 
     await waitFor(() => {
-      const elms = screen.getAllByRole('list');
+      const elms = screen.getAllByRole('listitem', { name: 'post' });
       expect(elms).toHaveLength(1);
     });
   });

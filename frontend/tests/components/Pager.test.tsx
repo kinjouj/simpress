@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Pager from '../../src/components/Pager';
-import type Simpress from '../../src/simpress';
+import Simpress from '../../src/api/Simpress';
 import '@testing-library/jest-dom';
 
 const mockUsePage = jest.fn<number, []>();
@@ -9,19 +9,13 @@ jest.mock('../../src/hooks', () => ({
   usePage: (): number => mockUsePage(),
 }));
 
-const mockGetPageInfo = jest.fn<Promise<number>, []>();
-jest.mock('../../src/simpress', (): Simpress => ({
-  getPageInfo: () => mockGetPageInfo(),
-}));
+jest.mock('../../src/api/Simpress');
+const SimpressMock = Simpress as jest.Mocked<typeof Simpress>;
 
 describe('Pager', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   test('<Pager> test', async () => {
     mockUsePage.mockReturnValue(11);
-    mockGetPageInfo.mockResolvedValue(30);
+    SimpressMock.getPageInfo.mockResolvedValue(30);
 
     render(
       <MemoryRouter>
@@ -29,6 +23,8 @@ describe('Pager', () => {
       </MemoryRouter>
     );
 
+    expect(mockUsePage).toHaveBeenCalled();
+    expect(SimpressMock.getPageInfo).toHaveBeenCalled();
     await waitFor(() => {
       expect(screen.getByText('11')).toBeInTheDocument();
       expect(screen.getByRole('link', { name: '12' })).toBeInTheDocument();
@@ -37,22 +33,7 @@ describe('Pager', () => {
 
   test('Simpress.getPageInfoがエラーだった場合', async () => {
     mockUsePage.mockReturnValue(1);
-    mockGetPageInfo.mockRejectedValue(new Error('ERROR'));
-
-    const { container } = render(
-      <MemoryRouter>
-        <Pager />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(container).toBeEmptyDOMElement();
-    });
-  });
-
-  test('Simpress.getPageInfoが0を返した場合', async () => {
-    mockUsePage.mockReturnValue(1);
-    mockGetPageInfo.mockResolvedValue(0);
+    SimpressMock.getPageInfo.mockRejectedValue(new Error('ERROR'));
 
     render(
       <MemoryRouter>
@@ -60,11 +41,29 @@ describe('Pager', () => {
       </MemoryRouter>
     );
 
+    expect(mockUsePage).toHaveBeenCalled();
+    expect(SimpressMock.getPageInfo).toHaveBeenCalled();
     await waitFor(() => {
       const nav = screen.queryByRole('navigation');
       expect(nav).not.toBeInTheDocument();
     });
+  });
 
-    expect(mockGetPageInfo).toHaveBeenCalledTimes(1);
+  test('Simpress.getPageInfoが0を返した場合', async () => {
+    mockUsePage.mockReturnValue(1);
+    SimpressMock.getPageInfo.mockResolvedValue(0);
+
+    render(
+      <MemoryRouter>
+        <Pager />
+      </MemoryRouter>
+    );
+
+    expect(mockUsePage).toHaveBeenCalled();
+    expect(SimpressMock.getPageInfo).toHaveBeenCalled();
+    await waitFor(() => {
+      const nav = screen.queryByRole('navigation');
+      expect(nav).not.toBeInTheDocument();
+    });
   });
 });

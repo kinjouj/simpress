@@ -1,9 +1,11 @@
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import react from '@vitejs/plugin-react-swc';
 
 export default defineConfig({
   plugins: [
+    react(),
     viteStaticCopy({
       targets: [
         {
