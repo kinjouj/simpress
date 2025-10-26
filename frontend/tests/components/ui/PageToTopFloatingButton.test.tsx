@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import PageToTopFloatingButton from '../../src/components/PageToTopFloatingButton';
+import PageToTopFloatingButton from '../../../src/components/ui/PageToTopFloatingButton';
 
 const mockScrollTo = jest.fn();
 document.body.scrollTo = mockScrollTo;

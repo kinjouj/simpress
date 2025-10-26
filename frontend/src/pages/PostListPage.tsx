@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import Simpress from '../api/Simpress';
-import MyClipLoader from '../components/MyClipLoader';
-import NotFound from '../components/NotFound';
+import MyClipLoader from '../components/ui/MyClipLoader';
+import NotFound from '../components/ui/NotFound';
+import Pager from '../components/ui/Pager';
 import PostList from '../components/PostList';
-import Pager from '../components/Pager';
 import { usePage } from '../hooks';
 import type { PostType } from '../types';
 

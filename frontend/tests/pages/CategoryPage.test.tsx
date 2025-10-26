@@ -2,22 +2,11 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import CategoryPage from '../../src/pages/CategoryPage';
 import Simpress from '../../src/api/Simpress';
+import { testPostData } from '../fixtures/testPostData';
 import type { RenderResult } from '@testing-library/react';
-import type { PostType } from '../../src/types';
-import '@testing-library/jest-dom';
 
 jest.mock('../../src/api/Simpress');
 const SimpressMock = Simpress as jest.Mocked<typeof Simpress>;
-
-const testData: PostType = {
-  id: '1',
-  title: 'test1',
-  date: Date.now().toString(),
-  permalink: '/test.html',
-  cover: '/images/no_image.png',
-  categories: [{ key: 'test', count: 1, name: 'Test' }],
-  content: 'test1',
-};
 
 const renderCategortPostListPage = (): RenderResult => {
   return render(
@@ -39,7 +28,7 @@ describe('CategoryPage', () => {
   });
 
   test('<CategoryPage> test', async () => {
-    SimpressMock.getPostsByCategory.mockResolvedValue([testData]);
+    SimpressMock.getPostsByCategory.mockResolvedValue([testPostData]);
     renderCategortPostListPage();
 
     await waitFor(() => expect(SimpressMock.getPostsByCategory).toHaveBeenCalled());

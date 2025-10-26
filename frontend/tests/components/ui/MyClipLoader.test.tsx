@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import MyClipLoader from '../../src/components/MyClipLoader';
+import MyClipLoader from '../../../src/components/ui/MyClipLoader';
 
 jest.mock('react-spinners', () => ({
   ClipLoader: jest.fn(({ loading }) => {

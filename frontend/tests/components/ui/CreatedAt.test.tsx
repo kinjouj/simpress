@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import CreatedAt from '../../src/components/CreatedAt';
-import '@testing-library/jest-dom';
+import CreatedAt from '../../../src/components/ui/CreatedAt';
 
 describe('CreatedAt Component', () => {
   test('<CreatedAt> test', () => {
