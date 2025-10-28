@@ -1,29 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import Simpress from '../api/Simpress';
-import MyClipLoader from '../components/ui/MyClipLoader';
-import NotFound from '../components/ui/NotFound';
-import PostList from '../components/PostList';
+import { MyClipLoader, NotFound, PostList } from '../components';
 import { useYearOfMonth } from '../hooks';
-import type { PostType } from '../types';
+import { fetchReducer } from '../reducers';
+import type { FetchState, PostType } from '../types';
 
 const ArchivesPage = (): React.JSX.Element => {
   const { year, month } = useYearOfMonth();
-  const [posts, setPosts] = useState<PostType[] | null>(null);
-  const [isError, setIsError] = useState(false);
+  const [state, dispatch] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
+  const { data: posts, isError } = state;
 
   useEffect(() => {
-    ((): void => {
-      setPosts(null);
-      setIsError(false);
-    })();
-
-    const setErrorState = (): void => {
-      setPosts(null);
-      setIsError(true);
-    };
+    dispatch({ type: 'FETCH_START' });
 
     if (year === null || month === null) {
-      setErrorState();
+      dispatch({ type: 'FETCH_ERROR' });
       return;
     }
 
@@ -31,11 +22,10 @@ const ArchivesPage = (): React.JSX.Element => {
       try {
         const posts = await Simpress.getPostsByArchive(year, month);
         setTimeout(() => {
-          setPosts(posts);
-          setIsError(false);
+          dispatch({ type: 'FETCH_COMPLETE', payload: posts });
         }, 1000);
       } catch {
-        setErrorState();
+        dispatch({ type: 'FETCH_ERROR' });
       }
     })();
   }, [year, month]);

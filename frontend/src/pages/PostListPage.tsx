@@ -1,33 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import Simpress from '../api/Simpress';
-import MyClipLoader from '../components/ui/MyClipLoader';
-import NotFound from '../components/ui/NotFound';
-import Pager from '../components/ui/Pager';
-import PostList from '../components/PostList';
+import { MyClipLoader, NotFound, Pager, PostList } from '../components';
 import { usePage } from '../hooks';
-import type { PostType } from '../types';
+import { fetchReducer } from '../reducers';
+import type { FetchState, PostType } from '../types';
 
 const PostListPage = (): React.JSX.Element => {
-  const [posts, setPosts] = useState<PostType[] | null>(null);
-  const [isError, setIsError] = useState(false);
   const pageNum = usePage();
+  const [state, dispatch] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
+  const { data: posts, isError } = state;
 
   useEffect(() => {
-    ((): void => {
-      setPosts(null);
-      setIsError(false);
-    })();
+    dispatch({ type: 'FETCH_START' });
 
     void (async (): Promise<void> => {
       try {
         const posts = await Simpress.getPostsByPage(pageNum);
         setTimeout(() => {
-          setPosts(posts);
-          setIsError(false);
+          dispatch({ type: 'FETCH_COMPLETE', payload: posts });
         }, 1000);
       } catch {
-        setPosts([]);
-        setIsError(true);
+        dispatch({ type: 'FETCH_ERROR' });
       }
     })();
   }, [pageNum]);

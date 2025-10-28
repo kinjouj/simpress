@@ -1,8 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import PostListPage from '../pages/PostListPage';
-import CategoryPage from '../pages/CategoryPage';
-import ArchivesPage from '../pages/ArchivesPage';
-import PostPage from '../pages/PostPage';
+import { ArchivesPage, CategoryPage, PostListPage, PostPage } from '../pages';
 
 const AppRoutes = (): React.JSX.Element => {
   return (

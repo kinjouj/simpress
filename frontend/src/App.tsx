@@ -1,7 +1,5 @@
 import { HashRouter } from 'react-router-dom';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
-import PageToTopFloatingButton from './components/ui/PageToTopFloatingButton';
+import { Footer, Header, PageToTopFloatingButton } from './components';
 import AppRoutes from './routes/AppRoutes';
 
 const App = (): React.JSX.Element => {
@@ -11,8 +9,8 @@ const App = (): React.JSX.Element => {
       <HashRouter>
         <AppRoutes />
       </HashRouter>
-      <Footer />
       <PageToTopFloatingButton />
+      <Footer />
     </>
   );
 };

@@ -1,32 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import { Link } from 'react-router-dom';
 import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
-import CreatedAt from '../components/ui/CreatedAt';
-import MyClipLoader from '../components/ui/MyClipLoader';
-import NotFound from '../components/ui/NotFound';
+import { CreatedAt, MyClipLoader, NotFound } from '../components';
 import { usePermalink } from '../hooks';
-import type { PostType, CategoryType } from '../types';
+import { fetchReducer } from '../reducers';
+import type { CategoryType, FetchState, PostType } from '../types';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 
 const PostPage = (): React.JSX.Element => {
   const permalink = usePermalink();
-  const [post, setPost] = useState<PostType | null>(null);
-  const [isError, setIsError] = useState(false);
+  const [state, dispatch] = useReducer(fetchReducer<PostType>, { data: null, isError: false } as FetchState<PostType>);
+  const { data: post, isError } = state;
 
   useEffect(() => {
-    ((): void => {
-      setPost(null);
-      setIsError(false);
-    })();
-
-    const setErrorState = (): void => {
-      setPost(null);
-      setIsError(true);
-    };
+    dispatch({ type: 'FETCH_START' });
 
     if (permalink === null) {
-      setErrorState();
+      dispatch({ type: 'FETCH_ERROR' });
       return;
     }
 
@@ -34,12 +25,11 @@ const PostPage = (): React.JSX.Element => {
       try {
         const post = await Simpress.getPost(permalink);
         setTimeout(() => {
-          setPost(post);
-          setIsError(false);
+          dispatch({ type: 'FETCH_COMPLETE', payload: post });
           setTimeout(Prism.highlightAll, 500);
         }, 1000);
       } catch {
-        setErrorState();
+        dispatch({ type: 'FETCH_ERROR' });
       }
     })();
   }, [permalink]);

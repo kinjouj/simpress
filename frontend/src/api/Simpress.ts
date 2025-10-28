@@ -1,12 +1,8 @@
 import type { PostType } from '../types';
 
-type PageInfoType = {
-  page: number
-};
-
 export default class Simpress {
   public static async getPageInfo(this: void): Promise<number> {
-    const data = await Simpress.getData<PageInfoType>('/pageinfo.json');
+    const data = await Simpress.getData<{ page: number }>('/pageinfo.json');
     return data.page;
   }
 

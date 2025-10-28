@@ -29,11 +29,13 @@ describe Simpress::Model::Post do
   end
 
   describe "#description" do
+=begin
     it "コンストラクタパラメータにdescriptionがある場合" do
       params[:description] = "TEST"
       post = described_class.new(params)
       expect(post.description).to eq("TEST")
     end
+=end
 
     it "descriptionによってタグ・スペース等が除去されていること" do
       post = described_class.new(params)

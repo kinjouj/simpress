@@ -1,29 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import Simpress from '../api/Simpress';
-import MyClipLoader from '../components/ui/MyClipLoader';
-import NotFound from '../components/ui/NotFound';
-import PostList from '../components/PostList';
+import { MyClipLoader, NotFound, PostList } from '../components';
 import { useCategory } from '../hooks';
-import type { PostType } from '../types';
+import { fetchReducer } from '../reducers';
+import type { FetchState, PostType } from '../types';
 
 const CategoryPage = (): React.JSX.Element => {
   const category = useCategory();
-  const [categoryPosts, setCategoryPosts] = useState<PostType[] | null>(null);
-  const [isError, setIsError] = useState(false);
+  const [state, dispatch] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
+  const { data: categoryPosts, isError } = state;
 
   useEffect(() => {
-    ((): void => {
-      setCategoryPosts(null);
-      setIsError(false);
-    })();
-
-    const setErrorState = (): void => {
-      setCategoryPosts(null);
-      setIsError(true);
-    };
+    dispatch({ type: 'FETCH_START' });
 
     if (category === null) {
-      setErrorState();
+      dispatch({ type: 'FETCH_ERROR' });
       return;
     }
 
@@ -31,11 +22,10 @@ const CategoryPage = (): React.JSX.Element => {
       try {
         const categoryPosts = await Simpress.getPostsByCategory(category);
         setTimeout(() => {
-          setCategoryPosts(categoryPosts);
-          setIsError(false);
+          dispatch({ type: 'FETCH_COMPLETE', payload: categoryPosts });
         }, 1000);
       } catch {
-        setErrorState();
+        dispatch({ type: 'FETCH_ERROR' });
       }
     })();
   }, [category]);

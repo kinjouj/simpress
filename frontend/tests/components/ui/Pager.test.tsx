@@ -15,7 +15,6 @@ describe('Pager', () => {
   test('<Pager> test', async () => {
     mockUsePage.mockReturnValue(11);
     SimpressMock.getPageInfo.mockResolvedValue(30);
-
     render(
       <MemoryRouter>
         <Pager />
@@ -37,7 +36,6 @@ describe('Pager', () => {
   test('Simpress.getPageInfoがエラーだった場合', async () => {
     mockUsePage.mockReturnValue(1);
     SimpressMock.getPageInfo.mockRejectedValue(new Error('ERROR'));
-
     render(
       <MemoryRouter>
         <Pager />
@@ -54,7 +52,6 @@ describe('Pager', () => {
   test('Simpress.getPageInfoが0を返した場合', async () => {
     mockUsePage.mockReturnValue(1);
     SimpressMock.getPageInfo.mockResolvedValue(0);
-
     render(
       <MemoryRouter>
         <Pager />
