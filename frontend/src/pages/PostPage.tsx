@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react';
 import { Link } from 'react-router-dom';
 import Prism from 'prismjs';
-import Simpress from '../api/Simpress';
+import Simpress from '../api/simpress';
 import { CreatedAt, MyClipLoader, NotFound } from '../components';
 import { usePermalink } from '../hooks';
 import { fetchReducer } from '../reducers';
@@ -10,7 +10,7 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers';
 
 const PostPage = (): React.JSX.Element => {
   const permalink = usePermalink();
-  const [state, dispatch] = useReducer(fetchReducer<PostType>, { data: null, isError: false } as FetchState<PostType>);
+  const [ state, dispatch ] = useReducer(fetchReducer<PostType>, { data: null, isError: false } as FetchState<PostType>);
   const { data: post, isError } = state;
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const PostPage = (): React.JSX.Element => {
                 <span className="categories">
                   {post.categories.map((category: CategoryType) => {
                     const to = `/archives/category/${category.key}`;
-                    return <Link className="post-category" key={category.key} to={to}>{category.name}</Link>;
+                    return <Link key={category.key} className="post-category" to={to}>{category.name}</Link>;
                   })}
                 </span>
               </p>

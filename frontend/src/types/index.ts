@@ -1,3 +1,3 @@
-export * from './category';
-export * from './fetch';
-export * from './post';
+export * from './Category';
+export * from './Fetch';
+export * from './Post';

@@ -1,6 +1,10 @@
 import { ClipLoader } from 'react-spinners';
 import type { CSSProperties } from 'react';
 
+interface MyClipLoaderProps {
+  loading?: boolean
+}
+
 const cssOverride: CSSProperties = {
   position: 'absolute',
   top: '50%',
@@ -8,7 +12,7 @@ const cssOverride: CSSProperties = {
   transform: 'translate(-50%, -50%)',
 };
 
-const MyClipLoader = ({ loading = true }: { loading?: boolean }): React.JSX.Element => {
+const MyClipLoader = ({ loading = true }: MyClipLoaderProps): React.JSX.Element => {
   return <ClipLoader loading={loading} cssOverride={cssOverride} />;
 };
 

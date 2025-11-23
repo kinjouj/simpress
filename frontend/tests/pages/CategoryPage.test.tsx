@@ -1,11 +1,11 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import CategoryPage from '../../src/pages/CategoryPage';
-import Simpress from '../../src/api/Simpress';
+import Simpress from '../../src/api/simpress';
 import { testPostData } from '../fixtures/testPostData';
 import type { RenderResult } from '@testing-library/react';
 
-jest.mock('../../src/api/Simpress');
+jest.mock('../../src/api/simpress');
 const SimpressMock = Simpress as jest.Mocked<typeof Simpress>;
 
 const renderCategortPostListPage = (): RenderResult => {

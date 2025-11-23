@@ -1,24 +1,25 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { chunkIt } from '@array-utils/chunk-it';
-import Simpress from '../../api/Simpress';
+import Simpress from '../../api/simpress';
 import { usePage } from '../../hooks';
 
 const PAGE_PER_SIZE = 10;
 
 const Pager = (): React.JSX.Element | null => {
-  const [maxPage, setMaxPage] = useState<number>(1);
+  const [ maxPage, setMaxPage ] = useState<number>(1);
   const currentPage = usePage();
 
   useEffect(() => {
-    void (async (): Promise<void> => {
+    const fetchPageInfo = async (): Promise<void> => {
       try {
         const page = await Simpress.getPageInfo();
         setMaxPage(page);
       } catch {
         setMaxPage(0);
       }
-    })();
+    };
+    void fetchPageInfo();
   }, []);
 
   const pages = useMemo(() => {
@@ -28,7 +29,7 @@ const Pager = (): React.JSX.Element | null => {
     }
 
     return [];
-  }, [maxPage, currentPage]);
+  }, [ maxPage, currentPage ]);
 
   if (maxPage <= 1) {
     return null;
@@ -40,13 +41,13 @@ const Pager = (): React.JSX.Element | null => {
         <nav>
           <ul className="pagination justify-content-center">
             {currentPage > 1 && (
-              <li className="page-item" key="prev-page">
+              <li key="prev-page" className="page-item">
                 <Link className="page-link" to={`/page/${currentPage - 1}`}>&lt;&lt;</Link>
               </li>
             )}
             {pages.map((page) => {
               return (
-                <li className={`page-item ${page === currentPage ? 'active' : ''}`} key={page}>
+                <li key={page} className={`page-item ${page === currentPage ? 'active' : ''}`}>
                   {page === currentPage
                     ? (
                         <span className="page-link">{page}</span>
@@ -58,7 +59,7 @@ const Pager = (): React.JSX.Element | null => {
               );
             })}
             {maxPage > currentPage && (
-              <li className="page-item" key="next-page">
+              <li key="next-page" className="page-item">
                 <Link className="page-link" to={`/page/${currentPage + 1}`}>&gt;&gt;</Link>
               </li>
             )}

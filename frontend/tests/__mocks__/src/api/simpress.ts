@@ -1,4 +1,4 @@
-import type Simpress from '../../../../src/api/Simpress';
+import type Simpress from '../../../../src/api/simpress';
 import type { PostType } from '../../../../src/types';
 
 const SimpressMock = {

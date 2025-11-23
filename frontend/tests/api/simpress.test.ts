@@ -1,4 +1,4 @@
-import Simpress from '../../src/api/Simpress';
+import Simpress from '../../src/api/simpress';
 import { testPostData } from '../fixtures/testPostData';
 
 const mockFetch = jest.fn();
@@ -22,7 +22,7 @@ describe('Simpress', () => {
   test('getPostsByPage test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve([testPostData, testPostData]),
+      json: () => Promise.resolve([ testPostData, testPostData ]),
     });
     const posts = await Simpress.getPostsByPage(1);
     expect(posts).toHaveLength(2);

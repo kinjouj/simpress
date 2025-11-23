@@ -1,6 +1,10 @@
 import { generatePath, Link } from 'react-router-dom';
 
-const CreatedAt = ({ dateString }: { dateString: string }): React.JSX.Element | null => {
+interface CreatedAtProps {
+  dateString: string
+}
+
+const CreatedAt = ({ dateString }: CreatedAtProps): React.JSX.Element | null => {
   const date = new Date(dateString);
 
   if (isNaN(date.getTime())) {

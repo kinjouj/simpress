@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react';
-import Simpress from '../api/Simpress';
+import Simpress from '../api/simpress';
 import { MyClipLoader, NotFound, PostList } from '../components';
 import { useYearOfMonth } from '../hooks';
 import { fetchReducer } from '../reducers';
@@ -7,7 +7,7 @@ import type { FetchState, PostType } from '../types';
 
 const ArchivesPage = (): React.JSX.Element => {
   const { year, month } = useYearOfMonth();
-  const [state, dispatch] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
+  const [ state, dispatch ] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
   const { data: posts, isError } = state;
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const ArchivesPage = (): React.JSX.Element => {
         dispatch({ type: 'FETCH_ERROR' });
       }
     })();
-  }, [year, month]);
+  }, [ year, month ]);
 
   if (isError) {
     return <NotFound />;

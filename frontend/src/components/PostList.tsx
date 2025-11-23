@@ -1,13 +1,17 @@
 import { Link } from 'react-router-dom';
 import type { PostType } from '../types';
 
-const PostList = ({ posts }: { posts: PostType[] }): React.JSX.Element => {
+interface PostListProps {
+  posts: PostType[]
+}
+
+const PostList = ({ posts }: PostListProps): React.JSX.Element => {
   return (
     <div className="row justify-content-center">
       <div className="col col-lg-8">
         {posts.map((post) => {
           return (
-            <div className="card m-4 mb-5" key={post.id} role="listitem" aria-label="post">
+            <div key={post.id} className="card m-4 mb-5" role="listitem" aria-label="post">
               <img className="card-img-top" src={post.cover} />
               <div className="card-body">
                 <h3 className="card-title">

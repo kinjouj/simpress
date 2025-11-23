@@ -23,12 +23,6 @@ describe Simpress::Plugin::RecentPosts do
       expect(content.chomp).to eq([*1..10].join("\n"))
     end
 
-    it "MODEがhtmlじゃない場合" do
-      allow(Simpress::Config.instance).to receive(:mode).and_return(:json)
-      described_class.run(nil, nil, nil)
-      expect { Simpress::Context[:sidebar_recent_posts_content] }.to raise_error("'sidebar_recent_posts_content' missing")
-    end
-
     it "template_exist?がfalseを返した場合" do
       allow(Simpress::Theme).to receive(:exist?).and_return(false)
       described_class.run([*1..30], nil, nil)

@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react';
-import Simpress from '../api/Simpress';
+import Simpress from '../api/simpress';
 import { MyClipLoader, NotFound, Pager, PostList } from '../components';
 import { usePage } from '../hooks';
 import { fetchReducer } from '../reducers';
@@ -7,7 +7,7 @@ import type { FetchState, PostType } from '../types';
 
 const PostListPage = (): React.JSX.Element => {
   const pageNum = usePage();
-  const [state, dispatch] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
+  const [ state, dispatch ] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
   const { data: posts, isError } = state;
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react';
-import Simpress from '../api/Simpress';
+import Simpress from '../api/simpress';
 import { MyClipLoader, NotFound, PostList } from '../components';
 import { useCategory } from '../hooks';
 import { fetchReducer } from '../reducers';
@@ -7,7 +7,7 @@ import type { FetchState, PostType } from '../types';
 
 const CategoryPage = (): React.JSX.Element => {
   const category = useCategory();
-  const [state, dispatch] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
+  const [ state, dispatch ] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
   const { data: categoryPosts, isError } = state;
 
   useEffect(() => {
