@@ -59,8 +59,8 @@ export default defineConfig(
           "functions": "ignore",
         },
       ],
+      "@stylistic/jsx-closing-bracket-location": "off",
       "@stylistic/jsx-quotes": ["error", "prefer-double"],
-      "@stylistic/max-statements-per-line": ["error", { max: 2 }],
       "@stylistic/jsx-sort-props": [
         "error",
         {
@@ -70,6 +70,7 @@ export default defineConfig(
           "noSortAlphabetically": true,
         },
       ],
+      "@stylistic/max-statements-per-line": ["error", { max: 2 }],
       "@stylistic/semi": ["error", "always"],
       "@stylistic/spaced-comment": "off",
       "@typescript-eslint/array-type": "error",
