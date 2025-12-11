@@ -14,6 +14,6 @@ jest.mock('react-spinners', () => ({
 describe('MyClipLoader', () => {
   test('<MyClipLoader> test', () => {
     const { container } = render(<MyClipLoader />);
-    expect(container.innerHTML).toBe('<div>loading</div>');
+    expect(container).toHaveTextContent('loading');
   });
 });

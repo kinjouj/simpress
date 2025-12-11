@@ -9,7 +9,7 @@ module Simpress
         def self.preprocess(markdown)
           markdown.gsub(
             /\[\^\]:\s?([^\n]+)\n/m,
-            %(<div class="note"><span class="material-symbols-outlined">info</span>\\1</div>)
+            %(<div class="note"><i class="fa-solid fa-circle-exclamation"></i>\\1</div>)
           )
         end
       end

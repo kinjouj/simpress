@@ -4,6 +4,7 @@ PATH
     simpress (0.0.1)
       classy_hash
       erubis (= 2.7.0)
+      front_matter_parser
       only_blank
       redcarpet (= 3.6.1)
       stringex
@@ -17,6 +18,7 @@ GEM
     docile (1.4.1)
     erubis (2.7.0)
     fast_blank (1.0.1)
+    front_matter_parser (1.0.1)
     only_blank (1.2.2)
       fast_blank (>= 1.0)
     rake (13.3.1)

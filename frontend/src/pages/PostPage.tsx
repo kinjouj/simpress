@@ -1,38 +1,31 @@
-import { useEffect, useReducer } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Prism from 'prismjs';
-import Simpress from '../api/simpress';
+import Simpress from '../api/Simpress';
 import { CreatedAt, MyClipLoader, NotFound } from '../components';
-import { usePermalink } from '../hooks';
-import { fetchReducer } from '../reducers';
-import type { CategoryType, FetchState, PostType } from '../types';
+import { useFetchData, usePermalink } from '../hooks';
+import type { CategoryType, PostType } from '../types';
+import 'prismjs/plugins/autoloader/prism-autoloader';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
+
+(Prism as any).plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
 
 const PostPage = (): React.JSX.Element => {
   const permalink = usePermalink();
-  const [ state, dispatch ] = useReducer(fetchReducer<PostType>, { data: null, isError: false } as FetchState<PostType>);
-  const { data: post, isError } = state;
 
-  useEffect(() => {
-    dispatch({ type: 'FETCH_START' });
-
+  const fetcher = useCallback(() => {
     if (permalink === null) {
-      dispatch({ type: 'FETCH_ERROR' });
-      return;
+      throw new Error('permalink is null');
     }
 
-    void (async (): Promise<void> => {
-      try {
-        const post = await Simpress.getPost(permalink);
-        setTimeout(() => {
-          dispatch({ type: 'FETCH_COMPLETE', payload: post });
-          setTimeout(Prism.highlightAll, 500);
-        }, 1000);
-      } catch {
-        dispatch({ type: 'FETCH_ERROR' });
-      }
-    })();
+    return Simpress.getPost(permalink);
   }, [permalink]);
+
+  const { data: post, isError } = useFetchData<PostType>(fetcher);
+
+  useEffect(() => {
+    Prism.highlightAll();
+  }, [post]);
 
   if (isError) {
     return <NotFound />;
@@ -43,7 +36,7 @@ const PostPage = (): React.JSX.Element => {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 flex-grow-1">
       <div className="row g-0">
         <div className="col col-lg-12"></div>
         <div className="col col-lg-8">

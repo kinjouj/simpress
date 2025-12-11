@@ -29,7 +29,7 @@ describe Simpress::Plugin do
           extend Simpress::Plugin
 
           def self.run(*_args)
-            bind_context(mode: :html)
+            bind_context(mode: self.config.mode.to_sym)
           end
         end
 
@@ -42,6 +42,7 @@ describe Simpress::Plugin do
         end
 
         allow(Simpress::Logger).to receive(:debug)
+        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
         allow(Simpress::Config.instance).to receive(:plugins).and_return(["test1_plugin"])
         stub_const("Simpress::Plugin::Test1Plugin", test1_class)
         stub_const("Simpress::Plugin::HogePlugin", hoge_class)

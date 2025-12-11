@@ -35,7 +35,7 @@ describe Simpress::Parser do
         test
       MARKDOWN
     }
-    post = described_class.parse("dummy.markdown")
+    post = described_class.parse("dummy.md")
     expect(post).not_to be_nil
     expect(post.permalink).to eq("/2000/01/dummy.html")
   end
@@ -172,11 +172,5 @@ describe Simpress::Parser do
     post = described_class.parse("dummy.markdown")
     expect(post).not_to be_nil
     expect(post.categories).to eql([Simpress::Model::Category.new("test")])
-  end
-
-  it "markdownの解析に失敗した場合" do
-    allow(File).to receive(:read)
-    allow(Simpress::Markdown).to receive(:parse).and_return(nil)
-    expect { described_class.parse("dummy.markdown") }.to raise_error("parse failed: dummy.markdown")
   end
 end

@@ -1,4 +1,4 @@
-import type { CategoryType } from './Category';
+import type { CategoryType } from './category-type';
 
 export type PostType = {
   id: string

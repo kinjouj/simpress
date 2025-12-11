@@ -21,32 +21,17 @@ describe Simpress::Model::Post do
     }
   end
 
-  describe "#new" do
-    it "successful" do
-      post = described_class.new(params)
-      expect(post).to be_is_a(described_class)
-    end
+  it "successful" do
+    post = described_class.new(params)
+    expect(post).to be_is_a(described_class)
+    expect(post.to_s).to eq("title: /test.html")
   end
 
-  describe "#description" do
-=begin
-    it "コンストラクタパラメータにdescriptionがある場合" do
-      params[:description] = "TEST"
-      post = described_class.new(params)
-      expect(post.description).to eq("TEST")
-    end
-=end
+  it "to_hash_without_content" do
+    post = described_class.new(params)
+    expect(post).to be_is_a(described_class)
 
-    it "descriptionによってタグ・スペース等が除去されていること" do
-      post = described_class.new(params)
-      expect(post.description).to eq("content123")
-    end
-
-    it "descriptionが指定している文字列が100文字以上の場合切り捨てられること" do
-      params[:content] = "A" * 300
-      post = described_class.new(params)
-      expect(post.description).to eq("A" * 100)
-      expect(post.description.size).to eq(100)
-    end
+    hash = post.to_hash_without_content
+    expect(hash).not_to be_nil
   end
 end

@@ -1,25 +1,25 @@
 import type { PostType } from '../types';
 
 export default class Simpress {
-  public static async getPageInfo(this: void): Promise<number> {
+  public static async getPageInfo(): Promise<number> {
     const data = await Simpress.getData<{ page: number }>('/pageinfo.json');
     return data.page;
   }
 
-  public static async getPostsByPage(this: void, page: number): Promise<PostType[]> {
+  public static async getPostsByPage(page: number): Promise<PostType[]> {
     return await Simpress.getData<PostType[]>(`/archives/page/${page}.json`);
   }
 
-  public static async getPostsByArchive(this: void, year: number, month: number): Promise<PostType[]> {
+  public static async getPostsByArchive(year: number, month: number): Promise<PostType[]> {
     const twoDigitMonth = month.toString().padStart(2, '0');
     return await Simpress.getData<PostType[]>(`/archives/${year}/${twoDigitMonth}.json`);
   }
 
-  public static async getPostsByCategory(this: void, category: string): Promise<PostType[]> {
+  public static async getPostsByCategory(category: string): Promise<PostType[]> {
     return await Simpress.getData<PostType[]>(`/archives/category/${category}.json`);
   }
 
-  public static async getPost(this: void, permalink: string): Promise<PostType> {
+  public static async getPost(permalink: string): Promise<PostType> {
     return await Simpress.getData<PostType>(`/${permalink}`);
   }
 
@@ -30,7 +30,6 @@ export default class Simpress {
       return Promise.reject(new Error('ERROR'));
     }
 
-    const data: T = await res.json() as T;
-    return data;
+    return await res.json() as T;
   }
 }

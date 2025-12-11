@@ -8,6 +8,7 @@ require "psych"
 
 require "classy_hash"
 require "erubis"
+require "front_matter_parser"
 require "only_blank"
 require "redcarpet"
 require "jsonable"

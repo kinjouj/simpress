@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import AppRoutes from '../../src/routes/AppRoutes';
-import Simpress from '../../src/api/simpress';
+import Simpress from '../../src/api/Simpress';
 import { testPostData } from '../fixtures/testPostData';
 
 let dataSpy: jest.SpyInstance<Promise<unknown>, [ string ]>;

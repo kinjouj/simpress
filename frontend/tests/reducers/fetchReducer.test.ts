@@ -1,4 +1,4 @@
-import { fetchReducer } from '../../src/reducers';
+import { fetchReducer } from '../../src/reducers/fetchReducer';
 import { testPostData } from '../fixtures/testPostData';
 import type { PostType } from '../../src/types';
 

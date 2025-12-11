@@ -7,10 +7,10 @@ const PageToTopFloatingButton = (): React.JSX.Element => {
 
   return (
     <button
-      id="btn-back-to-top"
       type="button"
       className="btn btn-info btn-floating"
       aria-label="page to top"
+      style={{ position: 'fixed', bottom: '20px', right: '30px' }}
       onClick={onClickHandler}>
       <i className="fas fa-arrow-up"></i>
     </button>

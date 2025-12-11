@@ -4,15 +4,19 @@ module Simpress
   module Markdown
     class MarkdownError < StandardError; end
 
-    PERMITTED_CLASSES = [ Date, Time, Symbol ].freeze
+    @@parser = FrontMatterParser::Parser.new(
+      :md,
+      loader: FrontMatterParser::Loader::Yaml.new(allowlist_classes: [Time])
+    )
 
     def self.parse(txt)
-      match = txt.match(/\A(?<header>---\s*\n.*?\n?)^(---\s*$\n?)/m)
-      raise MarkdownError, "Markdown parse failed" unless match
+      data   = @@parser.call(txt)
+      params = data.front_matter.transform_keys(&:to_sym)
+      body   = data.content
 
-      params = Psych.safe_load(match[:header], symbolize_names: true, permitted_classes: PERMITTED_CLASSES) || {}
-      body   = match.post_match
-      [ params, body ]
+      raise MarkdownError, "Markdown parse failed" if params.empty?
+
+      [ params, body, body.split(/\n{2,}/).first.strip ]
     end
   end
 end

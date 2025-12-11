@@ -7,25 +7,27 @@ module Simpress
 
     class << self
       def parse(file)
-        params, body = Simpress::Markdown.parse(File.read(file))
+        params, body, description = Simpress::Markdown.parse(File.read(file))
+
         raise ParserError, "parse failed: #{file}" if params.blank? || body.blank?
 
         content, image, toc = Simpress::Parser::Redcarpet.render(body)
         basename = File.basename(file, ".*")
-        initialize_params!(params, file, content, image, toc)
+        initialize_params!(params, file, description, content, image, toc)
         parse_datetime!(params, basename)
         parse_permalink!(params, basename)
         parse_categories!(params)
         Simpress::Model::Post.new(params)
       end
 
-      def initialize_params!(params, file, content, image, toc)
-        params[:id]        = Digest::SHA1.hexdigest(file)
-        params[:content]   = content
-        params[:toc]       = toc || []
-        params[:layout]    = params.fetch(:layout, :post).to_sym
-        params[:published] = params.fetch(:published, true)
-        params[:cover]     = (image || "/images/no_image.png") unless params[:cover]
+      def initialize_params!(params, file, description, content, image, toc)
+        params[:id]          = Digest::SHA1.hexdigest(file)
+        params[:description] = description
+        params[:content]     = content
+        params[:toc]         = toc || []
+        params[:layout]      = params.fetch(:layout, :post).to_sym
+        params[:published]   = params.fetch(:published, true)
+        params[:cover]       = (image || "/images/no_image.png") unless params[:cover]
       end
 
       def parse_datetime!(params, basename)

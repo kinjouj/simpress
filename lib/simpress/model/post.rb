@@ -34,11 +34,6 @@ module Simpress
       def initialize(params)
         CH.validate(params, SCHEMA, strict: true)
         params.each {|key, value| instance_variable_set("@#{key}", value) }
-        @description = @content.gsub(%r{</?[^>]+?>}, "")
-                               .tr("\s", "")
-                               .tr("　", "")
-                               .tr("\n", "")
-                               .strip.slice(0..99)
       end
 
       def to_hash_without_content

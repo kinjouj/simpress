@@ -1,15 +1,15 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import Simpress from '../../../src/api/Simpress';
 import Pager from '../../../src/components/ui/Pager';
-import Simpress from '../../../src/api/simpress';
 
 const mockUsePage = jest.fn<number, []>();
 jest.mock('../../../src/hooks', () => ({
   usePage: (): number => mockUsePage(),
 }));
 
-jest.mock('../../../src/api/simpress');
-const SimpressMock = Simpress as jest.Mocked<typeof Simpress>;
+jest.mock('../../../src/api/Simpress');
+const SimpressMock = jest.mocked(Simpress);
 
 describe('Pager', () => {
   test('<Pager> test', async () => {

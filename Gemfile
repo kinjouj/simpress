@@ -6,7 +6,8 @@ ruby "3.3.9"
 
 gem "benchmark"
 gem "classy_hash"
-gem "erubis"
+gem "erubis", require: true
+gem "front_matter_parser"
 gem "guard-rake"
 gem "jsonable", path: "vendor/libs/ruby-jsonable"
 gem "only_blank"

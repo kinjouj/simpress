@@ -48,8 +48,10 @@ export default defineConfig(
       "curly": ["error", "all"],
       "no-empty": ["error", { allowEmptyCatch: false }],
       "no-constant-condition": "error",
+      "no-restricted-imports": ["error", { "paths": ["./"] }],
+      "no-unused-expressions": "error",
       "@stylistic/arrow-parens": ["error", "always"],
-      "@stylistic/array-bracket-spacing": ["error", "always", { singleValue: false }],
+      "@stylistic/array-bracket-spacing": ["error", "never"],
       "@stylistic/brace-style": ["error", "1tbs", { allowSingleLine: true }],
       "@stylistic/comma-dangle": [
         "error",
@@ -64,13 +66,21 @@ export default defineConfig(
       "@stylistic/jsx-sort-props": [
         "error",
         {
-          "callbacksLast": true,
           "reservedFirst": ["key", "ref", "id", "type", "name", "className"],
+          "callbacksLast": true,
           "shorthandLast": true,
           "noSortAlphabetically": true,
         },
       ],
       "@stylistic/max-statements-per-line": ["error", { max: 2 }],
+      "@stylistic/no-multi-spaces": [
+        "error",
+        {
+          "exceptions": {
+            "VariableDeclarator": true
+          }
+        }
+      ],
       "@stylistic/semi": ["error", "always"],
       "@stylistic/spaced-comment": "off",
       "@typescript-eslint/array-type": "error",
@@ -87,14 +97,6 @@ export default defineConfig(
         {
           selector: ["typeAlias", "interface", "class", "enum"],
           format: ["PascalCase"],
-        },
-        {
-          selector: ["variable", "function"],
-          format: ["PascalCase"],
-          custom: {
-            regex: "^[A-Z]",
-            match: true,
-          },
         },
       ],
       "@typescript-eslint/no-floating-promises": "error",
@@ -120,12 +122,11 @@ export default defineConfig(
       "check-file/filename-naming-convention": [
         "error",
         {
-          "**/api/*": "CAMEL_CASE",
           "**/components/!(index).{jsx,tsx}": "PASCAL_CASE",
           "**/hooks/!(index).ts": "use[A-Z][a-zA-Z0-9]*",
           "**/pages/!(index).tsx": "PASCAL_CASE",
           "**/reducers/*.ts": "CAMEL_CASE",
-          "**/types/!(index).ts": "PASCAL_CASE",
+          "**/types/!(index).ts": "KEBAB_CASE",
         },
         {
           ignoreMiddleExtensions: true,
@@ -137,7 +138,9 @@ export default defineConfig(
           "groups": [
             "builtin",
             "external",
-            [ "internal", "parent", "sibling" ],
+            "internal",
+            "parent",
+            "sibling",
             "index",
             "type",
           ],

@@ -1,29 +1,17 @@
-import { useEffect, useReducer } from 'react';
-import Simpress from '../api/simpress';
+import { useCallback } from 'react';
+import Simpress from '../api/Simpress';
 import { MyClipLoader, NotFound, Pager, PostList } from '../components';
-import { usePage } from '../hooks';
-import { fetchReducer } from '../reducers';
-import type { FetchState, PostType } from '../types';
+import { useFetchData, usePage } from '../hooks';
+import type { PostType } from '../types';
 
 const PostListPage = (): React.JSX.Element => {
   const pageNum = usePage();
-  const [ state, dispatch ] = useReducer(fetchReducer<PostType[]>, { data: null, isError: false } as FetchState<PostType[]>);
-  const { data: posts, isError } = state;
 
-  useEffect(() => {
-    dispatch({ type: 'FETCH_START' });
-
-    void (async (): Promise<void> => {
-      try {
-        const posts = await Simpress.getPostsByPage(pageNum);
-        setTimeout(() => {
-          dispatch({ type: 'FETCH_COMPLETE', payload: posts });
-        }, 1000);
-      } catch {
-        dispatch({ type: 'FETCH_ERROR' });
-      }
-    })();
+  const fetcher = useCallback(() => {
+    return Simpress.getPostsByPage(pageNum);
   }, [pageNum]);
+
+  const { data: posts, isError } = useFetchData<PostType[]>(fetcher);
 
   if (isError) {
     return <NotFound />;
@@ -34,7 +22,7 @@ const PostListPage = (): React.JSX.Element => {
   }
 
   return (
-    <div className="container">
+    <div className="container mt-5 flex-grow-1">
       <PostList posts={posts} />
       <Pager />
     </div>

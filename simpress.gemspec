@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = [ "lib", "vendor/libs/ruby-jsonable/lib" ]
   spec.add_dependency "classy_hash"
   spec.add_dependency "erubis", "2.7.0"
+  spec.add_dependency "front_matter_parser"
   spec.add_dependency "only_blank"
   spec.add_dependency "redcarpet", "3.6.1"
   spec.add_dependency "stringex"

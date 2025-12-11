@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { chunkIt } from '@array-utils/chunk-it';
-import Simpress from '../../api/simpress';
 import { usePage } from '../../hooks';
+import Simpress from '../../api/Simpress';
 
 const PAGE_PER_SIZE = 10;
 
 const Pager = (): React.JSX.Element | null => {
-  const [ maxPage, setMaxPage ] = useState<number>(1);
+  const [maxPage, setMaxPage] = useState<number>(1);
   const currentPage = usePage();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Pager = (): React.JSX.Element | null => {
     }
 
     return [];
-  }, [ maxPage, currentPage ]);
+  }, [maxPage, currentPage]);
 
   if (maxPage <= 1) {
     return null;
