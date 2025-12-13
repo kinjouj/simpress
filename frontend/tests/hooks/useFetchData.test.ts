@@ -1,15 +1,15 @@
 import { act, useCallback } from 'react';
-import { useFetchData } from '../../src/hooks';
-import { PostType } from '../../src/types';
-import { testPostData } from '../fixtures/testPostData';
 import { renderHook } from '@testing-library/react';
+import { useFetchData } from '../../src/hooks';
+import { testPostData } from '../fixtures/testPostData';
+import type { PostType } from '../../src/types';
 
 describe('useFetchData', () => {
   describe('useFetchData test', () => {
-    it('successful', async () => {
+    test('successful', async () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => Promise.resolve(testPostData), []);
-        return useFetchData<PostType>(fetcher)
+        return useFetchData<PostType>(fetcher);
       });
 
       await act(async () => {
@@ -18,10 +18,10 @@ describe('useFetchData', () => {
 
       const { data, isError } = result.current;
       expect(isError).toBeFalsy();
-      expect(data?.title).toEqual('test1');
+      expect(data?.title).toBe('test1');
     });
 
-    it('unmount test', async () => {
+    test('unmount test', async () => {
       const { result, unmount } = renderHook(() => {
         const fetcher = useCallback(() => Promise.resolve(testPostData), []);
         return useFetchData<PostType>(fetcher);
@@ -40,7 +40,7 @@ describe('useFetchData', () => {
   });
 
   describe('if fetcher throw error', () => {
-    it('successful', async () => {
+    test('successful', async () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => Promise.reject(new Error('error')), []);
         return useFetchData<PostType>(fetcher);
@@ -55,7 +55,7 @@ describe('useFetchData', () => {
       expect(data).toBeNull();
     });
 
-    it('unmount test', async () => {
+    test('unmount test', async () => {
       const { result, unmount } = renderHook(() => {
         const fetcher = useCallback(() => Promise.reject(new Error('error')), []);
         return useFetchData<PostType>(fetcher);

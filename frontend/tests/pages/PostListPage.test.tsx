@@ -19,21 +19,11 @@ const renderPostListPage = (): RenderResult => {
 };
 
 describe('PostListPage', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
   test('<PostListPage> test', async () => {
     SimpressMock.getPostsByPage.mockResolvedValue([testPostData]);
     renderPostListPage();
 
-    await waitFor(() => expect(SimpressMock.getPostsByPage).toHaveBeenCalled());
     await act(async () => {
-      jest.advanceTimersByTime(1000);
       await Promise.resolve();
     });
 

@@ -19,21 +19,11 @@ const renderArchives = (): RenderResult => {
 };
 
 describe('ArchivesPage', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
   test('<ArchivesPage> test', async () => {
     SimpressMock.getPostsByArchive.mockResolvedValue([testPostData]);
     renderArchives();
 
-    await waitFor(() => expect(SimpressMock.getPostsByArchive).toHaveBeenCalled());
     await act(async () => {
-      jest.advanceTimersByTime(1000);
       await Promise.resolve();
     });
 

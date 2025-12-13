@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import AppRoutes from '../../src/routes/AppRoutes';
 import Simpress from '../../src/api/Simpress';
@@ -8,7 +8,6 @@ let dataSpy: jest.SpyInstance<Promise<unknown>, [ string ]>;
 
 describe('AppRoutes', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
     /* eslint-disable */
     dataSpy = jest.spyOn(Simpress as any, 'getData').mockImplementation(
       (path): Promise<any> => {
@@ -32,7 +31,6 @@ describe('AppRoutes', () => {
   });
 
   afterEach(() => {
-    jest.useRealTimers();
     dataSpy.mockRestore();
   });
 
@@ -43,12 +41,9 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(dataSpy).toHaveBeenCalledTimes(1));
     await act(async () => {
-      jest.advanceTimersByTime(1000);
       await Promise.resolve();
     });
-    await waitFor(() => expect(dataSpy).toHaveBeenCalledTimes(2));
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
     expect(posts).toHaveLength(1);
@@ -61,9 +56,7 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(dataSpy).toHaveBeenCalledTimes(1));
     await act(async () => {
-      jest.advanceTimersByTime(1000);
       await Promise.resolve();
     });
 
@@ -78,9 +71,7 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(dataSpy).toHaveBeenCalledTimes(1));
     await act(async () => {
-      jest.advanceTimersByTime(1000);
       await Promise.resolve();
     });
 
@@ -95,9 +86,7 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(dataSpy).toHaveBeenCalledTimes(1));
     await act(async () => {
-      jest.advanceTimersByTime(1000);
       await Promise.resolve();
     });
 

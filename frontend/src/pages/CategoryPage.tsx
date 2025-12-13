@@ -15,17 +15,17 @@ const CategoryPage = (): React.JSX.Element => {
     return Simpress.getPostsByCategory(category);
   }, [category]);
 
-  const { data: categoryPosts, isError } = useFetchData<PostType[]>(fetcher);
+  const { data: posts, isError } = useFetchData<PostType[]>(fetcher);
 
   if (isError) {
     return <NotFound />;
   }
 
-  if (categoryPosts === null) {
+  if (posts === null) {
     return <MyClipLoader />;
   }
 
-  return <PostList posts={categoryPosts} />;
+  return <PostList posts={posts} />;
 };
 
 export default CategoryPage;

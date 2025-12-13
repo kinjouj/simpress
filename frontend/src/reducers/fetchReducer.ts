@@ -1,4 +1,6 @@
-import type { FetchAction, FetchState } from '../types';
+import type { FetchState } from '../types';
+
+type FetchAction<T> = { type: 'FETCH_START' } | { type: 'FETCH_COMPLETE', payload: T } | { type: 'FETCH_ERROR' };
 
 export const fetchReducer = <T>(state: FetchState<T>, action: FetchAction<T>): FetchState<T> => {
   switch (action.type) {

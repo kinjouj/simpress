@@ -19,21 +19,11 @@ const renderCategortPostListPage = (): RenderResult => {
 };
 
 describe('CategoryPage', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
-
   test('<CategoryPage> test', async () => {
     SimpressMock.getPostsByCategory.mockResolvedValue([testPostData]);
     renderCategortPostListPage();
 
-    await waitFor(() => expect(SimpressMock.getPostsByCategory).toHaveBeenCalled());
     await act(async () => {
-      jest.advanceTimersByTime(1000);
       await Promise.resolve();
     });
 

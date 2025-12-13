@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { chunkIt } from '@array-utils/chunk-it';
+import { range } from 'remeda';
 import { usePage } from '../../hooks';
 import Simpress from '../../api/Simpress';
 
 const PAGE_PER_SIZE = 10;
 
 const Pager = (): React.JSX.Element | null => {
-  const [maxPage, setMaxPage] = useState<number>(1);
+  const [maxPage, setMaxPage] = useState<number>(0);
   const currentPage = usePage();
 
   useEffect(() => {
@@ -24,8 +24,10 @@ const Pager = (): React.JSX.Element | null => {
 
   const pages = useMemo(() => {
     if (maxPage > 0) {
-      const chunks: number[][] = chunkIt(Array.from({ length: maxPage }, (_, i) => i + 1)).size(PAGE_PER_SIZE) as number[][];
-      return chunks[Math.ceil(currentPage / PAGE_PER_SIZE) - 1] ?? [];
+      const end = Math.min(currentPage + PAGE_PER_SIZE - 1, maxPage);
+      const start = Math.max(1, end - PAGE_PER_SIZE + 1);
+
+      return range(start, end + 1);
     }
 
     return [];

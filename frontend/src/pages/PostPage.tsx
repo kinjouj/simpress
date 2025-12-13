@@ -8,6 +8,7 @@ import type { CategoryType, PostType } from '../types';
 import 'prismjs/plugins/autoloader/prism-autoloader';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 
+// eslint-disable-next-line
 (Prism as any).plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
 
 const PostPage = (): React.JSX.Element => {
@@ -24,7 +25,9 @@ const PostPage = (): React.JSX.Element => {
   const { data: post, isError } = useFetchData<PostType>(fetcher);
 
   useEffect(() => {
-    Prism.highlightAll();
+    if (post !== null) {
+      Prism.highlightAll();
+    }
   }, [post]);
 
   if (isError) {
