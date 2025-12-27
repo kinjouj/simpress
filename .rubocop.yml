@@ -32,11 +32,17 @@ Metrics/CyclomaticComplexity:
 Metrics/MethodLength:
   Enabled: false
 
+Metrics/ParameterLists:
+  Max: 8
+
 Metrics/PerceivedComplexity:
   Enabled: false
 
 Style/BlockDelimiters:
   AllowedPatterns: ["each"]
+
+Style/ClassVars:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false

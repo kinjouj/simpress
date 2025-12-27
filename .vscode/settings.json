@@ -1,8 +1,10 @@
 {
   "files.exclude": {
+    ".npmrc": true,
     ".ruby-version": true,
     ".gitmodules": true,
     "yarn.lock": true,
+    "node_modules": true,
     "public": true,
     "logs": true,
     ".cache": true,
@@ -13,10 +15,6 @@
     "**/.rspec": true,
     "**/.simplecov": true
   },
-  "solargraph.useBundler": false,
-  "editor.tabSize": 2,
-  "typescript.format.semicolons": "insert",
-  "typescript.preferences.preferTypeOnlyAutoImports": true,
   "[typescript]": {
     "editor.indentSize": "tabSize",
     "editor.tabSize": 2,
@@ -25,5 +23,6 @@
   "[typescriptreact]": {
     "editor.tabSize": 2,
     "typescript.preferences.quoteStyle": "single"
-  }
+  },
+  "solargraph.useBundler": false,
 }

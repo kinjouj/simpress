@@ -15,5 +15,5 @@
     "isolatedModules": true,
     "types": ["jest", "node", "@testing-library/jest-dom"]
   },
-  "include": ["src/**/*", "tests/**/*"]
+  "include": ["frontend/src/**/*", "frontend/tests/**/*"]
 }

@@ -10,7 +10,7 @@ describe Simpress do
     allow(Simpress::Config.instance).to receive(:output_dir).and_return(create_filepath("./public"))
     allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(create_filepath("./plugins"))
     allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
-    allow(Simpress::Generator::Html).to receive(:paginate).and_return(1)
+    allow(Simpress::Paginator::Paging).to receive(:paginate).and_return(1)
   end
 
   after do

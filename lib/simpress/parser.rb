@@ -8,10 +8,7 @@ module Simpress
     class << self
       def parse(file)
         params, body, description = Simpress::Markdown.parse(File.read(file))
-
-        raise ParserError, "parse failed: #{file}" if params.blank? || body.blank?
-
-        content, image, toc = Simpress::Parser::Redcarpet.render(body)
+        content, image, toc       = Simpress::Parser::Redcarpet.render(body)
         basename = File.basename(file, ".*")
         initialize_params!(params, file, description, content, image, toc)
         parse_datetime!(params, basename)

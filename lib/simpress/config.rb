@@ -8,7 +8,7 @@ module Simpress
 
     SCHEMA = {
       default: {
-        logging: TrueClass,
+        logging: CH::G.enum(true, false),
         mode: CH::G.enum("html", "json"),
         host: String,
         paginate: [ :optional, 1..10 ],
@@ -20,21 +20,13 @@ module Simpress
       }
     }.freeze
 
-    @@attrs = attr_reader :logging, # rubocop:disable Style/ClassVars
-                          :host,
-                          :mode,
-                          :paginate,
-                          :plugin_dir,
-                          :source_dir,
-                          :output_dir,
-                          :theme_dir,
-                          :plugins
+    ATTRS = attr_reader(:logging, :host, :mode, :paginate, :plugin_dir, :source_dir, :output_dir, :theme_dir, :plugins).freeze
 
     def initialize
       config = load_config
       CH.validate(config, SCHEMA, strict: true, full: true)
-      @@attrs.each {|key|
-        instance_variable_set("@#{key}", config[:default][key]) if config[:default].include?(key)
+      ATTRS.each {|key|
+        instance_variable_set("@#{key}", config[:default][key])
       }
     end
 
@@ -45,7 +37,7 @@ module Simpress
     private
 
     def load_config
-      Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true)
+      Psych.safe_load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
     end
   end
 end

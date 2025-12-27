@@ -31,8 +31,7 @@ module Simpress
 
       def extended(klass)
         super
-        Thread.current[KEY] ||= Set.new
-        Thread.current[KEY] << klass
+        (Thread.current[KEY] ||= Set.new) << klass
       end
 
       def register_plugins

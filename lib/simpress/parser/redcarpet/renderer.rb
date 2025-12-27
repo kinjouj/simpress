@@ -7,8 +7,8 @@ module Simpress
         RENDERER_OPTIONS = { hard_wrap: true, no_styles: true }.freeze
         attr_reader :primary_image, :toc
 
-        def initialize(options = RENDERER_OPTIONS)
-          super
+        def initialize(options = nil)
+          super(options || RENDERER_OPTIONS)
           @primary_image = nil
           @toc = []
         end

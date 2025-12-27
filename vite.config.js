@@ -1,9 +1,9 @@
-import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import react from '@vitejs/plugin-react-swc';
 
 export default defineConfig({
+  root: 'frontend',
   plugins: [
     react(),
     viteStaticCopy({
@@ -24,13 +24,13 @@ export default defineConfig({
     rollupOptions: {
       onwarn(warning, warn) {
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
-          return; 
+          return;
         }
 
         warn(warning);
       },
       input: {
-        app: resolve(__dirname, 'src/index.tsx'),
+        app: 'frontend/src/index.tsx',
       },
       output: {
         entryFileNames: 'app.js',

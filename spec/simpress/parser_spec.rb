@@ -84,6 +84,20 @@ describe Simpress::Parser do
     expect(post.date).to eq(Date.new(2020, 1, 1).to_datetime)
   end
 
+  it "dateの値がdate型ではないデータ値になってる場合" do
+    allow(File).to receive(:read) {
+      <<~MARKDOWN
+        ---
+        title: test
+        date: abc
+        ---
+
+        test
+      MARKDOWN
+    }
+    expect { described_class.parse("dummy.markdown") }.to raise_error(Simpress::Parser::InvalidDateParseError)
+  end
+
   it "layoutがある場合" do
     allow(File).to receive(:read) {
       <<~MARKDOWN

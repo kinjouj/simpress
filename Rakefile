@@ -29,9 +29,7 @@ end
 
 desc "build_json"
 task :build_json do
-  cd("frontend") do
-    sh "npm run build", verbose: false
-  end
+  # sh "npm run build", verbose: false
 end
 
 desc "github deploy"

@@ -23,7 +23,7 @@ describe Simpress::Config do
 
     context "Psych.load_fileがnilを返した場合" do
       it "不正値として例外が発生すること" do
-        allow(Psych).to receive(:load_file).and_return(nil)
+        allow(Psych).to receive(:safe_load_file).and_return(nil)
         expect { described_class.instance }.to raise_error(CH::SchemaViolationError)
       end
     end

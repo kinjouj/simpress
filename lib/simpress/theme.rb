@@ -3,10 +3,24 @@
 module Simpress
   class Theme
     class << self
-      KEY = :erubis_caches
+      KEY = :simpress_erubis_caches
+
+      def render(template, data)
+        erubis = create_erubis(template)
+        Simpress::Context.update(data)
+        erubis.evaluate(Simpress::Context.instance)
+      end
+
+      def exist?(template)
+        File.exist?(fetch_template_file(template))
+      end
+
+      def clear
+        Thread.current[KEY] = nil
+      end
 
       def erubis_caches
-        Thread.current.fetch(KEY) {|key| Thread.current[key] = {} }
+        Thread.current[KEY] ||= {}
       end
 
       def create_erubis(template)
@@ -28,26 +42,12 @@ module Simpress
         erubis
       end
 
-      def render(template, data)
-        erubis = create_erubis(template)
-        Simpress::Context.update(data)
-        erubis.evaluate(Simpress::Context.instance)
-      end
-
-      def exist?(template)
-        File.exist?(fetch_template_file(template))
-      end
-
-      def clear
-        Thread.current[KEY] = nil
-      end
-
       def theme_dir
         Simpress::Config.instance.theme_dir || "theme"
       end
 
       def fetch_template_file(template)
-        "#{theme_dir}/#{template}.erb"
+        File.join(theme_dir, "#{template}.erb")
       end
     end
 

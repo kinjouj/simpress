@@ -29,7 +29,7 @@ describe Simpress::Plugin do
           extend Simpress::Plugin
 
           def self.run(*_args)
-            bind_context(mode: self.config.mode.to_sym)
+            bind_context(mode: config.mode.to_sym)
           end
         end
 
