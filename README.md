@@ -27,7 +27,6 @@ jsonモード使う場合は以下も必要
 
 
 ```bash
-cd frontend
 npm install
 ```
 
@@ -82,7 +81,7 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 |:-------:  |-----------|
 |title      |タイトル   |
 |date       |日付(DateTime)。無い場合はファイル名から算出。ファイル名から算出できない場合はエラーになる|
-|permalink  |パスURL。無い場合はファイル名などから算出(拡張子不要)|
+|permalink  |パスURL。無い場合はファイル名などから算出|
 |cover      |サムネイル画像。指定しない場合は/images/no_image.pngが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される|
 |layout     |記事の種類。postかpageで指定。指定しない場合はpost(pageはインデックスが作成されない)|
 |published  |記事を出力するかのフラグ。デフォルトはtrue|

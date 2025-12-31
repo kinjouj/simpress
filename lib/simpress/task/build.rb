@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require "simpress/config"
+require "simpress/logger"
+require "simpress/writer"
+
 module Simpress
   class Task
     class Build < Rake::TaskLib
@@ -23,7 +27,7 @@ module Simpress
         result = Benchmark.realtime do
           GC.disable
           Simpress.build do
-            build_scss
+            # build_scss
             Rake::Task["build_#{Simpress::Config.instance.mode}"].execute
           end
           GC.enable

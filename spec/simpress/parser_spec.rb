@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
-require "simpress/config"
-require "simpress/markdown"
-require "simpress/markdown/filter"
 require "simpress/parser"
-require "simpress/parser/redcarpet"
-require "simpress/parser/redcarpet/renderer"
-require "simpress/model/category"
-require "simpress/model/post"
 
 describe Simpress::Parser do
   before do
@@ -15,9 +8,9 @@ describe Simpress::Parser do
   end
 
   it do
-    post = described_class.parse(fixture("parser/test.markdown").path)
+    post = described_class.parse(fixture("test.markdown").path)
     expect(post).not_to be_nil
-    expect(post.title).to eq("test1")
+    expect(post.title).to eq("test")
     expect(post.permalink).to eq("/test.html")
     expect(post.layout).to eq(:post)
     expect(post.published).to be_truthy

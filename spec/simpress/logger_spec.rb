@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "simpress/config"
 require "simpress/logger"
 
 describe Simpress::Logger do
@@ -9,7 +8,7 @@ describe Simpress::Logger do
     allow(Simpress::Config.instance).to receive(:logging).and_return(true)
   end
 
-  describe "#info" do
+  describe ".info" do
     it "infoのテスト" do
       expect { described_class.info("test") }.to output.to_stdout
     end
@@ -22,7 +21,7 @@ describe Simpress::Logger do
     end
   end
 
-  describe "#debug" do
+  describe ".debug" do
     it "debugのテスト" do
       expect { described_class.debug("test") }.to output.to_stdout
     end

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "classy_hash"
+require "singleton"
+
 module Simpress
   class Config
     include Singleton

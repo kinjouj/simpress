@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require "simpress/config"
+require "simpress/context"
+require "simpress/logger"
+
 module Simpress
   module Plugin
     def run(*_args)

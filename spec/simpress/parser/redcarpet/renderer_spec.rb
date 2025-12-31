@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-require "simpress/config"
-require "simpress/logger"
-require "simpress/markdown/filter"
 require "simpress/parser/redcarpet/renderer"
 
 describe Simpress::Parser::Redcarpet::Renderer do
+  before do
+    allow(Simpress::Logger).to receive(:debug)
+  end
+
   after do
     Simpress::Markdown::Filter.clear
   end
@@ -52,10 +53,21 @@ describe Simpress::Parser::Redcarpet::Renderer do
         end
       end
 
+      markdown = <<~MARKDOWN
+        #### TEST1
+
+        ![](/test1.jpg)
+
+        ![](/test2.jpg)
+
+        ### TEST2
+      MARKDOWN
+
       stub_const("TestFilter", test_filter)
-      markdown = renderer.preprocess(fixture("parser/redcarpet/parser_redcarpet_test.markdown").read)
+      markdown = renderer.preprocess(markdown)
       expect(markdown).not_to be_nil
       expect(markdown).to start_with("#### TEST1")
+      expect(Simpress::Logger).to have_received(:debug).exactly(1).times
     end
   end
 end

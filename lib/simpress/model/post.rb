@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
+require "classy_hash"
+require "date"
+require "simpress/model/category"
+
 module Simpress
   module Model
     class Post
-      include Jsonable
-
       SCHEMA = {
         id: String,
         title: String,
@@ -14,7 +16,7 @@ module Simpress
         permalink: %r{\A/},
         categories: [[ Simpress::Model::Category ]],
         cover: String,
-        published: TrueClass,
+        published: CH::G.enum(true, false),
         layout: CH::G.enum(:post, :page),
         description: [ :optional, String ]
       }.freeze
@@ -36,22 +38,25 @@ module Simpress
         params.each {|key, value| instance_variable_set("@#{key}", value) }
       end
 
-      def to_hash_without_content
-        {
+      def to_json(*)
+        as_json(*).to_json
+      end
+
+      def as_json(options = {})
+        hash = {
           id: @id,
           title: @title,
+          description: @description,
+          toc: @toc,
           date: @date,
           permalink: @permalink,
           categories: @categories,
-          cover: @cover
+          cover: @cover,
+          layout: @layout
         }
+        hash[:content] = @content if options[:include_content]
+        hash
       end
-
-      # :nocov:
-      def exclude_jsonable
-        [ :published ]
-      end
-      # :nocov:
 
       def to_s
         "#{@title}: #{@permalink}"

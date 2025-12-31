@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require "only_blank"
+require "redcarpet"
+require "simpress/markdown/filter"
+
 module Simpress
   module Parser
     module Redcarpet

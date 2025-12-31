@@ -7,9 +7,9 @@ describe Simpress::Config do
     described_class.clear
   end
 
-  describe "initialize" do
+  describe ".instance" do
     context "正常な設定ファイルを指定した場合" do
-      it "successful" do
+      it "インスタンスが正常に返ってくること" do
         expect(described_class.instance).not_to be_nil
       end
     end
@@ -21,7 +21,7 @@ describe Simpress::Config do
       end
     end
 
-    context "Psych.load_fileがnilを返した場合" do
+    context "Psych.safe_load_fileがnilを返した場合" do
       it "不正値として例外が発生すること" do
         allow(Psych).to receive(:safe_load_file).and_return(nil)
         expect { described_class.instance }.to raise_error(CH::SchemaViolationError)

@@ -15,12 +15,12 @@ describe Simpress::Context do
       end
 
       it "存在しないキーを指定した場合、例外が発生すること" do
-        expect { described_class[:key] }.to raise_error("'key' missing")
+        expect { described_class[:key] }.to raise_error(KeyError)
       end
     end
   end
 
-  describe "#update" do
+  describe ".update" do
     it "successful" do
       described_class.update(key: "test", version: 1)
       expect(described_class[:key]).to eq("test")
@@ -28,13 +28,13 @@ describe Simpress::Context do
     end
   end
 
-  describe "#clear" do
+  describe ".clear" do
     context "値をつっこんだあとでclearを呼んだ場合" do
       it "ちゃんと値が消えていること" do
         described_class[:key] = "hoge"
         expect(described_class[:key]).to eq("hoge")
         described_class.clear
-        expect { described_class[:key] }.to raise_error("'key' missing")
+        expect { described_class[:key] }.to raise_error(KeyError)
       end
     end
   end

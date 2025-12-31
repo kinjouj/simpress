@@ -9,7 +9,6 @@ gem "classy_hash"
 gem "erubis"
 gem "front_matter_parser"
 gem "guard-rake"
-gem "jsonable", path: "vendor/libs/ruby-jsonable"
 gem "only_blank"
 gem "rake"
 gem "redcarpet"
@@ -19,10 +18,12 @@ gem "stringex"
 gem "tee"
 gem "webrick"
 
-# rubocop
-gem "rubocop", require: false
-gem "rubocop-performance", require: false
-gem "rubocop-rspec", require: false
+group :development do
+  gem "rubocop", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rspec", require: false
+  gem "solargraph", require: false
+end
 
 group :test do
   gem "rspec"

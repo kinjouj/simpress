@@ -4,13 +4,14 @@ require "simpress"
 
 describe Simpress do
   before do
+    allow(Simpress::Logger).to receive(:info)
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
     allow(Simpress::Config.instance).to receive(:theme_dir).and_return(create_filepath("./theme"))
     allow(Simpress::Config.instance).to receive(:source_dir).and_return(create_filepath("./source"))
     allow(Simpress::Config.instance).to receive(:output_dir).and_return(create_filepath("./public"))
     allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(create_filepath("./plugins"))
     allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
-    allow(Simpress::Paginator::Paging).to receive(:paginate).and_return(1)
+    allow(Simpress::Paginator).to receive(:paginate).and_return(1)
   end
 
   after do
@@ -18,8 +19,7 @@ describe Simpress do
   end
 
   it do
-    allow(Simpress::Logger).to receive(:info)
-    described_class.build
+    expect { described_class.build }.not_to raise_error
     expect(Simpress::Logger).to have_received(:info).at_least(1).times
     expect(File).to exist(create_filepath("./public/count.txt"))
     expect(File).to exist(create_filepath("./public/test.html"))

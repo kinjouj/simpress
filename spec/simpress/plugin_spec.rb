@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require "simpress/config"
-require "simpress/context"
 require "simpress/plugin"
-require "simpress/logger"
 
 describe Simpress::Plugin do
   after do

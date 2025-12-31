@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+require "only_blank"
+require "stringex"
+
 module Simpress
   module Model
     class Category
-      include Jsonable
-
       attr_reader :key, :name
       attr_accessor :count, :children, :moved, :last_update
 
@@ -26,11 +27,13 @@ module Simpress
         @key.hash
       end
 
-      # :nocov:
-      def exclude_jsonable
-        [ :moved, :children ]
+      def to_json(*)
+        as_json(*).to_json
       end
-      # :nocov:
+
+      def as_json(_options = {})
+        { key: @key, name: @name, count: @count }
+      end
     end
   end
 end

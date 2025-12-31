@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
+require "erubis"
+require "singleton"
+
 module Simpress
   class Context < Erubis::Context
     include Singleton
 
     class << self
       def [](key)
-        instance[key.to_sym] or raise "'#{key}' missing"
+        instance[key.to_sym] or raise KeyError, "'#{key}' missing"
       end
 
       def []=(key, value)

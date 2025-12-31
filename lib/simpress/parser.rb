@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+require "date"
+require "digest/sha1"
+require "pathname"
+require "only_blank"
+require "simpress/config"
+require "simpress/markdown"
+require "simpress/model/category"
+require "simpress/model/post"
+require "simpress/parser/redcarpet"
+
 module Simpress
   module Parser
     class ParserError < StandardError; end
@@ -9,7 +19,7 @@ module Simpress
       def parse(file)
         params, body, description = Simpress::Markdown.parse(File.read(file))
         content, image, toc       = Simpress::Parser::Redcarpet.render(body)
-        basename = File.basename(file, ".*")
+        basename                  = File.basename(file, ".*")
         initialize_params!(params, file, description, content, image, toc)
         parse_datetime!(params, basename)
         parse_permalink!(params, basename)
@@ -43,8 +53,13 @@ module Simpress
       end
 
       def parse_permalink!(params, basename)
-        params[:permalink] = Pathname.new("/").join(params[:date].strftime("%Y/%m"), basename).to_s if params[:permalink].blank?
-        params[:permalink] = "#{params[:permalink]}.#{Simpress::Config.instance.mode}"
+        basepath = if params[:permalink].blank?
+                     Pathname.new("/").join(params[:date].strftime("%Y/%m"), basename)
+                   else
+                     Pathname.new(params[:permalink])
+                   end
+
+        params[:permalink] = basepath.sub_ext(".#{Simpress::Config.instance.mode}").to_s
       end
 
       def parse_categories!(params)

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "simpress/markdown/filter"
+
 module Simpress
   module Markdown
     module Filter

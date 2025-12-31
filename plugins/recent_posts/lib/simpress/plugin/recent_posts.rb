@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require "simpress/config"
+require "simpress/plugin"
+require "simpress/theme"
+require "simpress/writer"
+
 module Simpress
   module Plugin
     class RecentPosts

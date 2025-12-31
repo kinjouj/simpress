@@ -1,55 +1,34 @@
 # frozen_string_literal: true
 
-require "simpress"
-require "simpress/config"
 require "simpress/generator"
-require "simpress/generator/html"
-require "simpress/logger"
-require "simpress/parser"
-require "simpress/parser/redcarpet"
-require "simpress/parser/redcarpet/renderer"
-require "simpress/plugin"
-require "simpress/model/post"
-require "simpress/model/category"
-require "simpress/paginator/post"
 
 describe Simpress::Generator do
-  before do
-    allow(described_class).to receive(:source_dir).and_return(fixture("generator/source").path)
-    allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
-    allow(Simpress::Config.instance).to receive(:theme_dir).and_return(fixture("generator/theme").path)
-    allow(Simpress::Config.instance).to receive(:output_dir).and_return(fixture("generator/public").path)
-    allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(fixture("generator/plugins").path)
-    allow(Simpress::Config.instance).to receive(:plugins).and_return([])
-  end
+  let(:category) { Simpress::Model::Category.new("Test") }
+  let(:post1) { build_post_data(1, categories: [category]) }
+  let(:post2) { build_post_data(2, categories: [category]) }
+  let(:post3) { build_post_data(3, published: false) }
+  let(:page) { build_post_data(4, layout: :page) }
 
-  after do
-    Dir.glob(fixture("generator/public/*")) {|file| FileUtils.rm_rf(file) }
+  before do
+    allow(Dir).to receive(:[]).and_return(["post1.md", "post2.md", "post3.md", "page1.md"])
+    allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Plugin).to receive(:process)
+    allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
+    allow(Simpress::Parser).to receive(:parse).with("post1.md").and_return(post1)
+    allow(Simpress::Parser).to receive(:parse).with("post2.md").and_return(post2)
+    allow(Simpress::Parser).to receive(:parse).with("post3.md").and_return(post3)
+    allow(Simpress::Parser).to receive(:parse).with("page1.md").and_return(page)
+    allow(Simpress::Generator::Html).to receive(:generate)
   end
 
   it "test" do
-    allow(Simpress::Logger).to receive(:info)
-    described_class.generate
-    expect(File).to exist(fixture("generator/public/2000/01/test.html").path)
-    expect(Simpress::Logger).to have_received(:info).at_least(1)
-  end
-
-  it "if Simpress::Parser.parse published=false" do
-    allow(Simpress::Parser).to receive(:parse) {
-      Simpress::Model::Post.new(
-        id: "test",
-        title: "test",
-        content: "test",
-        toc: [],
-        date: DateTime.now,
-        permalink: "/test.html",
-        categories: [],
-        cover: "/images/no_image.png",
-        layout: :post,
-        published: false
-      )
-    }
-    described_class.generate
-    expect(File).not_to exist(fixture("generator/public/2000/01/test.html").path)
+    expect { described_class.generate }.not_to raise_error
+    expect(Simpress::Logger).to have_received(:info).at_least(1).times
+    expect(Simpress::Plugin).to have_received(:process).exactly(1).times
+    expect(Simpress::Generator::Html).to have_received(:generate).with(
+      [post1, post2],
+      [page],
+      hash_including("test" => category)
+    )
   end
 end

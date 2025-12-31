@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-require "simpress/config"
-require "simpress/logger"
 require "simpress/markdown/filter"
 
 describe Simpress::Markdown::Filter do
+  before do
+    allow(Simpress::Logger).to receive(:debug)
+  end
+
   after do
     described_class.clear
   end
@@ -21,6 +23,7 @@ describe Simpress::Markdown::Filter do
 
       stub_const("TestFilter", test_filter)
       expect(described_class.run("test")).to eq("Test")
+      expect(Simpress::Logger).to have_received(:debug).exactly(1).times
     end
 
     it "preprocessメソッドが定義されてない場合" do
@@ -30,6 +33,7 @@ describe Simpress::Markdown::Filter do
 
       stub_const("TestFilter", test_filter)
       expect { described_class.run("dummy") }.to raise_error(RuntimeError)
+      expect(Simpress::Logger).to have_received(:debug).exactly(1).times
     end
 
     it "preprocessメソッドの返り値がStringではない場合" do
@@ -43,6 +47,7 @@ describe Simpress::Markdown::Filter do
 
       stub_const("TestFilter", test_filter)
       expect(described_class.run("test")).to eq("test")
+      expect(Simpress::Logger).to have_received(:debug).exactly(1).times
     end
   end
 end

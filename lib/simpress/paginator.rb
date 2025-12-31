@@ -1,9 +1,22 @@
 # frozen_string_literal: true
 
+require "only_blank"
+require "simpress/config"
+require "simpress/paginator/index"
+require "simpress/paginator/post"
+
 module Simpress
   module Paginator
     def self.builder
       Builder.new
+    end
+
+    def self.paginate
+      Simpress::Config.instance.paginate || 10
+    end
+
+    def self.calculate_pagesize(array)
+      array.size.quo(paginate).ceil
     end
 
     class Builder

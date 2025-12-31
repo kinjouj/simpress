@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-require "simpress/config"
-require "simpress/context"
-require "simpress/logger"
 require "simpress/theme"
-require "simpress/writer"
 
 describe Simpress::Theme do
   before do
     allow(described_class).to receive(:theme_dir).and_return(fixture("theme").path)
   end
 
-  it :create_erubis do
-    create_erubis = ->(template) { described_class.send(:create_erubis, template) }
+  let(:create_erubis) do
+    ->(template) { described_class.send(:create_erubis, template) }
+  end
 
+  it :create_erubis do
     erubis1 = create_erubis.call("post")
     expect(erubis1).to eq(create_erubis.call("post"))
 
@@ -29,9 +27,7 @@ describe Simpress::Theme do
 
     expect { create_erubis.call("test") }.to raise_error(RuntimeError)
 
-    allow(File).to receive(:read) {
-      raise RuntimeError
-    }
+    allow(File).to receive(:read) { raise RuntimeError }
     expect { create_erubis.call("post") }.to raise_error(RuntimeError)
   end
 
@@ -40,7 +36,7 @@ describe Simpress::Theme do
     expect(data).not_to be_empty
   end
 
-  describe "#exist?" do
+  describe ".exist?" do
     it "successful" do
       expect(described_class).to exist("post")
       expect(described_class).not_to exist("test")

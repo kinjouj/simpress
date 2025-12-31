@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "simpress/config"
 require "simpress/writer"
 
 describe Simpress::Writer do
@@ -14,12 +13,12 @@ describe Simpress::Writer do
 
   describe "#write" do
     it "successful" do
-      described_class.write("./test.txt", "hoge")
+      expect { described_class.write("./test.txt", "hoge") }.not_to raise_error
       expect(File).to exist(create_filepath("../tmp/test.txt"))
     end
 
     it "既に存在するファイルに書き込みしようとした場合" do
-      described_class.write("./test2.txt", "hoge")
+      expect { described_class.write("./test2.txt", "hoge") }.not_to raise_error
       expect { described_class.write("./test2.txt", "fuga") }.to raise_error(RuntimeError)
     end
 

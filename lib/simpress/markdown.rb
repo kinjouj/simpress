@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "front_matter_parser"
+
 module Simpress
   module Markdown
     class MarkdownError < StandardError; end

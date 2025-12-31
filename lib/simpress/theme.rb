@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
+require "erubis"
+require "simpress/config"
+require "simpress/context"
+
 module Simpress
   class Theme
     class << self
       KEY = :simpress_erubis_caches
 
       def render(template, data)
-        erubis = create_erubis(template)
         Simpress::Context.update(data)
+        erubis = create_erubis(template)
         erubis.evaluate(Simpress::Context.instance)
       end
 

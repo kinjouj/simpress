@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require "simpress/paginator"
-require "simpress/paginator/index"
-require "simpress/paginator/post"
 
 describe Simpress::Paginator do
   it "successful" do

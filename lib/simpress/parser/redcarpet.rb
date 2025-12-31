@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "redcarpet"
+require "simpress/parser/redcarpet/renderer"
+
 module Simpress
   module Parser
     module Redcarpet

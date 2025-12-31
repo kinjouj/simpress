@@ -1,3 +1,0 @@
-[submodule "vendor/libs/ruby-jsonable"]
-	path = vendor/libs/ruby-jsonable
-	url = https://github.com/kinjouj/ruby-jsonable.git

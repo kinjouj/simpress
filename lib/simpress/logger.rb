@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require "logger"
+require "singleton"
+require "tee"
+require "simpress/config"
+
 module Simpress
   class Logger
     include Singleton

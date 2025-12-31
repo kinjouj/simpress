@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "simpress/config"
+
 module Simpress
   module Writer
     def self.write(file, data)

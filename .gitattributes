@@ -1,0 +1,3 @@
+eslint.config.mjs linguist-detectable=false
+jest.config.mjs linguist-detectable=false
+vite.config.js linguist-detectable=false
