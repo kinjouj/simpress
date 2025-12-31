@@ -16,7 +16,6 @@ a simple static blog generator
 ```bash
 git clone https://github.com/kinjouj/simpress.git blog
 cd blog
-git submodule update --init
 bundle install
 cp config.yaml.orig config.yaml
 rake build
