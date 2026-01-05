@@ -11,14 +11,16 @@ describe Simpress::Parser::Redcarpet::Renderer do
     Simpress::Markdown::Filter.clear
   end
 
-  context "メソッドのテスト" do
-    let(:renderer) { described_class.new }
+  let(:renderer) { described_class.new }
 
-    it "#paragraph" do
+  describe "#paragraph" do
+    it "テキストをpタグで囲むこと" do
       expect(renderer.paragraph("test")).to eq("<p>test</p>")
     end
+  end
 
-    it "#header" do
+  describe "#header" do
+    it "ヘッダーを適切に生成し、tocを更新すること" do
       expect(renderer.header("test", 4)).to eq("<h4>test</h4>")
       expect(renderer.toc).to eq(["test"])
       expect(renderer.header("test2", 3)).to eq("<h3>test2</h3>")
@@ -26,25 +28,33 @@ describe Simpress::Parser::Redcarpet::Renderer do
       expect(renderer.header("test3", 4)).to eq("<h4>test3</h4>")
       expect(renderer.toc).to eq(%w[test test3])
     end
+  end
 
-    it "#image" do
+  describe "#image" do
+    it "画像タグを生成し、primary_imageを設定すること" do
       expect(renderer.image("/test.jpg")).to eq(%(<img src="/test.jpg" class="img-fluid" alt="image" />))
       expect(renderer.primary_image).to eq("/test.jpg")
       renderer.image("/test2.jpg")
       expect(renderer.primary_image).to eq("/test.jpg")
     end
+  end
 
-    it "#autolink" do
+  describe "#autolink" do
+    it "自動的にリンクを生成すること" do
       expect(renderer.autolink("/test")).to start_with(%(<a href="/test"))
     end
+  end
 
-    it "#block_code" do
+  describe "#block_code" do
+    it "コードブロックを適切に生成すること" do
       expect(
         renderer.block_code("<test>", "test-lang")
       ).to eq(%(<pre class="line-numbers"><code class="language-test-lang">&lt;test&gt;</code></pre>))
     end
+  end
 
-    it "#preprocess" do
+  describe "#preprocess" do
+    it "フィルターを通したデータを返すこと" do
       test_filter = Class.new do
         extend Simpress::Markdown::Filter
 

@@ -4,7 +4,7 @@ require "simpress/markdown/filter/inline_note"
 
 describe Simpress::Markdown::Filter::InlineNote do
   describe "#preprocess" do
-    it "successful" do
+    it "正常に変換されること" do
       markdown = <<~MARKDOWN
         [^]: Hello World
       MARKDOWN

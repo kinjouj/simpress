@@ -6,19 +6,20 @@ module Simpress
   module Markdown
     class MarkdownError < StandardError; end
 
-    @parser = FrontMatterParser::Parser.new(
+    PARSER = FrontMatterParser::Parser.new(
       :md,
       loader: FrontMatterParser::Loader::Yaml.new(allowlist_classes: [Time])
     )
 
     def self.parse(txt)
-      data   = @parser.call(txt)
-      params = (data.front_matter || {}).transform_keys(&:to_sym)
+      data   = PARSER.call(txt)
       body   = data.content || ""
+      params = {}
+      (data.front_matter || {}).each {|k, v| params[k.to_sym] = v }
 
       raise MarkdownError, "Markdown parse failed" if params.empty? || body.strip.empty?
 
-      [ params, body, body.to_s.split(/\n{2,}/).first.to_s.strip ]
+      [params, body, ERB::Util.html_escape(body.to_s.split(/\n{2,}/).first.to_s.strip)]
     end
   end
 end

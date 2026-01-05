@@ -14,14 +14,14 @@ module Simpress
 
         def extended(klass)
           super
-          (Thread.current[KEY] ||= Set.new) << klass
+          (Thread.current[KEY] ||= []) << klass
           Simpress::Logger.debug("REGISTER FILTER: #{klass}")
         end
 
         def run(body)
           data = body
           (Thread.current[KEY] || []).each do |klass|
-            res  = klass.preprocess(data.freeze)
+            res  = klass.preprocess(data)
             data = res if res.is_a?(String)
           end
 

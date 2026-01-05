@@ -16,17 +16,19 @@ describe Simpress::Plugin::RecentPosts do
     Simpress::Context.clear
   end
 
-  context "run" do
-    it "successful" do
+  describe ".run" do
+    it "正常に最近の投稿がContextに格納されること" do
       described_class.run([*1..30], nil, nil)
       content = Simpress::Context[:sidebar_recent_posts_content]
       expect(content.chomp).to eq([*1..10].join("\n"))
     end
 
-    it "template_exist?がfalseを返した場合" do
-      allow(Simpress::Theme).to receive(:exist?).and_return(false)
-      described_class.run([*1..30], nil, nil)
-      expect { Simpress::Context[:sidebar_recent_posts_content] }.to raise_error("'sidebar_recent_posts_content' missing")
+    context "template_exist?がfalseを返した場合" do
+      it "Contextにデータが設定されないこと" do
+        allow(Simpress::Theme).to receive(:exist?).and_return(false)
+        described_class.run([*1..30], nil, nil)
+        expect { Simpress::Context[:sidebar_recent_posts_content] }.to raise_error("'sidebar_recent_posts_content' missing")
+      end
     end
   end
 end

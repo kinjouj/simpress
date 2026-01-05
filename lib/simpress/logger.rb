@@ -26,11 +26,17 @@ module Simpress
     end
 
     def self.info(message)
-      Simpress::Logger.instance.info(message) if Simpress::Config.instance.logging
+      return unless logging?
+
+      Simpress::Logger.instance.info(message)
     end
 
     def self.debug(message)
       Simpress::Logger.instance.debug(message)
+    end
+
+    def self.logging?
+      @logging ||= Simpress::Config.instance.logging
     end
 
     def self.clear

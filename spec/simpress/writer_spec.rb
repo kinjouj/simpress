@@ -1,30 +1,37 @@
 # frozen_string_literal: true
 
+require "tmpdir"
 require "simpress/writer"
 
 describe Simpress::Writer do
   before do
-    allow(described_class).to receive(:output_dir).and_return(create_filepath("../tmp"))
+    tmpdir = Dir.mktmpdir
+    allow(Simpress::Config.instance).to receive(:output_dir).and_return(tmpdir)
+    allow(described_class).to receive(:output_dir).and_return(tmpdir)
   end
 
   after do
-    Dir[create_filepath("../tmp/*.txt")].each {|file| FileUtils.rm_rf(file) }
+    FileUtils.remove_entry(Simpress::Config.instance.output_dir, true)
   end
 
-  describe "#write" do
-    it "successful" do
-      expect { described_class.write("./test.txt", "hoge") }.not_to raise_error
-      expect(File).to exist(create_filepath("../tmp/test.txt"))
+  describe ".write" do
+    it "指定したパスにファイルを書き込めること" do
+      expect { described_class.write("test.txt", "hoge") }.not_to raise_error
+      expect(File).to exist(File.join(Simpress::Config.instance.output_dir, "test.txt"))
     end
 
-    it "既に存在するファイルに書き込みしようとした場合" do
-      expect { described_class.write("./test2.txt", "hoge") }.not_to raise_error
-      expect { described_class.write("./test2.txt", "fuga") }.to raise_error(RuntimeError)
+    context "既に存在するファイルに書き込もうとした場合" do
+      it "RuntimeErrorが発生すること" do
+        expect { described_class.write("test2.txt", "hoge") }.not_to raise_error
+        expect { described_class.write("test2.txt", "fuga") }.to raise_error(RuntimeError)
+      end
     end
 
-    it "blockを要求した場合" do
-      described_class.write("./test3.txt", "foobar") do |filepath|
-        expect(filepath).to eq(create_filepath("../tmp/test3.txt"))
+    context "ブロックを要求した場合" do
+      it "正しいファイルパスが渡されること" do
+        described_class.write("test3.txt", "foobar") do |filepath|
+          expect(filepath).to eq(File.expand_path(File.join(Simpress::Config.instance.output_dir, "test3.txt")))
+        end
       end
     end
   end

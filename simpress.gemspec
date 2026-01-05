@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">=3.3.9"
   spec.metadata["rubygems_mfa_required"] = "true"
   spec.files = Dir["lib/**/*"]
-  spec.require_paths = [ "lib" ]
+  spec.require_paths = ["lib"]
   spec.add_dependency "classy_hash"
   spec.add_dependency "erubis", "2.7.0"
   spec.add_dependency "front_matter_parser"

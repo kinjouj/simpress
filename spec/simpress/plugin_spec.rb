@@ -7,10 +7,12 @@ describe Simpress::Plugin do
     described_class.clear
   end
 
-  describe "#load" do
-    it "plugin_dirを指定したロードした場合に正しくプラグインがロードされているか" do
+  describe ".load" do
+    it "plugin_dirとpluginsの設定に基づいてプラグインが正しくロードされること" do
       allow(Simpress::Logger).to receive(:debug)
-      allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(fixture("plugins").path)
+      allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(
+        File.expand_path("plugins", __dir__)
+      )
       allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
       described_class.load
       described_class.process
@@ -19,9 +21,9 @@ describe Simpress::Plugin do
     end
   end
 
-  describe "#process" do
-    context "pluginsを指定してフィルターした場合" do
-      it "test1_plugin以外が実行されないこと" do
+  describe ".process" do
+    context "pluginsを指定して実行対象をフィルタした場合" do
+      it "指定したプラグインのみが実行されること" do
         test1_class = Class.new do
           extend Simpress::Plugin
 
@@ -51,8 +53,8 @@ describe Simpress::Plugin do
       end
     end
 
-    context "processメソッドが実装されてない場合" do
-      it "エラーが起きること" do
+    context "runメソッドが実装されていないプラグインがある場合" do
+      it "NotImplementedError が発生すること" do
         test2_plugin = Class.new do
           extend Simpress::Plugin
         end

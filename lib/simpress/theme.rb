@@ -23,24 +23,25 @@ module Simpress
         Thread.current[KEY] = nil
       end
 
+      private
+
       def erubis_caches
         Thread.current[KEY] ||= {}
       end
 
       def create_erubis(template)
         filename = fetch_template_file(template)
+        erubis = erubis_caches[filename]
+        return erubis if erubis
+
         raise "template missing: #{filename}" unless exist?(template)
 
-        erubis = erubis_caches[filename]
-
-        if erubis.nil?
-          begin
-            erubis = Erubis::Eruby.new(File.read(filename))
-            erubis.filename = filename
-            erubis_caches[filename] = erubis
-          rescue StandardError => e
-            raise "Failed template error: #{e}"
-          end
+        begin
+          erubis = Erubis::Eruby.new(File.read(filename))
+          erubis.filename = filename
+          erubis_caches[filename] = erubis
+        rescue StandardError => e
+          raise "Failed template error: #{e}"
         end
 
         erubis
@@ -54,7 +55,5 @@ module Simpress
         File.join(theme_dir, "#{template}.erb")
       end
     end
-
-    private_class_method :erubis_caches, :create_erubis, :theme_dir, :fetch_template_file
   end
 end

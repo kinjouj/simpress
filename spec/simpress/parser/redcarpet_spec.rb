@@ -3,7 +3,7 @@
 require "simpress/parser/redcarpet"
 
 describe Simpress::Parser::Redcarpet do
-  it do
+  it "markdownをrenderすると正しくbody、images、tosが返されること" do
     markdown = <<~MARKDOWN
       #### TEST1
 

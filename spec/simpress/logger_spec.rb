@@ -15,7 +15,7 @@ describe Simpress::Logger do
 
     context "configでloggingがfalseの場合" do
       it "ログが出力されないこと" do
-        allow(Simpress::Config.instance).to receive(:logging).and_return(false)
+        allow(described_class).to receive(:logging?).and_return(false)
         expect { described_class.info("test") }.not_to output.to_stdout
       end
     end

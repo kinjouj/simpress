@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "erb"
 require "only_blank"
 require "redcarpet"
 require "simpress/markdown/filter"
@@ -40,12 +41,7 @@ module Simpress
         end
 
         def block_code(code, lang = "text")
-          escape_code = code.gsub("&", "&amp;")
-                            .gsub("\"", "&quot;")
-                            .gsub("'", "&apos;")
-                            .gsub("<", "&lt;")
-                            .gsub(">", "&gt;")
-
+          escape_code = ERB::Util.html_escape(code)
           %(<pre class="line-numbers"><code class="language-#{lang}">#{escape_code}</code></pre>)
         end
       end

@@ -3,8 +3,22 @@
 require "simpress/markdown"
 
 describe Simpress::Markdown do
-  it "parser test" do
-    metadata, body, description = described_class.parse(fixture("test.markdown").read)
+  let(:markdown_text) do
+    <<~MARKDOWN
+      ---
+      title: test
+      date: 2025-01-01 00:00:00
+      permalink: /test.html
+      categories:
+      - test
+      ---
+
+      test
+    MARKDOWN
+  end
+
+  it "Markdownを正しくパースしてメタデータ・本文・説明を取得できること" do
+    metadata, body, description = described_class.parse(markdown_text)
     expect(metadata).not_to be_nil
     expect(body).not_to be_nil
     expect(description).not_to be_nil

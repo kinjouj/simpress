@@ -13,7 +13,8 @@ module Simpress
       def self.run(posts, *_args)
         return unless Simpress::Theme.exist?("sidebar_recent_posts")
 
-        recent_posts = (posts || []).take(Simpress::Config.instance.paginate || 8)
+        paginate = Simpress::Config.instance.paginate || 8
+        recent_posts = (posts || []).take(paginate)
 
         if config.mode.to_s == "html"
           bind_context(

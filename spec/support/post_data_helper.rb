@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "simpress/model/post"
-
 module PostDataHelper
   def build_post_data(
     id,
@@ -19,7 +17,7 @@ module PostDataHelper
     content ||= "Post #{id}"
     permalink ||= "/post#{id}.html"
 
-    Simpress::Model::Post.new(
+    Simpress::Post.new(
       id: id.to_s,
       title: title,
       content: content,

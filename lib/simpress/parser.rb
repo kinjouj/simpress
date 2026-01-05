@@ -4,11 +4,11 @@ require "date"
 require "digest/sha1"
 require "pathname"
 require "only_blank"
+require "simpress/category"
 require "simpress/config"
 require "simpress/markdown"
-require "simpress/model/category"
-require "simpress/model/post"
 require "simpress/parser/redcarpet"
+require "simpress/post"
 
 module Simpress
   module Parser
@@ -24,12 +24,15 @@ module Simpress
         parse_datetime!(params, basename)
         parse_permalink!(params, basename)
         parse_categories!(params)
-        Simpress::Model::Post.new(params)
+
+        Simpress::Post.new(params)
       end
+
+      private
 
       def initialize_params!(params, file, description, content, image, toc)
         params[:id]          = Digest::SHA1.hexdigest(file)
-        params[:description] = description
+        params[:description] = description unless params[:description]
         params[:content]     = content
         params[:toc]         = toc || []
         params[:layout]      = params.fetch(:layout, :post).to_sym
@@ -40,7 +43,7 @@ module Simpress
       def parse_datetime!(params, basename)
         if params[:date].blank?
           y, m, d = basename.scan(/\A(\d{4})-(\d{1,2})-(\d{1,2})/).flatten
-          params[:date] = DateTime.new(y.to_i, m.to_i, d.to_i) unless [ y, m, d ].include?(nil)
+          params[:date] = DateTime.new(y.to_i, m.to_i, d.to_i) unless [y, m, d].include?(nil)
         else
           begin
             params[:date] = DateTime.parse(params[:date].to_s)
@@ -53,6 +56,8 @@ module Simpress
       end
 
       def parse_permalink!(params, basename)
+        return if params[:layout] == :page
+
         basepath = if params[:permalink].blank?
                      Pathname.new("/").join(params[:date].strftime("%Y/%m"), basename)
                    else
@@ -64,10 +69,8 @@ module Simpress
 
       def parse_categories!(params)
         params[:categories] = Array(params[:categories]).compact
-        params[:categories].map! {|category_name| Simpress::Model::Category.new(category_name) }
+        params[:categories].map! {|category_name| Simpress::Category.new(category_name) }
       end
     end
-
-    private_class_method :initialize_params!, :parse_datetime!, :parse_permalink!, :parse_categories!
   end
 end

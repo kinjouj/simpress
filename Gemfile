@@ -8,7 +8,6 @@ gem "benchmark"
 gem "classy_hash"
 gem "erubis"
 gem "front_matter_parser"
-gem "guard-rake"
 gem "only_blank"
 gem "rake"
 gem "redcarpet"
@@ -19,6 +18,7 @@ gem "tee"
 gem "webrick"
 
 group :development do
+  gem "guard-rake"
   gem "rubocop", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rspec", require: false
@@ -27,6 +27,5 @@ end
 
 group :test do
   gem "rspec"
-  gem "rspec-file_fixtures"
   gem "simplecov", require: false
 end

@@ -1,31 +1,37 @@
 # frozen_string_literal: true
 
-require "simpress/model/category"
+require "simpress/category"
 
-describe Simpress::Model::Category do
-  let(:category) { described_class.new("Ruby") }
-
-  describe "#new" do
-    it "successful" do
+describe Simpress::Category do
+  context "新しいカテゴリーを作成する場合" do
+    it "カテゴリーが正しく初期化されること" do
+      category = described_class.new("Ruby")
       expect(category).not_to be_nil
       expect(category.key).to eq("ruby")
       expect(category.name).to eq("Ruby")
-      expect(category.moved).to be_falsy
       expect(category.count).to eq(1)
     end
   end
 
-  describe "#eql" do
-    it "successful" do
-      other = described_class.new("Ruby")
-      expect(category).to eql(other)
+  describe "#eql?" do
+    it "同じ名前のカテゴリー同士は等しいと判定されること" do
+      category1 = described_class.new("Ruby")
+      category2 = described_class.new("Ruby")
+      expect(category1).to eql(category2)
     end
   end
 
-  describe "#hash" do
-    it "successful" do
-      other = described_class.new("Ruby")
-      expect(category.hash).to eq(other.hash)
+  describe "#as_json" do
+    it "正しいハッシュ形式でJSONに変換されること" do
+      category = described_class.new("Ruby")
+      expect(category.as_json).to include(key: "ruby", name: "Ruby", count: 1, children: {})
+    end
+  end
+
+  describe "#to_json" do
+    it "正しいJSON文字列として出力されること" do
+      category = described_class.new("Ruby")
+      expect(category.to_json).to eq({ key: "ruby", name: "Ruby", count: 1, children: {} }.to_json)
     end
   end
 

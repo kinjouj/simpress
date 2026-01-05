@@ -7,16 +7,18 @@ require "simpress/paginator/post"
 
 module Simpress
   module Paginator
-    def self.builder
-      Builder.new
-    end
+    class << self
+      def builder
+        Builder.new
+      end
 
-    def self.paginate
-      Simpress::Config.instance.paginate || 10
-    end
+      def paginate
+        Simpress::Config.instance.paginate || 10
+      end
 
-    def self.calculate_pagesize(array)
-      array.size.quo(paginate).ceil
+      def calculate_pagesize(array)
+        array.size.quo(paginate).ceil
+      end
     end
 
     class Builder
@@ -49,7 +51,7 @@ module Simpress
 
         def build
           @page ||= 1
-          args = [ @page, @maxpage ]
+          args = [@page, @maxpage]
           args << @prefix unless @prefix.blank?
           Simpress::Paginator::Index.new(*args)
         end

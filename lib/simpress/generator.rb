@@ -14,12 +14,12 @@ module Simpress
       def generate
         posts      = []
         categories = {}
-        markdown_files.each do |file|
+        Dir.glob("#{source_dir}/**/*.{md,markdown}") do |file|
           data = Simpress::Parser.parse(file)
           next unless data.published
 
           data.categories.each do |category|
-            key = category.key
+            key = category.key.to_sym
 
             if categories[key].nil?
               categories[key] = category
@@ -35,17 +35,15 @@ module Simpress
         end
 
         posts, pages = posts.partition {|post| post.layout == :post }
-        posts.sort_by! {|post| -post.date.to_time.to_i }
+        posts.sort_by! {|post| -post.timestamp }
         process_and_generate(posts, pages, categories)
         Simpress::Theme.clear
       end
 
+      private
+
       def source_dir
         Simpress::Config.instance.source_dir || "source"
-      end
-
-      def markdown_files
-        Dir["#{source_dir}/**/*.{md,markdown}"]
       end
 
       def process_and_generate(posts, pages, categories)
@@ -58,7 +56,5 @@ module Simpress
         const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
       end
     end
-
-    private_class_method :process_and_generate, :source_dir
   end
 end

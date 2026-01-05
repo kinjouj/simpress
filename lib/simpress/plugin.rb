@@ -25,17 +25,13 @@ module Simpress
     class << self
       KEY = :simpress_plugin_classes
 
-      def plugin_dir
-        Simpress::Config.instance.plugin_dir || "plugins"
-      end
-
       def load
         Dir["#{plugin_dir}/**/lib/**/*.rb"].each {|plugin| Kernel.load(plugin) }
       end
 
       def extended(klass)
         super
-        (Thread.current[KEY] ||= Set.new) << klass
+        (Thread.current[KEY] ||= []) << klass
       end
 
       def register_plugins
@@ -57,8 +53,12 @@ module Simpress
       def clear
         Thread.current[KEY] = nil
       end
-    end
 
-    private_class_method :plugin_dir
+      private
+
+      def plugin_dir
+        Simpress::Config.instance.plugin_dir || "plugins"
+      end
+    end
   end
 end

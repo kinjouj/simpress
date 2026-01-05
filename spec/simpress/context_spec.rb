@@ -21,7 +21,7 @@ describe Simpress::Context do
   end
 
   describe ".update" do
-    it "successful" do
+    it "ハッシュでまとめて値を更新できること" do
       described_class.update(key: "test", version: 1)
       expect(described_class[:key]).to eq("test")
       expect(described_class[:version]).to eq(1)
