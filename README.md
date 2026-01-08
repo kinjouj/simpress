@@ -51,9 +51,6 @@ default:
 ### Markdown Format
 
 
-※基本的にJekyll Markdownと同様です
-
-
 ```markdown
 ---
 title: title
