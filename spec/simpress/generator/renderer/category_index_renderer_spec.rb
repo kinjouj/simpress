@@ -11,7 +11,7 @@ describe Simpress::Generator::Renderer::CategoryIndexRenderer do
     allow(Simpress::Logger).to receive(:info)
   end
 
-  let(:category) { Simpress::Category.new("Ruby") }
+  let(:category) { Simpress::Category.fetch("Ruby") }
   let(:post1) { build_post_data(1, categories: [category]) }
   let(:post2) { build_post_data(2, categories: [category]) }
   let(:category_posts) { { category => [post1, post2] } }

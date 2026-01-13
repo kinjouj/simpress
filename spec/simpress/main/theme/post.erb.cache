@@ -1,0 +1,3 @@
+_buf = ''; _buf << ( @post.title ).to_s; _buf << '
+';
+_buf.to_s

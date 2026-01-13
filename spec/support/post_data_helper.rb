@@ -5,7 +5,8 @@ module PostDataHelper
     id,
     title: nil,
     content: nil,
-    date: DateTime.now,
+    description: nil,
+    date: Time.now,
     permalink: nil,
     toc: [],
     categories: [],
@@ -16,11 +17,13 @@ module PostDataHelper
     title ||= "Post #{id}"
     content ||= "Post #{id}"
     permalink ||= "/post#{id}.html"
+    description ||= "Post Description #{id}"
 
     Simpress::Post.new(
       id: id.to_s,
       title: title,
       content: content,
+      description: description,
       date: date,
       permalink: permalink,
       categories: categories,

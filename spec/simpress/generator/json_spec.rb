@@ -5,7 +5,7 @@ require "simpress/post"
 require "simpress/generator/json"
 
 describe Simpress::Generator::Json do
-  let(:category) { Simpress::Category.new("Test") }
+  let(:category) { Simpress::Category.fetch("Test") }
   let(:post1) { build_post_data(1, categories: [category]) }
   let(:post2) { build_post_data(2, categories: [category]) }
   let(:page) { build_post_data(4, layout: :page) }

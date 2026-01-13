@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "json"
 require "simpress/config"
 require "simpress/plugin"
 require "simpress/theme"

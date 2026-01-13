@@ -1,13 +1,16 @@
-import { useCallback } from 'react';
+import React, { Suspense, useCallback } from 'react';
 import Simpress from '../api/Simpress';
-import { MyClipLoader, NotFound, Pager, PostList } from '../components';
+import { NotFound, Pager, PostList } from '../components';
 import { useFetchData, usePage } from '../hooks';
 import type { PostType } from '../types';
+
+const LazyPostListSkeleton = React.lazy(() => import('../components/Skeleton/PostListSkeleton'));
 
 const PostListPage = (): React.JSX.Element => {
   const pageNum = usePage();
 
-  const fetcher = useCallback(() => {
+  const fetcher = useCallback(async () => {
+    await new Promise((r) => setTimeout(r, 3000));
     return Simpress.getPostsByPage(pageNum);
   }, [pageNum]);
 
@@ -18,7 +21,11 @@ const PostListPage = (): React.JSX.Element => {
   }
 
   if (posts === null) {
-    return <MyClipLoader />;
+    return (
+      <Suspense fallback={<div>loading...</div>}>
+        <LazyPostListSkeleton />
+      </Suspense>
+    );
   }
 
   return (

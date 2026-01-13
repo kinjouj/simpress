@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import CategoryPage from '../../src/pages/CategoryPage';
 import Simpress from '../../src/api/Simpress';
@@ -19,11 +19,20 @@ const renderCategortPostListPage = (): RenderResult => {
 };
 
 describe('CategoryPage', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+  });
+
   test('<CategoryPage> test', async () => {
     SimpressMock.getPostsByCategory.mockResolvedValue([testPostData]);
     renderCategortPostListPage();
 
     await act(async () => {
+      jest.runAllTimers();
       await Promise.resolve();
     });
 
@@ -31,22 +40,24 @@ describe('CategoryPage', () => {
     expect(posts).toHaveLength(1);
   });
 
-  test('useCategoryがnullを返した場合', () => {
+  test('useCategoryがnullを返した場合', async () => {
     render(
       <MemoryRouter>
         <CategoryPage />
       </MemoryRouter>
     );
 
-    expect(screen.queryByText('Not Found')).toBeInTheDocument();
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 
   test('Simpress.getPostsByCategoryがエラーを吐いた場合', async () => {
     SimpressMock.getPostsByCategory.mockRejectedValue(new Error('ERROR'));
     renderCategortPostListPage();
-
-    await waitFor(() => {
-      expect(screen.queryByText('Not Found')).toBeInTheDocument();
+    await act(async () => {
+      jest.runAllTimers();
+      await Promise.resolve();
     });
+
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 });

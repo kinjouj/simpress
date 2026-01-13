@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "erb"
-require "only_blank"
 require "redcarpet"
 require "simpress/markdown/filter"
 
@@ -27,16 +26,8 @@ module Simpress
           "<h#{header_level}>#{text}</h#{header_level}>"
         end
 
-        def paragraph(text)
-          "<p>#{text}</p>"
-        end
-
-        def autolink(link, _link_type = nil)
-          %(<a href="#{link}" target="_blank" rel="noopener noreferrer">#{link}</a>)
-        end
-
         def image(path, _title = nil, _alt = nil)
-          @primary_image = path if @primary_image.blank?
+          @primary_image = path if @primary_image.nil?
           %(<img src="#{path}" class="img-fluid" alt="image" />)
         end
 

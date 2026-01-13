@@ -8,6 +8,7 @@
     "public": true,
     "logs": true,
     ".cache": true,
+    "theme/*.cache": true,
     "**/.gitkeep": true,
     "**/.gitignore": true,
     "**/coverage": true,

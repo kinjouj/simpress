@@ -3,7 +3,7 @@
 require "simpress/generator"
 
 describe Simpress::Generator do
-  let(:category) { Simpress::Category.new("Test") }
+  let(:category) { Simpress::Category.fetch("Test") }
   let(:post1) { build_post_data(1, categories: [category]) }
   let(:post2) { build_post_data(2, categories: [category]) }
   let(:post3) { build_post_data(3, published: false) }

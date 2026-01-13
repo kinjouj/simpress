@@ -5,7 +5,6 @@ PATH
       classy_hash
       erubis (= 2.7.0)
       front_matter_parser
-      only_blank
       redcarpet (= 3.6.1)
       stringex
       tee
@@ -17,10 +16,7 @@ GEM
     diff-lcs (1.6.2)
     docile (1.4.1)
     erubis (2.7.0)
-    fast_blank (1.0.1)
     front_matter_parser (1.0.1)
-    only_blank (1.2.2)
-      fast_blank (>= 1.0)
     rake (13.3.1)
     redcarpet (3.6.1)
     rspec (3.13.2)

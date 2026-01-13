@@ -11,8 +11,8 @@ describe Simpress::Generator::Renderer::IndexRenderer do
     allow(Simpress::Logger).to receive(:info)
   end
 
-  let(:post1) { build_post_data(1, date: DateTime.new(2025, 11, 1)) }
-  let(:post2) { build_post_data(2, date: DateTime.new(2025, 11, 2)) }
+  let(:post1) { build_post_data(1, date: Time.new(2025, 11, 1)) }
+  let(:post2) { build_post_data(2, date: Time.new(2025, 11, 2)) }
   let(:posts) { [post1, post2] }
 
   describe ".generate_html" do

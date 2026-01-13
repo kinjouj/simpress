@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import PostListPage from '../../src/pages/PostListPage';
 import Simpress from '../../src/api/Simpress';
@@ -19,11 +19,20 @@ const renderPostListPage = (): RenderResult => {
 };
 
 describe('PostListPage', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+  });
+
   test('<PostListPage> test', async () => {
     SimpressMock.getPostsByPage.mockResolvedValue([testPostData]);
     renderPostListPage();
 
     await act(async () => {
+      jest.runAllTimers();
       await Promise.resolve();
     });
 
@@ -34,9 +43,11 @@ describe('PostListPage', () => {
   test('Simpress.getPostsByPageがエラーを吐いた場合', async () => {
     SimpressMock.getPostsByPage.mockRejectedValue(new Error('ERR'));
     renderPostListPage();
-
-    await waitFor(() => {
-      expect(screen.queryByText('Not Found')).toBeInTheDocument();
+    await act(async () => {
+      jest.runAllTimers();
+      await Promise.resolve();
     });
+
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 });

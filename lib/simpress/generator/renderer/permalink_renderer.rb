@@ -12,7 +12,7 @@ module Simpress
         def self.generate_html(post, paginator = nil)
           data = Simpress::Theme.render("post", post: post, paginator: paginator)
           Simpress::Writer.write(post.permalink, data) do |file_path|
-            FileUtils.touch(file_path, mtime: post.date.to_time)
+            FileUtils.touch(file_path, mtime: post.date)
             Simpress::Logger.info(post.to_s)
           end
         end

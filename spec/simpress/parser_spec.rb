@@ -28,7 +28,7 @@ describe Simpress::Parser do
       expect(post.permalink).to eq("/test.html")
       expect(post.layout).to eq(:post)
       expect(post.published).to be_truthy
-      expect(post.categories).to eql([Simpress::Category.new("test")])
+      expect(post.categories).to eql([Simpress::Category.fetch("test")])
     end
   end
 
@@ -94,7 +94,7 @@ describe Simpress::Parser do
       post = described_class.parse("dummy.markdown")
       expect(post).not_to be_nil
       expect(post.date).not_to be_nil
-      expect(post.date).to eq(Date.new(2020, 1, 1).to_datetime)
+      expect(post.date).to eq(Time.new(2020, 1, 1))
     end
 
     it "不正値の場合はInvalidDateParseErrorが発生すること" do
@@ -227,7 +227,7 @@ describe Simpress::Parser do
 
       post = described_class.parse("dummy.markdown")
       expect(post).not_to be_nil
-      expect(post.categories).to eql([Simpress::Category.new("test")])
+      expect(post.categories).to eql([Simpress::Category.fetch("test")])
     end
   end
 end

@@ -10,7 +10,7 @@ describe Simpress::Post do
       description: "content description",
       content: "<p>content\n123</p>",
       toc: [],
-      date: DateTime.new(2025, 1, 1),
+      date: Time.new(2025, 1, 1),
       permalink: "/test.html",
       categories: [],
       cover: "/images/no_image.png",
@@ -25,7 +25,7 @@ describe Simpress::Post do
     expect(post.title).to eq("title")
     expect(post.content).to eq("<p>content\n123</p>")
     expect(post.toc).to eq([])
-    expect(post.date).to eq(DateTime.new(2025, 1, 1))
+    expect(post.date).to eq(Time.new(2025, 1, 1))
     expect(post.permalink).to eq("/test.html")
     expect(post.categories).to eq([])
     expect(post.cover).to eq("/images/no_image.png")
@@ -48,7 +48,7 @@ describe Simpress::Post do
           id: "abc",
           title: "title",
           toc: [],
-          date: DateTime.new(2025, 1, 1),
+          date: Time.new(2025, 1, 1),
           permalink: "/test.html",
           categories: [],
           cover: "/images/no_image.png",

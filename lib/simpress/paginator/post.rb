@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "only_blank"
-
 module Simpress
   module Paginator
     class Post

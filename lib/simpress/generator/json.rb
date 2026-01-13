@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "json"
 require "simpress/generator/renderer/index_renderer"
 require "simpress/generator/renderer/category_index_renderer"
 require "simpress/generator/renderer/permalink_renderer"

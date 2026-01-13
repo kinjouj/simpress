@@ -8,6 +8,8 @@ let dataSpy: jest.SpyInstance<Promise<unknown>, [ string ]>;
 
 describe('AppRoutes', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
+
     /* eslint-disable */
     dataSpy = jest.spyOn(Simpress as any, 'getData').mockImplementation(
       (path): Promise<any> => {
@@ -31,6 +33,7 @@ describe('AppRoutes', () => {
   });
 
   afterEach(() => {
+    jest.clearAllTimers();
     dataSpy.mockRestore();
   });
 
@@ -42,6 +45,7 @@ describe('AppRoutes', () => {
     );
 
     await act(async () => {
+      jest.runAllTimers();
       await Promise.resolve();
     });
 
@@ -57,6 +61,7 @@ describe('AppRoutes', () => {
     );
 
     await act(async () => {
+      jest.runAllTimers();
       await Promise.resolve();
     });
 
@@ -72,6 +77,7 @@ describe('AppRoutes', () => {
     );
 
     await act(async () => {
+      jest.runAllTimers();
       await Promise.resolve();
     });
 

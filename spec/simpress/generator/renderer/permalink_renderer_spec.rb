@@ -21,7 +21,7 @@ describe Simpress::Generator::Renderer::PermalinkRenderer do
     it "正常にgenerate_htmlメソッドが呼ばれること" do
       expect { described_class.generate_html(post1) }.not_to raise_error
       expect(File).to have_received(:write).with("public/post1.html", "test")
-      expect(FileUtils).to have_received(:touch).with("public/post1.html", mtime: post1.date.to_time)
+      expect(FileUtils).to have_received(:touch).with("public/post1.html", mtime: post1.date)
       expect(Simpress::Logger).to have_received(:info)
       expect(Simpress::Theme).to have_received(:render)
     end

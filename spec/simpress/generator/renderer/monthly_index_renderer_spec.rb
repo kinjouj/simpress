@@ -10,9 +10,9 @@ describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
     allow(Simpress::Logger).to receive(:info)
   end
 
-  let(:post1) { build_post_data(1, date: DateTime.new(2025, 11, 1)) }
-  let(:post2) { build_post_data(2, date: DateTime.new(2025, 11, 2)) }
-  let(:monthly_posts) { { DateTime.new(2025, 11, 1) => [post1, post2] } }
+  let(:post1) { build_post_data(1, date: Time.new(2025, 11, 1)) }
+  let(:post2) { build_post_data(2, date: Time.new(2025, 11, 2)) }
+  let(:monthly_posts) { { Time.new(2025, 11, 1) => [post1, post2] } }
 
   describe ".generate_html" do
     before do
@@ -30,7 +30,7 @@ describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
       expect { described_class.generate_json(monthly_posts) }.not_to raise_error
       expect(File).to have_received(:write).with(
         "public/archives/2025/11.json",
-        monthly_posts[DateTime.new(2025, 11, 1)].to_json
+        monthly_posts[Time.new(2025, 11, 1)].to_json
       )
       expect(Simpress::Logger).to have_received(:info)
     end

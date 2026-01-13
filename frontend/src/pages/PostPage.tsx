@@ -1,8 +1,8 @@
-import { useCallback, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
-import { CreatedAt, MyClipLoader, NotFound } from '../components';
+import { CreatedAt, NotFound } from '../components';
 import { useFetchData, usePermalink } from '../hooks';
 import type { CategoryType, PostType } from '../types';
 import 'prismjs/plugins/autoloader/prism-autoloader';
@@ -11,13 +11,17 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers';
 // eslint-disable-next-line
 (Prism as any).plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
 
+const LazyPostPageSkeleton = React.lazy(() => import('../components/Skeleton/PostPageSkeleton'));
+
 const PostPage = (): React.JSX.Element => {
   const permalink = usePermalink();
 
-  const fetcher = useCallback(() => {
+  const fetcher = useCallback(async () => {
     if (permalink === null) {
       throw new Error('permalink is null');
     }
+
+    await new Promise((r) => setTimeout(r, 3000));
 
     return Simpress.getPost(permalink);
   }, [permalink]);
@@ -35,7 +39,11 @@ const PostPage = (): React.JSX.Element => {
   }
 
   if (post === null) {
-    return <MyClipLoader />;
+    return (
+      <Suspense fallback={<div>loading...</div>}>
+        <LazyPostPageSkeleton />
+      </Suspense>
+    );
   }
 
   return (

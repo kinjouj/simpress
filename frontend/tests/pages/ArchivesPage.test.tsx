@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ArchivesPage from '../../src/pages/ArchivesPage';
 import Simpress from '../../src/api/Simpress';
@@ -19,11 +19,19 @@ const renderArchives = (): RenderResult => {
 };
 
 describe('ArchivesPage', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+  });
+
   test('<ArchivesPage> test', async () => {
     SimpressMock.getPostsByArchive.mockResolvedValue([testPostData]);
     renderArchives();
-
     await act(async () => {
+      jest.runAllTimers();
       await Promise.resolve();
     });
 
@@ -31,22 +39,24 @@ describe('ArchivesPage', () => {
     expect(posts).toHaveLength(1);
   });
 
-  test('useYearOfMonthから返ってくる値にnullが入ってる場合', () => {
+  test('useYearOfMonthから返ってくる値にnullが入ってる場合', async () => {
     render(
       <MemoryRouter>
         <ArchivesPage />
       </MemoryRouter>
     );
 
-    expect(screen.queryByText('Not Found')).toBeInTheDocument();
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 
   test('Simpress.getPostsByArchiveがエラーを吐いた場合', async () => {
     SimpressMock.getPostsByArchive.mockRejectedValue(new Error('ERROR'));
     renderArchives();
-
-    await waitFor(() => {
-      expect(screen.queryByText('Not Found')).toBeInTheDocument();
+    await act(async () => {
+      jest.runAllTimers();
+      await Promise.resolve();
     });
+
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 });

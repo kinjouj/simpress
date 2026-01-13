@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import PostPage from '../../src/pages/PostPage';
 import Simpress from '../../src/api/Simpress';
@@ -19,11 +19,19 @@ const renderPostPage = (): RenderResult => {
 };
 
 describe('PostPage', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+  });
+
   test('<PostPage> test', async () => {
     SimpressMock.getPost.mockResolvedValue(testPostData);
     renderPostPage();
-
     await act(async () => {
+      jest.runAllTimers();
       await Promise.resolve();
     });
 
@@ -31,22 +39,24 @@ describe('PostPage', () => {
     expect(post).toBeInTheDocument();
   });
 
-  test('usePermalinkがnullを返した場合', () => {
+  test('usePermalinkがnullを返した場合', async () => {
     render(
       <MemoryRouter>
         <PostPage />
       </MemoryRouter>
     );
 
-    expect(screen.queryByText('Not Found')).toBeInTheDocument();
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 
   test('Simpress.getPostがエラーを出した場合', async () => {
     SimpressMock.getPost.mockRejectedValue(new Error('ERROR'));
     renderPostPage();
-
-    await waitFor(() => {
-      expect(screen.queryByText('Not Found')).toBeInTheDocument();
+    await act(async () => {
+      jest.runAllTimers();
+      await Promise.resolve();
     });
+
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 });

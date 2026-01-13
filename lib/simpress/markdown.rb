@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require "erb"
 require "front_matter_parser"
 
 module Simpress
   module Markdown
     class MarkdownError < StandardError; end
 
+    REGEXP_DESC = /\A.*?(\r?\n){2}/m
     PARSER = FrontMatterParser::Parser.new(
       :md,
       loader: FrontMatterParser::Loader::Yaml.new(allowlist_classes: [Time])
@@ -17,9 +19,14 @@ module Simpress
       params = {}
       (data.front_matter || {}).each {|k, v| params[k.to_sym] = v }
 
-      raise MarkdownError, "Markdown parse failed" if params.empty? || body.strip.empty?
+      raise MarkdownError, "Markdown parse failed" if params.empty? || body.empty?
 
-      [params, body, ERB::Util.html_escape(body.to_s.split(/\n{2,}/).first.to_s.strip)]
+      description = params.fetch(:description) do
+        first_paragraph = body.to_s[REGEXP_DESC].to_s.strip
+        ERB::Util.html_escape(first_paragraph)
+      end
+
+      [params, body, description]
     end
   end
 end

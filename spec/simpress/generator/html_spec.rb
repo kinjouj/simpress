@@ -5,8 +5,8 @@ require "simpress/post"
 require "simpress/generator/html"
 
 describe Simpress::Generator::Html do
-  let(:post1) { build_post_data(1, categories: [Simpress::Category.new("Test1")]) }
-  let(:post2) { build_post_data(2, categories: [Simpress::Category.new("Test2")]) }
+  let(:post1) { build_post_data(1, categories: [Simpress::Category.fetch("Test1")]) }
+  let(:post2) { build_post_data(2, categories: [Simpress::Category.fetch("Test2")]) }
   let(:page) { build_post_data(3, layout: :page) }
 
   before do

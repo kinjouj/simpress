@@ -13,7 +13,11 @@ describe Simpress::Markdown do
       - test
       ---
 
-      test
+      test1
+
+      test2
+
+      test3
     MARKDOWN
   end
 

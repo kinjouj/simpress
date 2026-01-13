@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "only_blank"
 require "simpress/config"
 require "simpress/paginator/index"
 require "simpress/paginator/post"
@@ -52,7 +51,7 @@ module Simpress
         def build
           @page ||= 1
           args = [@page, @maxpage]
-          args << @prefix unless @prefix.blank?
+          args << @prefix if @prefix
           Simpress::Paginator::Index.new(*args)
         end
       end

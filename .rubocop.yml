@@ -33,7 +33,7 @@ Metrics/MethodLength:
   Enabled: false
 
 Metrics/ParameterLists:
-  Max: 10
+  Max: 15
 
 Metrics/PerceivedComplexity:
   Enabled: false

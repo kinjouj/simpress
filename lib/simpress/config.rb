@@ -16,10 +16,10 @@ module Simpress
         mode: CH::G.enum("html", "json"),
         host: String,
         paginate: [:optional, 1..10],
-        source_dir: [:optional, %r{\A[^/]}],
-        plugin_dir: [:optional, %r{\A[^/]}],
-        output_dir: [:optional, %r{\A[^/]}],
-        theme_dir: [:optional, %r{\A[^/]}],
+        source_dir: [:optional, String],
+        plugin_dir: [:optional, String],
+        output_dir: [:optional, String],
+        theme_dir: [:optional, String],
         plugins: [:optional, [[String]]]
       }
     }.freeze
@@ -38,10 +38,8 @@ module Simpress
 
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
-      CH.validate(config, SCHEMA, strict: true, full: true)
-      ATTRS.each {|key|
-        instance_variable_set("@#{key}", config[:default][key])
-      }
+      CH.validate(config, SCHEMA, strict: true)
+      ATTRS.each {|key| instance_variable_set("@#{key}", config[:default][key]) }
     end
 
     def self.clear

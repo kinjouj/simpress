@@ -11,8 +11,6 @@ module Simpress
         fenced_code_blocks: true,
         highlight: true,
         autolink: true,
-        footnotes: true,
-        tables: true,
         quote: true
       }.freeze
 

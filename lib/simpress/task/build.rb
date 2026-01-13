@@ -27,7 +27,7 @@ module Simpress
         result = Benchmark.realtime do
           GC.disable
           Simpress.build do
-            # build_scss
+            build_scss
             Rake::Task["build_#{Simpress::Config.instance.mode}"].execute
           end
           GC.enable

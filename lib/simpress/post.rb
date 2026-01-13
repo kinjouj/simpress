@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require "json"
 require "classy_hash"
-require "date"
 require "simpress/category"
 
 module Simpress
@@ -9,15 +9,15 @@ module Simpress
     SCHEMA = {
       id: String,
       title: String,
-      content: String,
-      toc: [[String]],
-      date: DateTime,
-      permalink: %r{\A/},
+      date: Time,
+      permalink: String,
       categories: [[Simpress::Category]],
+      content: String,
+      description: String,
+      toc: [[String]],
       cover: String,
       published: CH::G.enum(true, false),
-      layout: CH::G.enum(:post, :page),
-      description: [:optional, String]
+      layout: CH::G.enum(:post, :page)
     }.freeze
 
     attr_accessor :categories
@@ -38,7 +38,7 @@ module Simpress
     end
 
     def timestamp
-      @timestamp ||= @date.to_time.to_i
+      @date.to_i
     end
 
     def to_json(*)

@@ -13,12 +13,6 @@ describe Simpress::Parser::Redcarpet::Renderer do
 
   let(:renderer) { described_class.new }
 
-  describe "#paragraph" do
-    it "テキストをpタグで囲むこと" do
-      expect(renderer.paragraph("test")).to eq("<p>test</p>")
-    end
-  end
-
   describe "#header" do
     it "ヘッダーを適切に生成し、tocを更新すること" do
       expect(renderer.header("test", 4)).to eq("<h4>test</h4>")
@@ -36,12 +30,6 @@ describe Simpress::Parser::Redcarpet::Renderer do
       expect(renderer.primary_image).to eq("/test.jpg")
       renderer.image("/test2.jpg")
       expect(renderer.primary_image).to eq("/test.jpg")
-    end
-  end
-
-  describe "#autolink" do
-    it "自動的にリンクを生成すること" do
-      expect(renderer.autolink("/test")).to start_with(%(<a href="/test"))
     end
   end
 

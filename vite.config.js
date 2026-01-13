@@ -10,7 +10,7 @@ export default defineConfig({
       targets: [
         {
           src: './public/*',
-          dest: '../'
+          dest: '../public'
         }
       ]
     })
@@ -18,7 +18,8 @@ export default defineConfig({
   build: {
     //minify: 'esbuild',
     minify: false,
-    outDir: '../public/js',
+    outDir: '../public',
+    assetsDir: 'assets',
     emptyOutDir: false,
     copyPublicDir: false,
     rollupOptions: {
@@ -33,7 +34,8 @@ export default defineConfig({
         app: 'frontend/src/index.tsx',
       },
       output: {
-        entryFileNames: 'app.js',
+        entryFileNames: 'js/app.js',
+        chunkFileNames: 'js/[name]-[hash].js'
       },
     },
   },

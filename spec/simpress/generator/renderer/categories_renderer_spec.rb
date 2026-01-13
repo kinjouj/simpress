@@ -10,7 +10,7 @@ describe Simpress::Generator::Renderer::CategoriesRenderer do
     allow(Simpress::Logger).to receive(:info)
   end
 
-  let(:categories) { { ruby: Simpress::Category.new("Ruby") } }
+  let(:categories) { { ruby: Simpress::Category.fetch("Ruby") } }
 
   it "正常にgenerate_jsonメソッドが呼ばれること" do
     expect { described_class.generate_json(categories) }.not_to raise_error

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "json"
 require "simpress/logger"
 require "simpress/paginator"
 require "simpress/theme"
