@@ -16,3 +16,4 @@ theme/*
 !theme/.gitkeep
 config.yaml
 category_indexes.json
+*.cache
