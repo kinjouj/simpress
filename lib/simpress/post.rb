@@ -16,21 +16,23 @@ module Simpress
       description: String,
       toc: [[String]],
       cover: String,
+      layout: CH::G.enum(:post, :page),
       published: CH::G.enum(true, false),
-      layout: CH::G.enum(:post, :page)
+      markdown: String
     }.freeze
 
     attr_accessor :categories
     attr_reader :id,
                 :title,
+                :date,
+                :permalink,
                 :content,
                 :description,
                 :toc,
-                :date,
-                :permalink,
                 :cover,
                 :layout,
-                :published
+                :published,
+                :markdown
 
     def initialize(params)
       CH.validate(params, SCHEMA, strict: true)

@@ -30,7 +30,8 @@ module PostDataHelper
       toc: toc,
       cover: cover,
       published: published,
-      layout: layout
+      layout: layout,
+      markdown: "# Test Post #{id}"
     )
   end
 end

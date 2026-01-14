@@ -22,10 +22,9 @@ describe Simpress::Markdown do
   end
 
   it "Markdownを正しくパースしてメタデータ・本文・説明を取得できること" do
-    metadata, body, description = described_class.parse(markdown_text)
+    metadata, body = described_class.parse(markdown_text)
     expect(metadata).not_to be_nil
     expect(body).not_to be_nil
-    expect(description).not_to be_nil
     expect { described_class.parse("") }.to raise_error("Markdown parse failed")
   end
 end

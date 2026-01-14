@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "digest/sha1"
+require "erb"
 require "pathname"
 require "simpress/category"
 require "simpress/config"
@@ -13,12 +14,21 @@ module Simpress
     class ParserError < StandardError; end
     class InvalidDateParseError < ParserError; end
 
+    REGEXP_DESC = /\A.*?(\r?\n){2}/m
+
     class << self
       def parse(file)
-        params, body, description = Simpress::Markdown.parse(File.read(file))
-        content, image, toc       = Simpress::Parser::Redcarpet.render(body)
-        basename                  = File.basename(file, ".*")
-        initialize_params!(params, file, description, content, image, toc)
+        params, body         = Simpress::Markdown.parse(File.read(file))
+        content, image, toc  = Simpress::Parser::Redcarpet.render(body)
+        basename             = File.basename(file, ".*")
+        params[:markdown]    = body
+        params[:id]          = Digest::SHA1.hexdigest(file)
+        params[:content]     = content
+        params[:toc]         = toc || []
+        params[:layout]      = params.fetch(:layout, :post).to_sym
+        params[:published]   = params.fetch(:published, true)
+        params[:cover]       ||= image || "/images/no_image.png"
+        params[:description] ||= ERB::Util.html_escape(body.to_s[REGEXP_DESC].to_s.strip)
         parse_datetime!(params, basename)
         parse_permalink!(params, basename)
         parse_categories!(params)
@@ -27,16 +37,6 @@ module Simpress
       end
 
       private
-
-      def initialize_params!(params, file, description, content, image, toc)
-        params[:id]          = Digest::SHA1.hexdigest(file)
-        params[:description] = description
-        params[:content]     = content
-        params[:toc]         = toc || []
-        params[:layout]      = params.fetch(:layout, :post).to_sym
-        params[:published]   = params.fetch(:published, true)
-        params[:cover]       = (image || "/images/no_image.png") unless params[:cover]
-      end
 
       def parse_datetime!(params, basename)
         if params[:date].nil?
@@ -66,7 +66,7 @@ module Simpress
       end
 
       def parse_categories!(params)
-        params[:categories] = Array(params[:categories]).compact
+        params[:categories] = [*params[:categories]].compact
         params[:categories].map! {|category_name| Simpress::Category.fetch(category_name) }
       end
     end

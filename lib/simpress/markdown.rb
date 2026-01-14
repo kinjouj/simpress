@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "erb"
 require "front_matter_parser"
 
 module Simpress
@@ -21,12 +20,7 @@ module Simpress
 
       raise MarkdownError, "Markdown parse failed" if params.empty? || body.empty?
 
-      description = params.fetch(:description) do
-        first_paragraph = body.to_s[REGEXP_DESC].to_s.strip
-        ERB::Util.html_escape(first_paragraph)
-      end
-
-      [params, body, description]
+      [params, body]
     end
   end
 end

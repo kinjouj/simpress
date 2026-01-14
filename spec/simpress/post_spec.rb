@@ -15,7 +15,8 @@ describe Simpress::Post do
       categories: [],
       cover: "/images/no_image.png",
       layout: :post,
-      published: true
+      published: true,
+      markdown: "# Test"
     }
   end
 
