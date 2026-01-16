@@ -12,6 +12,7 @@ logs/*
 plugins/*
 !plugins/inline_note_filter
 !plugins/recent_posts
+!plugins/similarity
 theme/*
 !theme/.gitkeep
 config.yaml
