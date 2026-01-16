@@ -8,7 +8,7 @@ describe Simpress::Theme do
     let(:create_erubis) { ->(template) { described_class.send(:create_erubis, template) } }
 
     before do
-      allow(Erubis::Eruby).to receive(:load_file).with("theme/post.erb", { engine: :fast, escape: :none })
+      allow(Erubis::Eruby).to receive(:load_file).with("theme/post.erb", { engine: :fast })
                                                  .and_return(eruby_double)
     end
 
@@ -36,7 +36,7 @@ describe Simpress::Theme do
     let(:eruby_double) { instance_double(Erubis::Eruby, evaluate: "rendered content") }
 
     before do
-      allow(Erubis::Eruby).to receive(:load_file).with("theme/post.erb", { engine: :fast, escape: :none })
+      allow(Erubis::Eruby).to receive(:load_file).with("theme/post.erb", { engine: :fast })
                                                  .and_return(eruby_double)
     end
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "natto"
 require "classy_hash"
 require "simpress/category"
 
@@ -20,6 +21,9 @@ module Simpress
       published: CH::G.enum(true, false),
       markdown: String
     }.freeze
+
+    NATTO_REGEX = /^(?:([^\t]{3,})\t名詞,固有名詞,|(?=[^\t]*\p{Han})([^\t]{3,})\t名詞,一般,)/
+    NATTO       = Natto::MeCab.new
 
     attr_accessor :categories
     attr_reader :id,
@@ -61,6 +65,10 @@ module Simpress
       }
       hash[:content] = @content if options[:include_content]
       hash
+    end
+
+    def extract_keywords
+      NATTO.parse([@title, @markdown].compact.join(" ")).scan(NATTO_REGEX).flatten.compact
     end
 
     def to_s

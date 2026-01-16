@@ -66,7 +66,7 @@ module Simpress
       end
 
       def parse_categories!(params)
-        params[:categories] = [*params[:categories]].compact
+        params[:categories] = Array(params[:categories]).compact
         params[:categories].map! {|category_name| Simpress::Category.fetch(category_name) }
       end
     end

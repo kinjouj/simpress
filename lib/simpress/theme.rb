@@ -37,7 +37,7 @@ module Simpress
         raise "template missing: #{filename}" unless File.exist?(filename)
 
         begin
-          erubis = Erubis::Eruby.load_file(filename, engine: :fast, escape: :none)
+          erubis = Erubis::Eruby.load_file(filename, engine: :fast)
           erubis_caches[filename] = erubis
         rescue StandardError => e
           raise "Failed template error: #{e}"
