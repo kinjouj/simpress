@@ -9,10 +9,7 @@ static/*
 !static/.gitkeep
 logs/*
 !logs/.gitkeep
-plugins/*
-!plugins/inline_note_filter
-!plugins/recent_posts
-!plugins/similarity
+plugins/categories_content
 theme/*
 !theme/.gitkeep
 config.yaml
