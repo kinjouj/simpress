@@ -2,19 +2,20 @@
 
 source "https://rubygems.org"
 
-ruby "3.3.9"
+ruby "3.3.10"
 
 gem "benchmark"
 gem "classy_hash"
-gem "erubis"
-gem "front_matter_parser"
+gem "erubi"
 gem "natto"
+gem "oj"
 gem "rake"
 gem "redcarpet"
 gem "sass-embedded"
 gem "sitemap_generator"
 gem "stringex"
 gem "tee"
+gem "tilt"
 gem "webrick"
 
 group :development do
@@ -22,7 +23,7 @@ group :development do
   gem "rubocop", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rspec", require: false
-  gem "solargraph", require: false
+  gem "stackprof", require: false
 end
 
 group :test do

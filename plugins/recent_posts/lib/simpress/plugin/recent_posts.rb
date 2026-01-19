@@ -12,20 +12,16 @@ module Simpress
       extend Simpress::Plugin
 
       def self.run(posts, *_args)
-        return unless Simpress::Theme.exist?("sidebar_recent_posts")
-
-        paginate = Simpress::Config.instance.paginate || 8
+        paginate = Simpress::Config.instance.paginate || 5
         recent_posts = (posts || []).take(paginate)
 
-        if config.mode.to_s == "html"
-          bind_context(
-            sidebar_recent_posts_content: Simpress::Theme.render(
-              "sidebar_recent_posts",
-              recent_posts: recent_posts
-            )
-          )
-        elsif config.mode.to_s == "json"
+        case config.mode
+        when "html"
+          bind_context(recent_posts: recent_posts)
+        when "json"
           Simpress::Writer.write("recent_posts.json", recent_posts.to_json)
+        else
+          raise "Error"
         end
       end
     end

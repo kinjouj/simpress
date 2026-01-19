@@ -3,12 +3,13 @@ PATH
   specs:
     simpress (0.0.1)
       classy_hash
-      erubis (= 2.7.0)
+      erubi
       front_matter_parser
       natto
-      redcarpet (= 3.6.1)
+      redcarpet
       stringex
       tee
+      tilt
 
 GEM
   remote: https://rubygems.org/
@@ -16,7 +17,7 @@ GEM
     classy_hash (1.0.0)
     diff-lcs (1.6.2)
     docile (1.4.1)
-    erubis (2.7.0)
+    erubi (1.13.1)
     ffi (1.17.3)
     ffi (1.17.3-aarch64-linux-gnu)
     ffi (1.17.3-aarch64-linux-musl)
@@ -54,6 +55,7 @@ GEM
     simplecov_json_formatter (0.1.4)
     stringex (2.8.6)
     tee (1.0.0)
+    tilt (2.7.0)
 
 PLATFORMS
   aarch64-linux-gnu
@@ -78,7 +80,7 @@ CHECKSUMS
   classy_hash (1.0.0) sha256=0c36f3f6a6332600d1b7cde636f86f3414481b94bbb98f7bd6fd1e32cdfe6105
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   docile (1.4.1) sha256=96159be799bfa73cdb721b840e9802126e4e03dfc26863db73647204c727f21e
-  erubis (2.7.0) sha256=63653f5174a7997f6f1d6f465fbe1494dcc4bdab1fb8e635f6216989fb1148ba
+  erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
   ffi (1.17.3) sha256=0e9f39f7bb3934f77ad6feab49662be77e87eedcdeb2a3f5c0234c2938563d4c
   ffi (1.17.3-aarch64-linux-gnu) sha256=28ad573df26560f0aedd8a90c3371279a0b2bd0b4e834b16a2baa10bd7a97068
   ffi (1.17.3-aarch64-linux-musl) sha256=020b33b76775b1abacc3b7d86b287cef3251f66d747092deec592c7f5df764b2
@@ -105,6 +107,7 @@ CHECKSUMS
   simpress (0.0.1)
   stringex (2.8.6) sha256=c7b382d2b2a47a1e1646f256df201c48d487d6296fbb289d76802f67f5e929c4
   tee (1.0.0) sha256=64daf52e612410b658018cf37785f62edeecaac89394d13ab593dca15c0ce1af
+  tilt (2.7.0) sha256=0d5b9ba69f6a36490c64b0eee9f6e9aad517e20dcc848800a06eb116f08c6ab3
 
 BUNDLED WITH
-  4.0.3
+  4.0.4

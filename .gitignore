@@ -15,3 +15,4 @@ theme/*
 config.yaml
 category_indexes.json
 *.cache
+*.dump

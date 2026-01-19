@@ -79,4 +79,11 @@ describe Simpress::Post do
       expect(parsed_json).to have_key(:content)
     end
   end
+
+  describe "#extract_keywords" do
+    it "形態素解析した結果が取得できること" do
+      post = described_class.new(params)
+      expect(post.extract_keywords).not_to be_empty
+    end
+  end
 end

@@ -4,8 +4,8 @@ require "simpress/generator"
 
 describe Simpress::Generator do
   let(:category) { Simpress::Category.fetch("Test") }
-  let(:post1) { build_post_data(1, categories: [category]) }
-  let(:post2) { build_post_data(2, categories: [category]) }
+  let(:post1) { build_post_data(1, categories: [category], date: Time.new(2000, 1, 1)) }
+  let(:post2) { build_post_data(2, categories: [category], date: Time.new(2000, 2, 1)) }
   let(:post3) { build_post_data(3, published: false) }
   let(:page) { build_post_data(4, layout: :page) }
 
@@ -29,7 +29,7 @@ describe Simpress::Generator do
     expect(Simpress::Logger).to have_received(:info).at_least(1).times
     expect(Simpress::Plugin).to have_received(:process).exactly(1).times
     expect(Simpress::Generator::Html).to have_received(:generate).with(
-      [post1, post2],
+      [post2, post1],
       [page],
       hash_including(test: category)
     )

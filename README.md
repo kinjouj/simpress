@@ -148,21 +148,12 @@ end
 ### Plugin: RecentPosts
 
 
-@postsから先頭から数件だけを切り出したのをthemes/sidebar_recent_posts.erbを使って描画したのを@sidebar_recent_posts_contentとして利用できる
-切り出される件数はconfig.yamlのpaginateと同数(設定されていない場合には8)
-themes/sidebar_recent_posts.erbで@recent_postsで切り出されたのを利用できる
+@postsから先頭から数件だけを切り出したのを@recent_postsとして利用できる。
+切り出される件数はconfig.yamlのpaginateと同数(設定されていない場合には5)
 
 
 ```erb
 <% @recent_posts.each |post| %>
 <%= post.title %>
 <% end %>
-```
-
-
-表示したいerb側では@sidebar_recent_posts_contentを以下のように記述することで表示可能
-
-
-```erb
-<%= @sidebar_recent_posts_content %>
 ```

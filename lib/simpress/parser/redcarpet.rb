@@ -11,7 +11,7 @@ module Simpress
         fenced_code_blocks: true,
         highlight: true,
         autolink: true,
-        quote: true
+        quote: false
       }.freeze
 
       def self.render(data)

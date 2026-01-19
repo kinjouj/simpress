@@ -47,8 +47,8 @@ describe Simpress::Plugin do
         stub_const("Simpress::Plugin::HogePlugin", hoge_class)
         expect(described_class.register_plugins).not_to be_empty
         described_class.process
-        expect(Simpress::Context[:mode]).to eq(:html)
-        expect { Simpress::Context[:msg] }.to raise_error("'msg' missing")
+        expect(Simpress::Context.instance[:mode]).to eq(:html)
+        expect { Simpress::Context.instance[:msg] }.to raise_error(KeyError)
         expect(Simpress::Logger).to have_received(:debug).once
       end
     end

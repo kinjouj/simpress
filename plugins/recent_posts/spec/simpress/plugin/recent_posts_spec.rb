@@ -8,8 +8,7 @@ require "simpress/theme"
 
 describe Simpress::Plugin::RecentPosts do
   before do
-    allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
-    allow(Simpress::Config.instance).to receive(:theme_dir).and_return(File.expand_path(".", __dir__))
+    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
   end
 
   after do
@@ -18,16 +17,30 @@ describe Simpress::Plugin::RecentPosts do
 
   describe ".run" do
     it "正常に最近の投稿がContextに格納されること" do
-      described_class.run([*1..30], nil, nil)
-      content = Simpress::Context[:sidebar_recent_posts_content]
-      expect(content.chomp).to eq([*1..10].join("\n"))
+      described_class.run([*1..30])
+      posts = Simpress::Context[:recent_posts]
+      expect(posts).not_to be_empty
     end
 
-    context "template_exist?がfalseを返した場合" do
-      it "Contextにデータが設定されないこと" do
-        allow(Simpress::Theme).to receive(:exist?).and_return(false)
-        described_class.run([*1..30], nil, nil)
-        expect { Simpress::Context[:sidebar_recent_posts_content] }.to raise_error("'sidebar_recent_posts_content' missing")
+    context "modeがjsonだった場合" do
+      before do
+        allow(Simpress::Writer).to receive(:write)
+      end
+
+      it "recent_posts.jsonがファイルとして出力されること" do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+        expect { described_class.run([*1..30]) }.not_to raise_error
+        expect(Simpress::Writer).to have_received(:write).with("recent_posts.json", [*1..5].to_json)
+      end
+    end
+
+    context "modeがhtmlでもjsonでもない場合" do
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("hoge")
+      end
+
+      it "エラーが送出されること" do
+        expect { described_class.run([*1..30], nil, nil) }.to raise_error("Error")
       end
     end
   end

@@ -12,10 +12,12 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*"]
   spec.require_paths = ["lib"]
   spec.add_dependency "classy_hash"
-  spec.add_dependency "erubis", "2.7.0"
-  spec.add_dependency "front_matter_parser"
+  spec.add_dependency "erubi"
   spec.add_dependency "natto"
-  spec.add_dependency "redcarpet", "3.6.1"
+  spec.add_dependency "oj"
+  spec.add_dependency "redcarpet"
+  spec.add_dependency "stackprof"
   spec.add_dependency "stringex"
   spec.add_dependency "tee"
+  spec.add_dependency "tilt"
 end

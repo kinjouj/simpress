@@ -43,7 +43,9 @@ Metrics/PerceivedComplexity:
   Enabled: false
 
 Style/BlockDelimiters:
-  AllowedPatterns: ["each"]
+  AllowedPatterns:
+    - each
+    - expect
 
 Style/Documentation:
   Enabled: false
@@ -87,3 +89,4 @@ RSpec/ReceiveMessages:
 
 RSpec/ReturnFromStub:
   Enabled: false
+

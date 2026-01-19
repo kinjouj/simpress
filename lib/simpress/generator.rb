@@ -24,10 +24,8 @@ module Simpress
             if categories[key].nil?
               categories[key] = category
             else
-              categories[key].count += 1
+              categories[key].increment!
             end
-
-            # categories[key].last_update = data.date
           end
 
           Simpress::Logger.info("PARSE COMPLETE: #{file}")

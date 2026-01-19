@@ -3,46 +3,49 @@
 require "simpress/theme"
 
 describe Simpress::Theme do
-  describe ".create_erubis" do
-    let(:eruby_double) { instance_double(Erubis::Eruby, evaluate: "rendered content") }
-    let(:create_erubis) { ->(template) { described_class.send(:create_erubis, template) } }
+  describe ".create_tilt" do
+    let(:eruby_double) { instance_double(Tilt::ErubiTemplate, render: "template content") }
+    let(:create_tilt) { ->(template) { described_class.send(:create_tilt, template) } }
 
     before do
-      allow(Erubis::Eruby).to receive(:load_file).with("theme/post.erb", { engine: :fast })
-                                                 .and_return(eruby_double)
+      described_class.clear
+      allow(File).to receive(:read).with("theme/post.erb").and_return("template content")
     end
 
     it "テンプレートごとにErubisがキャッシュされ正しく管理されること" do
-      erubis1 = create_erubis.call("post")
-      expect(erubis1).to eq(create_erubis.call("post"))
+      tilt1 = create_tilt.call("post")
+      expect(tilt1).to eq(create_tilt.call("post"))
 
-      erubis2 = create_erubis.call("post")
-      expect(erubis1).to eq(erubis2)
+      tilt2 = create_tilt.call("post")
+      expect(tilt1).to eq(tilt2)
 
-      expect(Thread.current[:simpress_erubis_caches]).not_to be_empty
+      expect(Thread.current[:simpress_tilt_caches]).not_to be_empty
       described_class.clear
-      expect(Thread.current[:simpress_erubis_caches]).to be_nil
+      expect(Thread.current[:simpress_tilt_caches]).to be_nil
 
-      expect { create_erubis.call("test") }.to raise_error(RuntimeError)
+      expect { create_tilt.call("test") }.to raise_error(StandardError)
     end
 
     it "Erubisのロードに失敗したときに例外を返す" do
-      allow(Erubis::Eruby).to receive(:load_file).and_raise(StandardError, "Error")
-      expect { create_erubis.call("post") }.to raise_error("Failed template error: Error")
+      allow(Tilt::ErubiTemplate).to receive(:new).and_raise(StandardError, "Error")
+      expect { create_tilt.call("post") }.to raise_error(StandardError)
     end
   end
 
   describe ".render" do
-    let(:eruby_double) { instance_double(Erubis::Eruby, evaluate: "rendered content") }
-
     before do
-      allow(Erubis::Eruby).to receive(:load_file).with("theme/post.erb", { engine: :fast })
-                                                 .and_return(eruby_double)
+      described_class.clear
+      allow(Tilt::ErubiTemplate).to receive(:new).with("theme/post.erb")
+                                                 .and_return(
+                                                   Tilt::ErubiTemplate.new {
+                                                     "<%= @foo %>, <%= @bar %>"
+                                                   }
+                                                 )
     end
 
     it "テンプレートをレンダリングして結果を返すこと" do
-      data = described_class.render("post", { post: { title: "test" } })
-      expect(data).not_to be_empty
+      data = described_class.render("post", { foo: "Hello", bar: "World" })
+      expect(data).to eq("Hello, World")
     end
   end
 

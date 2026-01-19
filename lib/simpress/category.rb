@@ -6,8 +6,8 @@ require "stringex"
 module Simpress
   class Category
     @cache = {}
-    attr_reader :key, :name
-    attr_accessor :count, :children, :last_update
+    attr_reader :key, :name, :count
+    attr_accessor :children
 
     def initialize(name)
       raise "category is empty" if name.nil?
@@ -16,6 +16,10 @@ module Simpress
       @name     = name
       @count    = 1
       @children = {}
+    end
+
+    def increment!
+      @count += 1
     end
 
     def to_json(*)
@@ -28,6 +32,10 @@ module Simpress
 
     def self.fetch(name)
       @cache[name] ||= new(name)
+    end
+
+    def self.clear
+      @cache = {}
     end
 
     private_class_method :new

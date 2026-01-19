@@ -22,7 +22,7 @@ module Simpress
         end
 
         def header(text, header_level)
-          @toc << text if header_level == 4
+          @toc << [@toc.size + 1, text] if header_level == 4
           "<h#{header_level}>#{text}</h#{header_level}>"
         end
 

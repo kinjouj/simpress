@@ -5,6 +5,7 @@ require "simpress"
 describe Simpress do
   before do
     allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Logger).to receive(:debug)
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
     allow(Simpress::Config.instance).to receive(:theme_dir).and_return(create_filepath("theme"))
     allow(Simpress::Config.instance).to receive(:source_dir).and_return(create_filepath("source"))
@@ -21,6 +22,7 @@ describe Simpress do
   it do
     expect { described_class.build }.not_to raise_error
     expect(Simpress::Logger).to have_received(:info).at_least(1).times
+    expect(Simpress::Logger).to have_received(:debug).exactly(1).times
     expect(File).to exist(create_filepath("public/count.txt"))
     expect(File).to exist(create_filepath("public/test.html"))
     expect(File).to exist(create_filepath("public/test2.html"))

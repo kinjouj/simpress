@@ -1,4 +1,0 @@
-_buf = ''; @recent_posts.each do |recent_post| 
- _buf << Erubis::XmlHelper.escape_xml( recent_post ); _buf << '
-'; end 
-_buf.to_s

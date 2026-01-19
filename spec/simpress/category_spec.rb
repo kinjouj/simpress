@@ -3,6 +3,10 @@
 require "simpress/category"
 
 describe Simpress::Category do
+  before do
+    described_class.clear
+  end
+
   context "新しいカテゴリーを作成する場合" do
     it "カテゴリーが正しく初期化されること" do
       category = described_class.fetch("Ruby")
@@ -10,6 +14,15 @@ describe Simpress::Category do
       expect(category.key).to eq("ruby")
       expect(category.name).to eq("Ruby")
       expect(category.count).to eq(1)
+    end
+  end
+
+  describe "#increment!" do
+    it "正しくcountが+1されること" do
+      category = described_class.fetch("Ruby")
+      expect(category.count).to eq(1)
+      category.increment!
+      expect(category.count).to eq(2)
     end
   end
 

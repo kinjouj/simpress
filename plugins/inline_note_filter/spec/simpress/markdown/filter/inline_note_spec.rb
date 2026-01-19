@@ -10,7 +10,7 @@ describe Simpress::Markdown::Filter::InlineNote do
       MARKDOWN
 
       res = described_class.preprocess(markdown)
-      expect(res).to eq(%(<div class="note"><i class="fa-solid fa-circle-exclamation"></i>Hello World</div>))
+      expect(res).to eq(%(<div class="note"><i class="fa-solid fa-circle-exclamation"></i>Hello World</div>\n))
     end
 
     it "[^]:のあとにスペースがなくても問題ないこと" do
@@ -19,7 +19,7 @@ describe Simpress::Markdown::Filter::InlineNote do
       MARKDOWN
 
       res = described_class.preprocess(markdown)
-      expect(res).to eq(%(<div class="note"><i class="fa-solid fa-circle-exclamation"></i>Hello World</div>))
+      expect(res).to eq(%(<div class="note"><i class="fa-solid fa-circle-exclamation"></i>Hello World</div>\n))
     end
   end
 end

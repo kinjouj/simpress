@@ -7,45 +7,67 @@ module Simpress
 
       CATEGORY_WEIGHT = 10
 
-      def self.run(posts, _, _)
-        docs    = posts.map(&:extract_keywords)
-        vectors = posts.zip(docs).map do |post, keywords|
-          freq = Hash.new(0)
-          keywords.each {|k| freq[k] += 1 }
-          post.categories.each {|category| freq[category.name] += CATEGORY_WEIGHT }
-          freq
+      class CosineSimilarity
+        attr_reader :docs, :keywords
+
+        def initialize(posts)
+          @posts    = posts
+          @docs     = posts.map(&:extract_keywords)
+          @keywords = build_keyword_index
         end
 
-        related_posts = Array.new(posts.size) { [] }
-        norms         = vectors.map { |v| Math.sqrt(v.values.sum { |x| x * x }) }
-        keyword_map   = Hash.new {|h, k| h[k] = [] }
-        docs.each_with_index {|keywords, i| keywords.each {|k| keyword_map[k] << i } }
-
-        vectors.each_with_index do |vec1, i|
-          norm1 = norms[i]
-          next if norm1.zero?
-
-          candidate_indices = docs[i].flat_map {|k| keyword_map[k] }.uniq.reject {|j| j == i }
-          candidate_indices.each do |j|
-            norm2 = norms[j]
-            next if norm2.zero?
-
-            vec2    = vectors[j]
-            product = if vec1.size < vec2.size
-                        vec1.sum {|k, v| v * (vec2[k] || 0) }
-                      else
-                        vec2.sum {|k, v| v * (vec1[k] || 0) }
-                      end
-
-            cosine = product / (norm1 * norm2)
-            related_posts[i] << [cosine, { title: posts[j].title, permalink: posts[j].permalink }] if cosine.positive?
+        def vectors
+          @vectors ||= @posts.zip(docs).map do |post, keywords|
+            freq = keywords.each_with_object(Hash.new(0)) { |k, h| h[k] += 1 }
+            post.categories.each {|category| freq[category.name] += CATEGORY_WEIGHT }
+            freq
           end
+        end
+
+        def build_keyword_index
+          index = Hash.new {|h, k| h[k] = [] }
+          @docs.each_with_index {|keywords, i| keywords.each {|k| index[k] << i } }
+          index
+        end
+
+        def norms
+          @norms ||= vectors.map {|v| Math.sqrt(v.values.sum {|x| x * x }) }
+        end
+
+        def each_similarity
+          vectors.each_index do |i|
+            candidate_indices = @docs[i].flat_map {|k| @keywords[k] }.uniq.reject {|j| j == i }
+            candidate_indices.each do |j|
+              cosine = cosine(vectors[i], norms[i], vectors[j], norms[j])
+              yield i, j, cosine if cosine.positive?
+            end
+          end
+        end
+
+        def cosine(vec1, norm1, vec2, norm2)
+          return 0.0 if norm1.zero? || norm2.zero?
+
+          product = if vec1.size < vec2.size
+                      vec1.sum {|k, v| v * (vec2[k] || 0) }
+                    else
+                      vec2.sum {|k, v| v * (vec1[k] || 0) }
+                    end
+
+          product / (norm1 * norm2)
+        end
+      end
+
+      def self.run(posts, _, _)
+        related_posts = Array.new(posts.size) { [] }
+        cs = CosineSimilarity.new(posts)
+        cs.each_similarity do |i, j, cosine|
+          related_posts[i] << [cosine, { title: posts[j].title, permalink: posts[j].permalink }] if cosine.positive?
         end
 
         related_posts.each_with_index do |sim_posts, i|
           base_post = posts[i]
           similarity = sim_posts.max_by(5) {|cosine, _| cosine }.map {|_, post| post }
-          result = { title: base_post.title, keywords: docs[i].uniq, similarity: similarity }.to_json
+          result = { title: base_post.title, keywords: cs.docs[i].uniq, similarity: similarity }.to_json
 
           Simpress::Writer.write("similarity/#{base_post.id}.json", result)
         end

@@ -17,7 +17,6 @@ describe Simpress::Generator::Json do
     allow(Simpress::Generator::Renderer::PageRenderer).to receive(:generate_json)
     allow(Simpress::Generator::Renderer::CategoryIndexRenderer).to receive(:generate_json)
     allow(Simpress::Generator::Renderer::MonthlyIndexRenderer).to receive(:generate_json)
-    allow(Simpress::Generator::Renderer::CategoriesRenderer).to receive(:generate_json)
     allow(Simpress::Generator::Renderer::PageInfoRenderer).to receive(:generate_json)
   end
 
@@ -28,7 +27,6 @@ describe Simpress::Generator::Json do
     expect(Simpress::Generator::Renderer::PageRenderer).to have_received(:generate_json)
     expect(Simpress::Generator::Renderer::CategoryIndexRenderer).to have_received(:generate_json)
     expect(Simpress::Generator::Renderer::MonthlyIndexRenderer).to have_received(:generate_json)
-    expect(Simpress::Generator::Renderer::CategoriesRenderer).to have_received(:generate_json)
     expect(Simpress::Generator::Renderer::PageInfoRenderer).to have_received(:generate_json)
   end
 end

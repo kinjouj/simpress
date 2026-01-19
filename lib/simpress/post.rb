@@ -15,7 +15,7 @@ module Simpress
       categories: [[Simpress::Category]],
       content: String,
       description: String,
-      toc: [[String]],
+      toc: [[:optional, [[Integer, String]]]],
       cover: String,
       layout: CH::G.enum(:post, :page),
       published: CH::G.enum(true, false),
