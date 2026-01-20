@@ -7,5 +7,12 @@ export type PostType = {
   date: string
   cover: string
   content: string
+  description: string
   categories: CategoryType[]
+};
+
+export type SimilarityType = {
+  title: string
+  keywords: string[]
+  similarity: Pick<PostType, 'id' | 'title' | 'permalink'>[]
 };

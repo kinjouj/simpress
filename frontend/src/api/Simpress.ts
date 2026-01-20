@@ -1,4 +1,4 @@
-import type { PostType } from '../types';
+import type { PostType, SimilarityType } from '../types';
 
 export default class Simpress {
   public static getPageInfo(): Promise<number> {
@@ -20,6 +20,14 @@ export default class Simpress {
 
   public static getPost(permalink: string): Promise<PostType> {
     return Simpress.getData<PostType>(`/${permalink}`);
+  }
+
+  public static getRecentPosts(): Promise<PostType[]> {
+    return Simpress.getData<PostType[]>('/recent_posts.json');
+  }
+
+  public static getSimilarity(id: string): Promise<SimilarityType> {
+    return Simpress.getData<SimilarityType>(`/similarity/${id}.json`);
   }
 
   private static async getData<T>(path: string): Promise<T> {

@@ -16,8 +16,7 @@ export default defineConfig({
     })
   ],
   build: {
-    //minify: 'esbuild',
-    minify: false,
+    minify: 'esbuild',
     outDir: '../public',
     assetsDir: 'assets',
     emptyOutDir: false,

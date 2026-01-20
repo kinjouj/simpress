@@ -1,10 +1,15 @@
 const Header = (): React.JSX.Element => {
   return (
     <>
-      <nav className="navbar navbar-expand-lg p-0">
+      <nav className="navbar navbar-expand-lg border-bottom border-secondary p-0">
         <div className="container-fluid">
           <nav className="navbar-collapse collapse">
-            <ul className="nav navbar-nav navbar-right ms-auto">
+            <ul className="nav navbar-nav">
+              <li className="nav-item">
+                <a className="nav-link" href="mailto:kinjoujgmail.com">Contact</a>
+              </li>
+            </ul>
+            <ul className="nav navbar-nav mavbar-right ms-auto">
               <li className="nav-item">
                 <form action="https://www.google.com/search" method="GET">
                   <input type="hidden" name="hl" value="ja" />
@@ -16,10 +21,10 @@ const Header = (): React.JSX.Element => {
           </nav>
         </div>
       </nav>
-      <div className="logo-header text-center">
-        <h2>
-          <a href="/">Simpress Demo</a>
-        </h2>
+      <div>
+        <header className="logo-header text-center">
+          <h2><a href="/">kinjouj.github.io</a></h2>
+        </header>
       </div>
     </>
   );

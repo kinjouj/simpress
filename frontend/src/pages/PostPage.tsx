@@ -2,9 +2,9 @@ import React, { Suspense, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
-import { CreatedAt, NotFound } from '../components';
+import { CreatedAt, NotFound, RecentPosts, Similarity } from '../components';
 import { useFetchData, usePermalink } from '../hooks';
-import type { CategoryType, PostType } from '../types';
+import { type CategoryType, type PostType } from '../types';
 import 'prismjs/plugins/autoloader/prism-autoloader';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 
@@ -29,9 +29,13 @@ const PostPage = (): React.JSX.Element => {
   const { data: post, isError } = useFetchData<PostType>(fetcher);
 
   useEffect(() => {
-    if (post !== null) {
-      Prism.highlightAll();
+    if (post === null) {
+      return;
     }
+
+    requestAnimationFrame(() => {
+      Prism.highlightAll();
+    });
   }, [post]);
 
   if (isError) {
@@ -47,16 +51,15 @@ const PostPage = (): React.JSX.Element => {
   }
 
   return (
-    <div className="container mt-5 flex-grow-1">
-      <div className="row g-0">
-        <div className="col col-lg-12"></div>
+    <div className="container">
+      <div className="row">
         <div className="col col-lg-8">
-          <div id="content">
+          <div id="content" className="m-4 mb-5">
             <div className="post" role="main">
               <div className="post-date">
                 <CreatedAt dateString={post.date} />
               </div>
-              <h1>{post.title}</h1>
+              <h1 className="post-title">{post.title}</h1>
               <hr />
               <p className="meta">
                 <span className="categories">
@@ -67,12 +70,21 @@ const PostPage = (): React.JSX.Element => {
                 </span>
               </p>
               <div className="post-content mw-100" dangerouslySetInnerHTML={{ __html: post.content }} />
+              <Similarity post={post} />
               <div style={{ marginTop: '30px' }}>
                 <hr />
                 <pre><code className="language-json">{JSON.stringify(post, null, 2)}</code></pre>
               </div>
             </div>
           </div>
+        </div>
+        <div className="col col-lg-4 mt-4">
+          <aside>
+            <div id="recent_posts">
+              <h4>Recent Posts</h4>
+              <RecentPosts />
+            </div>
+          </aside>
         </div>
       </div>
     </div>

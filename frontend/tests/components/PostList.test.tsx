@@ -5,7 +5,7 @@ import { testPostData } from '../fixtures/testPostData';
 import type { PostType } from '../../src/types';
 
 describe('PostList', () => {
-  test('<PostList> test', () => {
+  test('<PostList> test', async () => {
     const posts: PostType[] = [testPostData];
     render(
       <MemoryRouter>
@@ -13,7 +13,7 @@ describe('PostList', () => {
       </MemoryRouter>
     );
 
-    const elms = screen.getAllByRole('listitem', { name: 'post' });
+    const elms = await screen.findAllByRole('listitem', { name: 'post' });
     expect(elms).toHaveLength(1);
   });
 });

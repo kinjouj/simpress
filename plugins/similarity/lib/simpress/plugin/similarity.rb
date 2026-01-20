@@ -18,7 +18,7 @@ module Simpress
 
         def vectors
           @vectors ||= @posts.zip(docs).map do |post, keywords|
-            freq = keywords.each_with_object(Hash.new(0)) { |k, h| h[k] += 1 }
+            freq = keywords.each_with_object(Hash.new(0)) {|k, h| h[k] += 1 }
             post.categories.each {|category| freq[category.name] += CATEGORY_WEIGHT }
             freq
           end
@@ -61,7 +61,7 @@ module Simpress
         related_posts = Array.new(posts.size) { [] }
         cs = CosineSimilarity.new(posts)
         cs.each_similarity do |i, j, cosine|
-          related_posts[i] << [cosine, { title: posts[j].title, permalink: posts[j].permalink }] if cosine.positive?
+          related_posts[i] << [cosine, { id: posts[j].id, title: posts[j].title, permalink: posts[j].permalink }] if cosine.positive?
         end
 
         related_posts.each_with_index do |sim_posts, i|

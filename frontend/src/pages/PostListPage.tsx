@@ -29,10 +29,10 @@ const PostListPage = (): React.JSX.Element => {
   }
 
   return (
-    <div className="container mt-5 flex-grow-1">
+    <>
       <PostList posts={posts} />
       <Pager />
-    </div>
+    </>
   );
 };
 

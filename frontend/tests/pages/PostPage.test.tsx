@@ -29,6 +29,7 @@ describe('PostPage', () => {
 
   test('<PostPage> test', async () => {
     SimpressMock.getPost.mockResolvedValue(testPostData);
+    SimpressMock.getSimilarity.mockResolvedValue({ title: 'test', keywords: ['test'], similarity: [] });
     renderPostPage();
     await act(async () => {
       jest.runAllTimers();
