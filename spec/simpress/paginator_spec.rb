@@ -3,6 +3,10 @@
 require "simpress/paginator"
 
 describe Simpress::Paginator do
+  before do
+    allow(Simpress::Config.instance).to receive(:paginate).and_return(10)
+  end
+
   context "Paginatorビルダーで正しくインスタンスを作成する場合" do
     it "IndexとPost のインスタンスが正しく生成されること" do
       paginator1 = described_class.builder.maxpage(10).page(2).build
@@ -11,7 +15,7 @@ describe Simpress::Paginator do
       paginator2 = described_class.builder.maxpage(10).page(2).prefix("/abc").build
       expect(paginator2).to be_is_a(Simpress::Paginator::Index)
 
-      paginator3 = described_class.builder.posts([1, 2, 3]).build
+      paginator3 = described_class.builder.posts([1, 2, 3]).index(1).build
       expect(paginator3).to be_is_a(Simpress::Paginator::Post)
     end
   end
@@ -20,5 +24,13 @@ describe Simpress::Paginator do
     it "NotImplementedError が発生すること" do
       expect { described_class.builder.build }.to raise_error(NotImplementedError)
     end
+  end
+
+  it ".paginate" do
+    expect(described_class.paginate).to eq(10)
+  end
+
+  it ".calculate_pagesize" do
+    expect(described_class.calculate_pagesize([*1..99])).to eq(10)
   end
 end

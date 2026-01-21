@@ -10,12 +10,12 @@ describe Simpress::Context do
   describe "[] and []=" do
     context "値をつっこんだり取得してみたりした場合" do
       it "successful" do
-        described_class.instance[:key] = "hoge"
-        expect(described_class.instance[:key]).to eq("hoge")
+        described_class[:key] = "hoge"
+        expect(described_class[:key]).to eq("hoge")
       end
 
       it "存在しないキーを指定した場合、例外が発生すること" do
-        expect { described_class.instance[:key] }.to raise_error(KeyError)
+        expect { described_class[:key] }.to raise_error(KeyError)
       end
     end
   end
@@ -23,18 +23,33 @@ describe Simpress::Context do
   describe ".update" do
     it "ハッシュでまとめて値を更新できること" do
       described_class.update(key: "test", version: 1)
-      expect(described_class.instance[:key]).to eq("test")
-      expect(described_class.instance[:version]).to eq(1)
+      expect(described_class[:key]).to eq("test")
+      expect(described_class[:version]).to eq(1)
+    end
+  end
+
+  describe ".to_hash" do
+    it "つっこんだ値をHashで取得できること" do
+      described_class.update(key: "test")
+      expect(described_class.to_hash).to include(key: "test")
+    end
+  end
+
+  describe ".to_scope" do
+    it "つっこんだ値を内包したObjectで取得できること" do
+      described_class.update(key: "test")
+      scope = described_class.to_scope
+      expect(scope.instance_variable_get(:@key)).to eq("test")
     end
   end
 
   describe ".clear" do
     context "値をつっこんだあとでclearを呼んだ場合" do
       it "ちゃんと値が消えていること" do
-        described_class.instance[:key] = "hoge"
-        expect(described_class.instance[:key]).to eq("hoge")
+        described_class.update({ key: "hoge" })
+        expect(described_class[:key]).to eq("hoge")
         described_class.clear
-        expect { described_class.instance[:key] }.to raise_error(KeyError)
+        expect { described_class[:key] }.to raise_error(KeyError)
       end
     end
   end

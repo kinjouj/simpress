@@ -22,12 +22,12 @@ module Simpress
       @count += 1
     end
 
-    def to_json(*)
-      as_json(*).to_json
-    end
-
     def as_json(_options = {})
       { key: @key, name: @name, count: @count, children: @children }
+    end
+
+    def to_json(*)
+      as_json(*).to_json
     end
 
     def self.fetch(name)
@@ -35,7 +35,7 @@ module Simpress
     end
 
     def self.clear
-      @cache = {}
+      @cache.clear
     end
 
     private_class_method :new

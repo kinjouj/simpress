@@ -10,10 +10,6 @@ module Simpress
       @data = {}
     end
 
-    def update(obj)
-      obj.each {|k, v| @data[k.to_sym] = v }
-    end
-
     def [](key)
       @data.fetch(key.to_sym) { raise KeyError, "key not found: #{key}" }
     end
@@ -22,12 +18,20 @@ module Simpress
       @data[key.to_sym] = value
     end
 
-    def clear
-      @data.clear
+    def update(obj)
+      obj.each {|k, v| @data[k.to_sym] = v }
+    end
+
+    def to_hash
+      @data.dup
     end
 
     def to_scope
       @data.each_with_object(Object.new) {|(k, v), obj| obj.instance_variable_set("@#{k}", v) }
+    end
+
+    def clear
+      @data.clear
     end
 
     class << self
@@ -41,6 +45,14 @@ module Simpress
 
       def update(obj)
         instance.update(obj)
+      end
+
+      def to_hash
+        instance.to_hash
+      end
+
+      def to_scope
+        instance.to_scope
       end
 
       def clear

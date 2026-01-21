@@ -23,6 +23,12 @@ describe Simpress::Plugin do
 
   describe ".process" do
     context "pluginsを指定して実行対象をフィルタした場合" do
+      before do
+        allow(Simpress::Logger).to receive(:debug)
+        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Config.instance).to receive(:plugins).and_return(["test1_plugin"])
+      end
+
       it "指定したプラグインのみが実行されること" do
         test1_class = Class.new do
           extend Simpress::Plugin
@@ -40,15 +46,12 @@ describe Simpress::Plugin do
           end
         end
 
-        allow(Simpress::Logger).to receive(:debug)
-        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
-        allow(Simpress::Config.instance).to receive(:plugins).and_return(["test1_plugin"])
         stub_const("Simpress::Plugin::Test1Plugin", test1_class)
         stub_const("Simpress::Plugin::HogePlugin", hoge_class)
         expect(described_class.register_plugins).not_to be_empty
-        described_class.process
-        expect(Simpress::Context.instance[:mode]).to eq(:html)
-        expect { Simpress::Context.instance[:msg] }.to raise_error(KeyError)
+        expect { described_class.process }.not_to raise_error
+        expect(Simpress::Context[:mode]).to eq(:html)
+        expect { Simpress::Context[:msg] }.to raise_error(KeyError)
         expect(Simpress::Logger).to have_received(:debug).once
       end
     end

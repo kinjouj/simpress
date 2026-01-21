@@ -6,24 +6,25 @@ require "simpress/parser/redcarpet/renderer"
 module Simpress
   module Parser
     module Redcarpet
+      class Markdown < ::Redcarpet::Markdown
+        def render(data)
+          renderer.reset!
+          body = super
+          [body, renderer.primary_image, renderer.toc]
+        end
+      end
+
       REDCARPET_OPTIONS = {
         no_intra_emphasis: true,
         fenced_code_blocks: true,
         highlight: true,
-        autolink: true,
-        quote: false
+        autolink: true
       }.freeze
 
-      def self.render(data)
-        parser = Markdown.new(Simpress::Parser::Redcarpet::Renderer.new, REDCARPET_OPTIONS)
-        parser.render(data)
-      end
+      PARSER = Markdown.new(Simpress::Parser::Redcarpet::Renderer.new, REDCARPET_OPTIONS)
 
-      class Markdown < ::Redcarpet::Markdown
-        def render(data)
-          body = super
-          [body, renderer.primary_image, renderer.toc]
-        end
+      def self.render(data)
+        PARSER.render(data)
       end
 
       private_constant :Markdown

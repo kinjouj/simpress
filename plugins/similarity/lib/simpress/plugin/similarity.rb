@@ -61,7 +61,8 @@ module Simpress
         related_posts = Array.new(posts.size) { [] }
         cs = CosineSimilarity.new(posts)
         cs.each_similarity do |i, j, cosine|
-          related_posts[i] << [cosine, { id: posts[j].id, title: posts[j].title, permalink: posts[j].permalink }] if cosine.positive?
+          similarity = { id: posts[j].id, title: posts[j].title, permalink: posts[j].permalink }
+          related_posts[i] << [cosine, similarity] if cosine.positive?
         end
 
         related_posts.each_with_index do |sim_posts, i|

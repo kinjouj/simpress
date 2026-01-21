@@ -23,6 +23,7 @@ group :development do
   gem "rubocop", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rspec", require: false
+  gem "solargraph", require: false
   gem "stackprof", require: false
 end
 

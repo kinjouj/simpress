@@ -11,7 +11,7 @@ describe Simpress::Generator::Json do
   let(:page) { build_post_data(4, layout: :page) }
 
   before do
-    allow(Simpress::Config.instance).to receive(:mode).and_return(:json)
+    allow(Simpress::Config.instance).to receive(:mode).and_return("json")
     allow(Simpress::Generator::Renderer::IndexRenderer).to receive(:generate_json)
     allow(Simpress::Generator::Renderer::PermalinkRenderer).to receive(:generate_json)
     allow(Simpress::Generator::Renderer::PageRenderer).to receive(:generate_json)

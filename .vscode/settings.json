@@ -23,5 +23,6 @@
   "[typescriptreact]": {
     "editor.tabSize": 2,
     "typescript.preferences.quoteStyle": "single"
-  }
+  },
+  "solargraph.useBundler": true
 }

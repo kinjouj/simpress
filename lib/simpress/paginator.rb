@@ -16,7 +16,7 @@ module Simpress
       end
 
       def calculate_pagesize(array)
-        array.size.quo(paginate).ceil
+        (array.size / paginate.to_f).ceil
       end
     end
 

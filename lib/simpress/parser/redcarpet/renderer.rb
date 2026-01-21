@@ -8,13 +8,18 @@ module Simpress
   module Parser
     module Redcarpet
       class Renderer < ::Redcarpet::Render::HTML
-        RENDERER_OPTIONS = { hard_wrap: true, no_styles: true }.freeze
+        RENDERER_OPTIONS = { hard_wrap: true }.freeze
         attr_reader :primary_image, :toc
 
         def initialize(options = nil)
           super(options || RENDERER_OPTIONS)
+          reset!
+        end
+
+        def reset!
           @primary_image = nil
-          @toc = []
+          @toc ||= []
+          @toc.clear
         end
 
         def preprocess(markdown)

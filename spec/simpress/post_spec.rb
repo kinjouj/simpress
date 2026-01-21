@@ -41,6 +41,13 @@ describe Simpress::Post do
     expect { described_class.new(invalid_params) }.to raise_error(ClassyHash::SchemaViolationError)
   end
 
+  describe "#timestamp" do
+    it "タイムスタンプ値が取得できること" do
+      post = described_class.new(params)
+      expect(post.timestamp).to be_a(Integer)
+    end
+  end
+
   describe "#as_json" do
     it "contentを含めずにJSON用ハッシュを返すこと" do
       post = described_class.new(params)

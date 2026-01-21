@@ -12,12 +12,7 @@ module Simpress
       def render(template, data)
         Simpress::Context.update(data)
         tilt = create_tilt(template)
-        tilt.render(Simpress::Context.instance.to_scope)
-      end
-
-      def render_parital(template, data)
-        tilt = create_tilt(template)
-        tilt.render(data.each_with_object(Object.new) {|(k, v), obj| obj.instance_variable_set("@#{k}", v) })
+        tilt.render(Simpress::Context.to_scope)
       end
 
       def exist?(template)
@@ -28,12 +23,6 @@ module Simpress
         Thread.current[KEY] = nil
       end
 
-      private
-
-      def tilt_caches
-        Thread.current[KEY] ||= {}
-      end
-
       def create_tilt(template)
         filename = fetch_template_file(template)
         tilt_caches.fetch(filename) do
@@ -42,12 +31,18 @@ module Simpress
         end
       end
 
-      def theme_dir
-        Simpress::Config.instance.theme_dir || "theme"
+      private
+
+      def tilt_caches
+        Thread.current[KEY] ||= {}
       end
 
       def fetch_template_file(template)
         File.join(theme_dir, "#{template}.erb")
+      end
+
+      def theme_dir
+        Simpress::Config.instance.theme_dir || "theme"
       end
     end
   end

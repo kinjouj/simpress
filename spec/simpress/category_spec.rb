@@ -10,7 +10,6 @@ describe Simpress::Category do
   context "新しいカテゴリーを作成する場合" do
     it "カテゴリーが正しく初期化されること" do
       category = described_class.fetch("Ruby")
-      expect(category).not_to be_nil
       expect(category.key).to eq("ruby")
       expect(category.name).to eq("Ruby")
       expect(category.count).to eq(1)

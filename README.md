@@ -157,3 +157,10 @@ end
 <%= post.title %>
 <% end %>
 ```
+
+
+### Plugin: Similarity
+
+
+パースされたMarkdownから関連記事の情報を取得してJSONで出力するプラグイン
+/similarity/記事ID.jsonで出力される
