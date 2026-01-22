@@ -40,7 +40,7 @@ module Simpress
 
       def process(posts = [], pages = [], categories = {})
         allowed_plugins = (Simpress::Config.instance.plugins || []).map do |plugin|
-          klassname = plugin.to_s.split("_").map(&:capitalize).join
+          klassname = plugin.split("_").map(&:capitalize).join
           const_get(klassname, false)
         end
 

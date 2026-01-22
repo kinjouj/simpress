@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "json"
+require "oj"
 require "simpress/config"
 require "simpress/plugin"
 require "simpress/theme"
@@ -19,7 +19,7 @@ module Simpress
         when "html"
           bind_context(recent_posts: recent_posts)
         when "json"
-          Simpress::Writer.write("recent_posts.json", recent_posts.to_json)
+          Simpress::Writer.write("recent_posts.json", Oj.dump(recent_posts))
         else
           raise "Error"
         end

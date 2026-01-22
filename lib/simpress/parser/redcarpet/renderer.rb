@@ -32,8 +32,8 @@ module Simpress
         end
 
         def image(path, _title = nil, _alt = nil)
-          @primary_image = path if @primary_image.nil?
-          %(<img src="#{path}" class="img-fluid" alt="image" />)
+          @primary_image ||= path
+          %(<img src="#{path}" alt="image" />)
         end
 
         def block_code(code, lang = "text")

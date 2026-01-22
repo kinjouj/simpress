@@ -5,8 +5,6 @@ require "simpress/writer"
 
 module Simpress
   class Sitemap
-    attr_reader :doc
-
     def self.build(hostname, &)
       raise "ERROR" unless block_given?
 
@@ -34,7 +32,7 @@ module Simpress
 
     def create_element(name, attributes: {}, text: nil)
       el = Ox::Element.new(name)
-      attributes.each { |k, v| el[k.to_sym] = v }
+      attributes.each {|k, v| el[k] = v }
       el << text if text
       el
     end

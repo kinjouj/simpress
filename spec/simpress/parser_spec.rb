@@ -75,7 +75,7 @@ describe Simpress::Parser do
           test
         MARKDOWN
       }
-      expect { described_class.parse("dummy.markdown") }.to raise_error(Simpress::Parser::ParserError)
+      expect { described_class.parse("dummy.markdown") }.to raise_error(Simpress::Parser::ParseError)
     end
   end
 
@@ -108,7 +108,7 @@ describe Simpress::Parser do
           test
         MARKDOWN
       }
-      expect { described_class.parse("dummy.markdown") }.to raise_error(Simpress::Parser::InvalidDateParseError)
+      expect { described_class.parse("dummy.markdown") }.to raise_error(Simpress::Parser::ParseError)
     end
   end
 

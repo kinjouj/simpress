@@ -2,6 +2,7 @@
 
 require "erb"
 require "pathname"
+require "xxhash"
 require "simpress/category"
 require "simpress/config"
 require "simpress/markdown"
@@ -10,10 +11,10 @@ require "simpress/post"
 
 module Simpress
   module Parser
-    class ParserError < StandardError; end
-    class InvalidDateParseError < ParserError; end
+    class ParseError < StandardError; end
 
-    REGEXP_DESC = /\A.*?(?:\r?\n){2}/m
+    REGEX_DESC = /\A.*?(?:\r?\n){2}/m
+    REGEX_TIME = /\A(\d{4})-(\d{1,2})-(\d{1,2})/
 
     class << self
       def parse(file)
@@ -21,13 +22,13 @@ module Simpress
         content, image, toc  = Simpress::Parser::Redcarpet.render(body)
         basename             = File.basename(file, ".*")
         params[:markdown]    = body
-        params[:id]          = (file.hash & 0xffff_ffff_ffff_ffff).to_s(16)
+        params[:id]          = XXhash.xxh64(file).to_s
         params[:content]     = content
         params[:toc]         = toc || []
         params[:layout]      = params.fetch(:layout, "post").to_sym
         params[:published]   = params.fetch(:published, true)
         params[:cover]       ||= image || "/images/no_image.png"
-        params[:description] ||= ERB::Util.html_escape(body.to_s[REGEXP_DESC].to_s.strip)
+        params[:description] ||= ERB::Util.html_escape(body.to_s[REGEX_DESC].to_s.strip)
         parse_datetime!(params, basename)
         parse_permalink!(params, basename)
         parse_categories!(params)
@@ -39,17 +40,17 @@ module Simpress
 
       def parse_datetime!(params, basename)
         if params[:date].nil?
-          y, m, d = basename.scan(/\A(\d{4})-(\d{1,2})-(\d{1,2})/).flatten
+          y, m, d = basename.scan(REGEX_TIME).flatten
           params[:date] = Time.new(y.to_i, m.to_i, d.to_i) if y && m && d
         else
           begin
-            params[:date] = Time.parse(params[:date].to_s) unless params[:date].is_a?(Time)
+            params[:date] = Time.parse(params[:date]) unless params[:date].is_a?(Time)
           rescue ArgumentError
-            raise InvalidDateParseError, "Invalid date format: #{params[:date]}"
+            raise ParseError, "Invalid date format: #{params[:date]}"
           end
         end
 
-        raise InvalidDateParseError, "Date missing or invalid in file #{basename}" if params[:date].nil?
+        raise ParseError, "Date missing or invalid in file #{basename}" if params[:date].nil?
       end
 
       def parse_permalink!(params, basename)

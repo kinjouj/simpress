@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "json"
+require "oj"
 require "stringex"
 
 module Simpress
@@ -27,7 +27,7 @@ module Simpress
     end
 
     def to_json(*)
-      as_json(*).to_json
+      Oj.dump(as_json(*), mode: :json)
     end
 
     def self.fetch(name)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "json"
+require "oj"
 require "simpress/generator/renderer/index_renderer"
 require "simpress/logger"
 require "simpress/paginator"
@@ -28,7 +28,7 @@ module Simpress
         def self.generate_json(monthly_posts)
           monthly_posts.each do |date, posts|
             file_path = File.join("/archives", "#{date.strftime('%Y/%02m')}.json")
-            Simpress::Writer.write(file_path, posts.to_json) do |_|
+            Simpress::Writer.write(file_path, Oj.dump(posts, mode: :json)) do |_|
               Simpress::Logger.info("create archive: #{file_path}")
             end
           end

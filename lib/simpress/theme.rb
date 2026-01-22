@@ -23,6 +23,8 @@ module Simpress
         Thread.current[KEY] = nil
       end
 
+      private
+
       def create_tilt(template)
         filename = fetch_template_file(template)
         tilt_caches.fetch(filename) do
@@ -30,8 +32,6 @@ module Simpress
           tilt_caches[filename] = tilt
         end
       end
-
-      private
 
       def tilt_caches
         Thread.current[KEY] ||= {}

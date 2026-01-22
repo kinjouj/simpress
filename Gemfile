@@ -4,20 +4,18 @@ source "https://rubygems.org"
 
 ruby "3.3.10"
 
-gem "benchmark"
 gem "classy_hash"
 gem "erubi"
 gem "natto"
 gem "oj"
 gem "ox"
-gem "parallel"
 gem "rake"
 gem "redcarpet"
 gem "sass-embedded"
 gem "stringex"
 gem "tee"
 gem "tilt"
-gem "webrick"
+gem "xxhash"
 
 group :development do
   gem "guard-rake"
@@ -26,6 +24,7 @@ group :development do
   gem "rubocop-rspec", require: false
   gem "solargraph", require: false
   gem "stackprof", require: false
+  gem "webrick", require: false
 end
 
 group :test do

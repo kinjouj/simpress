@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require "oj"
+require "simpress/plugin"
+require "simpress/writer"
+
 module Simpress
   module Plugin
     class Similarity
       extend Simpress::Plugin
-
-      CATEGORY_WEIGHT = 10
 
       class CosineSimilarity
         attr_reader :docs, :keywords
@@ -17,10 +19,11 @@ module Simpress
         end
 
         def vectors
-          @vectors ||= @posts.zip(docs).map do |post, keywords|
+          @vectors ||= @posts.each_with_index.with_object([]) do |(post, i), arr|
+            keywords = docs[i]
             freq = keywords.each_with_object(Hash.new(0)) {|k, h| h[k] += 1 }
-            post.categories.each {|category| freq[category.name] += CATEGORY_WEIGHT }
-            freq
+            post.categories.each {|category| freq[category.name] += 10 }
+            arr << freq
           end
         end
 
@@ -36,7 +39,7 @@ module Simpress
 
         def each_similarity
           vectors.each_index do |i|
-            candidate_indices = @docs[i].flat_map {|k| @keywords[k] }.uniq.reject {|j| j == i }
+            candidate_indices = @docs[i].flat_map {|k| @keywords[k] }.uniq.reject {|j| j == i } # rubocop:disable all
             candidate_indices.each do |j|
               cosine = cosine(vectors[i], norms[i], vectors[j], norms[j])
               yield i, j, cosine if cosine.positive?
@@ -68,9 +71,9 @@ module Simpress
         related_posts.each_with_index do |sim_posts, i|
           base_post = posts[i]
           similarity = sim_posts.max_by(5) {|cosine, _| cosine }.map {|_, post| post }
-          result = { title: base_post.title, keywords: cs.docs[i].uniq, similarity: similarity }.to_json
+          result = { title: base_post.title, keywords: cs.docs[i].uniq, similarity: similarity }
 
-          Simpress::Writer.write("similarity/#{base_post.id}.json", result)
+          Simpress::Writer.write("similarity/#{base_post.id}.json", Oj.dump(result, mode: :json))
         end
       end
     end

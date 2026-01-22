@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "stringex"
   spec.add_dependency "tee"
   spec.add_dependency "tilt"
+  spec.add_dependency "xxhash"
 end

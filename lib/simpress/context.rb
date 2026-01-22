@@ -19,7 +19,7 @@ module Simpress
     end
 
     def update(obj)
-      obj.each {|k, v| @data[k.to_sym] = v }
+      obj.each {|k, v| self[k] = v }
     end
 
     def to_hash

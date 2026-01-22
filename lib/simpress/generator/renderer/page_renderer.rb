@@ -23,8 +23,7 @@ module Simpress
           def generate_json(pages)
             pages.each do |page|
               file_path = File.join("/page", Pathname.new(page.permalink).sub_ext(".json").to_s)
-              data = page.to_json(include_content: true)
-              Simpress::Writer.write(file_path, data) do |_|
+              Simpress::Writer.write(file_path, page.to_json(include_content: true)) do |_|
                 Simpress::Logger.info("create page: #{file_path}")
               end
             end

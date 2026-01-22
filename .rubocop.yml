@@ -11,18 +11,16 @@ Layout/EndOfLine:
   EnforcedStyle: lf
 
 Layout/LineLength:
-  Max: 130
+  Max: 120
   AllowHeredoc: true
 
 Layout/SpaceAroundOperators:
   Enabled: true
   EnforcedStyleForExponentOperator: space
 
-Layout/SpaceInsideArrayLiteralBrackets:
-  Enabled: true
-
 Layout/SpaceInsideBlockBraces:
-  Enabled: false
+  Enabled: true
+  SpaceBeforeBlockParameters: false
 
 Lint/MixedRegexpCaptureTypes:
   Enabled: false
@@ -50,9 +48,6 @@ Style/BlockDelimiters:
 Style/Documentation:
   Enabled: false
 
-Style/Next:
-  Enabled: false
-
 Style/OptionalBooleanParameter:
   Enabled: false
 
@@ -63,7 +58,16 @@ Style/StringLiterals:
 Style/SymbolArray:
   EnforcedStyle: brackets
 
+Performance/ChainArrayAllocation:
+  Enabled: true
+
 Performance/Count:
+  Enabled: true
+
+Performance/Detect:
+  Enabled: true
+
+Performance/FixedSize:
   Enabled: true
 
 Performance/MapCompact:

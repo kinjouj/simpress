@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "json"
-require "natto"
 require "classy_hash"
+require "natto"
+require "oj"
 require "simpress/category"
 
 module Simpress
@@ -47,10 +47,6 @@ module Simpress
       @date.to_i
     end
 
-    def to_json(*)
-      as_json(*).to_json
-    end
-
     def as_json(options = {})
       hash = {
         id: @id,
@@ -67,8 +63,12 @@ module Simpress
       hash
     end
 
+    def to_json(*)
+      Oj.dump(as_json(*), mode: :json)
+    end
+
     def extract_keywords
-      NATTO.parse([@title, @markdown].compact.join(" ")).scan(NATTO_REGEX).flatten.compact
+      NATTO.parse([@title, @markdown].compact.join(" ")).scan(NATTO_REGEX).flat_map(&:compact)
     end
 
     def to_s
