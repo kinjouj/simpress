@@ -5,7 +5,6 @@ GEM
     backport (1.2.0)
     benchmark (0.5.0)
     bigdecimal (4.0.1)
-    builder (3.3.0)
     classy_hash (1.0.0)
     coderay (1.1.3)
     diff-lcs (1.6.2)
@@ -99,6 +98,8 @@ GEM
       ostruct (>= 0.2)
     open3 (0.2.1)
     ostruct (0.6.3)
+    ox (2.14.23)
+      bigdecimal (>= 3.0)
     parallel (1.27.0)
     parser (3.3.10.1)
       ast (~> 2.4.1)
@@ -158,21 +159,21 @@ GEM
       lint_roller (~> 1.1)
       rubocop (~> 1.81)
     ruby-progressbar (1.13.0)
-    sass-embedded (1.97.2-aarch64-linux-gnu)
+    sass-embedded (1.97.3-aarch64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.97.2-aarch64-linux-musl)
+    sass-embedded (1.97.3-aarch64-linux-musl)
       google-protobuf (~> 4.31)
-    sass-embedded (1.97.2-arm-linux-gnueabihf)
+    sass-embedded (1.97.3-arm-linux-gnueabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.97.2-arm-linux-musleabihf)
+    sass-embedded (1.97.3-arm-linux-musleabihf)
       google-protobuf (~> 4.31)
-    sass-embedded (1.97.2-arm64-darwin)
+    sass-embedded (1.97.3-arm64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.97.2-x86_64-darwin)
+    sass-embedded (1.97.3-x86_64-darwin)
       google-protobuf (~> 4.31)
-    sass-embedded (1.97.2-x86_64-linux-gnu)
+    sass-embedded (1.97.3-x86_64-linux-gnu)
       google-protobuf (~> 4.31)
-    sass-embedded (1.97.2-x86_64-linux-musl)
+    sass-embedded (1.97.3-x86_64-linux-musl)
       google-protobuf (~> 4.31)
     shellany (0.0.1)
     simplecov (0.22.0)
@@ -181,8 +182,6 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    sitemap_generator (6.3.0)
-      builder (~> 3.0)
     solargraph (0.58.2)
       ast (~> 2.4.3)
       backport (~> 1.2)
@@ -240,6 +239,8 @@ DEPENDENCIES
   guard-rake
   natto
   oj
+  ox
+  parallel
   rake
   redcarpet
   rspec
@@ -248,7 +249,6 @@ DEPENDENCIES
   rubocop-rspec
   sass-embedded
   simplecov
-  sitemap_generator
   solargraph
   stackprof
   stringex
@@ -261,7 +261,6 @@ CHECKSUMS
   backport (1.2.0) sha256=912c7dfdd9ee4625d013ddfccb6205c3f92da69a8990f65c440e40f5b2fc7f75
   benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
   bigdecimal (4.0.1) sha256=8b07d3d065a9f921c80ceaea7c9d4ae596697295b584c296fe599dd0ad01c4a7
-  builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
   classy_hash (1.0.0) sha256=0c36f3f6a6332600d1b7cde636f86f3414481b94bbb98f7bd6fd1e32cdfe6105
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
@@ -311,6 +310,7 @@ CHECKSUMS
   oj (3.16.13) sha256=b114bcb83ef884f1736b3112108f77cf9ca90aa8111a775318cc5d7a6a1e0303
   open3 (0.2.1) sha256=8e2d7d2113526351201438c1aa35c8139f0141c9e8913baa007c898973bf3952
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
+  ox (2.14.23) sha256=4a9aedb4d6c78c5ebac1d7287dc7cc6808e14a8831d7adb727438f6a1b461b66
   parallel (1.27.0) sha256=4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130
   parser (3.3.10.1) sha256=06f6a725d2cd91e5e7f2b7c32ba143631e1f7c8ae2fb918fc4cebec187e6a688
   prism (1.8.0) sha256=84453a16ef5530ea62c5f03ec16b52a459575ad4e7b9c2b360fd8ce2c39c1254
@@ -336,19 +336,18 @@ CHECKSUMS
   rubocop-performance (1.26.1) sha256=cd19b936ff196df85829d264b522fd4f98b6c89ad271fa52744a8c11b8f71834
   rubocop-rspec (3.9.0) sha256=8fa70a3619408237d789aeecfb9beef40576acc855173e60939d63332fdb55e2
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
-  sass-embedded (1.97.2-aarch64-linux-gnu) sha256=e3eb55e304c1cdf61bdab7a479e4f85c2878b03f7836eb51d06947c0a62202ce
-  sass-embedded (1.97.2-aarch64-linux-musl) sha256=14db874972230e7a1a307db02a7e54b9eee7c97691f45887a71f1981a9172056
-  sass-embedded (1.97.2-arm-linux-gnueabihf) sha256=fb9b5a5a7060f39288db046ef29b31fd90c7f7d77ed834be26c2f45d6e4ebceb
-  sass-embedded (1.97.2-arm-linux-musleabihf) sha256=541d76f347f06702bb21a8367b32ed6b9354cdb8108bdd0955c666fae515422c
-  sass-embedded (1.97.2-arm64-darwin) sha256=f14fa9f90645ee72aef824c161e692a2ad0f9faa94d6cd003b2c66bbf8341b98
-  sass-embedded (1.97.2-x86_64-darwin) sha256=66b81b729713d90856547db640b4ddf5378ae8fd5bc9e75ce35982b4463f0c49
-  sass-embedded (1.97.2-x86_64-linux-gnu) sha256=8f44c1572fc43cbb96cef68492f555797e4a56962ab59eb721d08f9e2162e79c
-  sass-embedded (1.97.2-x86_64-linux-musl) sha256=792850f405f3e9c36737dd617eea34adbf60f7812ba36f7587dbc13661420e20
+  sass-embedded (1.97.3-aarch64-linux-gnu) sha256=81915bb19ce7e224eae534e75e828f4ab5acddcb17e54da0b5ef91d932462836
+  sass-embedded (1.97.3-aarch64-linux-musl) sha256=508c92fa2f9e58f9072325e02f011bd22c7e428465c67fafaee570d0bc40563b
+  sass-embedded (1.97.3-arm-linux-gnueabihf) sha256=ce443b57f3d7f03740267cf0f2cdff13e8055dd5938488967746f29f230222da
+  sass-embedded (1.97.3-arm-linux-musleabihf) sha256=be3972424616f916ce1f4f41228266d57339e490dfd7ca0cea5588579564d4c0
+  sass-embedded (1.97.3-arm64-darwin) sha256=8897d3503efe75c30584070a7104095545f5157665029aeb9bff3fa533a73861
+  sass-embedded (1.97.3-x86_64-darwin) sha256=578f167907ee2a4d355a5a40bcf35d2e3eb90c87008dcd9ce31a2c4a877697f6
+  sass-embedded (1.97.3-x86_64-linux-gnu) sha256=173a4d0dbe2fffdf7482bd3e82fb597dfc658c18d1e8fd746aa7d5077ed4e850
+  sass-embedded (1.97.3-x86_64-linux-musl) sha256=fcc0dcb253ef174ea25283f8781ce9ce95a492663f4bdbb1d66bfae99267a9f7
   shellany (0.0.1) sha256=0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7
   simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
   simplecov-html (0.13.2) sha256=bd0b8e54e7c2d7685927e8d6286466359b6f16b18cb0df47b508e8d73c777246
   simplecov_json_formatter (0.1.4) sha256=529418fbe8de1713ac2b2d612aa3daa56d316975d307244399fa4838c601b428
-  sitemap_generator (6.3.0) sha256=1d803cbf03c44736bea05b9e3363d3523fec4e24f3abedad294d9c57cab994f3
   solargraph (0.58.2) sha256=132f1da100a5803994ce1fa3a645f33578134cfd252edef5d7c895c819534e09
   stackprof (0.2.27) sha256=aff6d28656c852e74cf632cc2046f849033dc1dedffe7cb8c030d61b5745e80c
   stringex (2.8.6) sha256=c7b382d2b2a47a1e1646f256df201c48d487d6296fbb289d76802f67f5e929c4

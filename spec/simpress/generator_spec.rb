@@ -10,10 +10,7 @@ describe Simpress::Generator do
   let(:page) { build_post_data(4, layout: :page) }
 
   before do
-    allow(Dir).to receive(:glob).and_yield("post1.md")
-                                .and_yield("post2.md")
-                                .and_yield("post3.md")
-                                .and_yield("page1.md")
+    allow(Dir).to receive(:glob).and_return(["post1.md", "post2.md", "post3.md", "page1.md"])
     allow(Simpress::Logger).to receive(:info)
     allow(Simpress::Plugin).to receive(:process)
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)

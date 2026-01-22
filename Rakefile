@@ -8,7 +8,9 @@ Bundler.require
 require "rake/clean"
 require "rspec/core/rake_task"
 require "simpress"
+require "simpress/sitemap"
 require "simpress/task"
+
 Simpress::Task.register_tasks
 RSpec::Core::RakeTask.new("spec")
 CLEAN.include("public/*")
@@ -16,13 +18,14 @@ CLEAN.include("public/*")
 desc "build_html"
 task :build_html do
   output_dir = Simpress::Config.instance.output_dir
-  files = cd(output_dir, verbose: false) { Dir["**/*.html"] }
-  SitemapGenerator::Sitemap.default_host = Simpress::Config.instance.host
-  SitemapGenerator::Sitemap.sitemaps_path = "./"
-  SitemapGenerator::Sitemap.adapter = SitemapGenerator::FileAdapter.new
-  SitemapGenerator::Sitemap.create(compress: false) do
-    files.sort.find_all {|s| !s.match(/^archive|category/) }.each do |file|
-      add file, changefreq: "always", priority: "1.0", lastmod: File.mtime("#{output_dir}/#{file}")
+  files = cd(output_dir, verbose: false) do
+    Dir["**/*.html"].select {|file| !file.start_with?("archives") && !file.end_with?("index.html") }
+  end
+
+  Simpress::Sitemap.build(Simpress::Config.instance.host) do
+    files.sort!
+    files.each do |file|
+      url(file: file, lastmod: File.stat(File.join(output_dir, file)).mtime.iso8601)
     end
   end
 end

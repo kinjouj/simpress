@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "digest/sha1"
 require "erb"
 require "pathname"
 require "simpress/category"
@@ -14,7 +13,7 @@ module Simpress
     class ParserError < StandardError; end
     class InvalidDateParseError < ParserError; end
 
-    REGEXP_DESC = /\A.*?(\r?\n){2}/m
+    REGEXP_DESC = /\A.*?(?:\r?\n){2}/m
 
     class << self
       def parse(file)
@@ -22,10 +21,10 @@ module Simpress
         content, image, toc  = Simpress::Parser::Redcarpet.render(body)
         basename             = File.basename(file, ".*")
         params[:markdown]    = body
-        params[:id]          = Digest::SHA1.hexdigest(file)
+        params[:id]          = (file.hash & 0xffff_ffff_ffff_ffff).to_s(16)
         params[:content]     = content
         params[:toc]         = toc || []
-        params[:layout]      = params.fetch(:layout, :post).to_sym
+        params[:layout]      = params.fetch(:layout, "post").to_sym
         params[:published]   = params.fetch(:published, true)
         params[:cover]       ||= image || "/images/no_image.png"
         params[:description] ||= ERB::Util.html_escape(body.to_s[REGEXP_DESC].to_s.strip)

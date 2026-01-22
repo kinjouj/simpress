@@ -14,7 +14,8 @@ module Simpress
       def generate
         posts      = []
         categories = {}
-        Dir.glob("#{source_dir}/**/*.{md,markdown}") do |file|
+        files = Dir.glob("#{source_dir}/**/*.{md,markdown}")
+        files.each do |file|
           data = Simpress::Parser.parse(file)
           next unless data.published
 
