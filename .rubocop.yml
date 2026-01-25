@@ -40,6 +40,12 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Enabled: false
 
+Naming/MethodParameterName:
+  AllowedNames:
+    - i
+    - j
+    - id
+
 Style/BlockDelimiters:
   AllowedPatterns:
     - each

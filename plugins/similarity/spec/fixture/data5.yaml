@@ -1,0 +1,13 @@
+id: post_005
+title: "料理レシピ: かんたんパスタ"
+date: 2026-01-21 12:00:00
+permalink: "/posts/pasta_recipe"
+categories:
+  - 料理
+content: "## 麺を茹でる\n## 麺を冷やす\n## 麺に和風ドレッシングをかける\n## 食べる\n## 終わり"
+description: "時短かんたんパスタ"
+toc: []
+cover: "/images/no_image.png"
+layout: :post
+published: true
+markdown: "## 麺を茹でる\n## 麺を冷やす\n## 麺に和風ドレッシングをかける\n## 食べる\n## 終わり"

@@ -15,7 +15,7 @@ module Simpress
       match = txt.match(FRONT_MATTER_MARKDOWN_REGEX)
       raise "Markdown parse failed" unless match
 
-      header = Psych.safe_load(match[:header], **PSYCH_OPTIONS)
+      header = Psych.load(match[:header], **PSYCH_OPTIONS)
       body   = match.post_match
       [header, body]
     end

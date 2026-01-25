@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "oj"
+require "json"
 require "simpress/logger"
 require "simpress/paginator"
 require "simpress/theme"
@@ -27,7 +27,7 @@ module Simpress
 
           def generate_json(posts, page)
             file_path = File.join("/archives/page", "#{page}.json")
-            Simpress::Writer.write(file_path, Oj.dump(posts, mode: :json)) do |_|
+            Simpress::Writer.write(file_path, posts.to_json) do |_|
               Simpress::Logger.info("create archive: #{file_path}")
             end
           end

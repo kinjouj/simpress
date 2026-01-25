@@ -1,0 +1,13 @@
+id: post_003
+title: "東京観光ガイド"
+date: 2026-01-20 15:00:00
+permalink: "/posts/tokyo_travel_guide"
+categories:
+  - 旅行
+content: "## 浅草寺\n浅草寺は有名な観光スポットです。\n## 上野公園\n上野公園も東京の名所です。"
+description: "東京旅行の定番スポット紹介"
+toc: []
+cover: "/images/no_image.png"
+layout: :post
+published: true
+markdown: "## 浅草寺\n浅草寺は有名な観光スポットです。\n## 上野公園\n上野公園も東京の名所です。"

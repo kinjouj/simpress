@@ -39,7 +39,8 @@ module Simpress
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
       CH.validate(config, SCHEMA, strict: true)
-      ATTRS.each {|key| instance_variable_set("@#{key}", config[:default][key]) }
+      config_default = config[:default]
+      ATTRS.each {|key| instance_variable_set("@#{key}", config_default[key]) }
     end
 
     def self.clear

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "oj"
+require "json"
 require "simpress/logger"
 require "simpress/writer"
 
@@ -9,7 +9,7 @@ module Simpress
     module Renderer
       class PageInfoRenderer
         def self.generate_json(pagesize)
-          Simpress::Writer.write("/pageinfo.json", Oj.dump({ page: pagesize }, mode: :json)) do |_|
+          Simpress::Writer.write("/pageinfo.json", { page: pagesize }.to_json) do |_|
             Simpress::Logger.info("create file: /pageinfo.json")
           end
         end

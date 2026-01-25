@@ -14,7 +14,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "classy_hash"
   spec.add_dependency "erubi"
   spec.add_dependency "natto"
-  spec.add_dependency "oj"
   spec.add_dependency "ox"
   spec.add_dependency "redcarpet"
   spec.add_dependency "stackprof"

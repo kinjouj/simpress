@@ -20,7 +20,7 @@ module Simpress
           next unless data.published
 
           data.categories.each do |category|
-            key = category.key.to_sym
+            key = category.key
 
             if categories[key].nil?
               categories[key] = category

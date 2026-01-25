@@ -2,12 +2,9 @@
 
 source "https://rubygems.org"
 
-ruby "3.3.10"
-
 gem "classy_hash"
 gem "erubi"
 gem "natto"
-gem "oj"
 gem "ox"
 gem "rake"
 gem "redcarpet"

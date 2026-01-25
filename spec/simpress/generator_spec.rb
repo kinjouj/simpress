@@ -28,7 +28,7 @@ describe Simpress::Generator do
     expect(Simpress::Generator::Html).to have_received(:generate).with(
       [post2, post1],
       [page],
-      hash_including(test: category)
+      hash_including("test" => category)
     )
   end
 end

@@ -1,0 +1,13 @@
+id: post_001
+title: "東京観光案内"
+date: 2026-01-23 10:00:00
+permalink: "/posts/tokyo_travel_intro"
+categories:
+  - 旅行
+content: "## 浅草寺\n浅草寺は東京の有名寺院です。\n## 東京タワー\n東京タワーも観光名所です。"
+description: "東京観光のおすすめスポット"
+toc: []
+cover: "/images/no_image.png"
+layout: :post
+published: true
+markdown: "## 浅草寺\n浅草寺は東京の有名寺院です。\n## 東京タワー\n東京タワーも観光名所です。"

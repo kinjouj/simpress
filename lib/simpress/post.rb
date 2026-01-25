@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "classy_hash"
+require "json"
 require "natto"
-require "oj"
 require "simpress/category"
 
 module Simpress
@@ -22,8 +22,8 @@ module Simpress
       markdown: String
     }.freeze
 
-    NATTO_REGEX = /^(?:([^\t]{3,})\t名詞,固有名詞,|(?=[^\t]*\p{Han})([^\t]{3,})\t名詞,一般,)/
-    NATTO       = Natto::MeCab.new
+    NATTO_REGEX = /\A(?<surface>[^\t]{3,})\t名詞,(?>固有名詞|一般(?=.*\p{Han}))/
+    NATTO = Natto::MeCab.new
 
     attr_accessor :categories
     attr_reader :id,
@@ -39,7 +39,7 @@ module Simpress
                 :markdown
 
     def initialize(params)
-      CH.validate(params, SCHEMA, strict: true)
+      CH.validate(params, SCHEMA, strict: true, verbose: true)
       params.each {|key, value| instance_variable_set("@#{key}", value) }
     end
 
@@ -64,11 +64,17 @@ module Simpress
     end
 
     def to_json(*)
-      Oj.dump(as_json(*), mode: :json)
+      as_json(*).to_json
     end
 
     def extract_keywords
-      NATTO.parse([@title, @markdown].compact.join(" ")).scan(NATTO_REGEX).flat_map(&:compact)
+      keywords = Set.new
+      NATTO.parse([@title, @markdown].compact.join(" ")).each_line do |line|
+        match = line.match(NATTO_REGEX)
+        keywords << match[:surface] if match
+      end
+
+      keywords.to_a
     end
 
     def to_s
