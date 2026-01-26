@@ -7,4 +7,5 @@ export const testPostData = {
   categories: [{ key: 'test', count: 1, name: 'Test' }],
   content: 'test1',
   description: 'test1',
+  similarity: [],
 };

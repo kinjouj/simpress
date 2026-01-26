@@ -1,4 +1,4 @@
-import type { SimilarityType, PostType } from '../../types';
+import type { PostType } from '../../types';
 
 const Simpress = {
   getPageInfo: jest.fn<Promise<number>, []>(),
@@ -7,7 +7,6 @@ const Simpress = {
   getPostsByCategory: jest.fn<Promise<PostType[]>, [string]>(),
   getPost: jest.fn<Promise<PostType>, [string]>(),
   getRecentPosts: jest.fn<Promise<PostType[]>, []>(),
-  getSimilarity: jest.fn<Promise<SimilarityType>, [string]>(),
 };
 
 export default Simpress;

@@ -25,15 +25,16 @@ module Simpress
       def build
         Rake::Task["clean"].execute
         cp_r("static/.", Simpress::Config.instance.output_dir, preserve: true, verbose: false)
+        GC.disable
         result = Benchmark.realtime do
-          GC.disable
           Simpress.build do
             build_scss
             Rake::Task["build_#{Simpress::Config.instance.mode}"].execute
           end
-          GC.enable
         end
 
+        GC.enable
+        GC.start
         puts "build time: #{result}"
       end
 

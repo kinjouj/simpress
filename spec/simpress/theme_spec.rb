@@ -36,11 +36,7 @@ describe Simpress::Theme do
     before do
       described_class.clear
       allow(Tilt::ErubiTemplate).to receive(:new).with("theme/post.erb")
-                                                 .and_return(
-                                                   Tilt::ErubiTemplate.new {
-                                                     "<%= @foo %>, <%= @bar %>"
-                                                   }
-                                                 )
+                                                 .and_return(Tilt::ErubiTemplate.new { "<%= @foo %>, <%= @bar %>" })
     end
 
     it "テンプレートをレンダリングして結果を返すこと" do

@@ -2,7 +2,7 @@ import React, { Suspense, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
-import { CreatedAt, NotFound, RecentPosts, Similarity } from '../components';
+import { CreatedAt, NotFound, RecentPosts, RelatedPosts } from '../components';
 import { useFetchData, usePermalink } from '../hooks';
 import { type CategoryType, type PostType } from '../types';
 import 'prismjs/plugins/autoloader/prism-autoloader';
@@ -34,6 +34,7 @@ const PostPage = (): React.JSX.Element => {
     }
 
     requestAnimationFrame(() => {
+      /* istanbul ignore next */
       Prism.highlightAll();
     });
   }, [post]);
@@ -70,7 +71,7 @@ const PostPage = (): React.JSX.Element => {
                 </span>
               </p>
               <div className="post-content mw-100" dangerouslySetInnerHTML={{ __html: post.content }} />
-              <Similarity post={post} />
+              {!!post.similarities && <RelatedPosts similarities={post.similarities} />}
               <div style={{ marginTop: '30px' }}>
                 <hr />
                 <pre><code className="language-json">{JSON.stringify(post, null, 2)}</code></pre>

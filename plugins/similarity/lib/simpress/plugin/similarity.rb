@@ -88,18 +88,21 @@ module Simpress
 
         similarity_scores.each_with_index do |scores, i|
           post = posts[i]
-          similarity = scores.max_by(5, &:first).map do |score, index|
+          similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
             {
-              score: score,
               id: target.id,
               title: target.title,
               permalink: target.permalink
             }
           end
-          result = { title: post.title, similarity: similarity }
 
-          Simpress::Writer.write("similarity/#{post.id}.json", result.to_json)
+          post.define_singleton_method(:similarities) { similarities || [] }
+          post.define_singleton_method(:as_json) do |options = {}|
+            hash = super(options)
+            hash[:similarities] = similarities
+            hash
+          end
         end
       end
     end

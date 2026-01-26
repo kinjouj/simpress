@@ -35,8 +35,7 @@ module Simpress
                 :toc,
                 :cover,
                 :layout,
-                :published,
-                :markdown
+                :published
 
     def initialize(params)
       CH.validate(params, SCHEMA, strict: true, verbose: true)

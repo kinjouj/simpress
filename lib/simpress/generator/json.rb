@@ -19,7 +19,7 @@ module Simpress
           sliced_post.each do |post|
             post.categories.map! do |category|
               category_posts[category] << post
-              categories[category.key.to_sym]
+              categories[category.key]
             end
 
             Simpress::Generator::Renderer::PermalinkRenderer.generate_json(post)
