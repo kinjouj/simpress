@@ -14,13 +14,21 @@ module Simpress
         HASH_BITS = 24
         BANDS     = 6
 
+        attr_reader :keywords
+
         def initialize(posts)
-          @size = posts.size
-          @data = posts.map do |post|
+          @keywords = []
+          @size     = posts.size
+          @data     = posts.map do |post|
             keywords = post.extract_keywords
+            @keywords << keywords
             vector = keywords.tally
             post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 50 }
-            norm = Math.sqrt(vector.values.sum {|v| v * v })
+
+            sum_of_squares = 0
+            vector.each_value {|v| sum_of_squares += v * v }
+            norm = Math.sqrt(sum_of_squares)
+
             { vector: vector, norm: norm, simhash: calculate_simhash(vector) }
           end
         end
@@ -73,7 +81,9 @@ module Simpress
           v2 = d2[:vector]
           v1, v2 = v2, v1 if v1.size > v2.size
 
-          product = v1.sum(0.0) {|k, v| v * (v2[k] || 0) }
+          product = 0.0
+          v1.each {|k, v| product += v * v2.fetch(k, 0) }
+
           product / (n1 * n2)
         end
       end
@@ -90,11 +100,8 @@ module Simpress
           post = posts[i]
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
-            {
-              id: target.id,
-              title: target.title,
-              permalink: target.permalink
-            }
+            # { id: target.id, title: target.title, permalink: target.permalink, keywords: cs.keywords[index].uniq }
+            { id: target.id, title: target.title, permalink: target.permalink }
           end
 
           post.define_singleton_method(:similarities) { similarities || [] }

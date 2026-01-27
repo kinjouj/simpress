@@ -29,6 +29,7 @@ describe('PostListPage', () => {
 
   test('<PostListPage> test', async () => {
     SimpressMock.getPostsByPage.mockResolvedValue([testPostData]);
+    SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderPostListPage();
 
     await act(async () => {

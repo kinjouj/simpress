@@ -2,6 +2,7 @@
 
 require "erb"
 require "redcarpet"
+require "xxhash"
 require "simpress/markdown/filter"
 
 module Simpress
@@ -27,8 +28,15 @@ module Simpress
         end
 
         def header(text, header_level)
-          @toc << [@toc.size + 1, text] if header_level == 4
-          "<h#{header_level}>#{text}</h#{header_level}>"
+          if header_level == 4
+            pos = @toc.size + 1
+            id  = XXhash.xxh64("toc-#{pos}-#{text}").to_s
+            @toc << [id, text]
+
+            %(<h#{header_level} id="#{id}">#{text}</h#{header_level}>)
+          else
+            "<h#{header_level}>#{text}</h#{header_level}>"
+          end
         end
 
         def image(path, _title = nil, _alt = nil)

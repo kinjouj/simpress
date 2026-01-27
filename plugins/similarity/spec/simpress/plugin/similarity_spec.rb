@@ -18,16 +18,16 @@ describe Simpress::Plugin::Similarity do
     expect(post1.as_json).to match(hash_including(similarities: post1.similarities))
 
     expect(post2.similarities.size).to eq(2)
-    expect(post2.similarities.map { _1[:id] }).to eq(%w[post_004 post_005])
+    expect(post2.similarities.map { _1[:id] }).to eq(["post_004", "post_005"])
 
     expect(post3.similarities.size).to eq(1)
     expect(post3.similarities.first[:id]).to eq("post_001")
 
     expect(post4.similarities.size).to eq(2)
-    expect(post4.similarities.map { _1[:id] }).to eq(%w[post_002 post_005])
+    expect(post4.similarities.map { _1[:id] }).to eq(["post_002", "post_005"])
 
     expect(post5.similarities.size).to eq(2)
-    expect(post5.similarities.map { _1[:id] }).to eq(%w[post_004 post_002])
+    expect(post5.similarities.map { _1[:id] }).to eq(["post_004", "post_002"])
   end
 
   context "cosineが0を出した場合" do

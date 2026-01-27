@@ -60,7 +60,6 @@ describe Simpress::Post do
           permalink: "/test.html",
           categories: [],
           cover: "/images/no_image.png",
-          layout: :post,
           description: "content description"
         }
       )

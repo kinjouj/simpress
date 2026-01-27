@@ -29,8 +29,8 @@ describe('CategoryPage', () => {
 
   test('<CategoryPage> test', async () => {
     SimpressMock.getPostsByCategory.mockResolvedValue([testPostData]);
+    SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderCategortPostListPage();
-
     await act(async () => {
       jest.runAllTimers();
       await Promise.resolve();

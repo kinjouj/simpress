@@ -29,6 +29,8 @@ describe('ArchivesPage', () => {
 
   test('<ArchivesPage> test', async () => {
     SimpressMock.getPostsByArchive.mockResolvedValue([testPostData]);
+    SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
+
     renderArchives();
     await act(async () => {
       jest.runAllTimers();

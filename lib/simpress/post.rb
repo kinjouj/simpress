@@ -55,8 +55,7 @@ module Simpress
         date: @date,
         permalink: @permalink,
         categories: @categories,
-        cover: @cover,
-        layout: @layout
+        cover: @cover
       }
       hash[:content] = @content if options[:include_content]
       hash
@@ -68,7 +67,7 @@ module Simpress
 
     def extract_keywords
       keywords = Set.new
-      NATTO.parse([@title, @markdown].compact.join(" ")).each_line do |line|
+      NATTO.parse([@title, @markdown].compact.join("\n")).each_line do |line|
         match = line.match(NATTO_REGEX)
         keywords << match[:surface] if match
       end

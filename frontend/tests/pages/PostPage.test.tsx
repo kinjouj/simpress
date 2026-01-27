@@ -29,6 +29,7 @@ describe('PostPage', () => {
 
   test('<PostPage> test', async () => {
     SimpressMock.getPost.mockResolvedValue(testPostData);
+    SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderPostPage();
     await act(async () => {
       jest.runAllTimers();

@@ -16,6 +16,6 @@ describe Simpress::Parser::Redcarpet do
     body, images, tos = described_class.render(markdown)
     expect(body).not_to be_empty
     expect(images).to eq("/test1.jpg")
-    expect(tos).to eq([[1, "TEST1"]])
+    expect(tos).to match([[anything, "TEST1"]])
   end
 end
