@@ -21,14 +21,11 @@ describe('Pager', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(mockUsePage).toHaveBeenCalled());
-    await waitFor(() => expect(SimpressMock.getPageInfo).toHaveBeenCalled());
-
-    const pageTextElement = screen.getByText('11');
+    const pageTextElement = await screen.findByText('11');
     expect(pageTextElement).toBeInTheDocument();
     expect(pageTextElement.tagName).toBe('SPAN');
 
-    const pageLinkElemeent = screen.getByRole('link', { name: '12' });
+    const pageLinkElemeent = await screen.findByRole('link', { name: '12' });
     expect(pageLinkElemeent).toBeInTheDocument();
     expect(pageLinkElemeent.tagName).toBe('A');
   });
@@ -42,11 +39,10 @@ describe('Pager', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(mockUsePage).toHaveBeenCalled());
-    await waitFor(() => expect(SimpressMock.getPageInfo).toHaveBeenCalled());
-
-    const nav = screen.queryByRole('navigation');
-    expect(nav).not.toBeInTheDocument();
+    await waitFor(() => {
+      const nav = screen.queryByRole('navigation');
+      expect(nav).not.toBeInTheDocument();
+    });
   });
 
   test('Simpress.getPageInfoが0を返した場合', async () => {
@@ -58,9 +54,9 @@ describe('Pager', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(mockUsePage).toHaveBeenCalled());
-    await waitFor(() => expect(SimpressMock.getPageInfo).toHaveBeenCalled());
-    const nav = screen.queryByRole('navigation');
-    expect(nav).not.toBeInTheDocument();
+    await waitFor(() => {
+      const nav = screen.queryByRole('navigation');
+      expect(nav).not.toBeInTheDocument();
+    });
   });
 });

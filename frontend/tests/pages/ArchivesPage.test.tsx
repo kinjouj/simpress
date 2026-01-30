@@ -30,11 +30,9 @@ describe('ArchivesPage', () => {
   test('<ArchivesPage> test', async () => {
     SimpressMock.getPostsByArchive.mockResolvedValue([testPostData]);
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
-
     renderArchives();
-    await act(async () => {
+    act(() => {
       jest.runAllTimers();
-      await Promise.resolve();
     });
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
@@ -54,9 +52,8 @@ describe('ArchivesPage', () => {
   test('Simpress.getPostsByArchiveがエラーを吐いた場合', async () => {
     SimpressMock.getPostsByArchive.mockRejectedValue(new Error('ERROR'));
     renderArchives();
-    await act(async () => {
+    act(() => {
       jest.runAllTimers();
-      await Promise.resolve();
     });
 
     expect(await screen.findByText('Not Found')).toBeInTheDocument();

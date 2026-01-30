@@ -28,11 +28,11 @@ module Simpress
     def self.info(message)
       return unless logging?
 
-      Simpress::Logger.instance.info(message)
+      instance.info(message)
     end
 
     def self.debug(message)
-      Simpress::Logger.instance.debug(message)
+      instance.debug(message)
     end
 
     def self.logging?

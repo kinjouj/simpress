@@ -18,17 +18,17 @@ module Simpress
 
     class << self
       def parse(file)
-        params, body         = Simpress::Markdown.parse(File.read(file))
-        content, image, toc  = Simpress::Parser::Redcarpet.render(body)
-        basename             = File.basename(file, ".*")
-        params[:markdown]    = body
-        params[:id]          = XXhash.xxh64(file).to_s
-        params[:content]     = content
-        params[:toc]         = toc || []
-        params[:layout]      = params.fetch(:layout, "post").to_sym
-        params[:published]   = params.fetch(:published, true)
+        params, body           = Simpress::Markdown.parse(File.read(file))
+        content, image, toc    = Simpress::Parser::Redcarpet.render(body)
+        basename               = File.basename(file, ".*")
+        params[:markdown]      = body
+        params[:id]            = XXhash.xxh64(file).to_s
+        params[:content]       = content
+        params[:toc]           = toc || []
+        params[:layout]        = params.fetch(:layout, "post").to_sym
+        params[:published]     = params.fetch(:published, true)
         params[:cover]       ||= image || "/images/no_image.png"
-        params[:description] ||= ERB::Util.html_escape(body.to_s[REGEX_DESC].to_s.strip)
+        params[:description] ||= body.to_s[REGEX_DESC]&.strip.to_s
         parse_datetime!(params, basename)
         parse_permalink!(params, basename)
         parse_categories!(params)

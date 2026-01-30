@@ -14,7 +14,7 @@ module Simpress
       def generate
         posts      = []
         categories = {}
-        files = Dir.glob("#{source_dir}/**/*.{md,markdown}")
+        files = Dir.glob("#{source_dir}/**/*.{markdown}")
         files.each do |file|
           data = Simpress::Parser.parse(file)
           next unless data.published
@@ -42,17 +42,17 @@ module Simpress
       private
 
       def source_dir
-        Simpress::Config.instance.source_dir || "source"
+        "source"
+      end
+
+      def generator
+        const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
       end
 
       def process_and_generate(posts, pages, categories)
+        Simpress::Plugin.load
         Simpress::Plugin.process(posts, pages, categories)
-        generator = fetch_generator_class
         generator.generate(posts, pages, categories)
-      end
-
-      def fetch_generator_class
-        const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
       end
     end
   end

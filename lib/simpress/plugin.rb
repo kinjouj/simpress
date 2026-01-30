@@ -44,7 +44,7 @@ module Simpress
           const_get(klassname, false)
         end
 
-        (register_plugins & allowed_plugins).sort_by {|klass| -klass.priority }.each do |klass|
+        register_plugins.intersection(allowed_plugins).sort_by {|klass| -klass.priority }.each do |klass|
           Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
           klass.run(posts, pages, categories)
         end
@@ -57,7 +57,7 @@ module Simpress
       private
 
       def plugin_dir
-        Simpress::Config.instance.plugin_dir || "plugins"
+        "plugins"
       end
     end
   end

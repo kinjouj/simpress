@@ -20,14 +20,14 @@ module Simpress
 
           def generate_index(posts, paginator, key = nil)
             data = Simpress::Theme.render("index", key: key, posts: posts, paginator: paginator)
-            Simpress::Writer.write(paginator.current_page, data) do |_|
+            Simpress::Writer.write(paginator.current_page, data) do
               Simpress::Logger.info("create index: #{paginator.current_page}")
             end
           end
 
           def generate_json(posts, page)
             file_path = File.join("/archives/page", "#{page}.json")
-            Simpress::Writer.write(file_path, posts.to_json) do |_|
+            Simpress::Writer.write(file_path, posts.to_json) do
               Simpress::Logger.info("create archive: #{file_path}")
             end
           end

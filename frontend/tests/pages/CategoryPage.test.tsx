@@ -31,9 +31,8 @@ describe('CategoryPage', () => {
     SimpressMock.getPostsByCategory.mockResolvedValue([testPostData]);
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderCategortPostListPage();
-    await act(async () => {
+    act(() => {
       jest.runAllTimers();
-      await Promise.resolve();
     });
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
@@ -53,9 +52,8 @@ describe('CategoryPage', () => {
   test('Simpress.getPostsByCategoryがエラーを吐いた場合', async () => {
     SimpressMock.getPostsByCategory.mockRejectedValue(new Error('ERROR'));
     renderCategortPostListPage();
-    await act(async () => {
+    act(() => {
       jest.runAllTimers();
-      await Promise.resolve();
     });
 
     expect(await screen.findByText('Not Found')).toBeInTheDocument();

@@ -8,12 +8,13 @@ describe Simpress::Plugin do
   end
 
   describe ".load" do
-    it "plugin_dirとpluginsの設定に基づいてプラグインが正しくロードされること" do
+    before do
       allow(Simpress::Logger).to receive(:debug)
-      allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(
-        File.expand_path("plugins", __dir__)
-      )
       allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
+      allow(described_class).to receive(:plugin_dir).and_return(File.expand_path("plugins", __dir__))
+    end
+
+    it "plugin_dirとpluginsの設定に基づいてプラグインが正しくロードされること" do
       described_class.load
       described_class.process
       expect(described_class.register_plugins).not_to be_empty
@@ -57,13 +58,16 @@ describe Simpress::Plugin do
     end
 
     context "runメソッドが実装されていないプラグインがある場合" do
+      before do
+        allow(Simpress::Logger).to receive(:debug)
+        allow(Simpress::Config.instance).to receive(:plugins).and_return(["test2_plugin"])
+      end
+
       it "NotImplementedError が発生すること" do
         test2_plugin = Class.new do
           extend Simpress::Plugin
         end
 
-        allow(Simpress::Logger).to receive(:debug)
-        allow(Simpress::Config.instance).to receive(:plugins).and_return(["test2_plugin"])
         stub_const("Simpress::Plugin::Test2Plugin", test2_plugin)
         expect { described_class.process }.to raise_error(NotImplementedError)
         expect(Simpress::Logger).to have_received(:debug).once

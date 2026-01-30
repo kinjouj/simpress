@@ -12,6 +12,7 @@ describe Simpress::Generator do
   before do
     allow(Dir).to receive(:glob).and_return(["post1.md", "post2.md", "post3.md", "page1.md"])
     allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Logger).to receive(:debug)
     allow(Simpress::Plugin).to receive(:process)
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
     allow(Simpress::Parser).to receive(:parse).with("post1.md").and_return(post1)

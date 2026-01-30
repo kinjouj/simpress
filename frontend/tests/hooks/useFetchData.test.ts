@@ -1,5 +1,5 @@
-import { act, useCallback } from 'react';
-import { renderHook } from '@testing-library/react';
+import { useCallback } from 'react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useFetchData } from '../../src/hooks';
 import { testPostData } from '../fixtures/testPostData';
 import type { PostType } from '../../src/types';
@@ -12,13 +12,11 @@ describe('useFetchData', () => {
         return useFetchData<PostType>(fetcher);
       });
 
-      await act(async () => {
-        await Promise.resolve();
+      await waitFor(() => {
+        const { data, isError } = result.current;
+        expect(isError).toBeFalsy();
+        expect(data?.title).toBe('test1');
       });
-
-      const { data, isError } = result.current;
-      expect(isError).toBeFalsy();
-      expect(data?.title).toBe('test1');
     });
 
     test('unmount test', async () => {
@@ -29,13 +27,11 @@ describe('useFetchData', () => {
 
       unmount();
 
-      await act(async () => {
-        await Promise.resolve();
+      await waitFor(() => {
+        const { data, isError } = result.current;
+        expect(data).toBeNull();
+        expect(isError).toBeFalsy();
       });
-
-      const { data, isError } = result.current;
-      expect(data).toBeNull();
-      expect(isError).toBeFalsy();
     });
   });
 
@@ -46,13 +42,11 @@ describe('useFetchData', () => {
         return useFetchData<PostType>(fetcher);
       });
 
-      await act(async () => {
-        await Promise.resolve();
+      await waitFor(() => {
+        const { data, isError } = result.current;
+        expect(isError).toBeTruthy();
+        expect(data).toBeNull();
       });
-
-      const { data, isError } = result.current;
-      expect(isError).toBeTruthy();
-      expect(data).toBeNull();
     });
 
     test('unmount test', async () => {
@@ -63,14 +57,11 @@ describe('useFetchData', () => {
 
       unmount();
 
-      await act(async () => {
-        await Promise.resolve();
+      await waitFor(() => {
+        const { data, isError } = result.current;
+        expect(isError).toBeFalsy();
+        expect(data).toBeNull();
       });
-
-      const { data, isError } = result.current;
-
-      expect(isError).toBeFalsy();
-      expect(data).toBeNull();
     });
   });
 });

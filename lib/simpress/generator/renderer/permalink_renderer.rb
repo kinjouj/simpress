@@ -19,7 +19,7 @@ module Simpress
 
         def self.generate_json(post)
           file_path = Pathname(post.permalink).sub_ext(".json").to_s
-          Simpress::Writer.write(file_path, post.to_json(include_content: true)) do |_|
+          Simpress::Writer.write(file_path, post.to_json(include_content: true)) do
             Simpress::Logger.info("create post #{file_path}")
           end
         end

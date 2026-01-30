@@ -2,12 +2,11 @@
   "files.exclude": {
     ".npmrc": true,
     ".ruby-version": true,
-    "yarn.lock": true,
+    "package-lock.json": true,
     "node_modules": true,
     "public": true,
     "logs": true,
     ".cache": true,
-    "theme/*.cache": true,
     "**/.gitkeep": true,
     "**/.gitattributes": true,
     "**/coverage": true,

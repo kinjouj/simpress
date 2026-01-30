@@ -7,11 +7,11 @@ describe Simpress do
     allow(Simpress::Logger).to receive(:info)
     allow(Simpress::Logger).to receive(:debug)
     allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
-    allow(Simpress::Config.instance).to receive(:theme_dir).and_return(create_filepath("theme"))
-    allow(Simpress::Config.instance).to receive(:source_dir).and_return(create_filepath("source"))
-    allow(Simpress::Writer).to receive(:output_dir).and_return(create_filepath("public"))
-    allow(Simpress::Config.instance).to receive(:plugin_dir).and_return(create_filepath("plugins"))
     allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
+    allow(Simpress::Theme).to receive(:theme_dir).and_return(create_filepath("theme"))
+    allow(Simpress::Generator).to receive(:source_dir).and_return(create_filepath("source"))
+    allow(Simpress::Writer).to receive(:output_dir).and_return(create_filepath("public"))
+    allow(Simpress::Plugin).to receive(:plugin_dir).and_return(create_filepath("plugins"))
     allow(Simpress::Paginator).to receive(:paginate).and_return(1)
   end
 

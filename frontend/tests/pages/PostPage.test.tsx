@@ -31,9 +31,8 @@ describe('PostPage', () => {
     SimpressMock.getPost.mockResolvedValue(testPostData);
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderPostPage();
-    await act(async () => {
+    act(() => {
       jest.runAllTimers();
-      await Promise.resolve();
     });
 
     const post = await screen.findByRole('main');
@@ -53,9 +52,8 @@ describe('PostPage', () => {
   test('Simpress.getPostがエラーを出した場合', async () => {
     SimpressMock.getPost.mockRejectedValue(new Error('ERROR'));
     renderPostPage();
-    await act(async () => {
+    act(() => {
       jest.runAllTimers();
-      await Promise.resolve();
     });
 
     expect(await screen.findByText('Not Found')).toBeInTheDocument();

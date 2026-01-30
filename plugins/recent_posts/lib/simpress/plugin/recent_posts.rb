@@ -12,8 +12,7 @@ module Simpress
       extend Simpress::Plugin
 
       def self.run(posts, *_args)
-        paginate = Simpress::Config.instance.paginate || 5
-        recent_posts = (posts || []).take(paginate)
+        recent_posts = (posts || []).take(config.paginate || 5)
 
         case config.mode
         when "html"

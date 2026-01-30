@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "natto"
 require "zlib"
 require "simpress/plugin"
 require "simpress/writer"
@@ -11,8 +12,10 @@ module Simpress
       extend Simpress::Plugin
 
       class CosineSimilarity
-        HASH_BITS = 24
-        BANDS     = 6
+        NATTO_REGEX = /\A([^\t]{3,})\t名詞,(?>固有名詞|一般(?=.*\p{Han}))/
+        NATTO       = Natto::MeCab.new
+        HASH_BITS   = 16
+        BANDS       = 4
 
         attr_reader :keywords
 
@@ -20,12 +23,12 @@ module Simpress
           @keywords = []
           @size     = posts.size
           @data     = posts.map do |post|
-            keywords = post.extract_keywords
+            keywords = extract_keywords(post)
             @keywords << keywords
             vector = keywords.tally
             post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 50 }
 
-            sum_of_squares = 0
+            sum_of_squares = 0.0
             vector.each_value {|v| sum_of_squares += v * v }
             norm = Math.sqrt(sum_of_squares)
 
@@ -37,7 +40,7 @@ module Simpress
           band_bits  = HASH_BITS / BANDS
           mask       = (1 << band_bits) - 1
           indices    = Array.new(@size) {|i| i }
-          candidates = {}
+          candidates = Set.new
           BANDS.times do |b|
             shift = b * band_bits
             indices.group_by {|i| (@data[i][:simhash] >> shift) & mask }.each_value do |ids|
@@ -45,24 +48,38 @@ module Simpress
 
               ids.combination(2) do |i, j|
                 i, j = j, i if i > j
-                candidates[(i * @size) + j] = true
+                candidates << ((i * @size) + j)
               end
             end
           end
 
-          candidates.each_key do |key|
+          candidates.each do |key|
             i, j = key.divmod(@size)
             score = cosine(i, j)
-            yield i, j, score if score > 0.1
+            yield i, j, score if score > 0.2
           end
         end
 
         private
 
+        def extract_keywords(post)
+          keywords = {}
+          [post.title, post.markdown].each do |text|
+            NATTO.parse(text).each_line do |line|
+              if line =~ NATTO_REGEX
+                surface = Regexp.last_match(1)
+                keywords[surface] = true
+              end
+            end
+          end
+
+          keywords.keys
+        end
+
         def calculate_simhash(vector)
           v = Array.new(HASH_BITS, 0)
           vector.each do |word, weight|
-            seed = Zlib.crc32(word)
+            seed = XXhash.xxh32(word)
             HASH_BITS.times {|bit| v[bit] += seed.anybits?(1 << bit) ? weight : -weight }
           end
 
@@ -82,8 +99,7 @@ module Simpress
           v1, v2 = v2, v1 if v1.size > v2.size
 
           product = 0.0
-          v1.each {|k, v| product += v * v2.fetch(k, 0) }
-
+          v1.each {|k, v| product += v * (v2[k] || 0) }
           product / (n1 * n2)
         end
       end
@@ -98,7 +114,7 @@ module Simpress
 
         similarity_scores.each_with_index do |scores, i|
           post = posts[i]
-          similarities = scores.max_by(5, &:first).map do |_score, index|
+          similarities = scores.max(5).map do |_score, index|
             target = posts[index]
             # { id: target.id, title: target.title, permalink: target.permalink, keywords: cs.keywords[index].uniq }
             { id: target.id, title: target.title, permalink: target.permalink }

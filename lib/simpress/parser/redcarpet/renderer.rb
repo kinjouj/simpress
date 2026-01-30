@@ -39,7 +39,7 @@ module Simpress
           end
         end
 
-        def image(path, _title = nil, _alt = nil)
+        def image(path, _title, _alt)
           @primary_image ||= path
           %(<img src="#{path}" alt="image" />)
         end

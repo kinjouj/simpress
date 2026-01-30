@@ -35,9 +35,9 @@ describe Simpress::Parser::Redcarpet::Renderer do
 
   describe "#image" do
     it "画像タグを生成し、primary_imageを設定すること" do
-      expect(renderer.image("/test.jpg")).to eq(%(<img src="/test.jpg" alt="image" />))
+      expect(renderer.image("/test.jpg", nil, nil)).to eq(%(<img src="/test.jpg" alt="image" />))
       expect(renderer.primary_image).to eq("/test.jpg")
-      renderer.image("/test2.jpg")
+      renderer.image("/test2.jpg", nil, nil)
       expect(renderer.primary_image).to eq("/test.jpg")
     end
   end

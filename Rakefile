@@ -13,19 +13,20 @@ require "simpress/task"
 
 Simpress::Task.register_tasks
 RSpec::Core::RakeTask.new("spec")
-CLEAN.include("public/*")
+
+OUTPUT_DIR = Simpress::Config.instance.output_dir
+CLEAN.include("#{OUTPUT_DIR}/*")
 
 desc "build_html"
 task :build_html do
-  output_dir = Simpress::Config.instance.output_dir
-  files = cd(output_dir, verbose: false) do
+  files = cd(OUTPUT_DIR, verbose: false) do
     Dir["**/*.html"].select {|file| !file.start_with?("archives") && !file.end_with?("index.html") }
   end
 
   Simpress::Sitemap.build(Simpress::Config.instance.host) do
     files.sort!
     files.each do |file|
-      url(file: file, lastmod: File.stat(File.join(output_dir, file)).mtime.iso8601)
+      url(file: file, lastmod: File.stat(File.join(OUTPUT_DIR, file)).mtime.iso8601)
     end
   end
 end
@@ -37,7 +38,7 @@ end
 
 desc "github deploy"
 task :github_deploy do
-  cd(Simpress::Config.instance.output_dir, verbose: false) do
+  cd(OUTPUT_DIR, verbose: false) do
     sh "git add -A", verbose: false
     sh "git commit -m \"Site updated at #{Time.now.utc}\"", verbose: false
     sh "git push origin master", verbose: false

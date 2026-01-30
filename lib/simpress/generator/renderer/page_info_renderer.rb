@@ -9,7 +9,7 @@ module Simpress
     module Renderer
       class PageInfoRenderer
         def self.generate_json(pagesize)
-          Simpress::Writer.write("/pageinfo.json", { page: pagesize }.to_json) do |_|
+          Simpress::Writer.write("/pageinfo.json", { page: pagesize }.to_json) do
             Simpress::Logger.info("create file: /pageinfo.json")
           end
         end

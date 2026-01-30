@@ -21,16 +21,14 @@ module Simpress
 
       def clear
         Thread.current[KEY] = nil
+        @theme_dir = nil
       end
 
       private
 
       def create_tilt(template)
         filename = fetch_template_file(template)
-        tilt_caches.fetch(filename) do
-          tilt = Tilt::ErubiTemplate.new(filename)
-          tilt_caches[filename] = tilt
-        end
+        tilt_caches[filename] ||= Tilt::ErubiTemplate.new(filename)
       end
 
       def tilt_caches
@@ -42,7 +40,7 @@ module Simpress
       end
 
       def theme_dir
-        Simpress::Config.instance.theme_dir || "theme"
+        "theme"
       end
     end
   end

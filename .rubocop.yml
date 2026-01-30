@@ -44,6 +44,7 @@ Naming/MethodParameterName:
   AllowedNames:
     - i
     - j
+    - k
     - id
 
 Style/BlockDelimiters:

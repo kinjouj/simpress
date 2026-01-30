@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "benchmark"
+require "pathname"
 require "simpress/config"
 require "simpress/logger"
 require "simpress/writer"
@@ -34,14 +35,13 @@ module Simpress
         end
 
         GC.enable
-        GC.start
-        puts "build time: #{result}"
+        Simpress::Logger.debug("build time: #{result}")
       end
 
       def build_scss
         cd("scss", verbose: false) { Dir["**/*.scss"] }.each do |file|
           basename = File.basename(file, ".scss")
-          outfile  = File.join("css", File.dirname(file), "#{basename}.css")
+          outfile  = Pathname.new(File.join("css", File.dirname(file), "#{basename}.css")).cleanpath.to_s
           scss     = Sass.compile("scss/#{file}", style: :compressed, verbose: true)
           Simpress::Writer.write(outfile, scss.css) {|filepath| Simpress::Logger.info("scss -> css: #{filepath}") }
         end
