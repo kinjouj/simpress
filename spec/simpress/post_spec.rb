@@ -35,12 +35,6 @@ describe Simpress::Post do
     expect(post.to_s).to eq("title: /test.html")
   end
 
-  it "必須フィールドがない場合はCH.validateにより例外が出る" do
-    invalid_params = params.dup
-    invalid_params.delete(:id)
-    expect { described_class.new(invalid_params) }.to raise_error(ClassyHash::SchemaViolationError)
-  end
-
   describe "#timestamp" do
     it "タイムスタンプ値が取得できること" do
       post = described_class.new(params)

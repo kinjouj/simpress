@@ -23,19 +23,17 @@ module Simpress
     end
 
     class << self
-      KEY = :simpress_plugin_classes
-
       def load
         Dir["#{plugin_dir}/**/lib/**/*.rb"].each {|plugin| Kernel.load(plugin) }
       end
 
       def extended(klass)
         super
-        (Thread.current[KEY] ||= []) << klass
+        register_plugins << klass
       end
 
       def register_plugins
-        Thread.current[KEY] || []
+        @register_plugins ||= []
       end
 
       def process(posts = [], pages = [], categories = {})
@@ -51,7 +49,7 @@ module Simpress
       end
 
       def clear
-        Thread.current[KEY] = nil
+        @register_plugins = []
       end
 
       private

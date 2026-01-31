@@ -7,7 +7,7 @@ module Simpress
       attr_accessor :page
 
       def initialize(page, maxpage, prefix = PREFIX_DEFAULT)
-        raise ArgumentError if !page.positive? || !((maxpage - page) + 1).positive?
+        raise ArgumentError if page <= 0 || (maxpage - page + 1) <= 0
 
         @prefix  = prefix
         @page    = page
@@ -15,7 +15,7 @@ module Simpress
       end
 
       def previous_page_exist?
-        (@page - 1).positive?
+        (@page - 1) > 0
       end
 
       def next_page_exist?

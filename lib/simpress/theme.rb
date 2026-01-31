@@ -7,8 +7,6 @@ require "simpress/context"
 module Simpress
   class Theme
     class << self
-      KEY = :simpress_tilt_caches
-
       def render(template, data)
         Simpress::Context.update(data)
         tilt = create_tilt(template)
@@ -20,7 +18,7 @@ module Simpress
       end
 
       def clear
-        Thread.current[KEY] = nil
+        @tilt_caches = {}
         @theme_dir = nil
       end
 
@@ -32,7 +30,7 @@ module Simpress
       end
 
       def tilt_caches
-        Thread.current[KEY] ||= {}
+        @tilt_caches ||= {}
       end
 
       def fetch_template_file(template)

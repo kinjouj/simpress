@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "classy_hash"
 gem "erubi"
 gem "natto"
 gem "ox"

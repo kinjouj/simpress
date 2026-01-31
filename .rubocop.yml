@@ -47,6 +47,9 @@ Naming/MethodParameterName:
     - k
     - id
 
+Style/BitwisePredicate:
+  Enabled: false
+
 Style/BlockDelimiters:
   AllowedPatterns:
     - each
@@ -57,6 +60,9 @@ Style/Documentation:
 
 Style/OptionalBooleanParameter:
   Enabled: false
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison
 
 Style/StringLiterals:
   Enabled: true

@@ -19,10 +19,6 @@ describe Simpress::Theme do
       tilt2 = create_tilt.call("post")
       expect(tilt1).to eq(tilt2)
 
-      expect(Thread.current[:simpress_tilt_caches]).not_to be_empty
-      described_class.clear
-      expect(Thread.current[:simpress_tilt_caches]).to be_nil
-
       expect { create_tilt.call("test") }.to raise_error(StandardError)
     end
 

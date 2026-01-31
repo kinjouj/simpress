@@ -10,17 +10,19 @@ module Simpress
       end
 
       class << self
-        KEY = :simpress_filter_classes
+        def classes
+          @classes ||= []
+        end
 
         def extended(klass)
           super
-          (Thread.current[KEY] ||= []) << klass
+          classes << klass
           Simpress::Logger.debug("REGISTER FILTER: #{klass}")
         end
 
         def run(body)
           data = body
-          (Thread.current[KEY] || []).each do |klass|
+          classes.each do |klass|
             res  = klass.preprocess(data)
             data = res if res.is_a?(String)
           end
@@ -29,7 +31,7 @@ module Simpress
         end
 
         def clear
-          Thread.current[KEY] = nil
+          @classes = []
         end
       end
     end

@@ -50,7 +50,6 @@ module Simpress
       end
 
       def process_and_generate(posts, pages, categories)
-        Simpress::Plugin.load
         Simpress::Plugin.process(posts, pages, categories)
         generator.generate(posts, pages, categories)
       end

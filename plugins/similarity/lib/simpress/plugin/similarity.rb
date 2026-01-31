@@ -2,7 +2,7 @@
 
 require "json"
 require "natto"
-require "zlib"
+require "xxhash"
 require "simpress/plugin"
 require "simpress/writer"
 
@@ -12,7 +12,7 @@ module Simpress
       extend Simpress::Plugin
 
       class CosineSimilarity
-        NATTO_REGEX = /\A([^\t]{3,})\t名詞,(?>固有名詞|一般(?=.*\p{Han}))/
+        NATTO_REGEX = /\A([^\t]{3,})\t名詞,(?:固有名詞|一般[^\n]*\p{Han})/
         NATTO       = Natto::MeCab.new
         HASH_BITS   = 16
         BANDS       = 4
@@ -26,10 +26,9 @@ module Simpress
             keywords = extract_keywords(post)
             @keywords << keywords
             vector = keywords.tally
-            post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 50 }
+            post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 30 }
 
-            sum_of_squares = 0.0
-            vector.each_value {|v| sum_of_squares += v * v }
+            sum_of_squares = vector.each_value.sum {|v| v * v }.to_f
             norm = Math.sqrt(sum_of_squares)
 
             { vector: vector, norm: norm, simhash: calculate_simhash(vector) }
@@ -39,8 +38,8 @@ module Simpress
         def each_similarity
           band_bits  = HASH_BITS / BANDS
           mask       = (1 << band_bits) - 1
-          indices    = Array.new(@size) {|i| i }
-          candidates = Set.new
+          indices    = (0...@size).to_a
+          candidates = []
           BANDS.times do |b|
             shift = b * band_bits
             indices.group_by {|i| (@data[i][:simhash] >> shift) & mask }.each_value do |ids|
@@ -53,10 +52,11 @@ module Simpress
             end
           end
 
-          candidates.each do |key|
-            i, j = key.divmod(@size)
+          candidates.uniq.each do |key|
+            i = key / @size
+            j = key % @size
             score = cosine(i, j)
-            yield i, j, score if score > 0.2
+            yield i, j, score if score > 0.1
           end
         end
 
@@ -64,12 +64,11 @@ module Simpress
 
         def extract_keywords(post)
           keywords = {}
-          [post.title, post.markdown].each do |text|
-            NATTO.parse(text).each_line do |line|
-              if line =~ NATTO_REGEX
-                surface = Regexp.last_match(1)
-                keywords[surface] = true
-              end
+          text = "#{post.title}\n#{post.markdown}"
+          NATTO.parse(text).each_line do |line|
+            if line =~ NATTO_REGEX
+              surface = Regexp.last_match(1)
+              keywords[surface] ||= true
             end
           end
 
@@ -80,10 +79,12 @@ module Simpress
           v = Array.new(HASH_BITS, 0)
           vector.each do |word, weight|
             seed = XXhash.xxh32(word)
-            HASH_BITS.times {|bit| v[bit] += seed.anybits?(1 << bit) ? weight : -weight }
+            HASH_BITS.times {|bit| v[bit] += ((seed & (1 << bit)) == 0 ? -weight : weight) }
           end
 
-          v.each_with_index.reduce(0) {|h, (val, i)| val.positive? ? h | (1 << i) : h }
+          simhash = 0
+          HASH_BITS.times {|i| simhash |= (1 << i) if v[i] > 0 }
+          simhash
         end
 
         def cosine(i, j)
@@ -92,7 +93,7 @@ module Simpress
           n1 = d1[:norm]
           n2 = d2[:norm]
 
-          return 0.0 if n1.zero? || n2.zero?
+          return 0.0 if n1 == 0 || n2 == 0
 
           v1 = d1[:vector]
           v2 = d2[:vector]
@@ -112,6 +113,13 @@ module Simpress
           similarity_scores[j] << [score, i]
         end
 
+        processor = case config.mode
+                    when "html"
+                      ->(post, similarities) { process_html(post, similarities) }
+                    when "json"
+                      ->(post, similarities) { process_json(post, similarities) }
+                    end
+
         similarity_scores.each_with_index do |scores, i|
           post = posts[i]
           similarities = scores.max(5).map do |_score, index|
@@ -120,12 +128,20 @@ module Simpress
             { id: target.id, title: target.title, permalink: target.permalink }
           end
 
-          post.define_singleton_method(:similarities) { similarities || [] }
-          post.define_singleton_method(:as_json) do |options = {}|
-            hash = super(options)
-            hash[:similarities] = similarities
-            hash
-          end
+          processor.call(post, similarities)
+        end
+      end
+
+      def self.process_html(post, similarities)
+        post.define_singleton_method(:similarities) { similarities || [] }
+      end
+
+      def self.process_json(post, similarities)
+        post.define_singleton_method(:as_json) do |options = {}|
+          hash = super(options)
+          # hash[:keywords] = cs.keywords[i].uniq
+          hash[:similarities] = similarities
+          hash
         end
       end
     end
