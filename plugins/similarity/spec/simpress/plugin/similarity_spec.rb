@@ -3,6 +3,10 @@
 require "simpress/plugin/similarity"
 
 describe Simpress::Plugin::Similarity do
+  before do
+    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+  end
+
   let(:post1) { load_fixture("data1.yaml") }
   let(:post2) { load_fixture("data2.yaml") }
   let(:post3) { load_fixture("data3.yaml") }

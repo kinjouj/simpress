@@ -13,13 +13,16 @@ module Simpress
                 :host,
                 :mode,
                 :paginate,
-                :output_dir,
                 :plugins
 
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
       config_default = config[:default]
       config_default.each {|key, value| instance_variable_set("@#{key}", value) }
+    end
+
+    def output_dir
+      "public"
     end
 
     def self.clear

@@ -12,10 +12,10 @@ module Simpress
       extend Simpress::Plugin
 
       class CosineSimilarity
-        NATTO_REGEX = /\A([^\t]{3,})\t名詞,(?:固有名詞|一般[^\n]*\p{Han})/
+        NATTO_REGEX = /\A([^\t\n]{3,})\t名詞,(?:固有名詞|一般),[^\n]*?\p{Han}/
         NATTO       = Natto::MeCab.new
-        HASH_BITS   = 16
-        BANDS       = 4
+        HASH_BITS   = 12
+        BANDS       = 3
 
         attr_reader :keywords
 
@@ -26,7 +26,7 @@ module Simpress
             keywords = extract_keywords(post)
             @keywords << keywords
             vector = keywords.tally
-            post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 30 }
+            post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 50 }
 
             sum_of_squares = vector.each_value.sum {|v| v * v }.to_f
             norm = Math.sqrt(sum_of_squares)
@@ -39,7 +39,7 @@ module Simpress
           band_bits  = HASH_BITS / BANDS
           mask       = (1 << band_bits) - 1
           indices    = (0...@size).to_a
-          candidates = []
+          candidates = {}
           BANDS.times do |b|
             shift = b * band_bits
             indices.group_by {|i| (@data[i][:simhash] >> shift) & mask }.each_value do |ids|
@@ -47,16 +47,14 @@ module Simpress
 
               ids.combination(2) do |i, j|
                 i, j = j, i if i > j
-                candidates << ((i * @size) + j)
+                key = (i * @size) + j
+                next if candidates[key]
+
+                candidates[key] = true
+                score = cosine(i, j)
+                yield i, j, score if score > 0.3
               end
             end
-          end
-
-          candidates.uniq.each do |key|
-            i = key / @size
-            j = key % @size
-            score = cosine(i, j)
-            yield i, j, score if score > 0.1
           end
         end
 
@@ -64,7 +62,7 @@ module Simpress
 
         def extract_keywords(post)
           keywords = {}
-          text = "#{post.title}\n#{post.markdown}"
+          text     = "#{post.title}\n#{post.markdown}"
           NATTO.parse(text).each_line do |line|
             if line =~ NATTO_REGEX
               surface = Regexp.last_match(1)
@@ -124,7 +122,6 @@ module Simpress
           post = posts[i]
           similarities = scores.max(5).map do |_score, index|
             target = posts[index]
-            # { id: target.id, title: target.title, permalink: target.permalink, keywords: cs.keywords[index].uniq }
             { id: target.id, title: target.title, permalink: target.permalink }
           end
 
@@ -139,9 +136,7 @@ module Simpress
       def self.process_json(post, similarities)
         post.define_singleton_method(:as_json) do |options = {}|
           hash = super(options)
-          # hash[:keywords] = cs.keywords[i].uniq
-          hash[:similarities] = similarities
-          hash
+          hash.update({ similarities: similarities })
         end
       end
     end

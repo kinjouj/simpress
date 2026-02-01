@@ -3,6 +3,5 @@ default:
   logging: false
   host: http://example.com
   paginate: 10
-  output_dir: public
   plugins:
     - recent_posts

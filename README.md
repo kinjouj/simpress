@@ -39,7 +39,6 @@ default:
   mode: html
   host: https://example.com
   paginate: 10
-  output_dir: public
   plugins:
     - recent_posts
 ```

@@ -7,7 +7,6 @@ describe Simpress::Writer do
   before do
     tmpdir = Dir.mktmpdir
     allow(Simpress::Config.instance).to receive(:output_dir).and_return(tmpdir)
-    allow(described_class).to receive(:output_dir).and_return(tmpdir)
   end
 
   after do
