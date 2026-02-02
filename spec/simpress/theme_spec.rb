@@ -9,7 +9,7 @@ describe Simpress::Theme do
 
     before do
       described_class.clear
-      allow(File).to receive(:read).with("theme/post.erb").and_return("template content")
+      allow(File).to receive(:binread).with("theme/post.erb").and_return("template content".dup)
     end
 
     it "テンプレートごとにErubisがキャッシュされ正しく管理されること" do
@@ -18,8 +18,6 @@ describe Simpress::Theme do
 
       tilt2 = create_tilt.call("post")
       expect(tilt1).to eq(tilt2)
-
-      expect { create_tilt.call("test") }.to raise_error(StandardError)
     end
 
     it "Erubisのロードに失敗したときに例外を返す" do

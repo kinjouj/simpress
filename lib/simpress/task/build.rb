@@ -35,15 +35,20 @@ module Simpress
         end
 
         GC.enable
+        GC.start
         Simpress::Logger.debug("build time: #{result}")
       end
 
       def build_scss
-        cd("scss", verbose: false) { Dir["**/*.scss"] }.each do |file|
-          basename = File.basename(file, ".scss")
-          outfile  = Pathname.new(File.join("css", File.dirname(file), "#{basename}.css")).cleanpath.to_s
-          scss     = Sass.compile("scss/#{file}", style: :compressed, verbose: true)
-          Simpress::Writer.write(outfile, scss.css) {|filepath| Simpress::Logger.info("scss -> css: #{filepath}") }
+        return unless File.exist?("scss/style.scss")
+
+        begin
+          scss = Sass.compile("scss/style.scss", style: :compressed, verbose: true)
+          Simpress::Writer.write("css/style.css", scss.css) do |filepath|
+            Simpress::Logger.debug("scss -> css: #{filepath}")
+          end
+        rescue => e
+          raise e.full_message
         end
       end
     end
