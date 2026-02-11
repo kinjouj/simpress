@@ -3,12 +3,14 @@
 require "simpress/theme"
 
 describe Simpress::Theme do
+  before do
+    described_class.clear
+  end
+
   describe ".create_tilt" do
-    let(:eruby_double) { instance_double(Tilt::ErubiTemplate, render: "template content") }
     let(:create_tilt) { ->(template) { described_class.send(:create_tilt, template) } }
 
     before do
-      described_class.clear
       allow(File).to receive(:binread).with("theme/post.erb").and_return("template content".dup)
     end
 
@@ -28,7 +30,6 @@ describe Simpress::Theme do
 
   describe ".render" do
     before do
-      described_class.clear
       allow(Tilt::ErubiTemplate).to receive(:new).with("theme/post.erb")
                                                  .and_return(Tilt::ErubiTemplate.new { "<%= @foo %>, <%= @bar %>" })
     end
@@ -39,9 +40,15 @@ describe Simpress::Theme do
     end
   end
 
-  describe ".exist?" do
-    it "テンプレートが存在するかどうかを正しく判定できること" do
-      expect(described_class).not_to exist("test")
+  describe ".render_partial" do
+    before do
+      post_template = Tilt::ErubiTemplate.new { "<%= render_partial('test', { msg: @msg }) %>" }
+      allow(described_class).to receive(:create_tilt).with("post").and_return(post_template)
+      allow(described_class).to receive(:create_tilt).with("test").and_return(Tilt::ErubiTemplate.new { "<%= @msg %>" })
+    end
+
+    it "テンプレート内でrender_paritalで別テンプレートの描画が正しく結果を返すこと" do
+      expect(described_class.render_partial("post", { msg: "hoge fuga foobar" })).to eq("hoge fuga foobar")
     end
   end
 end

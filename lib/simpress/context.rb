@@ -22,12 +22,8 @@ module Simpress
       obj.each {|k, v| self[k] = v }
     end
 
-    def to_hash
-      @data.dup
-    end
-
     def to_scope
-      @data.each_with_object(Object.new) {|(k, v), obj| obj.instance_variable_set("@#{k}", v) }
+      Scope.new(@data)
     end
 
     def clear
@@ -47,16 +43,22 @@ module Simpress
         instance.update(obj)
       end
 
-      def to_hash
-        instance.to_hash
-      end
-
       def to_scope
         instance.to_scope
       end
 
       def clear
         instance.clear
+      end
+    end
+
+    class Scope
+      def initialize(data = {})
+        data.each {|k, v| instance_variable_set("@#{k}", v) }
+      end
+
+      def render_partial(template, data = {})
+        Simpress::Theme.render_partial(template, data)
       end
     end
   end

@@ -41,6 +41,7 @@ default:
   paginate: 10
   plugins:
     - recent_posts
+    - scss
 ```
 
 
@@ -153,6 +154,12 @@ end
 <%= post.title %>
 <% end %>
 ```
+
+
+### Plugin SCSS
+
+
+scss/style.scssをコンパイルして出力されるディレクトリ/css/style.cssで出力するだけ
 
 
 ### Plugin: Similarity

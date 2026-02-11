@@ -5,6 +5,7 @@ require "simpress/generator/renderer/page_renderer"
 
 describe Simpress::Generator::Renderer::PageRenderer do
   before do
+    allow(FileUtils).to receive(:mkdir_p)
     allow(File).to receive(:exist?).and_return(false)
     allow(File).to receive(:write)
     allow(Simpress::Logger).to receive(:info)

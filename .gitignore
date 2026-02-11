@@ -2,7 +2,6 @@
 !/frontend/public
 coverage
 node_modules
-yarn.lock
 scss/*
 !scss/style.scss
 source/*
@@ -16,5 +15,3 @@ theme/*
 !theme/.gitkeep
 config.yaml
 category_indexes.json
-*.cache
-*.dump

@@ -33,23 +33,20 @@ module Simpress
       end
 
       def register_plugins
-        @register_plugins ||= []
+        @register_plugins ||= Set.new
       end
 
       def process(posts = [], pages = [], categories = {})
-        allowed_plugins = (Simpress::Config.instance.plugins || []).map do |plugin|
-          klassname = plugin.split("_").map(&:capitalize).join
-          const_get(klassname, false)
-        end
-
-        register_plugins.intersection(allowed_plugins).sort_by {|klass| -klass.priority }.each do |klass|
+        plugins = (Simpress::Config.instance.plugins || []).map {|plugin| plugin.downcase.delete("_") }
+        allowed_plugins = register_plugins.select {|klass| plugins.include?(klass.name.split("::").last.downcase) }
+        allowed_plugins.sort_by {|klass| -klass.priority }.each do |klass|
           Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
           klass.run(posts, pages, categories)
         end
       end
 
       def clear
-        @register_plugins = []
+        @register_plugins = Set.new
       end
 
       private

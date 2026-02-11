@@ -5,29 +5,37 @@ $LOAD_PATH.unshift "./lib"
 require "bundler/setup"
 Bundler.require
 
+require "benchmark"
 require "rake/clean"
-require "rspec/core/rake_task"
 require "simpress"
+require "simpress/config"
+require "simpress/logger"
 require "simpress/sitemap"
-require "simpress/task"
-
-Simpress::Task.register_tasks
-RSpec::Core::RakeTask.new("spec")
 
 OUTPUT_DIR = Simpress::Config.instance.output_dir
 CLEAN.include("#{OUTPUT_DIR}/*")
 
+desc "build"
+task build: :clean do
+  cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
+  result = Benchmark.realtime do
+    GC.disable
+    Simpress.build { Rake::Task["build_#{Simpress::Config.instance.mode}"].execute }
+    GC.enable
+  end
+
+  Simpress::Logger.debug("build time: #{result}")
+end
+
 desc "build_html"
 task :build_html do
   files = cd(OUTPUT_DIR, verbose: false) do
-    Dir["**/*.html"].select {|file| !file.start_with?("archives") && !file.end_with?("index.html") }
+    Dir["**/*.html"].select {|file| !file.start_with?("archives", "page") && !file.end_with?("index.html") }
   end
 
   Simpress::Sitemap.build(Simpress::Config.instance.host) do
     files.sort!
-    files.each do |file|
-      url(file: file, lastmod: File.stat(File.join(OUTPUT_DIR, file)).mtime.iso8601)
-    end
+    files.each {|file| url(file: file, lastmod: File.stat(File.join(OUTPUT_DIR, file)).mtime.iso8601) }
   end
 end
 
@@ -44,3 +52,21 @@ task :github_deploy do
     sh "git push origin master", verbose: false
   end
 end
+
+desc "server"
+task server: :build do
+  httpd_pid = Process.spawn("ruby -run -e httpd #{OUTPUT_DIR} -p 4000")
+  trap("INT") do
+    Process.kill(9, httpd_pid) rescue Errno::ESRCH # rubocop:disable Style/RescueModifier
+    exit 0
+  end
+
+  Process.wait(httpd_pid)
+end
+
+task :guard do
+  sh "guard --no-interactions --no-bundler-warning"
+end
+
+desc "watch"
+multitask watch: [:server, :guard]

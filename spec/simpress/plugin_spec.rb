@@ -3,7 +3,7 @@
 require "simpress/plugin"
 
 describe Simpress::Plugin do
-  after do
+  before do
     described_class.clear
   end
 

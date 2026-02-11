@@ -14,12 +14,11 @@ gem "tilt"
 gem "xxhash"
 
 group :development do
-  gem "guard-rake"
+  gem "guard-rake", require: false
   gem "rubocop", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rspec", require: false
   gem "solargraph", require: false
-  gem "stackprof", require: false
   gem "webrick", require: false
 end
 

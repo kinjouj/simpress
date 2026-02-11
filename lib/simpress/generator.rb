@@ -13,6 +13,7 @@ module Simpress
     class << self
       def generate
         posts      = []
+        pages      = []
         categories = {}
         files = Dir.glob("#{source_dir}/**/*.{markdown}")
         files.each do |file|
@@ -30,10 +31,15 @@ module Simpress
           end
 
           Simpress::Logger.info("PARSE COMPLETE: #{file}")
-          posts << data
+
+          case data.layout
+          when :post
+            posts << data
+          when :page
+            pages << data
+          end
         end
 
-        posts, pages = posts.partition {|post| post.layout == :post }
         posts.sort_by! {|post| -post.timestamp }
         process_and_generate(posts, pages, categories)
         Simpress::Theme.clear

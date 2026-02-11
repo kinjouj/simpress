@@ -5,6 +5,7 @@ require "simpress/generator/renderer/monthly_index_renderer"
 
 describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
   before do
+    allow(FileUtils).to receive(:mkdir_p)
     allow(File).to receive(:exist?).and_return(false)
     allow(File).to receive(:write)
     allow(Simpress::Logger).to receive(:info)

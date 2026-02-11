@@ -28,13 +28,6 @@ describe Simpress::Context do
     end
   end
 
-  describe ".to_hash" do
-    it "つっこんだ値をHashで取得できること" do
-      described_class.update(key: "test")
-      expect(described_class.to_hash).to include(key: "test")
-    end
-  end
-
   describe ".to_scope" do
     it "つっこんだ値を内包したObjectで取得できること" do
       described_class.update(key: "test")
