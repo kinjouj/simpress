@@ -11,7 +11,5 @@ static/*
 logs/*
 !logs/.gitkeep
 plugins/categories_content
-theme/*
-!theme/.gitkeep
 config.yaml
 category_indexes.json
