@@ -10,7 +10,7 @@ module PostDataHelper
     permalink: nil,
     toc: [],
     categories: [],
-    cover: "/images/no_image.png",
+    cover: "/images/no_image.webp",
     published: true,
     layout: :post
   )

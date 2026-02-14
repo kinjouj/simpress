@@ -2,6 +2,7 @@
 
 source "https://rubygems.org"
 
+gem "addressable"
 gem "erubi"
 gem "natto"
 gem "ox"
@@ -9,7 +10,6 @@ gem "rake"
 gem "redcarpet"
 gem "sass-embedded"
 gem "stringex"
-gem "tee"
 gem "tilt"
 gem "xxhash"
 

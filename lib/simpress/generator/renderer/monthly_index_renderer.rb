@@ -28,9 +28,8 @@ module Simpress
         def self.generate_json(monthly_posts)
           monthly_posts.each do |date, posts|
             file_path = File.join("/archives", "#{date.strftime('%Y/%02m')}.json")
-            Simpress::Writer.write(file_path, posts.to_json) do
-              Simpress::Logger.info("create archive: #{file_path}")
-            end
+            Simpress::Writer.write(file_path, posts.to_json)
+            Simpress::Logger.info("create archive: #{file_path}")
           end
         end
       end

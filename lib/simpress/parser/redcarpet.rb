@@ -10,7 +10,8 @@ module Simpress
         REDCARPET_OPTIONS = {
           no_intra_emphasis: true,
           fenced_code_blocks: true,
-          autolink: true
+          autolink: true,
+          highlight: true
         }.freeze
 
         def render(data)

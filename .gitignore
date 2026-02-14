@@ -3,14 +3,8 @@
 coverage
 node_modules
 scss/*
-!scss/style.scss
 source/*
 !source/.gitkeep
 static/*
 !static/.gitkeep
-logs/*
-!logs/.gitkeep
 plugins/categories_content
-theme/sidebar_categories.erb
-config.yaml
-category_indexes.json

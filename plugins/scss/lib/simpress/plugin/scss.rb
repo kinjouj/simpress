@@ -12,6 +12,7 @@ module Simpress
 
       SCSS_FILE = "scss/style.scss"
       COMPILER_OPTIONS = {
+        style: "compressed",
         quiet_deps: true,
         silence_deprecations: ["if-function"],
         load_paths: ["node_modules"],

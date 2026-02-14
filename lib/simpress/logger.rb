@@ -2,19 +2,14 @@
 
 require "logger"
 require "singleton"
-require "tee"
 require "simpress/config"
 
 module Simpress
   class Logger
     include Singleton
 
-    LOG_FILE = File.expand_path("../../logs/build.log", __dir__)
-
     def initialize
-      tee     = Tee.open(LOG_FILE)
-      @logger = ::Logger.new(tee)
-      $stdout = tee
+      @logger = ::Logger.new($stdout)
     end
 
     def info(message)
@@ -26,9 +21,7 @@ module Simpress
     end
 
     def self.info(message)
-      return unless logging?
-
-      instance.info(message)
+      instance.info(message) if logging?
     end
 
     def self.debug(message)

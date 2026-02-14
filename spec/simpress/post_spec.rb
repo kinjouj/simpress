@@ -13,7 +13,7 @@ describe Simpress::Post do
       date: Time.new(2025, 1, 1),
       permalink: "/test.html",
       categories: [],
-      cover: "/images/no_image.png",
+      cover: "/images/no_image.webp",
       layout: :post,
       published: true,
       markdown: "# Test"
@@ -29,7 +29,7 @@ describe Simpress::Post do
     expect(post.date).to eq(Time.new(2025, 1, 1))
     expect(post.permalink).to eq("/test.html")
     expect(post.categories).to eq([])
-    expect(post.cover).to eq("/images/no_image.png")
+    expect(post.cover).to eq("/images/no_image.webp")
     expect(post.layout).to eq(:post)
     expect(post.published).to be_truthy
     expect(post.to_s).to eq("title: /test.html")
@@ -39,6 +39,17 @@ describe Simpress::Post do
     it "タイムスタンプ値が取得できること" do
       post = described_class.new(params)
       expect(post.timestamp).to be_a(Integer)
+    end
+  end
+
+  describe "#canonical" do
+    before do
+      allow(Simpress::Config.instance).to receive(:host).and_return("http://localhost")
+    end
+
+    it "hostとpermalinkが結合した値が取得できること" do
+      post = described_class.new(params)
+      expect(post.canonical).to eq("http://localhost/test.html")
     end
   end
 
@@ -53,7 +64,7 @@ describe Simpress::Post do
           date: Time.new(2025, 1, 1),
           permalink: "/test.html",
           categories: [],
-          cover: "/images/no_image.png",
+          cover: "/images/no_image.webp",
           description: "content description"
         }
       )

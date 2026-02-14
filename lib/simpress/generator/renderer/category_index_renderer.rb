@@ -25,9 +25,8 @@ module Simpress
           category_posts.each do |category, posts|
             posts.sort_by! {|v| -v.timestamp }
             file_path = File.join("/archives/category", "#{category.key}.json")
-            Simpress::Writer.write(file_path, posts.to_json) do
-              Simpress::Logger.info("create category: #{file_path}")
-            end
+            Simpress::Writer.write(file_path, posts.to_json)
+            Simpress::Logger.info("create category: #{file_path}")
           end
         end
       end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
+require "addressable/uri"
 require "json"
+require "uri"
 require "simpress/category"
 
 module Simpress
@@ -24,6 +26,10 @@ module Simpress
 
     def timestamp
       @date.to_i
+    end
+
+    def canonical
+      @canonical ||= Addressable::URI.parse(Simpress::Config.instance.host).join(permalink).to_s
     end
 
     def as_json(options = {})
