@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "erb"
+require "cgi"
 require "redcarpet"
 require "xxhash"
 require "simpress/markdown/filter"
@@ -29,10 +29,10 @@ module Simpress
         def header(text, header_level)
           if header_level == 4
             pos = @toc.size + 1
-            id  = XXhash.xxh64("toc-#{pos}-#{text}").to_s
+            id  = "section-#{pos}"
             @toc << [id, text]
 
-            %(<h#{header_level} id="#{id}">#{text}</h#{header_level}>)
+            %(<h4 id="#{id}">#{text}</h4>)
           else
             "<h#{header_level}>#{text}</h#{header_level}>"
           end
@@ -44,7 +44,7 @@ module Simpress
         end
 
         def block_code(code, lang = "text")
-          escape_code = ERB::Util.html_escape(code)
+          escape_code = CGI.escapeHTML(code)
           %(<pre class="line-numbers"><code class="language-#{lang}">#{escape_code}</code></pre>)
         end
       end

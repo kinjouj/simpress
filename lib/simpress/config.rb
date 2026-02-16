@@ -21,9 +21,11 @@ module Simpress
       config_default.each {|key, value| instance_variable_set("@#{key}", value) }
     end
 
+    # :nocov:
     def output_dir
       "public"
     end
+    # :nocov:
 
     def self.clear
       Singleton.__init__(Simpress::Config)

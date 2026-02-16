@@ -2,7 +2,8 @@
 
 source "https://rubygems.org"
 
-gem "addressable"
+gem "stackprof"
+
 gem "erubi"
 gem "natto"
 gem "ox"

@@ -24,7 +24,7 @@ module Simpress
 
     class << self
       def load
-        Dir["#{plugin_dir}/**/lib/**/*.rb"].each {|plugin| Kernel.load(plugin) }
+        Dir["#{plugin_dir}/**/lib/simpress/plugin/*.rb"].each {|plugin| Kernel.load(plugin) }
       end
 
       def extended(klass)
@@ -51,9 +51,11 @@ module Simpress
 
       private
 
+      # :nocov:
       def plugin_dir
         "plugins"
       end
+      # :nocov:
     end
   end
 end

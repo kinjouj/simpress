@@ -47,9 +47,11 @@ module Simpress
 
       private
 
+      # :nocov:
       def source_dir
         "source"
       end
+      # :nocov:
 
       def generator
         const_get(Simpress::Config.instance.mode.to_s.capitalize, false)

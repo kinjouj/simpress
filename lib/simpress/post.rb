@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "addressable/uri"
 require "json"
+require "pathname"
 require "uri"
 require "simpress/category"
 
@@ -29,7 +29,11 @@ module Simpress
     end
 
     def canonical
-      @canonical ||= Addressable::URI.parse(Simpress::Config.instance.host).join(permalink).to_s
+      [Simpress::Config.instance.host.chomp("/"), permalink].join("")
+    end
+
+    def rebase(ext)
+      Pathname.new(permalink).sub_ext(ext).to_s
     end
 
     def as_json(options = {})

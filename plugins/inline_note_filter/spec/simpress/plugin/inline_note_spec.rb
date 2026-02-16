@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/markdown/filter/inline_note"
+require "simpress/plugin/inline_note"
 
-describe Simpress::Markdown::Filter::InlineNote do
+describe Simpress::Plugin::InlineNote do
   describe "#preprocess" do
     it "正常に変換されること" do
       markdown = <<~MARKDOWN

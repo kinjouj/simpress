@@ -19,11 +19,11 @@ describe Simpress::Parser::Redcarpet::Renderer do
     end
 
     it "ヘッダーを適切に生成し、tocを更新すること" do
-      expect(renderer.header("test", 4)).to eq(%(<h4 id="7340283473880626026">test</h4>))
-      expect(renderer.toc).to eq([["7340283473880626026", "test"]])
+      expect(renderer.header("test", 4)).to eq(%(<h4 id="section-1">test</h4>))
+      expect(renderer.toc).to eq([["section-1", "test"]])
 
-      expect(renderer.header("test3", 4)).to eq(%(<h4 id="2380945837809727403">test3</h4>))
-      expect(renderer.toc).to eq([["7340283473880626026", "test"], ["2380945837809727403", "test3"]])
+      expect(renderer.header("test3", 4)).to eq(%(<h4 id="section-2">test3</h4>))
+      expect(renderer.toc).to eq([["section-1", "test"], ["section-2", "test3"]])
       renderer.reset!
     end
 

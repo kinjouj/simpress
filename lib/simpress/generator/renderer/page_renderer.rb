@@ -12,7 +12,7 @@ module Simpress
         class << self
           def generate_html(pages)
             pages.each do |page|
-              file_path = File.join("/page", Pathname.new(page.permalink).sub_ext(".html").to_s)
+              file_path = File.join("/page", page.rebase(".html"))
               data = Simpress::Theme.render("page", post: page)
               Simpress::Writer.write(file_path, data)
               Simpress::Logger.info("create page: #{file_path}")
@@ -21,7 +21,7 @@ module Simpress
 
           def generate_json(pages)
             pages.each do |page|
-              file_path = File.join("/page", Pathname.new(page.permalink).sub_ext(".json").to_s)
+              file_path = File.join("/page", page.rebase(".json"))
               Simpress::Writer.write(file_path, page.to_json(include_content: true))
               Simpress::Logger.info("create page: #{file_path}")
             end

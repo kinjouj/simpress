@@ -24,7 +24,7 @@ module Simpress
       private
 
       def create_tilt(template)
-        filename = File.join(theme_dir, "#{template}.erb")
+        filename = "#{theme_dir}/#{template}.erb"
         tilt_caches[filename] ||= Tilt::ErubiTemplate.new(filename)
       end
 
@@ -37,9 +37,11 @@ module Simpress
         @tilt_caches ||= {}
       end
 
+      # :nocov:
       def theme_dir
         "theme"
       end
+      # :nocov:
     end
   end
 end

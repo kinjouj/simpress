@@ -22,7 +22,7 @@ module Simpress
         content, image, toc    = Simpress::Parser::Redcarpet.render(body)
         basename               = File.basename(file, ".*")
         params[:markdown]      = body
-        params[:id]            = XXhash.xxh64(file).to_s
+        params[:id]            = XXhash.xxh64(file)
         params[:toc]           = toc || []
         params[:content]       = content
         params[:layout]        = params.fetch(:layout, "post").to_sym
