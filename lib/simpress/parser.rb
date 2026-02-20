@@ -5,8 +5,8 @@ require "pathname"
 require "xxhash"
 require "simpress/category"
 require "simpress/config"
-require "simpress/markdown"
-require "simpress/parser/redcarpet"
+require "simpress/parser/markdown"
+require "simpress/parser/markdown/processor"
 require "simpress/post"
 
 module Simpress
@@ -18,17 +18,18 @@ module Simpress
 
     class << self
       def parse(file)
-        params, body           = Simpress::Markdown.parse(File.read(file))
-        content, image, toc    = Simpress::Parser::Redcarpet.render(body)
+        params, body           = Simpress::Parser::Markdown.parse(File.read(file))
+        content, image, toc    = Simpress::Parser::Markdown::Processor.render(body)
         basename               = File.basename(file, ".*")
         params[:markdown]      = body
         params[:id]            = XXhash.xxh64(file)
         params[:toc]           = toc || []
         params[:content]       = content
         params[:layout]        = params.fetch(:layout, "post").to_sym
-        params[:published]     = params.fetch(:published, true)
+        params[:draft]         = params.fetch(:draft, false)
         params[:cover]       ||= image || "/images/no_image.webp"
         params[:description] ||= body.to_s[REGEX_DESC]&.strip.to_s
+
         parse_datetime!(params, basename)
         parse_permalink!(params, basename)
         parse_categories!(params)
@@ -39,30 +40,22 @@ module Simpress
       private
 
       def parse_datetime!(params, basename)
-        if params[:date].nil?
-          y, m, d = basename.scan(REGEX_TIME).flatten
-          params[:date] = Time.new(y.to_i, m.to_i, d.to_i) if y && m && d
-        else
+        if params[:date]
           begin
             params[:date] = Time.parse(params[:date]) unless params[:date].is_a?(Time)
           rescue ArgumentError
             raise ParseError, "Invalid date format: #{params[:date]}"
           end
+        else
+          y, m, d = basename.scan(REGEX_TIME).flatten
+          params[:date] = Time.new(y.to_i, m.to_i, d.to_i) if y && m && d
         end
 
         raise ParseError, "Date missing or invalid in file #{basename}" if params[:date].nil?
       end
 
       def parse_permalink!(params, basename)
-        return if params[:layout] == :page
-
-        basepath = if params[:permalink].nil?
-                     Pathname.new("/").join(params[:date].strftime("%Y/%m"), basename)
-                   else
-                     Pathname.new(params[:permalink])
-                   end
-
-        params[:permalink] = basepath.sub_ext(".#{Simpress::Config.instance.mode}").to_s
+        params[:permalink] = File.join("/", params[:date].strftime("%Y/%m"), basename) unless params[:permalink]
       end
 
       def parse_categories!(params)

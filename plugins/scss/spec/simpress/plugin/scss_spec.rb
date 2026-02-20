@@ -18,7 +18,7 @@ describe Simpress::Plugin::SCSS do
       end
 
       it "エラーなく実行されること" do
-        expect { described_class.run }.not_to raise_error
+        described_class.run
         expect(Simpress::Writer).to have_received(:write).with("css/style.css", "body { color: red; }")
       end
     end
@@ -40,7 +40,7 @@ describe Simpress::Plugin::SCSS do
     end
 
     it "何もせず正常終了すること" do
-      expect { described_class.run }.not_to raise_error
+      described_class.run
       expect(Simpress::Writer).not_to have_received(:write)
     end
   end

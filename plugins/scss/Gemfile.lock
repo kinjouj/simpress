@@ -4,6 +4,7 @@ PATH
     simpress (0.0.1)
       erubi
       natto
+      oj
       ox
       redcarpet
       sass-embedded
@@ -29,6 +30,10 @@ GEM
       rake (>= 13)
     natto (1.2.0)
       ffi (>= 1.9.0)
+    oj (3.16.15)
+      bigdecimal (>= 3.0)
+      ostruct (>= 0.2)
+    ostruct (0.6.3)
     ox (2.14.23)
       bigdecimal (>= 3.0)
     rake (13.3.1)
@@ -81,6 +86,8 @@ CHECKSUMS
   google-protobuf (4.33.5) sha256=1b64fb774c101b23ac3f6923eca24be04fd971635d235c4cd4cfe0d752620da0
   google-protobuf (4.33.5-x86_64-linux-gnu) sha256=a782adf86bfba207740b49d7bb9ccdc25c4fb8f800fe222af62bce951149338a
   natto (1.2.0) sha256=07bee10b7b305b34e87eb3b6cd23aa42140816b7088acc5e55b1fbbc35c010c3
+  oj (3.16.15)
+  ostruct (0.6.3)
   ox (2.14.23) sha256=4a9aedb4d6c78c5ebac1d7287dc7cc6808e14a8831d7adb727438f6a1b461b66
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
   redcarpet (3.6.1) sha256=d444910e6aa55480c6bcdc0cdb057626e8a32c054c29e793fa642ba2f155f445

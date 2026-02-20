@@ -19,7 +19,7 @@ export default class Simpress {
   }
 
   public static getPost(permalink: string): Promise<PostType> {
-    return Simpress.getData<PostType>(`/${permalink}`);
+    return Simpress.getData<PostType>(permalink);
   }
 
   public static getRecentPosts(): Promise<PostType[]> {

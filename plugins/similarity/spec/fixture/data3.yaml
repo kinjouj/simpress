@@ -9,5 +9,5 @@ description: "東京旅行の定番スポット紹介"
 toc: []
 cover: "/images/no_image.png"
 layout: :post
-published: true
+draft: false
 markdown: "## 浅草寺\n浅草寺は有名な観光スポットです。\n## 上野公園\n上野公園も東京の名所です。"

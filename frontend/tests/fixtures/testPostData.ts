@@ -3,6 +3,7 @@ export const testPostData = {
   title: 'test1',
   date: Date.now().toString(),
   permalink: '/test.html',
+  source: '/test.json',
   cover: '/images/no_image.png',
   categories: [{ key: 'test', count: 1, name: 'Test' }],
   content: 'test1',

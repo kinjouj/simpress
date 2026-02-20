@@ -3,6 +3,8 @@
 require "bundler/setup"
 Bundler.require
 
+Oj.mimic_JSON
+
 require "simplecov"
 
 RSpec.configure do |config|

@@ -23,7 +23,7 @@ describe Simpress::Generator::Renderer::CategoryIndexRenderer do
     end
 
     it "正常にgenerate_htmlメソッドが呼ばれること" do
-      expect { described_class.generate_html(category_posts) }.not_to raise_error
+      described_class.generate_html(category_posts)
       expect(File).to have_received(:write).with("public/archives/category/ruby/index.html", "category index")
       expect(Simpress::Logger).to have_received(:info)
       expect(Simpress::Theme).to have_received(:render)
@@ -31,9 +31,14 @@ describe Simpress::Generator::Renderer::CategoryIndexRenderer do
   end
 
   describe ".generate_json" do
+    let(:keys) { described_class::DATA_JSON_KEYS }
+
     it "正常にgenerate_jsonメソッドが呼ばれること" do
-      expect { described_class.generate_json(category_posts) }.not_to raise_error
-      expect(File).to have_received(:write).with("public/archives/category/ruby.json", category_posts[category].to_json)
+      described_class.generate_json(category_posts)
+      expect(File).to have_received(:write).with(
+        "public/archives/category/ruby.json",
+        Oj.dump(category_posts[category], mode: :compat, keys: keys)
+      )
       expect(Simpress::Logger).to have_received(:info)
     end
   end

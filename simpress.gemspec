@@ -11,12 +11,13 @@ Gem::Specification.new do |spec|
   spec.metadata["rubygems_mfa_required"] = "true"
   spec.files = Dir["lib/**/*"]
   spec.require_paths = ["lib"]
-  spec.add_dependency "stackprof"
   spec.add_dependency "erubi"
   spec.add_dependency "natto"
+  spec.add_dependency "oj"
   spec.add_dependency "ox"
   spec.add_dependency "redcarpet"
   spec.add_dependency "sass-embedded"
+  spec.add_dependency "stackprof"
   spec.add_dependency "stringex"
   spec.add_dependency "tilt"
   spec.add_dependency "xxhash"

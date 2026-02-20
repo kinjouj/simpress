@@ -6,7 +6,7 @@ module Simpress
   module Writer
     class << self
       def write(file, data)
-        filepath = File.join(Simpress::Config.instance.output_dir, file)
+        filepath = File.join(Simpress::Config.output_dir, file)
         raise "FILE EXISTS: #{filepath}" if File.exist?(filepath)
 
         FileUtils.mkdir_p(File.dirname(filepath))

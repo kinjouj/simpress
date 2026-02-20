@@ -3,14 +3,16 @@
 require "cgi"
 require "redcarpet"
 require "xxhash"
-require "simpress/markdown/filter"
+require "simpress/parser/markdown/enhancer"
 
 module Simpress
   module Parser
-    module Redcarpet
+    module Markdown
       class Renderer < ::Redcarpet::Render::HTML
         RENDERER_OPTIONS = { hard_wrap: true }.freeze
         attr_reader :primary_image, :toc
+
+        @klasses = []
 
         def initialize(options = nil)
           super(options || RENDERER_OPTIONS)
@@ -23,7 +25,7 @@ module Simpress
         end
 
         def preprocess(markdown)
-          Simpress::Markdown::Filter.run(markdown)
+          Simpress::Parser::Markdown::Enhancer.run(markdown)
         end
 
         def header(text, header_level)

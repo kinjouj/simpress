@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "oj"
+require "simpress/config"
 require "simpress/post"
 
 describe Simpress::Post do
@@ -15,7 +17,7 @@ describe Simpress::Post do
       categories: [],
       cover: "/images/no_image.webp",
       layout: :post,
-      published: true,
+      draft: true,
       markdown: "# Test"
     }
   end
@@ -31,7 +33,7 @@ describe Simpress::Post do
     expect(post.categories).to eq([])
     expect(post.cover).to eq("/images/no_image.webp")
     expect(post.layout).to eq(:post)
-    expect(post.published).to be_truthy
+    expect(post.draft).to be_truthy
     expect(post.to_s).to eq("title: /test.html")
   end
 
@@ -54,40 +56,35 @@ describe Simpress::Post do
   end
 
   describe "#as_json" do
-    it "contentを含めずにJSON用ハッシュを返すこと" do
+    it "keysを指定しない場合はすべてのデータが返されること" do
       post = described_class.new(params)
       expect(post.as_json).to eq(
         {
           id: "abc",
           title: "title",
-          toc: [],
           date: Time.new(2025, 1, 1),
           permalink: "/test.html",
+          source: "/test.json",
           categories: [],
           cover: "/images/no_image.webp",
-          description: "content description"
+          description: "content description",
+          toc: [],
+          content: "<p>content\n123</p>"
         }
       )
-      expect(post.as_json).not_to have_key(:content)
     end
 
-    it "include_content:trueを指定した場合はcontentを含めること" do
+    it "keysを指定した場合は指定したキーだけが返されること" do
       post = described_class.new(params)
-      expect(post.as_json(include_content: true)).to have_key(:content)
+      expect(post.as_json(keys: [:id])).to eq({ id: "abc" })
     end
   end
 
   describe "#to_json" do
     it "contentを含めずにJSON文字列を返すこと" do
       post = described_class.new(params)
-      parsed_json = JSON.parse(post.to_json, symbolize_names: true)
-      expect(parsed_json).not_to have_key(:content)
-    end
-
-    it "include_content:trueを指定した場合はcontentを含めること" do
-      post = described_class.new(params)
-      parsed_json = JSON.parse(post.to_json(include_content: true), symbolize_names: true)
-      expect(parsed_json).to have_key(:content)
+      parsed_json = Oj.load(post.to_json(keys: [:title]), symbolize_names: true)
+      expect(parsed_json).to eq({ title: "title" })
     end
   end
 end

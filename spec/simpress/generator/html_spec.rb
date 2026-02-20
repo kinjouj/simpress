@@ -19,7 +19,7 @@ describe Simpress::Generator::Html do
   end
 
   it "正常にgenerate_htmlメソッドが呼ばれること" do
-    expect { described_class.generate([post1, post2], [page], []) }.not_to raise_error
+    described_class.generate([post1, post2], [page], [])
     expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate_html).exactly(2).times
     expect(Simpress::Generator::Renderer::IndexRenderer).to have_received(:generate_index)
     expect(Simpress::Generator::Renderer::PageRenderer).to have_received(:generate_html)

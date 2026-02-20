@@ -21,17 +21,19 @@ describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
     end
 
     it "正常にgenerate_htmlメソッドが呼ばれること" do
-      expect { described_class.generate_html(monthly_posts) }.not_to raise_error
+      described_class.generate_html(monthly_posts)
       expect(File).to have_received(:write).with("public/archives/2025/11/index.html", "monthly index")
     end
   end
 
   describe ".generate_json" do
+    let(:keys) { described_class::DATA_JSON_KEYS }
+
     it "正常にgenerate_jsonメソッドが呼ばれること" do
-      expect { described_class.generate_json(monthly_posts) }.not_to raise_error
+      described_class.generate_json(monthly_posts)
       expect(File).to have_received(:write).with(
         "public/archives/2025/11.json",
-        monthly_posts[Time.new(2025, 11, 1)].to_json
+        Oj.dump(monthly_posts[Time.new(2025, 11, 1)], mode: :compat, keys: keys)
       )
       expect(Simpress::Logger).to have_received(:info)
     end

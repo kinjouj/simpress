@@ -2,14 +2,14 @@
 
 source "https://rubygems.org"
 
-gem "stackprof"
-
 gem "erubi"
 gem "natto"
+gem "oj"
 gem "ox"
 gem "rake"
 gem "redcarpet"
 gem "sass-embedded"
+gem "stackprof"
 gem "stringex"
 gem "tilt"
 gem "xxhash"

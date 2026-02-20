@@ -12,18 +12,15 @@ require "simpress/config"
 require "simpress/logger"
 require "simpress/sitemap"
 
-OUTPUT_DIR = Simpress::Config.instance.output_dir
+OUTPUT_DIR = Simpress::Config.output_dir
 CLEAN.include("#{OUTPUT_DIR}/*")
 
 desc "build"
 task build: :clean do
   cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
-  result = Benchmark.realtime do
-    GC.disable
-    Simpress.build { Rake::Task["build_#{Simpress::Config.instance.mode}"].execute }
-    GC.enable
-  end
-
+  GC.disable
+  result = Benchmark.realtime { Simpress.build { Rake::Task["build_#{Simpress::Config.instance.mode}"].execute } }
+  GC.enable
   Simpress::Logger.debug("build time: #{result}")
 end
 

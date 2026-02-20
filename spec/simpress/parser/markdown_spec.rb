@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/markdown"
+require "simpress/parser/markdown"
 
-describe Simpress::Markdown do
+describe Simpress::Parser::Markdown do
   let(:markdown_text) do
     <<~MARKDOWN
       ---

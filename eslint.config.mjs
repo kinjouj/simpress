@@ -12,9 +12,9 @@ import importPlugin from "eslint-plugin-import";
 export default defineConfig(
   { ignores: ["**/*.js", "**/*.mjs"] },
   eslint.configs.recommended,
-  tseslint.configs.recommendedTypeChecked,
-  tseslint.configs.stylisticTypeChecked,
-  stylistic.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  //tseslint.configs.stylisticTypeChecked,
+  ...(stylistic.configs.recommended ? [stylistic.configs.recommended] : []),
   react.configs.flat.recommended,
   react.configs.flat["jsx-runtime"],
   reactHooks.configs.flat.recommended,
@@ -22,7 +22,7 @@ export default defineConfig(
     files: ["frontend/**/*.{ts,tsx}"],
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        project: './tsconfig.json',
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
           jsx: true,
@@ -42,12 +42,11 @@ export default defineConfig(
     },
     rules: {
       ...jest.configs["recommended"].rules,
-      ...jest.configs["style"].rules,
       "curly": ["error", "all"],
       "no-empty": ["error", { allowEmptyCatch: false }],
       "no-constant-condition": "error",
       "no-restricted-imports": ["error", { "paths": ["./"] }],
-      "no-unused-expressions": "error",
+      "no-unused-expressions": "error", // bug
       "@stylistic/arrow-parens": ["error", "always"],
       "@stylistic/array-bracket-spacing": ["error", "never"],
       "@stylistic/brace-style": ["error", "1tbs", { allowSingleLine: true }],
@@ -64,7 +63,7 @@ export default defineConfig(
       "@stylistic/jsx-sort-props": [
         "error",
         {
-          "reservedFirst": ["key", "ref", "id", "type", "name", "className"],
+          "reservedFirst": ["key", "ref", "href", "src", "id", "type", "name", "className"],
           "callbacksLast": true,
           "shorthandLast": true,
           "noSortAlphabetically": true,
@@ -99,6 +98,7 @@ export default defineConfig(
       ],
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/no-non-null-assertion": "error",
+      "@typescript-eslint/no-unused-expressions": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {

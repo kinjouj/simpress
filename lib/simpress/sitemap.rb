@@ -10,14 +10,19 @@ module Simpress
       raise "ERROR" unless block_given?
 
       sitemap = new(hostname, &)
-      sitemap.send(:write)
+      sitemap.write
     end
 
     def url(file:, lastmod:, **attributes)
-      url_el = create_element("url", attributes: attributes)
-      url_el << create_element("loc", text: File.join(@hostname, file))
-      url_el << create_element("lastmod", text: lastmod.to_s)
-      @root << url_el
+      el = create_element("url", attributes: attributes)
+      el << create_element("loc", text: File.join(@hostname, file))
+      el << create_element("lastmod", text: lastmod.to_s)
+      @root << el
+    end
+
+    def write
+      Simpress::Writer.write("sitemap.xml", Ox.dump(@doc, with_xml: true))
+      Simpress::Logger.debug("generated sitemap.xml: #{@root.nodes.size}")
     end
 
     private
@@ -36,11 +41,6 @@ module Simpress
       attributes.each {|k, v| el[k] = v }
       el << text if text
       el
-    end
-
-    def write
-      Simpress::Writer.write("sitemap.xml", Ox.dump(@doc, with_xml: true))
-      Simpress::Logger.debug("generated sitemap.xml: #{@root.nodes.size}")
     end
   end
 end

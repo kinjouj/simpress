@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "oj"
 require "simpress/config"
 require "simpress/context"
 require "simpress/plugin"
@@ -20,19 +21,19 @@ describe Simpress::Plugin::RecentPosts do
   describe ".run" do
     it "正常に最近の投稿がContextに格納されること" do
       described_class.run(posts)
-      posts = Simpress::Context[:recent_posts]
-      expect(posts).not_to be_empty
+      expect(Simpress::Context[:recent_posts]).not_to be_empty
     end
 
     context "modeがjsonだった場合" do
       before do
+        allow(Simpress::Config.instance).to receive(:paginate).and_return(5)
         allow(Simpress::Config.instance).to receive(:mode).and_return("json")
         allow(Simpress::Writer).to receive(:write)
       end
 
       it "recent_posts.jsonがファイルとして出力されること" do
-        expect { described_class.run(posts) }.not_to raise_error
-        expect(Simpress::Writer).to have_received(:write).with("recent_posts.json", [*1..5].to_json)
+        described_class.run(posts)
+        expect(Simpress::Writer).to have_received(:write).with("recent_posts.json", Oj.dump([*1..5]))
       end
     end
 
@@ -42,7 +43,7 @@ describe Simpress::Plugin::RecentPosts do
       end
 
       it "エラーが送出されること" do
-        expect { described_class.run([*1..30], nil, nil) }.to raise_error("Error")
+        expect { described_class.run([*1..30]) }.to raise_error("Error")
       end
     end
   end

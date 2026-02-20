@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require "json"
-require "pathname"
+require "oj"
 require "uri"
 require "simpress/category"
 
@@ -17,8 +16,10 @@ module Simpress
                 :toc,
                 :cover,
                 :layout,
-                :published,
+                :draft,
                 :markdown
+
+    REGEX_EXT = /\.[^.]+\Z/
 
     def initialize(params)
       params.each {|key, value| instance_variable_set("@#{key}", value) }
@@ -28,31 +29,33 @@ module Simpress
       @date.to_i
     end
 
-    def canonical
-      [Simpress::Config.instance.host.chomp("/"), permalink].join("")
+    def with_ext(ext)
+      permalink.sub(REGEX_EXT, ext)
     end
 
-    def rebase(ext)
-      Pathname.new(permalink).sub_ext(ext).to_s
+    def canonical
+      [Simpress::Config.instance.host.chomp("/"), permalink].join
     end
 
     def as_json(options = {})
       hash = {
         id: @id,
         title: @title,
-        description: @description,
-        toc: @toc,
         date: @date,
         permalink: @permalink,
+        source: with_ext(".json"),
         categories: @categories,
-        cover: @cover
+        cover: @cover,
+        description: @description,
+        toc: @toc,
+        content: @content
       }
-      hash[:content] = @content if options[:include_content]
-      hash
+
+      options[:keys] ? hash.slice(*Array(options[:keys])) : hash
     end
 
-    def to_json(*)
-      as_json(*).to_json
+    def to_json(options = {})
+      Oj.dump(as_json(options), mode: :compat)
     end
 
     def to_s

@@ -50,7 +50,7 @@ describe Simpress::Plugin do
         stub_const("Simpress::Plugin::Test1Plugin", test1_class)
         stub_const("Simpress::Plugin::HogePlugin", hoge_class)
         expect(described_class.register_plugins).not_to be_empty
-        expect { described_class.process }.not_to raise_error
+        described_class.process
         expect(Simpress::Context[:mode]).to eq(:html)
         expect { Simpress::Context[:msg] }.to raise_error(KeyError)
         expect(Simpress::Logger).to have_received(:debug).once

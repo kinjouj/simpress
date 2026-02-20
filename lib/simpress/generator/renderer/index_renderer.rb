@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "json"
+require "oj"
 require "simpress/logger"
 require "simpress/paginator"
 require "simpress/theme"
@@ -10,6 +10,8 @@ module Simpress
   module Generator
     module Renderer
       class IndexRenderer
+        DATA_JSON_KEYS = [:id, :title, :date, :permalink, :source, :categories, :cover, :description].freeze
+
         class << self
           def generate_html(posts, paginator, key = nil)
             posts.each_slice(Simpress::Paginator.paginate).each.with_index(1) do |slice_posts, page|
@@ -26,7 +28,7 @@ module Simpress
 
           def generate_json(posts, page)
             file_path = File.join("/archives/page", "#{page}.json")
-            Simpress::Writer.write(file_path, posts.to_json)
+            Simpress::Writer.write(file_path, Oj.dump(posts, mode: :compat, keys: DATA_JSON_KEYS))
             Simpress::Logger.info("create archive: #{file_path}")
           end
         end

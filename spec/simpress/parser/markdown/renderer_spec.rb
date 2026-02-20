@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "simpress/parser/redcarpet/renderer"
+require "simpress/parser/markdown/renderer"
 
-describe Simpress::Parser::Redcarpet::Renderer do
+describe Simpress::Parser::Markdown::Renderer do
   before do
     allow(Simpress::Logger).to receive(:debug)
   end
 
   after do
-    Simpress::Markdown::Filter.clear
+    Simpress::Parser::Markdown::Enhancer.clear
   end
 
   let(:renderer) { described_class.new }
@@ -53,7 +53,7 @@ describe Simpress::Parser::Redcarpet::Renderer do
   describe "#preprocess" do
     it "フィルターを通したデータを返すこと" do
       test_filter = Class.new do
-        extend Simpress::Markdown::Filter
+        extend Simpress::Parser::Markdown::Enhancer
 
         def self.preprocess(data)
           data.upcase

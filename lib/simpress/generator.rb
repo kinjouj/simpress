@@ -18,7 +18,7 @@ module Simpress
         files = Dir.glob("#{source_dir}/**/*.{markdown}")
         files.each do |file|
           data = Simpress::Parser.parse(file)
-          next unless data.published
+          next if data.draft
 
           data.categories.each do |category|
             key = category.key
@@ -30,28 +30,23 @@ module Simpress
             end
           end
 
-          Simpress::Logger.info("PARSE COMPLETE: #{file}")
-
           case data.layout
           when :post
             posts << data
           when :page
             pages << data
+          else
+            raise "Unknown layout #{data.layout}"
           end
+
+          Simpress::Logger.info("PARSE COMPLETE: #{file}")
         end
 
         posts.sort_by! {|post| -post.timestamp }
         process_and_generate(posts, pages, categories)
-        Simpress::Theme.clear
       end
 
       private
-
-      # :nocov:
-      def source_dir
-        "source"
-      end
-      # :nocov:
 
       def generator
         const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
@@ -60,7 +55,14 @@ module Simpress
       def process_and_generate(posts, pages, categories)
         Simpress::Plugin.process(posts, pages, categories)
         generator.generate(posts, pages, categories)
+        Simpress::Theme.clear
       end
+
+      # :nocov:
+      def source_dir
+        "source"
+      end
+      # :nocov:
     end
   end
 end

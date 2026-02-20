@@ -21,7 +21,7 @@ describe Simpress::Generator::Renderer::PageRenderer do
     end
 
     it "正常にgenerate_htmlメソッドが呼ばれること" do
-      expect { described_class.generate_html(pages) }.not_to raise_error
+      described_class.generate_html(pages)
       expect(File).to have_received(:write).exactly(2).times
       expect(File).to have_received(:write).with("public/page/post1.html", "test")
       expect(File).to have_received(:write).with("public/page/post2.html", "test")
@@ -31,11 +31,13 @@ describe Simpress::Generator::Renderer::PageRenderer do
   end
 
   describe ".generate_json" do
+    let(:keys) { described_class::DATA_JSON_KEYS }
+
     it "正常にgenerate_jsonメソッドが呼ばれること" do
-      expect { described_class.generate_json(pages) }.not_to raise_error
+      described_class.generate_json(pages)
       expect(File).to have_received(:write).exactly(2).times
-      expect(File).to have_received(:write).with("public/page/post1.json", post1.to_json(include_content: true))
-      expect(File).to have_received(:write).with("public/page/post2.json", post2.to_json(include_content: true))
+      expect(File).to have_received(:write).with("public/page/post1.json", post1.to_json(keys: keys))
+      expect(File).to have_received(:write).with("public/page/post2.json", post2.to_json(keys: keys))
       expect(Simpress::Logger).to have_received(:info).exactly(2).times
     end
   end

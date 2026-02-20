@@ -52,25 +52,23 @@ const PostPage = (): React.JSX.Element => {
   }
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col col-lg-8">
+    <div className="container mt-5">
+      <div className="row g-0">
+        <div className="col col-lg-7">
           <div id="content" className="m-4 mb-5">
             <div className="post" role="main">
-              <div className="post-date">
+              <div className="post-date fs-4 fs-bold my-2">
                 <CreatedAt dateString={post.date} />
               </div>
-              <h1 className="post-title">{post.title}</h1>
+              <h1 className="post-title fs-3 fw-bold my-3">{post.title}</h1>
               <hr />
-              <p className="meta">
-                <span className="categories">
-                  {post.categories.map((category: CategoryType) => {
-                    const to = `/archives/category/${category.key}`;
-                    return <Link key={category.key} className="post-category" to={to}>{category.name}</Link>;
-                  })}
-                </span>
+              <p className="post-categories d-flex position-relative gap-3 m-0">
+                {post.categories.map((category: CategoryType) => {
+                  const to = `/archives/category/${category.key}`;
+                  return <Link key={category.key} className="fs-5" to={to}>{category.name}</Link>;
+                })}
               </p>
-              <div className="post-content mw-100" dangerouslySetInnerHTML={{ __html: post.content }} />
+              <div className="post-content fs-6 my-4 mw-100" dangerouslySetInnerHTML={{ __html: post.content }} />
               {!!post.similarities && <RelatedPosts similarities={post.similarities} />}
               <div style={{ marginTop: '30px' }}>
                 <hr />
@@ -79,14 +77,12 @@ const PostPage = (): React.JSX.Element => {
             </div>
           </div>
         </div>
-        <div className="col col-lg-4 mt-4">
-          <aside>
-            <div id="recent_posts">
-              <h4>Recent Posts</h4>
-              <RecentPosts />
-            </div>
-          </aside>
-        </div>
+        <aside className="sidebar col-12 col-lg-4 ms-auto ps-5">
+          <div id="recent_posts">
+            <h4>Recent Posts</h4>
+            <RecentPosts />
+          </div>
+        </aside>
       </div>
     </div>
   );

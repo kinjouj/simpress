@@ -9,5 +9,5 @@ description: "家庭で作れるカレー"
 toc: []
 cover: "/images/no_image.png"
 layout: :post
-published: true
+draft: false
 markdown: "## 材料\n鶏肉, 玉ねぎ, ...\n## 作り方\n1. 切る\n2. 炒める\n3. 煮る"

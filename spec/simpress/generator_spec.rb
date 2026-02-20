@@ -6,7 +6,7 @@ describe Simpress::Generator do
   let(:category) { Simpress::Category.fetch("Test") }
   let(:post1) { build_post_data(1, categories: [category], date: Time.new(2000, 1, 1)) }
   let(:post2) { build_post_data(2, categories: [category], date: Time.new(2000, 2, 1)) }
-  let(:post3) { build_post_data(3, published: false) }
+  let(:post3) { build_post_data(3, draft: true) }
   let(:page) { build_post_data(4, layout: :page) }
 
   before do
@@ -23,7 +23,7 @@ describe Simpress::Generator do
   end
 
   it "すべての投稿とページを正しく処理してHTML生成を呼び出すこと" do
-    expect { described_class.generate }.not_to raise_error
+    described_class.generate
     expect(Simpress::Logger).to have_received(:info).at_least(1).times
     expect(Simpress::Plugin).to have_received(:process).exactly(1).times
     expect(Simpress::Generator::Html).to have_received(:generate).with(

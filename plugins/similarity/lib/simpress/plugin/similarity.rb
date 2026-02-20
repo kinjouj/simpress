@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "json"
 require "natto"
 require "xxhash"
 require "simpress/plugin"
@@ -120,7 +119,7 @@ module Simpress
 
         similarity_scores.each_with_index do |scores, i|
           post = posts[i]
-          similarities = scores.max(5).map do |_score, index|
+          similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
             { id: target.id, title: target.title, permalink: target.permalink }
           end
@@ -134,9 +133,10 @@ module Simpress
       end
 
       def self.process_json(post, similarities)
-        post.define_singleton_method(:as_json) do |options = {}|
-          hash = super(options)
-          hash.update({ similarities: similarities })
+        post.define_singleton_method(:as_json) do |state = {}|
+          hash = super(state)
+          hash[:similarities] = similarities if state && [*state[:keys]].include?(:content)
+          hash
         end
       end
     end

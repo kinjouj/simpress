@@ -15,7 +15,7 @@ describe Simpress::Plugin::Similarity do
   let(:posts) { [post1, post2, post3, post4, post5] }
 
   it "相関データが正しくファイルとして出力されること" do
-    expect { described_class.run(posts) }.not_to raise_error
+    described_class.run(posts)
 
     expect(post1).to respond_to(:similarities)
     expect(post1.similarities.size).to eq(1)
@@ -46,7 +46,7 @@ describe Simpress::Plugin::Similarity do
     end
 
     it "similaritiesが空になること" do
-      expect { described_class.run(posts) }.not_to raise_error
+      described_class.run(posts)
       posts.each {|post| expect(post.similarities).to be_empty }
     end
   end
@@ -57,8 +57,8 @@ describe Simpress::Plugin::Similarity do
     end
 
     it "as_jsonでsimilaritiesが取得できること" do
-      expect { described_class.run(posts) }.not_to raise_error
-      expect(post1.as_json).to include(:similarities)
+      described_class.run(posts)
+      expect(post1.as_json(keys: [:title, :content])).to include(:similarities)
     end
   end
 end

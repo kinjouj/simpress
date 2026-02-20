@@ -10,10 +10,8 @@ const Footer = (): React.JSX.Element => {
   }, []);
 
   return (
-    <footer className="text-center" style={{ opacity: loaded ? 1 : 0, minHeight: '80px' }}>
-      Powered by &nbsp;
-      <a href="https://github.com/kinjouj/simpress">simpress</a>
-      (octopress like site generator)
+    <footer className="text-center mt-5 py-5" style={{ opacity: loaded ? 1 : 0, minHeight: '80px' }}>
+      Powered by simpress(octopress like site generator)
     </footer>
   );
 };

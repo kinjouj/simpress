@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/parser/redcarpet"
+require "simpress/parser/markdown/processor"
 
-describe Simpress::Parser::Redcarpet do
+describe Simpress::Parser::Markdown::Processor do
   it "markdownをrenderすると正しくbody、images、tosが返されること" do
     markdown = <<~MARKDOWN
       #### TEST1

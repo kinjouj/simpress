@@ -17,9 +17,9 @@ module Simpress
         index_paginator   = Simpress::Paginator.builder.maxpage(page_size)
         monthly_archives  = Hash.new {|h, k| h[k] = [] }
         category_posts    = Hash.new {|h, k| h[k] = [] }
-        posts.each_slice(paginate).each.with_index do |slice_posts, page|
+        posts.each_slice(paginate).with_index do |slice_posts, page|
           archives = []
-          slice_posts.each.with_index do |post, index|
+          slice_posts.each_with_index do |post, index|
             post.categories.each {|category| category_posts[category] << post }
             position = (page * paginate) + index
             Simpress::Generator::Renderer::PermalinkRenderer.generate_html(post, post_paginator.index(position).build)

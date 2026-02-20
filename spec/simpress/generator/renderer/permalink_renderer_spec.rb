@@ -19,7 +19,7 @@ describe Simpress::Generator::Renderer::PermalinkRenderer do
     end
 
     it "正常にgenerate_htmlメソッドが呼ばれること" do
-      expect { described_class.generate_html(post1) }.not_to raise_error
+      described_class.generate_html(post1)
       expect(File).to have_received(:write).with("public/post1.html", "test")
       expect(FileUtils).to have_received(:touch).with("public/post1.html", mtime: post1.date)
       expect(Simpress::Logger).to have_received(:info)
@@ -28,9 +28,11 @@ describe Simpress::Generator::Renderer::PermalinkRenderer do
   end
 
   describe ".generate_json" do
+    let(:keys) { described_class::DATA_JSON_KEYS }
+
     it "正常にgenerate_jsonメソッドが呼ばれること" do
-      expect { described_class.generate_json(post1) }.not_to raise_error
-      expect(File).to have_received(:write).with("public/post1.json", post1.to_json(include_content: true))
+      described_class.generate_json(post1)
+      expect(File).to have_received(:write).with("public/post1.json", post1.to_json(mode: :compat, keys: keys))
       expect(Simpress::Logger).to have_received(:info)
     end
   end

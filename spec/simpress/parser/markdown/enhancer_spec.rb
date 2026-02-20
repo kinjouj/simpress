@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/markdown/filter"
+require "simpress/parser/markdown/enhancer"
 
-describe Simpress::Markdown::Filter do
+describe Simpress::Parser::Markdown::Enhancer do
   before do
     allow(Simpress::Logger).to receive(:debug)
   end
@@ -14,7 +14,7 @@ describe Simpress::Markdown::Filter do
   context "Filterプラグインのテスト" do
     it "Simpress::Parser::Redcarpet::Filterを継承したクラスが正常にプラグインとして作動すること" do
       test_filter = Class.new do
-        extend Simpress::Markdown::Filter
+        extend Simpress::Parser::Markdown::Enhancer
 
         def self.preprocess(body)
           body.capitalize
@@ -28,7 +28,7 @@ describe Simpress::Markdown::Filter do
 
     it "preprocessメソッドが定義されてない場合" do
       test_filter = Class.new do
-        extend Simpress::Markdown::Filter
+        extend Simpress::Parser::Markdown::Enhancer
       end
 
       stub_const("TestFilter", test_filter)
@@ -38,7 +38,7 @@ describe Simpress::Markdown::Filter do
 
     it "preprocessメソッドの返り値がStringではない場合" do
       test_filter = Class.new do
-        extend Simpress::Markdown::Filter
+        extend Simpress::Parser::Markdown::Enhancer
 
         def self.preprocess(_)
           {}

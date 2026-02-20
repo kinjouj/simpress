@@ -55,7 +55,6 @@ date: 2000-01-01 00:00:00
 permalink: /test
 cover: /images/test.jpg
 layout: post
-published: true
 description: optional
 categories:
   - test
@@ -77,7 +76,7 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 |permalink  |パスURL|
 |cover      |サムネイル画像。指定しない場合は/images/no_image.pngが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される|
 |layout     |記事の種類。postかpageで指定。指定しない場合はpost(pageはインデックスが作成されない)|
-|published  |記事を出力するかのフラグ。デフォルトはtrue|
+|draft      |記事の下書きフラグ。trueの場合は出力されない。デフォルトはfalse|
 |description|meta description値。無い場合はコンテンツから抽出生成される|
 |categories |カテゴリー。配列形式じゃなくても指定可能|
 
@@ -107,12 +106,12 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 ※page.erbに@paginatorは無い
 
 
-### Custom Markdown Filter
+### Custom Markdown Enhancer
 
 
 ```ruby
 class SampleFilter
-  extend Simpress::Markdown::Filter
+  extend Simpress::Parser::Redcarpet::Enhancer
 
   def self.preprocess(markdown)
     # TODO

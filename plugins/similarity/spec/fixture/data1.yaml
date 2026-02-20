@@ -9,5 +9,5 @@ description: "東京観光のおすすめスポット"
 toc: []
 cover: "/images/no_image.png"
 layout: :post
-published: true
+draft: false
 markdown: "## 浅草寺\n浅草寺は東京の有名寺院です。\n## 東京タワー\n東京タワーも観光名所です。"

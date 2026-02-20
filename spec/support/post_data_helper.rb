@@ -11,7 +11,7 @@ module PostDataHelper
     toc: [],
     categories: [],
     cover: "/images/no_image.webp",
-    published: true,
+    draft: false,
     layout: :post
   )
     title ||= "Post #{id}"
@@ -29,7 +29,7 @@ module PostDataHelper
       categories: categories,
       toc: toc,
       cover: cover,
-      published: published,
+      draft: draft,
       layout: layout,
       markdown: "# Test Post #{id}"
     )

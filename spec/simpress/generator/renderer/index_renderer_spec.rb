@@ -24,7 +24,7 @@ describe Simpress::Generator::Renderer::IndexRenderer do
     let(:paginator) { Simpress::Paginator.builder.maxpage(2).build }
 
     it "正常にgenerate_htmlメソッドが呼ばれること" do
-      expect { described_class.generate_html(posts, paginator) }.not_to raise_error
+      described_class.generate_html(posts, paginator)
       expect(File).to have_received(:write).with("public/index.html", "index")
       expect(Simpress::Logger).to have_received(:info)
       expect(Simpress::Theme).to have_received(:render)
@@ -32,9 +32,12 @@ describe Simpress::Generator::Renderer::IndexRenderer do
   end
 
   describe ".generate_json" do
+    let(:keys) { described_class::DATA_JSON_KEYS }
+    let(:expected_json) { Oj.dump(posts, mode: :compat, keys: keys) }
+
     it "正常にgenerate_jsonメソッドが呼ばれること" do
-      expect { described_class.generate_json(posts, 1) }.not_to raise_error
-      expect(File).to have_received(:write).with("public/archives/page/1.json", posts.to_json)
+      described_class.generate_json(posts, 1)
+      expect(File).to have_received(:write).with("public/archives/page/1.json", expected_json)
       expect(Simpress::Logger).to have_received(:info)
     end
   end

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require "json"
-require "simpress/config"
+require "oj"
 require "simpress/plugin"
-require "simpress/theme"
 require "simpress/writer"
 
 module Simpress
   module Plugin
     class RecentPosts
       extend Simpress::Plugin
+
+      DATA_JSON_KEYS = [:title, :date, :permalink].freeze
 
       def self.run(posts, *_args)
         recent_posts = (posts || []).take(config.paginate || 5)
@@ -18,7 +18,7 @@ module Simpress
         when "html"
           bind_context(recent_posts: recent_posts)
         when "json"
-          Simpress::Writer.write("recent_posts.json", recent_posts.to_json)
+          Simpress::Writer.write("recent_posts.json", Oj.dump(recent_posts, mode: :compat, keys: DATA_JSON_KEYS))
         else
           raise "Error"
         end

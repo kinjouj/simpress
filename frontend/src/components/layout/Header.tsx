@@ -1,31 +1,34 @@
 const Header = (): React.JSX.Element => {
   return (
     <>
-      <nav className="navbar navbar-expand-lg border-bottom border-secondary p-0">
-        <div className="container-fluid">
-          <nav className="navbar-collapse collapse">
-            <ul className="nav navbar-nav">
+      <nav className="navbar navbar-expand p-0 sticky-top">
+        <div className="container-fluid p-0">
+          <div className="navbar-collapse p-3">
+            <ul className="navbar-nav gap-3">
               <li className="nav-item">
-                <a className="nav-link" href="mailto:kinjoujgmail.com">Contact</a>
+                <a href="/" className="btn btn-primary">
+                  <i className="fa-solid fa-home"></i>
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href="https://x.com/kinjou_j" className="btn btn-primary">
+                  <i className="fa-brands fa-x-twitter"></i>
+                </a>
               </li>
             </ul>
-            <ul className="nav navbar-nav mavbar-right ms-auto">
+            <ul className="navbar-nav ms-auto mx-2">
               <li className="nav-item">
-                <form action="https://www.google.com/search" method="GET">
-                  <input type="hidden" name="hl" value="ja" />
-                  <input type="hidden" name="sitesearch" value="kinjouj.github.io" />
-                  <input type="search" name="q" className="form-control" />
-                </form>
+                {/* search-modal */}
               </li>
             </ul>
-          </nav>
+          </div>
         </div>
       </nav>
-      <div>
-        <header className="logo-header text-center">
-          <h2><a href="/">kinjouj.github.io</a></h2>
-        </header>
-      </div>
+      <header>
+        <div className="logo text-center py-6">
+          <a href="/" className="fw-bold">kinjouj.github.io</a>
+        </div>
+      </header>
     </>
   );
 };

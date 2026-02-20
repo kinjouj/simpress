@@ -18,17 +18,21 @@ module Simpress
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
       config_default = config[:default]
-      config_default.each {|key, value| instance_variable_set("@#{key}", value) }
+      @mode     = config_default[:mode]
+      @logging  = config_default[:logging]
+      @host     = config_default[:host]
+      @paginate = config_default[:paginate]
+      @plugins  = config_default[:plugins]
     end
-
-    # :nocov:
-    def output_dir
-      "public"
-    end
-    # :nocov:
 
     def self.clear
       Singleton.__init__(Simpress::Config)
     end
+
+    # :nocov:
+    def self.output_dir
+      "public"
+    end
+    # :nocov:
   end
 end

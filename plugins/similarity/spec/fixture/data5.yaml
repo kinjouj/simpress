@@ -9,5 +9,5 @@ description: "時短かんたんパスタ"
 toc: []
 cover: "/images/no_image.png"
 layout: :post
-published: true
+draft: false
 markdown: "## 麺を茹でる\n## 麺を冷やす\n## 麺に和風ドレッシングをかける\n## 食べる\n## 終わり"

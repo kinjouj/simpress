@@ -4,6 +4,7 @@ export type PostType = {
   id: string
   title: string
   permalink: string
+  source: string
   date: string
   cover: string
   content: string

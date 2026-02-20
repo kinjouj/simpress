@@ -21,7 +21,7 @@ describe Simpress::Generator::Json do
   end
 
   it "正常にgenerateメソッドが呼ばれること" do
-    expect { described_class.generate([post1, post2], nil, { test: category }) }.not_to raise_error
+    described_class.generate([post1, post2], nil, { test: category })
     expect(Simpress::Generator::Renderer::IndexRenderer).to have_received(:generate_json)
     expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate_json).exactly(2).times
     expect(Simpress::Generator::Renderer::PageRenderer).to have_received(:generate_json)

@@ -9,8 +9,8 @@ require "simpress/plugin"
 
 module Simpress
   def self.build
-    StackProf.run(mode: :wall, out: "stackprof.dump") do
-      Simpress::Plugin.load
+    Simpress::Plugin.load
+    StackProf.run(mode: :cpu, out: "stackprof.dump") do
       Simpress::Generator.generate
     end
 

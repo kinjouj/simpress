@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "json"
+require "oj"
 require "stringex"
 
 module Simpress
@@ -26,12 +26,12 @@ module Simpress
       { key: @key, name: @name, count: @count, children: @children }
     end
 
-    def to_json(*)
-      as_json(*).to_json
+    def to_json(options = {})
+      Oj.dump(as_json(options), **options, mode: :compat, **options)
     end
 
     def self.fetch(name)
-      @cache[name] ||= new(name)
+      @cache[name.to_s.strip] ||= new(name)
     end
 
     def self.clear

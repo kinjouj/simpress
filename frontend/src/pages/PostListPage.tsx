@@ -1,6 +1,6 @@
 import React, { Suspense, useCallback } from 'react';
 import Simpress from '../api/Simpress';
-import { NotFound, Pager, PostList } from '../components';
+import { NotFound, PostList } from '../components';
 import { useFetchData, usePage } from '../hooks';
 import type { PostType } from '../types';
 
@@ -29,10 +29,7 @@ const PostListPage = (): React.JSX.Element => {
   }
 
   return (
-    <>
-      <PostList posts={posts} />
-      <Pager />
-    </>
+    <PostList posts={posts} />
   );
 };
 

@@ -10,7 +10,7 @@ describe Simpress::Generator::Renderer::PageInfoRenderer do
   end
 
   it "正常にgenerate_jsonメソッドが呼ばれること" do
-    expect { described_class.generate_json(10) }.not_to raise_error
+    described_class.generate_json(10)
     expect(File).to have_received(:write).with("public/pageinfo.json", { page: 10 }.to_json)
     expect(Simpress::Logger).to have_received(:info)
   end
