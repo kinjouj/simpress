@@ -155,12 +155,6 @@ end
 ```
 
 
-### Plugin SCSS
-
-
-scss/style.scssをコンパイルして出力されるディレクトリ/css/style.cssで出力するだけ
-
-
 ### Plugin: Similarity
 
 

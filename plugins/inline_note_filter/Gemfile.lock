@@ -4,9 +4,9 @@ PATH
     simpress (0.0.1)
       erubi
       natto
+      oj
       ox
       redcarpet
-      sass-embedded
       stackprof
       stringex
       tilt
@@ -21,14 +21,12 @@ GEM
     erubi (1.13.1)
     ffi (1.17.3)
     ffi (1.17.3-x86_64-linux-gnu)
-    google-protobuf (4.33.5)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.33.5-x86_64-linux-gnu)
-      bigdecimal
-      rake (>= 13)
     natto (1.2.0)
       ffi (>= 1.9.0)
+    oj (3.16.15)
+      bigdecimal (>= 3.0)
+      ostruct (>= 0.2)
+    ostruct (0.6.3)
     ox (2.14.23)
       bigdecimal (>= 3.0)
     rake (13.3.1)
@@ -46,11 +44,6 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
-    sass-embedded (1.97.3)
-      google-protobuf (~> 4.31)
-      rake (>= 13)
-    sass-embedded (1.97.3-x86_64-linux-gnu)
-      google-protobuf (~> 4.31)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -78,9 +71,9 @@ CHECKSUMS
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
   ffi (1.17.3) sha256=0e9f39f7bb3934f77ad6feab49662be77e87eedcdeb2a3f5c0234c2938563d4c
   ffi (1.17.3-x86_64-linux-gnu) sha256=3746b01f677aae7b16dc1acb7cb3cc17b3e35bdae7676a3f568153fb0e2c887f
-  google-protobuf (4.33.5) sha256=1b64fb774c101b23ac3f6923eca24be04fd971635d235c4cd4cfe0d752620da0
-  google-protobuf (4.33.5-x86_64-linux-gnu) sha256=a782adf86bfba207740b49d7bb9ccdc25c4fb8f800fe222af62bce951149338a
   natto (1.2.0) sha256=07bee10b7b305b34e87eb3b6cd23aa42140816b7088acc5e55b1fbbc35c010c3
+  oj (3.16.15)
+  ostruct (0.6.3)
   ox (2.14.23) sha256=4a9aedb4d6c78c5ebac1d7287dc7cc6808e14a8831d7adb727438f6a1b461b66
   rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
   redcarpet (3.6.1) sha256=d444910e6aa55480c6bcdc0cdb057626e8a32c054c29e793fa642ba2f155f445
@@ -89,8 +82,6 @@ CHECKSUMS
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
   rspec-mocks (3.13.7) sha256=0979034e64b1d7a838aaaddf12bf065ea4dc40ef3d4c39f01f93ae2c66c62b1c
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
-  sass-embedded (1.97.3) sha256=c4136da69ae3acfa7b0809f4ec10891125edf57df214a2d1ab570f721f96f7a6
-  sass-embedded (1.97.3-x86_64-linux-gnu) sha256=173a4d0dbe2fffdf7482bd3e82fb597dfc658c18d1e8fd746aa7d5077ed4e850
   simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
   simplecov-html (0.13.2) sha256=bd0b8e54e7c2d7685927e8d6286466359b6f16b18cb0df47b508e8d73c777246
   simplecov_json_formatter (0.1.4) sha256=529418fbe8de1713ac2b2d612aa3daa56d316975d307244399fa4838c601b428
