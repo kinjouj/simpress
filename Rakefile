@@ -17,27 +17,20 @@ OUTPUT_DIR = Simpress::Config.output_dir
 CLEAN.include("#{OUTPUT_DIR}/*")
 
 desc "build"
-task build: [:clean, :build_scss] do
+task build: :clean do
   cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
   GC.disable
 
   result = Benchmark.realtime do
-    Simpress.build { Rake::Task["build_#{Simpress::Config.instance.mode}"].execute }
+    Simpress.build { Rake::Task["build_#{Simpress::Config.instance.mode}"].invoke }
   end
 
   GC.enable
   Simpress::Logger.debug("build time: #{result}")
 end
 
-task :build_scss do
-  scss = Sass.compile("scss/style.scss", quiet_deps: true, silence_deprecations: ["if-function"], load_paths: ["node_modules"])
-  Simpress::Writer.write("css/style.css", scss.css)
-rescue Sass::CompileError => e
-  raise e.full_message, cause: nil
-end
-
 desc "build_html"
-task :build_html do
+task build_html: :build_scss do
   files = cd(OUTPUT_DIR, verbose: false) do
     Dir["**/*.html"].select {|file| !file.start_with?("archives", "page") && !file.end_with?("index.html") }
   end
@@ -46,6 +39,13 @@ task :build_html do
     files.sort!
     files.each {|file| url(file: file, lastmod: File.stat(File.join(OUTPUT_DIR, file)).mtime.iso8601) }
   end
+end
+
+task :build_scss do
+  scss = Sass.compile("scss/style.scss", quiet_deps: true, silence_deprecations: ["if-function"], load_paths: ["node_modules"])
+  Simpress::Writer.write("css/style.css", scss.css)
+rescue Sass::CompileError => e
+  raise e.full_message, cause: nil
 end
 
 desc "build_json"

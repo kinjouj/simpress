@@ -1,19 +1,10 @@
 import { defineConfig } from 'vite'
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 import react from '@vitejs/plugin-react-swc';
 
 export default defineConfig({
   root: 'frontend',
   plugins: [
     react(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: './public/*',
-          dest: '../public'
-        }
-      ]
-    })
   ],
   build: {
     minify: 'esbuild',
@@ -30,7 +21,7 @@ export default defineConfig({
         warn(warning);
       },
       input: {
-        app: 'frontend/src/index.tsx',
+        app: 'frontend/index.html',
       },
       output: {
         entryFileNames: 'js/app.js',

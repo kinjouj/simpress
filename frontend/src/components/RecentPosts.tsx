@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { Stack } from 'react-bootstrap';
 import Simpress from '../api/Simpress';
 import { useFetchData } from '../hooks';
 import { NotFound } from './ui';
@@ -20,13 +21,13 @@ const RecentPosts = (): React.JSX.Element => {
   }
 
   return (
-    <ul id="recent_posts">
+    <Stack>
       {data.map((post) => (
-        <li key={post.id} className="recent-post">
-          <Link to={post.permalink}>{post.title}</Link>
-        </li>
+        <div key={post.id}>
+          <Link to={post.permalink} role="listitem">{post.title}</Link>
+        </div>
       ))}
-    </ul>
+    </Stack>
   );
 };
 

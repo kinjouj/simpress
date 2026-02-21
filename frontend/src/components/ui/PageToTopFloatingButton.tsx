@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { Button } from 'react-bootstrap';
 
 const PageToTopFloatingButton = (): React.JSX.Element => {
   const onClickHandler = useCallback((): void => {
@@ -6,14 +7,9 @@ const PageToTopFloatingButton = (): React.JSX.Element => {
   }, []);
 
   return (
-    <button
-      type="button"
-      className="btn btn-info btn-floating"
-      aria-label="page to top"
-      style={{ position: 'fixed', bottom: '20px', right: '30px' }}
-      onClick={onClickHandler}>
+    <Button type="button" aria-label="page to top" className="top-elevator" onClick={onClickHandler}>
       <i className="fas fa-arrow-up"></i>
-    </button>
+    </Button>
   );
 };
 

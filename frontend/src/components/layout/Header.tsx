@@ -1,32 +1,34 @@
+import { Button, Container, Nav, Navbar } from 'react-bootstrap';
+
 const Header = (): React.JSX.Element => {
   return (
     <>
-      <nav className="navbar navbar-expand p-0 sticky-top">
-        <div className="container-fluid p-0">
-          <div className="navbar-collapse p-3">
-            <ul className="navbar-nav gap-3">
-              <li className="nav-item">
-                <a href="/" className="btn btn-primary">
+      <Navbar className="p-0 sticky-top" expand>
+        <Container className="p-0" fluid>
+          <Navbar.Collapse className="p-3">
+            <Nav className="gap-3">
+              <Nav.Item>
+                <Button href="/">
                   <i className="fa-solid fa-home"></i>
-                </a>
-              </li>
-              <li className="nav-item">
-                <a href="https://x.com/kinjou_j" className="btn btn-primary">
+                </Button>
+              </Nav.Item>
+              <Nav.Item>
+                <Button href="https://x.com">
                   <i className="fa-brands fa-x-twitter"></i>
-                </a>
-              </li>
-            </ul>
-            <ul className="navbar-nav ms-auto mx-2">
-              <li className="nav-item">
+                </Button>
+              </Nav.Item>
+            </Nav>
+            <Nav className="ms-auto mx-2">
+              <Nav.Item>
                 {/* search-modal */}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+              </Nav.Item>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
       <header>
         <div className="logo text-center py-6">
-          <a href="/" className="fw-bold">kinjouj.github.io</a>
+          <a href="/" className="fw-bold">frontend test</a>
         </div>
       </header>
     </>

@@ -8,12 +8,12 @@ import globals from "globals";
 import checkFile from "eslint-plugin-check-file";
 import jest from "eslint-plugin-jest";
 import importPlugin from "eslint-plugin-import";
+import perfectionist from "eslint-plugin-perfectionist";
 
 export default defineConfig(
   { ignores: ["**/*.js", "**/*.mjs"] },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
-  //tseslint.configs.stylisticTypeChecked,
   ...(stylistic.configs.recommended ? [stylistic.configs.recommended] : []),
   react.configs.flat.recommended,
   react.configs.flat["jsx-runtime"],
@@ -39,6 +39,7 @@ export default defineConfig(
       "check-file": checkFile,
       "jest": jest,
       "import": importPlugin,
+      perfectionist,
     },
     rules: {
       ...jest.configs["recommended"].rules,
@@ -60,15 +61,6 @@ export default defineConfig(
       ],
       "@stylistic/jsx-closing-bracket-location": "off",
       "@stylistic/jsx-quotes": ["error", "prefer-double"],
-      "@stylistic/jsx-sort-props": [
-        "error",
-        {
-          "reservedFirst": ["key", "ref", "href", "src", "id", "type", "name", "className"],
-          "callbacksLast": true,
-          "shorthandLast": true,
-          "noSortAlphabetically": true,
-        },
-      ],
       "@stylistic/max-statements-per-line": ["error", { max: 2 }],
       "@stylistic/no-multi-spaces": [
         "error",
@@ -144,6 +136,39 @@ export default defineConfig(
           ],
           "newlines-between": "never",
         },
+      ],
+      "perfectionist/sort-jsx-props": [
+        "error",
+        {
+          "type": "unsorted",
+          "groups": [
+            "almost-props",
+            "unknown",
+            "standard",
+            "callback",
+            "shorthand-prop",
+          ],
+          "customGroups": [
+            {
+              "groupName": "almost-props",
+              "elementNamePattern": ["^ref$", "^key$", "^type$", "^id$", "^href$", "^src$", "^name$"]
+            },
+            {
+              "groupName": "standard",
+              "elementNamePattern": [
+                "^role$",
+                "^aria-.+$",
+                "^data-.+$",
+                "^className$",
+                "^style$",
+              ]
+            },
+            {
+              "groupName": "callback",
+              "elementNamePattern": "^on.+"
+            }
+          ]
+        }
       ],
     },
     settings: {

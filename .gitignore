@@ -1,5 +1,4 @@
 /public
-!/frontend/public
 coverage
 node_modules
 scss/*
