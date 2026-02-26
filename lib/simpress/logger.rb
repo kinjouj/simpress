@@ -10,14 +10,15 @@ module Simpress
 
     def initialize
       @logger = ::Logger.new($stdout)
+      @mode   = Simpress::Config.instance.mode.upcase
     end
 
     def info(message)
-      @logger.info(message)
+      @logger.info("[#{@mode}]: #{message}")
     end
 
     def debug(message)
-      @logger.debug(message)
+      @logger.debug("[#{@mode}]: #{message}")
     end
 
     def self.info(message)

@@ -5,13 +5,13 @@ require "simpress/parser/markdown/processor"
 describe Simpress::Parser::Markdown::Processor do
   it "markdownをrenderすると正しくbody、images、tosが返されること" do
     markdown = <<~MARKDOWN
-      #### TEST1
+      ### TEST1
 
       ![](/test1.jpg)
 
       ![](/test2.jpg)
 
-      ### TEST2
+      #### TEST2
     MARKDOWN
     body, images, tos = described_class.render(markdown)
     expect(body).not_to be_empty

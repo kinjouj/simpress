@@ -9,7 +9,7 @@ module Simpress
   module Parser
     module Markdown
       class Renderer < ::Redcarpet::Render::HTML
-        RENDERER_OPTIONS = { hard_wrap: true }.freeze
+        RENDERER_OPTIONS = { hard_wrap: true, escape_html: true }.freeze
         attr_reader :primary_image, :toc
 
         @klasses = []
@@ -28,13 +28,17 @@ module Simpress
           Simpress::Parser::Markdown::Enhancer.run(markdown)
         end
 
+        def block_html(html)
+          html
+        end
+
         def header(text, header_level)
-          if header_level == 4
+          if header_level == 3
             pos = @toc.size + 1
             id  = "section-#{pos}"
             @toc << [id, text]
 
-            %(<h4 id="#{id}">#{text}</h4>)
+            %(<h3 id="#{id}">#{text}</h3>)
           else
             "<h#{header_level}>#{text}</h#{header_level}>"
           end

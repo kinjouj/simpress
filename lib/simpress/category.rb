@@ -27,7 +27,7 @@ module Simpress
     end
 
     def to_json(options = {})
-      Oj.dump(as_json(options), **options, mode: :compat, **options)
+      Oj.dump(as_json(options), mode: :compat, **options)
     end
 
     def self.fetch(name)

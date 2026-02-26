@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 import { Button } from 'react-bootstrap';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const PageToTopFloatingButton = (): React.JSX.Element => {
   const onClickHandler = useCallback((): void => {
@@ -8,7 +10,7 @@ const PageToTopFloatingButton = (): React.JSX.Element => {
 
   return (
     <Button type="button" aria-label="page to top" className="top-elevator" onClick={onClickHandler}>
-      <i className="fas fa-arrow-up"></i>
+      <FontAwesomeIcon icon={faArrowUp} />
     </Button>
   );
 };

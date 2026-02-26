@@ -10,7 +10,6 @@ module Simpress
     attr_reader :id,
                 :title,
                 :date,
-                :permalink,
                 :content,
                 :description,
                 :toc,
@@ -25,16 +24,16 @@ module Simpress
       params.each {|key, value| instance_variable_set("@#{key}", value) }
     end
 
+    def permalink(ext = nil)
+      ext.nil? ? @permalink : @permalink.sub(REGEX_EXT, ext)
+    end
+
     def timestamp
       @date.to_i
     end
 
-    def with_ext(ext)
-      permalink.sub(REGEX_EXT, ext)
-    end
-
     def canonical
-      [Simpress::Config.instance.host.chomp("/"), permalink].join
+      @canonical ||= [Simpress::Config.instance.host.chomp("/"), @permalink].join
     end
 
     def as_json(options = {})
@@ -42,8 +41,8 @@ module Simpress
         id: @id,
         title: @title,
         date: @date,
-        permalink: @permalink,
-        source: with_ext(".json"),
+        permalink: permalink,
+        source: permalink(".json"),
         categories: @categories,
         cover: @cover,
         description: @description,

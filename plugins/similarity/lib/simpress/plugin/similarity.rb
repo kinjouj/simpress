@@ -19,9 +19,10 @@ module Simpress
         attr_reader :keywords
 
         def initialize(posts)
-          @keywords = []
-          @size     = posts.size
-          @data     = posts.map do |post|
+          @keywords   = []
+          @size       = posts.size
+          @seed_cache = {}
+          @data       = posts.map do |post|
             keywords = extract_keywords(post)
             @keywords << keywords
             vector = keywords.tally
@@ -61,7 +62,7 @@ module Simpress
 
         def extract_keywords(post)
           keywords = {}
-          text     = "#{post.title}\n#{post.markdown}"
+          text     = "#{post.title} #{post.markdown}"
           NATTO.parse(text).each_line do |line|
             if line =~ NATTO_REGEX
               surface = Regexp.last_match(1)
@@ -75,7 +76,7 @@ module Simpress
         def calculate_simhash(vector)
           v = Array.new(HASH_BITS, 0)
           vector.each do |word, weight|
-            seed = XXhash.xxh32(word)
+            seed = (@seed_cache[word] ||= XXhash.xxh32(word))
             HASH_BITS.times {|bit| v[bit] += ((seed & (1 << bit)) == 0 ? -weight : weight) }
           end
 
@@ -97,7 +98,11 @@ module Simpress
           v1, v2 = v2, v1 if v1.size > v2.size
 
           product = 0.0
-          v1.each {|k, v| product += v * (v2[k] || 0) }
+          v1.each do |k, v|
+            w = v2[k]
+            product += v * w if w
+          end
+
           product / (n1 * n2)
         end
       end

@@ -30,7 +30,7 @@ describe Simpress::Theme do
 
   describe ".render" do
     before do
-      allow(Tilt::ErubiTemplate).to receive(:new).with("theme/post.erb")
+      allow(Tilt::ErubiTemplate).to receive(:new).with("theme/post.erb", escape: true)
                                                  .and_return(Tilt::ErubiTemplate.new { "<%= @foo %>, <%= @bar %>" })
     end
 

@@ -38,8 +38,6 @@ module Simpress
           else
             raise "Unknown layout #{data.layout}"
           end
-
-          Simpress::Logger.info("PARSE COMPLETE: #{file}")
         end
 
         posts.sort_by! {|post| -post.timestamp }

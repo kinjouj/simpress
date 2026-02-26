@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "erb"
+require "cgi"
 require "pathname"
 require "xxhash"
 require "simpress/category"
@@ -55,7 +55,9 @@ module Simpress
       end
 
       def parse_permalink!(params, basename)
-        params[:permalink] = File.join("/", params[:date].strftime("%Y/%m"), basename) unless params[:permalink]
+        if params[:permalink].nil?
+          params[:permalink] = File.join("/", params[:date].strftime("%Y/%m"), "#{basename}.#{Simpress::Config.instance.mode}")
+        end
       end
 
       def parse_categories!(params)

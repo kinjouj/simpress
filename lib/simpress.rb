@@ -3,6 +3,7 @@
 require "stackprof"
 
 require "benchmark"
+require "simpress/config"
 require "simpress/generator"
 require "simpress/logger"
 require "simpress/plugin"
@@ -10,7 +11,7 @@ require "simpress/plugin"
 module Simpress
   def self.build
     Simpress::Plugin.load
-    StackProf.run(mode: :cpu, out: "stackprof.dump") do
+    StackProf.run(mode: :wall, out: "stackprof.dump") do
       Simpress::Generator.generate
     end
 

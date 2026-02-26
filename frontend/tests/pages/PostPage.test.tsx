@@ -35,7 +35,7 @@ describe('PostPage', () => {
       jest.runAllTimers();
     });
 
-    const post = await screen.findByRole('main');
+    const post = await screen.findByRole('article');
     expect(post).toBeInTheDocument();
   });
 

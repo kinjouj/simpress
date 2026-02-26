@@ -1,6 +1,16 @@
-import { Button, Container, Nav, Navbar } from 'react-bootstrap';
+import { useState } from 'react';
+import { Button, Container, Form, InputGroup, Modal, Nav, Navbar } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 
+/* eslint-disable react/jsx-no-bind */
 const Header = (): React.JSX.Element => {
+  const [show, setShow] = useState(false);
+  const handleClose = (): void => setShow(false);
+  const handleShow = (): void => setShow(true);
+  const handleSubmit = (): void => handleClose();
+
   return (
     <>
       <Navbar className="p-0 sticky-top" expand>
@@ -9,18 +19,31 @@ const Header = (): React.JSX.Element => {
             <Nav className="gap-3">
               <Nav.Item>
                 <Button href="/">
-                  <i className="fa-solid fa-home"></i>
+                  <FontAwesomeIcon icon={faHome} />
                 </Button>
               </Nav.Item>
               <Nav.Item>
                 <Button href="https://x.com">
-                  <i className="fa-brands fa-x-twitter"></i>
+                  <FontAwesomeIcon icon={faXTwitter} />
                 </Button>
               </Nav.Item>
             </Nav>
             <Nav className="ms-auto mx-2">
               <Nav.Item>
-                {/* search-modal */}
+                <Button variant="primary" aria-label="Search" onClick={handleShow}>
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </Button>
+                <Modal show={show} contentClassName="bg-transparent border-0" onHide={handleClose} centered>
+                  <Modal.Body>
+                    <Form action="https://www.google.com/search" method="GET" onSubmit={handleSubmit}>
+                      <InputGroup>
+                        <input type="hidden" name="hl" value="ja" />
+                        <input type="hidden" name="sitesearch" value="kinjouj.github.io" />
+                        <Form.Control type="search" name="q" placeholder="Search" className="rounded-2 py-4" autoFocus />
+                      </InputGroup>
+                    </Form>
+                  </Modal.Body>
+                </Modal>
               </Nav.Item>
             </Nav>
           </Navbar.Collapse>
@@ -34,5 +57,6 @@ const Header = (): React.JSX.Element => {
     </>
   );
 };
+/* eslint-enable react/jsx-no-bind */
 
 export default Header;

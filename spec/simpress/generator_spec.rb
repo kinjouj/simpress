@@ -24,7 +24,6 @@ describe Simpress::Generator do
 
   it "すべての投稿とページを正しく処理してHTML生成を呼び出すこと" do
     described_class.generate
-    expect(Simpress::Logger).to have_received(:info).at_least(1).times
     expect(Simpress::Plugin).to have_received(:process).exactly(1).times
     expect(Simpress::Generator::Html).to have_received(:generate).with(
       [post2, post1],

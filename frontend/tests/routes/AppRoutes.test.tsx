@@ -43,8 +43,9 @@ describe('AppRoutes', () => {
         <AppRoutes />
       </MemoryRouter>
     );
-    act(() => {
+    await act(async () => {
       jest.runAllTimers();
+      await Promise.resolve();
     });
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
@@ -57,8 +58,9 @@ describe('AppRoutes', () => {
         <AppRoutes />
       </MemoryRouter>
     );
-    act(() => {
+    await act(async () => {
       jest.runAllTimers();
+      await Promise.resolve();
     });
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
@@ -71,22 +73,24 @@ describe('AppRoutes', () => {
         <AppRoutes />
       </MemoryRouter>
     );
-    act(() => {
+    await act(async () => {
       jest.runAllTimers();
+      await Promise.resolve();
     });
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
     expect(posts).toHaveLength(1);
   });
 
-  test('<AppRoutes> initialEntries=/test.json', async () => {
+  test('<AppRoutes> initialEntries=/test.html', async () => {
     render(
-      <MemoryRouter initialEntries={['/test.json']}>
+      <MemoryRouter initialEntries={['/test.html']}>
         <AppRoutes />
       </MemoryRouter>
     );
-    act(() => {
+    await act(async () => {
       jest.runAllTimers();
+      await Promise.resolve();
     });
 
     const post = await screen.findByRole('main');
