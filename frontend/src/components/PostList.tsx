@@ -15,7 +15,7 @@ const PostList = ({ posts }: { posts: PostType[] }): React.JSX.Element => {
             <Card.Img src={post.cover} variant="top" className="object-fit-cover rounded-0" />
             <Card.Body>
               <Card.Title as="h3" className="mb-4">
-                <Link to={post.permalink} state={{ source: post.source }} className="stretched-link fs-2 fw-bold">{post.title}</Link>
+                <Link to={post.permalink} className="stretched-link fs-2 fw-bold">{post.title}</Link>
               </Card.Title>
               <Card.Text>
                 {post.description}

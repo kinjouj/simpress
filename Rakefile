@@ -18,6 +18,7 @@ CLEAN.include("#{OUTPUT_DIR}/*")
 
 desc "build"
 task build: :clean do
+  Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
   cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
   GC.disable
 
@@ -32,12 +33,13 @@ end
 desc "build_html"
 task build_html: :build_scss do
   files = cd(OUTPUT_DIR, verbose: false) do
-    Dir["**/*.html"].select {|file| !file.start_with?("archives", "page") && !file.end_with?("index.html") }
+    FileList["**/*.html"].exclude(/^archives/, /^page/, /index\.html$/)
+                         .map {|f| [f, File.mtime(f)] }
+                         .sort_by {|_, mtime| mtime }
   end
 
   Simpress::Sitemap.build(Simpress::Config.instance.host) do
-    files.sort!
-    files.each {|file| url(file: file, lastmod: File.stat(File.join(OUTPUT_DIR, file)).mtime.iso8601) }
+    files.each {|file, mtime| url(file: file, lastmod: mtime.iso8601) }
   end
 end
 
@@ -72,10 +74,3 @@ task server: :build do
 
   Process.wait(httpd_pid)
 end
-
-task :guard do
-  sh "guard --no-interactions --no-bundler-warning"
-end
-
-desc "watch"
-multitask watch: [:server, :guard]

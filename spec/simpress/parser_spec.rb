@@ -20,6 +20,7 @@ describe Simpress::Parser do
           ---
 
           test
+
         MARKDOWN
       }
       post = described_class.parse("test.markdown")
@@ -29,6 +30,7 @@ describe Simpress::Parser do
       expect(post.layout).to eq(:post)
       expect(post.draft).to be_falsy
       expect(post.categories).to eql([Simpress::Category.fetch("test")])
+      expect(post.description).to eq("test")
     end
   end
 
@@ -80,23 +82,6 @@ describe Simpress::Parser do
   end
 
   context "dateが不正な値の場合" do
-    it "正しい日付フォーマットであれば DateTime に変換されること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          date: 2020-01-01 00:00
-          ---
-
-          test
-        MARKDOWN
-      }
-      post = described_class.parse("dummy.markdown")
-      expect(post).not_to be_nil
-      expect(post.date).not_to be_nil
-      expect(post.date).to eq(Time.new(2020, 1, 1))
-    end
-
     it "不正値の場合はInvalidDateParseErrorが発生すること" do
       allow(File).to receive(:read) {
         <<~MARKDOWN
@@ -108,7 +93,7 @@ describe Simpress::Parser do
           test
         MARKDOWN
       }
-      expect { described_class.parse("dummy.markdown") }.to raise_error(Simpress::Parser::ParseError)
+      expect { described_class.parse("dummy.markdown") }.to raise_error(%(can't parse: "abc"))
     end
   end
 

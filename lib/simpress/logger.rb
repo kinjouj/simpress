@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "forwardable"
 require "logger"
 require "singleton"
 require "simpress/config"
@@ -10,31 +11,28 @@ module Simpress
 
     def initialize
       @logger = ::Logger.new($stdout)
-      @mode   = Simpress::Config.instance.mode.upcase
     end
 
     def info(message)
-      @logger.info("[#{@mode}]: #{message}")
+      @logger.info(message) if logging?
     end
 
     def debug(message)
-      @logger.debug("[#{@mode}]: #{message}")
+      @logger.debug(message)
     end
 
-    def self.info(message)
-      instance.info(message) if logging?
-    end
-
-    def self.debug(message)
-      instance.debug(message)
-    end
-
-    def self.logging?
+    def logging?
       @logging ||= Simpress::Config.instance.logging
     end
 
-    def self.clear
-      Singleton.__init__(Simpress::Logger)
+    class << self
+      extend Forwardable
+
+      def_delegators :instance, :info, :debug, :logging?
+
+      def clear
+        Singleton.__init__(Simpress::Logger)
+      end
     end
   end
 end

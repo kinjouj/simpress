@@ -3,7 +3,6 @@
 require "natto"
 require "xxhash"
 require "simpress/plugin"
-require "simpress/writer"
 
 module Simpress
   module Plugin
@@ -11,20 +10,16 @@ module Simpress
       extend Simpress::Plugin
 
       class CosineSimilarity
-        NATTO_REGEX = /\A([^\t\n]{3,})\t名詞,(?:固有名詞|一般),[^\n]*?\p{Han}/
+        NATTO_REGEX = /\A([^\t\n]{3,})\t名詞,(?:固有名詞|一般),[^\n]*\p{Han}/
         NATTO       = Natto::MeCab.new
         HASH_BITS   = 12
         BANDS       = 3
 
-        attr_reader :keywords
-
         def initialize(posts)
-          @keywords   = []
           @size       = posts.size
           @seed_cache = {}
           @data       = posts.map do |post|
             keywords = extract_keywords(post)
-            @keywords << keywords
             vector = keywords.tally
             post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 50 }
 
@@ -115,33 +110,19 @@ module Simpress
           similarity_scores[j] << [score, i]
         end
 
-        processor = case config.mode
-                    when "html"
-                      ->(post, similarities) { process_html(post, similarities) }
-                    when "json"
-                      ->(post, similarities) { process_json(post, similarities) }
-                    end
-
         similarity_scores.each_with_index do |scores, i|
           post = posts[i]
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
-            { id: target.id, title: target.title, permalink: target.permalink }
+            [target.id, target.title, target.permalink]
           end
 
-          processor.call(post, similarities)
-        end
-      end
-
-      def self.process_html(post, similarities)
-        post.define_singleton_method(:similarities) { similarities || [] }
-      end
-
-      def self.process_json(post, similarities)
-        post.define_singleton_method(:as_json) do |state = {}|
-          hash = super(state)
-          hash[:similarities] = similarities if state && [*state[:keys]].include?(:content)
-          hash
+          post.define_singleton_method(:similarities) { similarities || [] }
+          post.define_singleton_method(:as_json) do |state = {}|
+            hash = super(state)
+            hash[:similarities] = similarities if hash.key?(:content)
+            hash
+          end
         end
       end
     end

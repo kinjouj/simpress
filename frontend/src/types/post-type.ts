@@ -10,7 +10,7 @@ export type PostType = {
   content: string
   description: string
   categories: CategoryType[]
-  similarities?: SimilarityType[]
+  similarities?: SimilaritiesType[]
 };
 
-export type SimilarityType = Pick<PostType, 'id' | 'title' | 'permalink'>;
+export type SimilaritiesType = [id: string, title: string, permalink: string];

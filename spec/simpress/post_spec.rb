@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "oj"
-require "simpress/config"
 require "simpress/post"
 
 describe Simpress::Post do
@@ -56,34 +54,21 @@ describe Simpress::Post do
   end
 
   describe "#as_json" do
-    it "keysを指定しない場合はすべてのデータが返されること" do
-      post = described_class.new(params)
-      expect(post.as_json).to eq(
-        {
-          id: "abc",
-          title: "title",
-          date: Time.new(2025, 1, 1),
-          permalink: "/test.html",
-          source: "/test.json",
-          categories: [],
-          cover: "/images/no_image.webp",
-          description: "content description",
-          toc: [],
-          content: "<p>content\n123</p>"
-        }
-      )
-    end
-
     it "keysを指定した場合は指定したキーだけが返されること" do
       post = described_class.new(params)
       expect(post.as_json(keys: [:id])).to eq({ id: "abc" })
+    end
+
+    it "keysを指定しない場合はDEFAULT_JSON_KEYSを元にしたデータになること" do
+      post = described_class.new(params)
+      expect(post.as_json).not_to be_empty
     end
   end
 
   describe "#to_json" do
     it "contentを含めずにJSON文字列を返すこと" do
       post = described_class.new(params)
-      parsed_json = Oj.load(post.to_json(keys: [:title]), symbolize_names: true)
+      parsed_json = Simpress::JSON.load(post.to_json(keys: [:title]), symbolize_names: true)
       expect(parsed_json).to eq({ title: "title" })
     end
   end

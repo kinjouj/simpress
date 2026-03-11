@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require "cgi"
-require "pathname"
+require "time"
 require "xxhash"
 require "simpress/category"
 require "simpress/config"
@@ -21,11 +20,11 @@ module Simpress
         params, body           = Simpress::Parser::Markdown.parse(File.read(file))
         content, image, toc    = Simpress::Parser::Markdown::Processor.render(body)
         basename               = File.basename(file, ".*")
-        params[:markdown]      = body
-        params[:id]            = XXhash.xxh64(file)
+        params[:id]            = XXhash.xxh64(file).to_s
         params[:toc]           = toc || []
         params[:content]       = content
-        params[:layout]        = params.fetch(:layout, "post").to_sym
+        params[:markdown]      = body
+        params[:layout]        = (params[:layout] || :post).to_sym
         params[:draft]         = params.fetch(:draft, false)
         params[:cover]       ||= image || "/images/no_image.webp"
         params[:description] ||= body.to_s[REGEX_DESC]&.strip.to_s
@@ -41,23 +40,19 @@ module Simpress
 
       def parse_datetime!(params, basename)
         if params[:date]
-          begin
-            params[:date] = Time.parse(params[:date]) unless params[:date].is_a?(Time)
-          rescue ArgumentError
-            raise ParseError, "Invalid date format: #{params[:date]}"
-          end
+          params[:date] = Time.new(params[:date]) unless params[:date].is_a?(Time)
         else
-          y, m, d = basename.scan(REGEX_TIME).flatten
+          y, m, d = basename.scan(REGEX_TIME).flatten(1)
           params[:date] = Time.new(y.to_i, m.to_i, d.to_i) if y && m && d
         end
 
-        raise ParseError, "Date missing or invalid in file #{basename}" if params[:date].nil?
+        raise ParseError, "Date missing or invalid in file #{basename}" unless params[:date]
       end
 
       def parse_permalink!(params, basename)
-        if params[:permalink].nil?
-          params[:permalink] = File.join("/", params[:date].strftime("%Y/%m"), "#{basename}.#{Simpress::Config.instance.mode}")
-        end
+        return if params[:permalink]
+
+        params[:permalink] = File.join("/", params[:date].strftime("%Y/%m"), "#{basename}.#{Simpress::Config.instance.mode}")
       end
 
       def parse_categories!(params)

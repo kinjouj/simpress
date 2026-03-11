@@ -69,10 +69,10 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 適切に設定推奨。以下参照
 
 
-|parameter  |Description|
-|:-------:  |-----------|
+|parameter|Description|
+|:-------:|-----------|
 |title      |タイトル   |
-|date       |日付(DateTime)。無い場合はファイル名から算出。ファイル名から算出できない場合はエラーになる|
+|date       |日付(DateTime)。無い場合はファイル名から算出(yyyy-mm-dd)。ファイル名から算出できない場合はエラーになる|
 |permalink  |パスURL|
 |cover      |サムネイル画像。指定しない場合は/images/no_image.pngが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される|
 |layout     |記事の種類。postかpageで指定。指定しない場合はpost(pageはインデックスが作成されない)|
@@ -81,14 +81,11 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 |categories |カテゴリー。配列形式じゃなくても指定可能|
 
 
----
-
-
 ### Theme(index.erb) Variables
 
 
-|variable  |Description|
-|:--------:|-----------|
+|variable|Description|
+|:------:|:---------:|
 |@posts    |Array[Simpress::Model::Post]|
 |@paginator|Simpress::Paginator::Index instance|
 |@key      |String optional|
@@ -98,7 +95,7 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 
 
 |variable|Description|
-|:---------:|-----------|
+|:------:|:-----------:|
 |@post      |Simpress::Model::Post instance|
 |@paginagtor|Simpress::Paginator::Post instance|
 
@@ -162,5 +159,4 @@ end
 
 
 - Simpress::Post.similarities
-
 - Simpress::Post.as_json(as_jsonを行った際にsimilaritiesが注入される)

@@ -28,11 +28,12 @@ describe Simpress::Context do
     end
   end
 
-  describe ".to_scope" do
-    it "つっこんだ値を内包したObjectで取得できること" do
-      described_class.update(key: "test")
-      scope = described_class.to_scope
-      expect(scope.instance_variable_get(:@key)).to eq("test")
+  describe ".to_h" do
+    it "ハッシュでまとめて値を取得できること" do
+      described_class.update(key: "test", version: 1)
+      hash = described_class.to_h
+      expect(hash[:key]).to eq("test")
+      expect(hash[:version]).to eq(1)
     end
   end
 

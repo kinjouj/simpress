@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-require "oj"
-require "simpress/config"
-require "simpress/context"
-require "simpress/plugin"
 require "simpress/plugin/recent_posts"
-require "simpress/theme"
 
 describe Simpress::Plugin::RecentPosts do
   before do
@@ -33,7 +28,7 @@ describe Simpress::Plugin::RecentPosts do
 
       it "recent_posts.jsonがファイルとして出力されること" do
         described_class.run(posts)
-        expect(Simpress::Writer).to have_received(:write).with("recent_posts.json", Oj.dump([*1..5]))
+        expect(Simpress::Writer).to have_received(:write).with("recent_posts.json", Simpress::JSON.dump([*1..3]))
       end
     end
 

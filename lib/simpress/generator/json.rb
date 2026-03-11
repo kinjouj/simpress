@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/index_renderer"
 require "simpress/generator/renderer/category_index_renderer"
-require "simpress/generator/renderer/permalink_renderer"
-require "simpress/generator/renderer/page_renderer"
+require "simpress/generator/renderer/index_renderer"
 require "simpress/generator/renderer/monthly_index_renderer"
-require "simpress/generator/renderer/page_info_renderer"
+require "simpress/generator/renderer/page_renderer"
+require "simpress/generator/renderer/permalink_renderer"
 
 module Simpress
   module Generator
@@ -35,7 +34,6 @@ module Simpress
         Simpress::Generator::Renderer::PageRenderer.generate_json(pages)
         Simpress::Generator::Renderer::CategoryIndexRenderer.generate_json(category_posts)
         Simpress::Generator::Renderer::MonthlyIndexRenderer.generate_json(monthly_posts)
-        Simpress::Generator::Renderer::PageInfoRenderer.generate_json(sliced_posts.size)
       end
     end
   end

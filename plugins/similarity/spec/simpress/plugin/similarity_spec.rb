@@ -19,23 +19,23 @@ describe Simpress::Plugin::Similarity do
 
     expect(post1).to respond_to(:similarities)
     expect(post1.similarities.size).to eq(1)
-    expect(post1.similarities.first[:id]).to eq("post_003")
+    expect(post1.similarities.first[0]).to eq("post_003")
 
     expect(post2).to respond_to(:similarities)
     expect(post2.similarities.size).to eq(2)
-    expect(post2.similarities.map { _1[:id] }).to eq(["post_004", "post_005"])
+    expect(post2.similarities.map { _1[0] }).to eq(["post_004", "post_005"])
 
     expect(post3).to respond_to(:similarities)
     expect(post3.similarities.size).to eq(1)
-    expect(post3.similarities.first[:id]).to eq("post_001")
+    expect(post3.similarities.first[0]).to eq("post_001")
 
     expect(post4).to respond_to(:similarities)
     expect(post4.similarities.size).to eq(2)
-    expect(post4.similarities.map { _1[:id] }).to eq(["post_002", "post_005"])
+    expect(post4.similarities.map { _1[0] }).to eq(["post_002", "post_005"])
 
     expect(post5).to respond_to(:similarities)
     expect(post5.similarities.size).to eq(2)
-    expect(post5.similarities.map { _1[:id] }).to eq(["post_004", "post_002"])
+    expect(post5.similarities.map { _1[0] }).to eq(["post_004", "post_002"])
   end
 
   context "cosineが0を出した場合" do
@@ -59,6 +59,11 @@ describe Simpress::Plugin::Similarity do
     it "as_jsonでsimilaritiesが取得できること" do
       described_class.run(posts)
       expect(post1.as_json(keys: [:title, :content])).to include(:similarities)
+    end
+
+    it ":contentが無い場合はas_jsonでsimilaritiesが取得できないこと" do
+      described_class.run(posts)
+      expect(post1.as_json(keys: [:title])).not_to include(:similarities)
     end
   end
 end

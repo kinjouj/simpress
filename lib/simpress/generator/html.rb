@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "simpress/paginator"
-require "simpress/generator/renderer/index_renderer"
-require "simpress/generator/renderer/permalink_renderer"
-require "simpress/generator/renderer/page_renderer"
 require "simpress/generator/renderer/category_index_renderer"
+require "simpress/generator/renderer/index_renderer"
 require "simpress/generator/renderer/monthly_index_renderer"
+require "simpress/generator/renderer/page_renderer"
+require "simpress/generator/renderer/permalink_renderer"
+require "simpress/paginator"
 
 module Simpress
   module Generator
@@ -14,7 +14,7 @@ module Simpress
         paginate          = Simpress::Paginator.paginate
         page_size         = Simpress::Paginator.calculate_pagesize(posts)
         post_paginator    = Simpress::Paginator.builder.posts(posts)
-        index_paginator   = Simpress::Paginator.builder.maxpage(page_size)
+        index_paginator   = Simpress::Paginator.builder.index(page_size)
         monthly_archives  = Hash.new {|h, k| h[k] = [] }
         category_posts    = Hash.new {|h, k| h[k] = [] }
         posts.each_slice(paginate).with_index do |slice_posts, page|

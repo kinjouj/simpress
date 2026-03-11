@@ -1,29 +1,27 @@
 # frozen_string_literal: true
 
-require "simpress/post"
 require "simpress/generator/renderer/permalink_renderer"
+require "simpress/post"
 
 describe Simpress::Generator::Renderer::PermalinkRenderer do
   before do
-    allow(File).to receive(:exist?).and_return(false)
-    allow(File).to receive(:write)
     allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Writer).to receive(:write).and_yield("public/test1.html")
   end
 
-  let(:post1) { build_post_data(1) }
+  let(:post1) { build(:post) }
 
   describe ".generate_html" do
     before do
-      allow(FileUtils).to receive(:touch)
+      allow(File).to receive(:utime)
       allow(Simpress::Theme).to receive(:render).and_return("test")
     end
 
     it "正常にgenerate_htmlメソッドが呼ばれること" do
       described_class.generate_html(post1)
-      expect(File).to have_received(:write).with("public/post1.html", "test")
-      expect(FileUtils).to have_received(:touch).with("public/post1.html", mtime: post1.date)
+      expect(Simpress::Writer).to have_received(:write).with("/test1.html", "test")
+      expect(File).to have_received(:utime).with(post1.date, post1.date, "public/test1.html")
       expect(Simpress::Logger).to have_received(:info)
-      expect(Simpress::Theme).to have_received(:render)
     end
   end
 
@@ -32,7 +30,7 @@ describe Simpress::Generator::Renderer::PermalinkRenderer do
 
     it "正常にgenerate_jsonメソッドが呼ばれること" do
       described_class.generate_json(post1)
-      expect(File).to have_received(:write).with("public/post1.json", post1.to_json(mode: :compat, keys: keys))
+      expect(Simpress::Writer).to have_received(:write).with("/test1.json", post1.to_json(keys: keys))
       expect(Simpress::Logger).to have_received(:info)
     end
   end

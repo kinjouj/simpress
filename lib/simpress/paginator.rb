@@ -21,7 +21,7 @@ module Simpress
     end
 
     class Builder
-      def maxpage(maxpage)
+      def index(maxpage)
         IndexPaginatorBuilder.new(maxpage)
       end
 

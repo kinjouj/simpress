@@ -2,7 +2,6 @@
 
 require "cgi"
 require "redcarpet"
-require "xxhash"
 require "simpress/parser/markdown/enhancer"
 
 module Simpress
@@ -11,8 +10,6 @@ module Simpress
       class Renderer < ::Redcarpet::Render::HTML
         RENDERER_OPTIONS = { hard_wrap: true, escape_html: true }.freeze
         attr_reader :primary_image, :toc
-
-        @klasses = []
 
         def initialize(options = nil)
           super(options || RENDERER_OPTIONS)
@@ -26,10 +23,6 @@ module Simpress
 
         def preprocess(markdown)
           Simpress::Parser::Markdown::Enhancer.run(markdown)
-        end
-
-        def block_html(html)
-          html
         end
 
         def header(text, header_level)
@@ -53,6 +46,12 @@ module Simpress
           escape_code = CGI.escapeHTML(code)
           %(<pre class="line-numbers"><code class="language-#{lang}">#{escape_code}</code></pre>)
         end
+
+        # :nocov:
+        def block_html(html)
+          html
+        end
+        # :nocov:
       end
     end
   end

@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
-require "oj"
 require "stringex"
+require "simpress/json"
 
 module Simpress
   class Category
-    @cache = {}
-    attr_reader :key, :name, :count
+    PERMITTED_JSON_KEYS = [:key, :name, :count, :children].freeze
+    DEFAULT_JSON_KEYS   = [:key, :name].freeze
+
     attr_accessor :children
+    attr_reader :key, :name, :count
+
+    @cache = {}
 
     def initialize(name)
-      raise "category is empty" if name.nil?
-
       @key      = name.to_url
       @name     = name
       @count    = 1
@@ -22,16 +24,17 @@ module Simpress
       @count += 1
     end
 
-    def as_json(_options = {})
-      { key: @key, name: @name, count: @count, children: @children }
+    def as_json(options = {})
+      keys = (options[:keys] || DEFAULT_JSON_KEYS) & PERMITTED_JSON_KEYS
+      keys.to_h {|key| [key, instance_variable_get("@#{key}")] }
     end
 
     def to_json(options = {})
-      Oj.dump(as_json(options), mode: :compat, **options)
+      Simpress::JSON.dump(as_json(options))
     end
 
     def self.fetch(name)
-      @cache[name.to_s.strip] ||= new(name)
+      @cache[name] ||= new(name)
     end
 
     def self.clear

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "forwardable"
 require "singleton"
 
 module Simpress
@@ -22,8 +23,8 @@ module Simpress
       obj.each {|k, v| self[k] = v }
     end
 
-    def to_scope
-      Scope.new(@data)
+    def to_h
+      @data.dup
     end
 
     def clear
@@ -31,35 +32,9 @@ module Simpress
     end
 
     class << self
-      def [](key)
-        instance[key]
-      end
+      extend Forwardable
 
-      def []=(key, value)
-        instance[key] = value
-      end
-
-      def update(obj)
-        instance.update(obj)
-      end
-
-      def to_scope
-        instance.to_scope
-      end
-
-      def clear
-        instance.clear
-      end
-    end
-
-    class Scope
-      def initialize(data = {})
-        data.each {|k, v| instance_variable_set("@#{k}", v) }
-      end
-
-      def render_partial(template, data = {})
-        Simpress::Theme.render_partial(template, data)
-      end
+      def_delegators :instance, :[], :[]=, :update, :to_h, :clear
     end
   end
 end

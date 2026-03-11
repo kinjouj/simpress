@@ -1,14 +1,12 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 export const usePermalink = (): string | null => {
-  const location = useLocation();
-  const { '*': permalink } = useParams<{ '*': string }>();
-  let { source } = (location.state as { source?: string | null }) || {};
+  let { '*': permalink } = useParams<{ '*': string }>();
 
-  if (source == null && permalink) {
+  if (permalink) {
     const jsonPath = permalink.replace(/(\.[^/.]+)?$/, '.json');
-    source = `/${jsonPath}`;
+    permalink = `/${jsonPath}`;
   }
 
-  return source ?? null;
+  return permalink ?? null;
 };

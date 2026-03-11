@@ -21,7 +21,7 @@ const RecentPosts = (): React.JSX.Element => {
   }
 
   return (
-    <Stack>
+    <Stack className="mb-3">
       {data.map((post) => (
         <div key={post.id}>
           <Link to={post.permalink} role="listitem">{post.title}</Link>

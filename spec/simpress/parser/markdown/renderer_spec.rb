@@ -5,6 +5,7 @@ require "simpress/parser/markdown/renderer"
 describe Simpress::Parser::Markdown::Renderer do
   before do
     allow(Simpress::Logger).to receive(:debug)
+    renderer.reset!
   end
 
   after do
@@ -14,10 +15,6 @@ describe Simpress::Parser::Markdown::Renderer do
   let(:renderer) { described_class.new }
 
   describe "#header" do
-    before do
-      renderer.reset!
-    end
-
     it "ヘッダーを適切に生成し、tocを更新すること" do
       expect(renderer.header("test", 3)).to eq(%(<h3 id="section-1">test</h3>))
       expect(renderer.toc).to eq([["section-1", "test"]])

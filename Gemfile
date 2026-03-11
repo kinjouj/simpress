@@ -15,7 +15,6 @@ gem "tilt"
 gem "xxhash"
 
 group :development do
-  gem "guard-rake", require: false
   gem "rubocop", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rspec", require: false
@@ -24,6 +23,7 @@ group :development do
 end
 
 group :test do
+  gem "factory_bot"
   gem "rspec"
   gem "simplecov", require: false
 end

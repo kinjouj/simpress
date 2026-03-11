@@ -5,7 +5,7 @@ import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
 import { CreatedAt, NotFound, RelatedPosts } from '../components';
 import { useFetchData, usePermalink } from '../hooks';
-import { type CategoryType, type PostType } from '../types';
+import type { CategoryType, PostType } from '../types';
 import 'prismjs/themes/prism-tomorrow.css';
 import 'prismjs/plugins/autoloader/prism-autoloader';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
@@ -40,7 +40,7 @@ const PostPage = (): React.JSX.Element => {
       /* istanbul ignore next */
       Prism.highlightAll();
     });
-  }, [post]);
+  });
 
   if (isError) {
     return <NotFound />;

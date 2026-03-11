@@ -3,7 +3,6 @@
 require "simpress/config"
 require "simpress/generator/html"
 require "simpress/generator/json"
-require "simpress/logger"
 require "simpress/parser"
 require "simpress/plugin"
 require "simpress/theme"
@@ -15,7 +14,7 @@ module Simpress
         posts      = []
         pages      = []
         categories = {}
-        files = Dir.glob("#{source_dir}/**/*.{markdown}")
+        files = Dir.glob("#{source_dir}/**/*.markdown")
         files.each do |file|
           data = Simpress::Parser.parse(file)
           next if data.draft
@@ -46,14 +45,14 @@ module Simpress
 
       private
 
-      def generator
-        const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
-      end
-
       def process_and_generate(posts, pages, categories)
         Simpress::Plugin.process(posts, pages, categories)
         generator.generate(posts, pages, categories)
         Simpress::Theme.clear
+      end
+
+      def generator
+        const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
       end
 
       # :nocov:

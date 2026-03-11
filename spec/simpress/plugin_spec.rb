@@ -11,7 +11,7 @@ describe Simpress::Plugin do
     before do
       allow(Simpress::Logger).to receive(:debug)
       allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
-      allow(described_class).to receive(:plugin_dir).and_return(File.expand_path("plugins", __dir__))
+      allow(described_class).to receive(:plugin_dir).and_return(File.expand_path("../plugins", __dir__))
     end
 
     it "plugin_dirとpluginsの設定に基づいてプラグインが正しくロードされること" do

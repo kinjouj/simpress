@@ -11,18 +11,22 @@ const Layout = (): React.JSX.Element => {
       <Header />
       <Container className="mt-5">
         <Row className="g-0">
-          <Col lg={7}>
+          <Col lg={8}>
             <main className="flex-grow-1">
               <Outlet />
             </main>
           </Col>
-          <Col xs={12} lg={4} className="ms-auto ps-5">
-            <aside className="sidebar">
-              <div id="recent_posts">
-                <h4>Recent Posts</h4>
-                <RecentPosts />
-              </div>
-            </aside>
+          <Col xs={12} lg={4} as="aside" className="sidebar ms-auto ps-5">
+            <div id="recent_posts">
+              <h4>Recent Posts</h4>
+              <RecentPosts />
+            </div>
+            {/*
+            <div id="categories">
+              <h4>Categories</h4>
+              <SidebarCategories />
+            </div>
+            */}
           </Col>
         </Row>
       </Container>
