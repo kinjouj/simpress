@@ -2,6 +2,7 @@
 coverage
 node_modules
 .cache/*
+!.cache/.gitkeep
 scss/*
 source/*
 !source/.gitkeep
