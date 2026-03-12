@@ -1,6 +1,7 @@
 /public
 coverage
 node_modules
+.cache/*
 scss/*
 source/*
 !source/.gitkeep

@@ -19,14 +19,14 @@ CLEAN.include("#{OUTPUT_DIR}/*")
 desc "build"
 task build: :clean do
   Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
-  cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
-  GC.disable
 
   result = Benchmark.realtime do
+    GC.disable
+    cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
     Simpress.build { Rake::Task["build_#{Simpress::Config.instance.mode}"].invoke }
+    GC.enable
   end
 
-  GC.enable
   Simpress::Logger.debug("build time: #{result}")
 end
 

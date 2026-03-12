@@ -4,6 +4,8 @@ require "simpress/plugin/similarity"
 
 describe Simpress::Plugin::Similarity do
   before do
+    allow(File).to receive(:exist?).and_return(false)
+    allow(File).to receive(:write)
     allow(Simpress::Config.instance).to receive(:mode).and_return("html")
   end
 

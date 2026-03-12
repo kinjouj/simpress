@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   root: 'frontend',
@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
   ],
   build: {
-    minify: 'esbuild',
+    //minify: 'esbuild',
     outDir: '../public',
     assetsDir: 'assets',
     emptyOutDir: false,

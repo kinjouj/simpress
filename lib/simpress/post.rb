@@ -7,7 +7,7 @@ module Simpress
   class Post
     PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :content, :description, :toc, :cover, :categories].freeze
     DEFAULT_JSON_KEYS   = PERMITTED_JSON_KEYS
-    REGEX_EXT = /\.[^.]+\Z/
+    REGEX_EXT = /(?:\.[^.]+)?\Z/
 
     attr_accessor :categories
     attr_reader :id,
