@@ -1,4 +1,4 @@
-require('@testing-library/jest-dom');
+import '@testing-library/jest-dom';
 
 jest.mock('react-loading-skeleton/dist/skeleton.css', () => {});
 jest.mock('prismjs/themes/prism-tomorrow.css', () => ({}));

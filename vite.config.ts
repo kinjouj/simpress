@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
@@ -25,7 +25,7 @@ export default defineConfig({
       },
       output: {
         entryFileNames: 'js/app.js',
-        chunkFileNames: 'js/[name]-[hash].js'
+        chunkFileNames: 'js/[name]-[hash].js',
       },
     },
   },

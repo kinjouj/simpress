@@ -19,10 +19,10 @@ export default defineConfig(
   react.configs.flat["jsx-runtime"],
   reactHooks.configs.flat.recommended,
   {
-    files: ["frontend/**/*.{ts,tsx}"],
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parserOptions: {
-        project: './tsconfig.json',
+        project: ['tsconfig.json', 'tsconfig.node.json'],
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
           jsx: true,
@@ -33,13 +33,13 @@ export default defineConfig(
       },
     },
     plugins: {
-      "react": react,
+      react,
+      jest,
+      perfectionist,
       "react-hooks": reactHooks,
       "@stylistic": stylistic,
       "check-file": checkFile,
-      "jest": jest,
       "import": importPlugin,
-      perfectionist,
     },
     rules: {
       ...jest.configs["recommended"].rules,
