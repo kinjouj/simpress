@@ -8,21 +8,17 @@ Bundler.require
 require "benchmark"
 require "rake/clean"
 require "simpress"
-require "simpress/config"
-require "simpress/logger"
 require "simpress/sitemap"
-require "simpress/writer"
 
 OUTPUT_DIR = Simpress::Config.output_dir
 CLEAN.include("#{OUTPUT_DIR}/*")
 
 desc "build"
 task build: :clean do
-  Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
-
   result = Benchmark.realtime do
-    GC.disable
     cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
+    Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
+    GC.disable
     Simpress.build { Rake::Task["build_#{Simpress::Config.instance.mode}"].invoke }
     GC.enable
   end
@@ -33,9 +29,7 @@ end
 desc "build_html"
 task build_html: :build_scss do
   files = cd(OUTPUT_DIR, verbose: false) do
-    FileList["**/*.html"].exclude(/^archives/, /^page/, /index\.html$/)
-                         .map {|f| [f, File.mtime(f)] }
-                         .sort_by {|_, mtime| mtime }
+    FileList["**/*.html"].exclude(/^(archives|page)/, /index\.html$/).map {|f| [f, File.mtime(f)] }.sort_by(&:last)
   end
 
   Simpress::Sitemap.build(Simpress::Config.instance.host) do
@@ -66,11 +60,5 @@ end
 
 desc "server"
 task server: :build do
-  httpd_pid = Process.spawn("ruby -run -e httpd #{OUTPUT_DIR} -p 4000")
-  trap("INT") do
-    Process.kill(9, httpd_pid) rescue Errno::ESRCH # rubocop:disable Style/RescueModifier
-    exit 0
-  end
-
-  Process.wait(httpd_pid)
+  exec "ruby -run -e httpd #{OUTPUT_DIR} -p 4000"
 end

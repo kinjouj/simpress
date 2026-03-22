@@ -26,15 +26,13 @@ module Simpress
         end
 
         def header(text, header_level)
-          if header_level == 3
-            pos = @toc.size + 1
-            id  = "section-#{pos}"
-            @toc << [id, text]
+          return "<h#{header_level}>#{text}</h#{header_level}>" unless header_level == 3
 
-            %(<h3 id="#{id}">#{text}</h3>)
-          else
-            "<h#{header_level}>#{text}</h#{header_level}>"
-          end
+          pos = @toc.size + 1
+          id  = "section-#{pos}"
+          @toc << [id, text]
+
+          %(<h3 id="#{id}">#{text}</h3>)
         end
 
         def image(path, _title, _alt)
@@ -42,9 +40,9 @@ module Simpress
           %(<img src="#{path}" alt="image" />)
         end
 
-        def block_code(code, lang = "text")
-          escape_code = CGI.escapeHTML(code)
-          %(<pre class="line-numbers"><code class="language-#{lang}">#{escape_code}</code></pre>)
+        def block_code(code, lang)
+          lang ||= "text"
+          %(<pre class="line-numbers"><code class="language-#{lang}">#{CGI.escapeHTML(code)}</code></pre>)
         end
 
         # :nocov:

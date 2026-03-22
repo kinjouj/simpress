@@ -5,7 +5,7 @@ require "psych"
 module Simpress
   module Parser
     module Markdown
-      FRONT_MATTER_MARKDOWN_REGEX = /\A---\s*\n(?<header>.*?)\n---\s*\n/m
+      FRONT_MATTER_MARKDOWN_REGEX = /\A---[^\S\n]*\n(?<header>(?:.*\n)*?)---[^\S\n]*\n/
 
       def self.parse(txt)
         match = txt.match(FRONT_MATTER_MARKDOWN_REGEX)

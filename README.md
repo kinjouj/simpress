@@ -41,7 +41,6 @@ default:
   paginate: 10
   plugins:
     - recent_posts
-    - scss
 ```
 
 

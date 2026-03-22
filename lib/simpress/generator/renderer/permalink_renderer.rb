@@ -1,29 +1,25 @@
 # frozen_string_literal: true
 
-require "simpress/logger"
-require "simpress/theme"
-require "simpress/writer"
+require "simpress/generator/renderer/base_renderer"
 
 module Simpress
   module Generator
     module Renderer
-      class PermalinkRenderer
+      class PermalinkRenderer < BaseRenderer
         DATA_JSON_KEYS = [:id, :title, :date, :permalink, :categories, :content, :toc].freeze
+        Paginator      = Data.define(:newer_post, :older_post)
 
-        def self.generate_html(post, paginator = nil)
-          file = post.permalink(".html")
-          data = Simpress::Theme.render("post", post: post, paginator: paginator)
-          Simpress::Writer.write(file, data) do |file_path|
+        def self.generate_html(post, older_post = nil, newer_post = nil)
+          paginator = Paginator.new(newer_post: newer_post, older_post: older_post)
+          context   = build_context(post: post, paginator: paginator)
+          write_html(post.permalink, template: "post", context: context) do |file_path|
             File.utime(post.date, post.date, file_path)
-            Simpress::Logger.info(post.to_s)
+            logger_info(post.to_s)
           end
         end
 
-        def self.generate_json(post)
-          file_path = post.permalink(".json")
-          Simpress::Writer.write(file_path, post.to_json(keys: DATA_JSON_KEYS)) do
-            Simpress::Logger.info(post.to_s)
-          end
+        def self.generate_json(post, *)
+          write_json(post.permalink, post, keys: DATA_JSON_KEYS) { logger_info(post.to_s) }
         end
       end
     end

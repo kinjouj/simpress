@@ -6,7 +6,7 @@ require "simpress/post"
 describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
   before do
     allow(Simpress::Logger).to receive(:info)
-    allow(Simpress::Writer).to receive(:write)
+    allow(Simpress::Writer).to receive(:write).and_yield(anything)
   end
 
   let(:post1) { build(:post, date: Time.new(2025, 11, 1)) }
@@ -21,6 +21,7 @@ describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
     it "正常にgenerate_htmlメソッドが呼ばれること" do
       described_class.generate_html(monthly_posts)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2025/11/index.html", "monthly index")
+      expect(Simpress::Logger).to have_received(:info)
     end
   end
 
@@ -33,6 +34,7 @@ describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
         "/archives/2025/11.json",
         Simpress::JSON.dump(monthly_posts[Time.new(2025, 11, 1)], keys: keys)
       )
+      expect(Simpress::Logger).to have_received(:info)
     end
   end
 end

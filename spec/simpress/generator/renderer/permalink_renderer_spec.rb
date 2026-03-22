@@ -27,7 +27,7 @@ describe Simpress::Generator::Renderer::PermalinkRenderer do
 
   describe ".generate_json" do
     before do
-      allow(Simpress::Writer).to receive(:write).and_yield
+      allow(Simpress::Writer).to receive(:write).and_yield("test1.json")
     end
 
     let(:keys) { described_class::DATA_JSON_KEYS }

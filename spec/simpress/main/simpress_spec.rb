@@ -6,12 +6,12 @@ describe Simpress do
   before do
     allow(Simpress::Logger).to receive(:info)
     allow(Simpress::Logger).to receive(:debug)
+    allow(Simpress::Config).to receive(:source_dir).and_return(create_filepath("source"))
+    allow(Simpress::Config).to receive(:theme_dir).and_return(create_filepath("theme"))
     allow(Simpress::Config).to receive(:output_dir).and_return(create_filepath("public"))
-    allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
+    allow(Simpress::Config).to receive(:plugin_dir).and_return(create_filepath("plugins"))
+    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
     allow(Simpress::Config.instance).to receive(:plugins).and_return(["main_test"])
-    allow(Simpress::Theme).to receive(:theme_dir).and_return(create_filepath("theme"))
-    allow(Simpress::Generator).to receive(:source_dir).and_return(create_filepath("source"))
-    allow(Simpress::Plugin).to receive(:plugin_dir).and_return(create_filepath("plugins"))
     allow(Simpress::Paginator).to receive(:paginate).and_return(1)
   end
 

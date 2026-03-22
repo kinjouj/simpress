@@ -24,7 +24,7 @@ module Simpress
 
     class << self
       def load
-        Dir["#{plugin_dir}/**/lib/simpress/plugin/*.rb"].each {|plugin| Kernel.load(plugin) }
+        Dir["#{Simpress::Config.plugin_dir}/**/lib/simpress/plugin/*.rb"].each {|plugin| Kernel.load(plugin) }
       end
 
       def extended(klass)
@@ -33,29 +33,23 @@ module Simpress
       end
 
       def register_plugins
-        @register_plugins ||= Set.new
+        @register_plugins ||= []
       end
 
       def process(posts = [], pages = [], categories = {})
         plugins = (Simpress::Config.instance.plugins || []).map {|plugin| plugin.downcase.delete("_") }
-        allowed_plugins = register_plugins.select {|klass| plugins.include?(klass.name.split("::").last.downcase) }
-        allowed_plugins.sort_by {|klass| -klass.priority }.each do |klass|
+        allowed_plugins = register_plugins.sort_by {|klass| -klass.priority }
+                                          .select {|klass| plugins.include?(klass.name.split("::").last.downcase) }
+
+        allowed_plugins.each do |klass|
           Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
           klass.run(posts, pages, categories)
         end
       end
 
       def clear
-        @register_plugins = Set.new
+        @register_plugins = []
       end
-
-      private
-
-      # :nocov:
-      def plugin_dir
-        "plugins"
-      end
-      # :nocov:
     end
   end
 end

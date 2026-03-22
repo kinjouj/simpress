@@ -8,8 +8,7 @@ module Simpress
     PERMITTED_JSON_KEYS = [:key, :name, :count, :children].freeze
     DEFAULT_JSON_KEYS   = [:key, :name].freeze
 
-    attr_accessor :children
-    attr_reader :key, :name, :count
+    attr_reader :key, :name, :count, :children
 
     @cache = {}
 
@@ -25,8 +24,12 @@ module Simpress
     end
 
     def as_json(options = {})
-      keys = (options[:keys] || DEFAULT_JSON_KEYS) & PERMITTED_JSON_KEYS
-      keys.to_h {|key| [key, instance_variable_get("@#{key}")] }
+      keys = options[:keys] ? PERMITTED_JSON_KEYS & options[:keys] : DEFAULT_JSON_KEYS
+      keys.to_h do |key|
+        value = instance_variable_get("@#{key}")
+        value = value.transform_values {|v| v.as_json(options) } if key == :children
+        [key, value]
+      end
     end
 
     def to_json(options = {})

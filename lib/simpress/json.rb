@@ -23,6 +23,10 @@ module Simpress
       def dump(obj, options = {})
         Oj.dump(obj, **options)
       end
+
+      def encode(data)
+        Oj.dump(data, mode: :rails, escape_mode: :xss_safe)
+      end
     end
   end
 end

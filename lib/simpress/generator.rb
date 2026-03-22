@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 require "simpress/config"
-require "simpress/generator/html"
-require "simpress/generator/json"
+require "simpress/generator/renderer"
 require "simpress/parser"
 require "simpress/plugin"
 require "simpress/theme"
@@ -14,7 +13,7 @@ module Simpress
         posts      = []
         pages      = []
         categories = {}
-        files = Dir.glob("#{source_dir}/**/*.markdown")
+        files = Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown")
         files.each do |file|
           data = Simpress::Parser.parse(file)
           next if data.draft
@@ -22,10 +21,10 @@ module Simpress
           data.categories.each do |category|
             key = category.key
 
-            if categories[key].nil?
-              categories[key] = category
-            else
+            if categories.key?(key)
               categories[key].increment!
+            else
+              categories[key] = category
             end
           end
 
@@ -47,19 +46,9 @@ module Simpress
 
       def process_and_generate(posts, pages, categories)
         Simpress::Plugin.process(posts, pages, categories)
-        generator.generate(posts, pages, categories)
+        Simpress::Generator::Renderer.generate(posts, pages, categories)
         Simpress::Theme.clear
       end
-
-      def generator
-        const_get(Simpress::Config.instance.mode.to_s.capitalize, false)
-      end
-
-      # :nocov:
-      def source_dir
-        "source"
-      end
-      # :nocov:
     end
   end
 end

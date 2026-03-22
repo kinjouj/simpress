@@ -1,36 +1,31 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/index_renderer"
-require "simpress/json"
-require "simpress/logger"
+require "simpress/generator/renderer/base_renderer"
 require "simpress/paginator"
-require "simpress/writer"
 
 module Simpress
   module Generator
     module Renderer
-      class CategoryIndexRenderer
+      class CategoryIndexRenderer < BaseRenderer
         DATA_JSON_KEYS = [:id, :title, :date, :permalink, :categories, :cover, :description].freeze
 
         def self.generate_html(category_posts)
           category_posts.each do |category, posts|
-            posts.sort_by! {|v| -v.timestamp }
-            paginator = Simpress::Paginator.builder
-                                           .index(Simpress::Paginator.calculate_pagesize(posts))
-                                           .page(1)
-                                           .prefix("/archives/category/#{category.key}")
-                                           .build
-
-            Simpress::Generator::Renderer::IndexRenderer.generate_html(posts, paginator, category.name)
+            prefix = "/archives/category/#{category.key}"
+            Simpress::Paginator.each_page(posts, prefix) do |slice_posts, paginator|
+              context = build_context(key: category.name, posts: slice_posts, paginator: paginator)
+              write_html(paginator.current_page, template: "index", context: context) do |file_path|
+                logger_info("create category index: #{file_path}")
+              end
+            end
           end
         end
 
         def self.generate_json(category_posts)
           category_posts.each do |category, posts|
-            posts.sort_by! {|v| -v.timestamp }
-            file_path = File.join("/archives/category", "#{category.key}.json")
-            Simpress::Writer.write(file_path, Simpress::JSON.dump(posts, keys: DATA_JSON_KEYS))
-            Simpress::Logger.info("create category: #{file_path}")
+            write_json(uri("/archives/category").path(category.key), posts, keys: DATA_JSON_KEYS) do |file_path|
+              logger_info("create category: #{file_path}")
+            end
           end
         end
       end

@@ -128,12 +128,12 @@ module Simpress
         class Cache
           def self.fetch(data)
             key  = XXhash.xxh32(data).to_s
-            path = ".cache/#{key}.marshal"
+            path = ".cache/#{key}.cache"
 
-            return Marshal.load(File.read(path)) if File.exist?(path)
+            return Marshal.load(File.binread(path)) if File.exist?(path) # rubocop:disable Security/MarshalLoad
 
             result = yield(data)
-            File.write(path, Marshal.dump(result))
+            Thread.new { File.binwrite(path, Marshal.dump(result)) }
             result
           end
         end

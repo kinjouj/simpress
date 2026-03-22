@@ -1,16 +1,45 @@
 # frozen_string_literal: true
 
 require "simpress/config"
-require "simpress/paginator/index"
-require "simpress/paginator/post"
 
 module Simpress
-  module Paginator
-    class << self
-      def builder
-        Builder.new
-      end
+  class Paginator
+    PREFIX_DEFAULT = "/archives/page"
+    attr_reader :page
 
+    def initialize(page, maxpage, prefix = PREFIX_DEFAULT)
+      raise ArgumentError, "page=#{page} is out of range (maxpage=#{maxpage})" if page <= 0 || (maxpage - page + 1) <= 0
+
+      @page    = page
+      @maxpage = maxpage
+      @prefix  = prefix
+    end
+
+    def previous_page_exist?
+      (@page - 1) > 0
+    end
+
+    def next_page_exist?
+      @page < @maxpage
+    end
+
+    def previous_page
+      raise "Not Found previous page" unless previous_page_exist?
+
+      @page - 1 > 1 ? "#{@prefix}/#{@page - 1}.html" : File.dirname(first_page)
+    end
+
+    def next_page
+      raise "Not Found next page" unless next_page_exist?
+
+      "#{@prefix}/#{@page + 1}.html"
+    end
+
+    def current_page
+      @page > 1 ? "#{@prefix}/#{@page}.html" : first_page
+    end
+
+    class << self
       def paginate
         Simpress::Config.instance.paginate || 10
       end
@@ -18,59 +47,23 @@ module Simpress
       def calculate_pagesize(array)
         (array.size / paginate.to_f).ceil
       end
+
+      def each_page(posts, prefix = nil)
+        raise "ERROR" unless block_given?
+
+        page_size = calculate_pagesize(posts)
+        per_page  = paginate
+        posts.each_slice(per_page).with_index(1) do |slice_posts, page|
+          paginator = prefix ? new(page, page_size, prefix) : new(page, page_size)
+          yield slice_posts, paginator
+        end
+      end
     end
 
-    class Builder
-      def index(maxpage)
-        IndexPaginatorBuilder.new(maxpage)
-      end
+    private
 
-      def posts(posts)
-        PostPaginatorBuilder.new(posts)
-      end
-
-      def build
-        raise NotImplementedError
-      end
-
-      class IndexPaginatorBuilder
-        def initialize(maxpage)
-          @maxpage = maxpage
-        end
-
-        def page(page)
-          @page = page
-          self
-        end
-
-        def prefix(prefix)
-          @prefix = prefix
-          self
-        end
-
-        def build
-          @page ||= 1
-          args = [@page, @maxpage]
-          args << @prefix if @prefix
-          Simpress::Paginator::Index.new(*args)
-        end
-      end
-
-      class PostPaginatorBuilder
-        def initialize(posts)
-          @posts = posts
-        end
-
-        def index(index)
-          @index = index
-          self
-        end
-
-        def build
-          @index ||= 0
-          Simpress::Paginator::Post.new(@index, @posts)
-        end
-      end
+    def first_page
+      @prefix == PREFIX_DEFAULT ? "/index.html" : "#{@prefix}/index.html"
     end
   end
 end

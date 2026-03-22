@@ -7,7 +7,7 @@ module Simpress
     module Markdown
       module Enhancer
         def preprocess(_data)
-          raise "ERROR"
+          raise NotImplementedError
         end
 
         class << self

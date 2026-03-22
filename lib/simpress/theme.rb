@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-require "simpress/context"
 require "tilt"
+require "simpress/config"
+require "simpress/context"
+require "simpress/theme/helper"
 
 module Simpress
-  class Theme
+  module Theme
     class << self
       def render(template, data)
-        Simpress::Context.update(data)
-        render_internal(template, Simpress::Theme::Scope.new(Simpress::Context.to_h))
+        hash = Simpress::Context.to_h.merge(data)
+        render_internal(template, Simpress::Theme::Scope.new(hash))
       end
 
       def render_partial(template, data)
@@ -22,7 +24,7 @@ module Simpress
       private
 
       def create_tilt(template)
-        filename = "#{theme_dir}/#{template}.erb"
+        filename = "#{Simpress::Config.theme_dir}/#{template}.erb"
         tilt_caches[filename] ||= Tilt::ErubiTemplate.new(filename, escape: true)
       end
 
@@ -34,15 +36,11 @@ module Simpress
         tilt = create_tilt(template)
         tilt.render(scope)
       end
-
-      # :nocov:
-      def theme_dir
-        "theme"
-      end
-      # :nocov:
     end
 
     class Scope
+      include Simpress::Theme::Helper
+
       def initialize(data = {})
         data.each {|k, v| instance_variable_set("@#{k}", v) }
       end

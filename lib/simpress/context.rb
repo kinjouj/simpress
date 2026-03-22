@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "forwardable"
 require "singleton"
 
 module Simpress
@@ -32,9 +31,19 @@ module Simpress
     end
 
     class << self
-      extend Forwardable
+      def [](key)
+        instance[key]
+      end
 
-      def_delegators :instance, :[], :[]=, :update, :to_h, :clear
+      def []=(key, value)
+        instance[key] = value
+      end
+
+      def update(obj) = instance.update(obj)
+
+      def to_h = instance.to_h
+
+      def clear = instance.clear
     end
   end
 end

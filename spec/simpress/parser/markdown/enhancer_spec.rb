@@ -32,7 +32,7 @@ describe Simpress::Parser::Markdown::Enhancer do
       end
 
       stub_const("TestFilter", test_filter)
-      expect { described_class.run("dummy") }.to raise_error(RuntimeError)
+      expect { described_class.run("dummy") }.to raise_error(NotImplementedError)
       expect(Simpress::Logger).to have_received(:debug).exactly(1).times
     end
 

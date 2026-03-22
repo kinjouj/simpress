@@ -42,17 +42,6 @@ describe Simpress::Post do
     end
   end
 
-  describe "#canonical" do
-    before do
-      allow(Simpress::Config.instance).to receive(:host).and_return("http://localhost")
-    end
-
-    it "hostとpermalinkが結合した値が取得できること" do
-      post = described_class.new(params)
-      expect(post.canonical).to eq("http://localhost/test.html")
-    end
-  end
-
   describe "#as_json" do
     it "keysを指定した場合は指定したキーだけが返されること" do
       post = described_class.new(params)

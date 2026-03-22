@@ -1,30 +1,28 @@
 # frozen_string_literal: true
 
-require "simpress/logger"
-require "simpress/theme"
-require "simpress/writer"
+require "simpress/generator/renderer/base_renderer"
 
 module Simpress
   module Generator
     module Renderer
-      class PageRenderer
+      class PageRenderer < BaseRenderer
         DATA_JSON_KEYS = [:id, :title, :content].freeze
 
         class << self
           def generate_html(pages)
             pages.each do |page|
-              file_path = File.join("/page", page.permalink(".html"))
-              data = Simpress::Theme.render("page", post: page)
-              Simpress::Writer.write(file_path, data)
-              Simpress::Logger.info("create page: #{file_path}")
+              context = build_context(post: page)
+              write_html(uri("/page").path(page.permalink), template: "page", context: context) do |file_path|
+                logger_info("create page: #{file_path}}")
+              end
             end
           end
 
           def generate_json(pages)
             pages.each do |page|
-              file_path = File.join("/page", page.permalink(".json"))
-              Simpress::Writer.write(file_path, page.to_json(keys: DATA_JSON_KEYS))
-              Simpress::Logger.info("create page: #{file_path}")
+              write_json(uri("/page").path(page.permalink), page, keys: DATA_JSON_KEYS) do |file_path|
+                logger_info("create page: #{file_path}")
+              end
             end
           end
         end

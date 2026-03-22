@@ -4,7 +4,7 @@ require "simpress/parser"
 
 describe Simpress::Parser do
   before do
-    allow(Simpress::Config.instance).to receive(:mode).and_return(:html)
+    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
   end
 
   context "正常なMarkdownをパースする場合" do

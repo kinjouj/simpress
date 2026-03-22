@@ -21,5 +21,8 @@
   "[typescriptreact]": {
     "editor.tabSize": 2,
   },
-  "solargraph.useBundler": true
+  "rubyLsp.rubyVersionManager": {
+    "identifier": "rbenv"
+  },
+  "rubyLsp.formatter": "none"
 }

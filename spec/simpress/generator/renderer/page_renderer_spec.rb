@@ -6,7 +6,7 @@ require "simpress/post"
 describe Simpress::Generator::Renderer::PageRenderer do
   before do
     allow(Simpress::Logger).to receive(:info)
-    allow(Simpress::Writer).to receive(:write)
+    allow(Simpress::Writer).to receive(:write).and_yield(anything)
   end
 
   let(:post1) { build(:post, layout: :page) }

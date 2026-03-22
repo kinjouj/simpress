@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-Bundler.require(:test)
+Bundler.require(:default, :test)
+
+Oj.mimic_JSON
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
