@@ -1,7 +1,7 @@
 import type { CategoriesType, PostType } from '../../types';
 
 const Simpress = {
-  getPageInfo: jest.fn<Promise<number>, []>(),
+  getMeta: jest.fn<Promise<number>, [string]>(),
   getPostsByPage: jest.fn<Promise<PostType[]>, [number]>(),
   getPostsByArchive: jest.fn<Promise<PostType[]>, [ number, number ]>(),
   getPostsByCategory: jest.fn<Promise<PostType[]>, [string]>(),

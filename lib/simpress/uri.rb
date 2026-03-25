@@ -2,8 +2,6 @@
 
 module Simpress
   class Uri
-    REGEX_EXT = /(?:\.[^.]+)?\Z/
-
     def initialize(path = "")
       @parts = [path]
       @ext = nil
@@ -21,7 +19,7 @@ module Simpress
 
     def build
       path = @parts.join("/")
-      @ext ? path.sub(REGEX_EXT, ".#{@ext}") : path
+      @ext ? "#{path[0...(path.rindex('.'))]}.#{@ext}" : path
     end
 
     def self.wrap(path)

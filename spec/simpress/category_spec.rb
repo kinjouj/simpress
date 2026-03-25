@@ -30,6 +30,21 @@ describe Simpress::Category do
       category = described_class.fetch("Ruby")
       expect(category.as_json).to include(key: "ruby", name: "Ruby")
     end
+
+    it "keysで指定したキーだけ取得できること" do
+      category = described_class.fetch("Ruby")
+      category.children[:rails] = described_class.fetch("Rails")
+      expect(
+        category.as_json(keys: [:key, :children])
+      ).to eq(
+        {
+          key: "ruby",
+          children: {
+            rails: { key: "rails", children: {} }
+          }
+        }
+      )
+    end
   end
 
   describe "#to_json" do

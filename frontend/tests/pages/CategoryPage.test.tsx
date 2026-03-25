@@ -10,9 +10,9 @@ const SimpressMock = jest.mocked(Simpress);
 
 const renderCategortPostListPage = (): RenderResult => {
   return render(
-    <MemoryRouter initialEntries={['/archives/category/test']}>
+    <MemoryRouter initialEntries={['/archives/category/test/1']}>
       <Routes>
-        <Route path="/archives/category/:category" element={<CategoryPage />} />
+        <Route path="/archives/category/:category/:page" element={<CategoryPage />} />
       </Routes>
     </MemoryRouter>
   );
@@ -28,11 +28,13 @@ describe('CategoryPage', () => {
   });
 
   test('<CategoryPage> test', async () => {
+    SimpressMock.getMeta.mockResolvedValue(1);
     SimpressMock.getPostsByCategory.mockResolvedValue([testPostData]);
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderCategortPostListPage();
-    act(() => {
-      jest.runAllTimers();
+    await act(async () => {
+      void jest.runAllTimersAsync();
+      await Promise.resolve();
     });
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
@@ -52,8 +54,9 @@ describe('CategoryPage', () => {
   test('Simpress.getPostsByCategoryがエラーを吐いた場合', async () => {
     SimpressMock.getPostsByCategory.mockRejectedValue(new Error('ERROR'));
     renderCategortPostListPage();
-    act(() => {
-      jest.runAllTimers();
+    await act(async () => {
+      void jest.runAllTimersAsync();
+      await Promise.resolve();
     });
 
     expect(await screen.findByText('Not Found')).toBeInTheDocument();

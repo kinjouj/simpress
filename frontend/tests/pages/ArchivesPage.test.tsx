@@ -10,9 +10,9 @@ const SimpressMock = jest.mocked(Simpress);
 
 const renderArchives = (): RenderResult => {
   return render(
-    <MemoryRouter initialEntries={['/archives/1234/01']}>
+    <MemoryRouter initialEntries={['/archives/1234/01/1']}>
       <Routes>
-        <Route path="/archives/:year/:month" element={<ArchivesPage />} />
+        <Route path="/archives/:year/:month/:page" element={<ArchivesPage />} />
       </Routes>
     </MemoryRouter>
   );
@@ -28,11 +28,13 @@ describe('ArchivesPage', () => {
   });
 
   test('<ArchivesPage> test', async () => {
+    SimpressMock.getMeta.mockResolvedValue(1);
     SimpressMock.getPostsByArchive.mockResolvedValue([testPostData]);
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderArchives();
-    act(() => {
-      jest.runAllTimers();
+    await act(async () => {
+      void jest.runAllTimersAsync();
+      await Promise.resolve();
     });
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
@@ -52,8 +54,9 @@ describe('ArchivesPage', () => {
   test('Simpress.getPostsByArchiveがエラーを吐いた場合', async () => {
     SimpressMock.getPostsByArchive.mockRejectedValue(new Error('ERROR'));
     renderArchives();
-    act(() => {
-      jest.runAllTimers();
+    await act(async () => {
+      void jest.runAllTimersAsync();
+      await Promise.resolve();
     });
 
     expect(await screen.findByText('Not Found')).toBeInTheDocument();

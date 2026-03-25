@@ -11,11 +11,11 @@ module Simpress
     end
 
     def [](key)
-      @data.fetch(key.to_sym) { raise KeyError, "key not found: #{key}" }
+      @data.fetch(key) { raise KeyError, "key not found: #{key}" }
     end
 
     def []=(key, value)
-      @data[key.to_sym] = value
+      @data[key] = value
     end
 
     def update(obj)

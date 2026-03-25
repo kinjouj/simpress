@@ -25,14 +25,17 @@ describe('PostListPage', () => {
 
   afterEach(() => {
     jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   test('<PostListPage> test', async () => {
+    SimpressMock.getMeta.mockResolvedValue(1);
     SimpressMock.getPostsByPage.mockResolvedValue([testPostData]);
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderPostListPage();
-    act(() => {
-      jest.runAllTimers();
+    await act(async () => {
+      void jest.runAllTimersAsync();
+      await Promise.resolve();
     });
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' });
@@ -40,10 +43,12 @@ describe('PostListPage', () => {
   });
 
   test('Simpress.getPostsByPageがエラーを吐いた場合', async () => {
+    SimpressMock.getMeta.mockResolvedValue(1);
     SimpressMock.getPostsByPage.mockRejectedValue(new Error('ERR'));
     renderPostListPage();
-    act(() => {
-      jest.runAllTimers();
+    await act(async () => {
+      void jest.runAllTimersAsync();
+      await Promise.resolve();
     });
 
     expect(await screen.findByText('Not Found')).toBeInTheDocument();

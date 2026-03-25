@@ -19,7 +19,18 @@ module Simpress
                                       :markdown
 
     def initialize(params)
-      params.each {|key, value| instance_variable_set("@#{key}", value) if PERMITTED_PARAMS.include?(key) }
+      @id          = params[:id]
+      @title       = params[:title]
+      @date        = params[:date]
+      @permalink   = params[:permalink]
+      @categories  = params[:categories]
+      @content     = params[:content]
+      @description = params[:description]
+      @toc         = params[:toc]
+      @cover       = params[:cover]
+      @layout      = params[:layout]
+      @draft       = params[:draft]
+      @markdown    = params[:markdown]
     end
 
     def timestamp

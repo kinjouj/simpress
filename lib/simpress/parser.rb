@@ -58,10 +58,9 @@ module Simpress
         return if params[:permalink]
 
         date = params[:date]
-        params[:permalink] = Simpress::Uri.new
-                                          .path(date.year, date.month.to_s.rjust(2, "0"), basename)
-                                          .with_ext(Simpress::Config.instance.mode)
-                                          .build
+        year  = date.year
+        month = date.month.to_s.rjust(2, "0")
+        params[:permalink] = Simpress::Uri.new.path(year, month, basename).with_ext(Simpress::Config.instance.mode).build
       end
 
       def parse_categories!(params)

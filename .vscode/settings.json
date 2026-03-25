@@ -24,5 +24,6 @@
   "rubyLsp.rubyVersionManager": {
     "identifier": "rbenv"
   },
-  "rubyLsp.formatter": "none"
+  "rubyLsp.formatter": "none",
+  "rubyLsp.pullDiagnosticsOn": "save"
 }

@@ -10,15 +10,6 @@ describe('Simpress', () => {
     mockFetch.mockReset();
   });
 
-  test('getPageInfo test', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ page: 3 }),
-    });
-    const page = await Simpress.getPageInfo();
-    expect(page).toBe(3);
-  });
-
   test('getPostsByPage test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
@@ -33,7 +24,7 @@ describe('Simpress', () => {
       ok: true,
       json: () => Promise.resolve([testPostData]),
     });
-    const posts = await Simpress.getPostsByArchive(2000, 1);
+    const posts = await Simpress.getPostsByArchive(2000, 1, 1);
     expect(posts).toHaveLength(1);
   });
 
@@ -42,7 +33,7 @@ describe('Simpress', () => {
       ok: true,
       json: () => Promise.resolve([testPostData]),
     });
-    const posts = await Simpress.getPostsByCategory('test');
+    const posts = await Simpress.getPostsByCategory('test', 1);
     expect(posts).toHaveLength(1);
   });
 

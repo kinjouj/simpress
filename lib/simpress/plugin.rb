@@ -37,7 +37,7 @@ module Simpress
       end
 
       def process(posts = [], pages = [], categories = {})
-        plugins = (Simpress::Config.instance.plugins || []).map {|plugin| plugin.downcase.delete("_") }
+        plugins = Simpress::Config.instance.plugins.to_a.map {|plugin| plugin.downcase.delete("_") }
         allowed_plugins = register_plugins.sort_by {|klass| -klass.priority }
                                           .select {|klass| plugins.include?(klass.name.split("::").last.downcase) }
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "simpress/generator/renderer/base_renderer"
+require "simpress/logger"
 
 module Simpress
   module Generator
@@ -14,12 +15,12 @@ module Simpress
           context   = build_context(post: post, paginator: paginator)
           write_html(post.permalink, template: "post", context: context) do |file_path|
             File.utime(post.date, post.date, file_path)
-            logger_info(post.to_s)
+            Simpress::Logger.info(post.to_s)
           end
         end
 
         def self.generate_json(post, *)
-          write_json(post.permalink, post, keys: DATA_JSON_KEYS) { logger_info(post.to_s) }
+          write_json(post.permalink, post, keys: DATA_JSON_KEYS) { Simpress::Logger.info(post.to_s) }
         end
       end
     end

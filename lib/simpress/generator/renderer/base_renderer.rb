@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+require "simpress/config"
 require "simpress/json"
-require "simpress/logger"
+require "simpress/paginator"
 require "simpress/theme"
 require "simpress/uri"
 require "simpress/writer"
@@ -10,42 +11,66 @@ module Simpress
   module Generator
     module Renderer
       class BaseRenderer
-        def self.generate(...)
-          case Simpress::Config.instance.mode
-          when "html"
-            generate_html(...)
-          when "json"
-            generate_json(...)
-          else
-            raise "ERROR: Unknown mode"
+        class << self
+          def generate(...)
+            case Simpress::Config.instance.mode
+            when "html"
+              generate_html(...)
+            when "json"
+              generate_json(...)
+            else
+              raise "ERROR: Unknown mode"
+            end
           end
-        end
 
-        def self.uri(path)
-          Simpress::Uri.wrap(path)
-        end
+          # :nocov:
+          def generate_html(...)
+            raise NotImplementedError
+          end
 
-        def self.build_context(**kwargs)
-          kwargs
-        end
+          def generate_json(...)
+            raise NotImplementedError
+          end
+          # :nocov:
 
-        def self.write_html(path, template:, context:, &)
-          content = Simpress::Theme.render(template, **context)
-          write(path, content, "html", &)
-        end
+          def each_page(posts, prefix = nil)
+            raise "ERROR" unless block_given?
 
-        def self.write_json(path, data, **, &)
-          content = Simpress::JSON.dump(data, **)
-          write(path, content, "json", &)
-        end
+            per_page  = Simpress::Config.instance.paginate || 10
+            page_size = (posts.size / per_page.to_f).ceil
+            posts.each_slice(per_page).with_index(1) do |slice_posts, page|
+              args = { page: page, maxpage: page_size }
+              args[:prefix] = prefix if prefix
+              paginator = Simpress::Paginator.new(**args)
 
-        def self.write(path, data, ext = nil)
-          file_path = ext ? uri(path).with_ext(ext).build : path
-          Simpress::Writer.write(file_path, data) {|file_path| yield file_path if block_given? }
-        end
+              yield slice_posts, paginator
+            end
 
-        def self.logger_info(msg)
-          Simpress::Logger.info(msg)
+            page_size
+          end
+
+          def uri(path)
+            Simpress::Uri.wrap(path)
+          end
+
+          def build_context(**kwargs)
+            kwargs
+          end
+
+          def write_html(path, template:, context:, &)
+            content = Simpress::Theme.render(template, **context)
+            write(path, content, "html", &)
+          end
+
+          def write_json(path, data, **, &)
+            content = Simpress::JSON.dump(data, **)
+            write(path, content, "json", &)
+          end
+
+          def write(path, data, ext)
+            file_path = uri(path).with_ext(ext).build
+            Simpress::Writer.write(file_path, data) {|file_path| yield file_path if block_given? }
+          end
         end
       end
     end

@@ -13,14 +13,18 @@ describe('AppRoutes', () => {
     /* eslint-disable */
     dataSpy = jest.spyOn(Simpress as any, 'getData').mockImplementation(
       (path): Promise<any> => {
+        if (path?.toString().endsWith('meta.json')) {
+          return Promise.resolve(1);
+        }
+
         switch (path) {
-          case '/pageinfo.json':
-            return Promise.resolve({ page: 10 });
+          case '/recent_posts.json':
+            return Promise.resolve([testPostData]);
           case '/archives/page/1.json':
             return Promise.resolve([testPostData]);
-          case '/archives/1234/01.json':
+          case '/archives/1234/01/1.json':
             return Promise.resolve([testPostData]);
-          case '/archives/category/test.json':
+          case '/archives/category/test/1.json':
             return Promise.resolve([testPostData]);
           case '/test.json':
             return Promise.resolve(testPostData);
@@ -34,6 +38,7 @@ describe('AppRoutes', () => {
 
   afterEach(() => {
     jest.clearAllTimers();
+    jest.useRealTimers();
     dataSpy.mockRestore();
   });
 
@@ -44,7 +49,7 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
     await act(async () => {
-      jest.runAllTimers();
+      void jest.runAllTimersAsync();
       await Promise.resolve();
     });
 
@@ -54,12 +59,12 @@ describe('AppRoutes', () => {
 
   test('<AppRoutes> initialEntries=/archives/category/test', async () => {
     render(
-      <MemoryRouter initialEntries={['/archives/category/test']}>
+      <MemoryRouter initialEntries={['/archives/category/test/1']}>
         <AppRoutes />
       </MemoryRouter>
     );
     await act(async () => {
-      jest.runAllTimers();
+      void jest.runAllTimersAsync();
       await Promise.resolve();
     });
 
@@ -69,12 +74,12 @@ describe('AppRoutes', () => {
 
   test('<AppRoutes> initialEntries=/archives/1234/01', async () => {
     render(
-      <MemoryRouter initialEntries={['/archives/1234/01']}>
+      <MemoryRouter initialEntries={['/archives/1234/01/1']}>
         <AppRoutes />
       </MemoryRouter>
     );
     await act(async () => {
-      jest.runAllTimers();
+      void jest.runAllTimersAsync();
       await Promise.resolve();
     });
 
@@ -89,7 +94,7 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
     await act(async () => {
-      jest.runAllTimers();
+      void jest.runAllTimers();
       await Promise.resolve();
     });
 

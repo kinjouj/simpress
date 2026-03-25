@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/monthly_index_renderer"
+require "simpress/generator/renderer/archive/monthly_renderer"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
+describe Simpress::Generator::Renderer::Archive::MonthlyRenderer do
   before do
     allow(Simpress::Logger).to receive(:info)
     allow(Simpress::Writer).to receive(:write).and_yield(anything)
@@ -31,10 +31,14 @@ describe Simpress::Generator::Renderer::MonthlyIndexRenderer do
     it "正常にgenerate_jsonメソッドが呼ばれること" do
       described_class.generate_json(monthly_posts)
       expect(Simpress::Writer).to have_received(:write).with(
-        "/archives/2025/11.json",
+        "/archives/2025/11/1.json",
         Simpress::JSON.dump(monthly_posts[Time.new(2025, 11, 1)], keys: keys)
       )
-      expect(Simpress::Logger).to have_received(:info)
+      expect(Simpress::Writer).to have_received(:write).with(
+        "/archives/2025/11/meta.json",
+        anything
+      )
+      expect(Simpress::Logger).to have_received(:info).exactly(2)
     end
   end
 end

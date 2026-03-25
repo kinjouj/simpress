@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "simpress/category"
-require "simpress/generator/renderer/category_index_renderer"
+require "simpress/generator/renderer/archive/category_renderer"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::CategoryIndexRenderer do
+describe Simpress::Generator::Renderer::Archive::CategoryRenderer do
   before do
     allow(Simpress::Logger).to receive(:info)
     allow(Simpress::Writer).to receive(:write).and_yield(anything)
@@ -29,15 +29,27 @@ describe Simpress::Generator::Renderer::CategoryIndexRenderer do
   end
 
   describe ".generate_json" do
+    before do
+      allow(Simpress::Config.instance).to receive(:paginate).and_return(1)
+    end
+
     let(:keys) { described_class::DATA_JSON_KEYS }
 
     it "正常にgenerate_jsonメソッドが呼ばれること" do
       described_class.generate_json(category_posts)
       expect(Simpress::Writer).to have_received(:write).with(
-        "/archives/category/ruby.json",
-        Simpress::JSON.dump(category_posts[category], keys: keys)
+        "/archives/category/ruby/1.json",
+        Simpress::JSON.dump([post1], keys: keys)
       )
-      expect(Simpress::Logger).to have_received(:info)
+      expect(Simpress::Writer).to have_received(:write).with(
+        "/archives/category/ruby/2.json",
+        Simpress::JSON.dump([post2], keys: keys)
+      )
+      expect(Simpress::Writer).to have_received(:write).with(
+        "/archives/category/ruby/meta.json",
+        anything
+      )
+      expect(Simpress::Logger).to have_received(:info).exactly(3)
     end
   end
 end

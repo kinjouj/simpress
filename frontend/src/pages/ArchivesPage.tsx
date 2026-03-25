@@ -1,23 +1,41 @@
 import React, { Suspense, useCallback } from 'react';
 import Simpress from '../api/Simpress';
-import { NotFound, PostList } from '../components';
-import { useFetchData, useYearOfMonth } from '../hooks';
+import { NotFound, Paginator, PostList } from '../components';
+import { PaginateProvider, usePaginateContext } from '../contexts/PagenateContext';
+import { useFetchData, useFetchPageMeta, usePage, useYearOfMonth } from '../hooks';
 import type { PostType } from '../types';
 
 const LazyPostListSkeleton = React.lazy(() => import('../components/Skeleton/PostListSkeleton'));
 
-const ArchivesPage = (): React.JSX.Element => {
+const ArchivesPage = (): React.JSX.Element | null => {
   const { year, month } = useYearOfMonth();
+  const padMonth = month ? month.toString().padStart(2, '0') : null;
+  const page = usePage();
+  const path = year !== null && padMonth !== null ? `/archives/${year}/${padMonth}` : null;
+  const { totalPages, isOutOfPage } = useFetchPageMeta(path);
+
+  if (year === null || month === null || isOutOfPage(page)) {
+    return <NotFound />;
+  }
+
+  if (totalPages === null) {
+    return null;
+  }
+
+  return (
+    <PaginateProvider value={{ page, totalPages }}>
+      <ArchivesPageContent year={year} month={month} />
+    </PaginateProvider>
+  );
+};
+
+const ArchivesPageContent = ({ year, month }: { year: number, month: number }): React.JSX.Element => {
+  const { page } = usePaginateContext();
 
   const fetcher = useCallback(async () => {
-    if (year === null || month === null) {
-      throw new Error('year|month is null');
-    }
-
     await new Promise((r) => setTimeout(r, 3000));
-
-    return Simpress.getPostsByArchive(year, month);
-  }, [year, month]);
+    return Simpress.getPostsByArchive(year, month, page);
+  }, [year, month, page]);
 
   const { data: posts, isError } = useFetchData<PostType[]>(fetcher);
 
@@ -33,7 +51,12 @@ const ArchivesPage = (): React.JSX.Element => {
     );
   }
 
-  return <PostList posts={posts} />;
+  return (
+    <div>
+      <PostList posts={posts} />
+      <Paginator basePath={`/archives/${year}/${month}`} />
+    </div>
+  );
 };
 
 export default ArchivesPage;

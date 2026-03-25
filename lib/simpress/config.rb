@@ -13,7 +13,11 @@ module Simpress
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
       config_default = config[:default]
-      config_default.each {|k, v| instance_variable_set("@#{k}", v) }
+      @mode          = config_default[:mode]
+      @host          = config_default[:host]
+      @logging       = config_default[:logging]
+      @paginate      = config_default[:paginate]
+      @plugins       = config_default[:plugins]
     end
 
     class << self
