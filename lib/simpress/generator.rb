@@ -13,8 +13,7 @@ module Simpress
         posts      = []
         pages      = []
         categories = {}
-        files = Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown")
-        files.each do |file|
+        Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown") do |file|
           data = Simpress::Parser.parse(file)
           next if data.draft
 
@@ -47,7 +46,6 @@ module Simpress
       def process_and_generate(posts, pages, categories)
         Simpress::Plugin.process(posts, pages, categories)
         Simpress::Generator::Renderer.generate(posts, pages, categories)
-        Simpress::Theme.clear
       end
     end
   end

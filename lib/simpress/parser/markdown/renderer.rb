@@ -28,8 +28,7 @@ module Simpress
         def header(text, header_level)
           return "<h#{header_level}>#{text}</h#{header_level}>" unless header_level == 3
 
-          pos = @toc.size + 1
-          id  = "section-#{pos}"
+          id  = "section-#{@toc.size + 1}"
           @toc << [id, text]
 
           %(<h3 id="#{id}">#{text}</h3>)

@@ -12,7 +12,7 @@ module Simpress
       KEYS = [:title, :permalink].freeze
 
       def self.run(posts, *_args)
-        recent_posts = (posts || []).take((config.paginate || 5).ceildiv(2))
+        recent_posts = Array(posts).take(5)
 
         case config.mode
         when "html"

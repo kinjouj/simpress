@@ -40,7 +40,7 @@ describe Simpress::Generator::Renderer do
     end
 
     it "正常にgenerate_jsonメソッドが呼ばれること" do
-      described_class.generate([post1, post2], [page] , [])
+      described_class.generate([post1, post2], [page], [])
       expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate_json).exactly(2).times
       expect(Simpress::Generator::Renderer::PageRenderer).to have_received(:generate_json)
       expect(Simpress::Generator::Renderer::Archive::PostIndexRenderer).to have_received(:generate_json)

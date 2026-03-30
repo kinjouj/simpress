@@ -1,10 +1,10 @@
 {
   "license": "MIT",
   "scripts": {
-    "check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint --cache --cache-location=node_modules/.eslintcache",
-    "build": "npm run check && vite build",
-    "build:dev": "npm run check && npm run lint && vite build",
+    "build": "npm run typecheck && vite build",
+    "build:dev": "npm run typecheck && npm run lint && vite build",
     "test": "jest"
   },
   "devDependencies": {

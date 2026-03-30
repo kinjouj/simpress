@@ -16,6 +16,20 @@ describe Simpress::Category do
     end
   end
 
+  describe "#initialize_copy" do
+
+    it "正しくchildrenまでコピーできて、コピー側から追加して元のオブジェクトには作用しないこと" do
+      category = described_class.fetch("Ruby")
+      category.children["rspec"] = described_class.fetch("rspec")
+
+      cloned = category.dup
+      cloned.children["rails"] = described_class.fetch("Rails")
+
+      expect(category.children).not_to eq(cloned.children)
+      expect(category.children).not_to have_key("rails")
+    end
+  end
+
   describe "#increment!" do
     it "正しくcountが+1されること" do
       category = described_class.fetch("Ruby")

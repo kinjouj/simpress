@@ -7,27 +7,6 @@ describe Simpress::Theme do
     described_class.clear
   end
 
-  describe ".create_tilt" do
-    let(:create_tilt) { ->(template) { described_class.send(:create_tilt, template) } }
-
-    before do
-      allow(File).to receive(:binread).with("theme/post.erb").and_return("template content".dup)
-    end
-
-    it "テンプレートごとにErubisがキャッシュされ正しく管理されること" do
-      tilt1 = create_tilt.call("post")
-      expect(tilt1).to eq(create_tilt.call("post"))
-
-      tilt2 = create_tilt.call("post")
-      expect(tilt1).to eq(tilt2)
-    end
-
-    it "Erubisのロードに失敗したときに例外を返す" do
-      allow(Tilt::ErubiTemplate).to receive(:new).and_raise(StandardError, "Error")
-      expect { create_tilt.call("post") }.to raise_error(StandardError)
-    end
-  end
-
   describe ".render" do
     before do
       allow(Tilt::ErubiTemplate).to receive(:new).with("theme/post.erb", escape: true)

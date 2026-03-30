@@ -53,11 +53,7 @@ module Simpress
             Simpress::Uri.wrap(path)
           end
 
-          def build_context(**kwargs)
-            kwargs
-          end
-
-          def write_html(path, template:, context:, &)
+          def write_html(path, template:, **context, &)
             content = Simpress::Theme.render(template, **context)
             write(path, content, "html", &)
           end

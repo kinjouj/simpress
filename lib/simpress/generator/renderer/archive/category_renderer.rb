@@ -14,8 +14,8 @@ module Simpress
             category_posts.each do |category, posts|
               prefix = "/archives/category/#{category.key}"
               each_page(posts, prefix) do |slice_posts, paginator|
-                context = build_context(key: category.name, posts: slice_posts, paginator: paginator)
-                write_html(paginator.current_page, template: "index", context: context) do |file_path|
+                path = paginator.current_page
+                write_html(path, template: "index", key: category.key, posts: slice_posts, paginator: paginator) do |file_path|
                   Simpress::Logger.info("create category index: #{file_path}")
                 end
               end
@@ -24,14 +24,14 @@ module Simpress
 
           def self.generate_json(category_posts)
             category_posts.each do |category, posts|
-              prefix    = "/archives/category/#{category.key}"
+              base_path = uri("/archives/category/#{category.key}")
               page_size = each_page(posts) do |slice_posts, paginator|
-                write_json("#{prefix}/#{paginator.page}.json", slice_posts, keys: DATA_JSON_KEYS) do |file_path|
+                write_json(base_path.path(paginator.page), slice_posts, keys: DATA_JSON_KEYS) do |file_path|
                   Simpress::Logger.info("create category: #{file_path}")
                 end
               end
 
-              write_json("#{prefix}/meta.json", { total_pages: page_size }) do |file_path|
+              write_json(base_path.path("/meta.json"), { total_pages: page_size }) do |file_path|
                 Simpress::Logger.info("create archive: #{file_path}")
               end
             end

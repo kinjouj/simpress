@@ -94,12 +94,6 @@ RSpec.describe Simpress::Generator::Renderer::BaseRenderer do
     end
   end
 
-  describe ".build_context" do
-    it "渡したキーワード引数をそのままHashで返す" do
-      expect(described_class.build_context(title: "Hello", page: 1)).to eq({ title: "Hello", page: 1 })
-    end
-  end
-
   describe ".write_html" do
     before do
       allow(Simpress::Theme).to receive(:render).and_return("<html>content</html>")
@@ -107,8 +101,7 @@ RSpec.describe Simpress::Generator::Renderer::BaseRenderer do
     end
 
     it "Theme.renderの結果をWriterに渡す" do
-      context = { title: "Test" }
-      described_class.write_html("/path", template: "my_template", context: context)
+      described_class.write_html("/path", template: "my_template", titie: "Test")
       expect(Simpress::Writer).to have_received(:write).with("/path.html", "<html>content</html>")
     end
   end
@@ -132,7 +125,7 @@ RSpec.describe Simpress::Generator::Renderer::BaseRenderer do
 
     it "uriを経由してファイルパスを組み立てWriterに書き込みを依頼しブロックを呼ぶ" do
       expected_path = Simpress::Uri.wrap("/output/post").with_ext("html").build
-      expect { |b| described_class.write("/output/post", "data", "html", &b) }.to yield_control
+      expect {|b| described_class.write("/output/post", "data", "html", &b) }.to yield_control
       expect(Simpress::Writer).to have_received(:write).with(expected_path, "data")
     end
 

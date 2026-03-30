@@ -6,7 +6,7 @@ require "simpress/json"
 module Simpress
   class Category
     PERMITTED_JSON_KEYS = [:key, :name, :count, :children].freeze
-    DEFAULT_JSON_KEYS   = [:key, :name].freeze
+    DEFAULT_JSON_KEYS   = [:key, :name, :children].freeze
 
     attr_reader :key, :name, :count, :children
 
@@ -17,6 +17,11 @@ module Simpress
       @name     = name
       @count    = 1
       @children = {}
+    end
+
+    def initialize_copy(orig)
+      super
+      @children = orig.instance_variable_get(:@children).transform_values(&:dup)
     end
 
     def increment!

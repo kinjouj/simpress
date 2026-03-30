@@ -47,8 +47,7 @@ module Simpress
             vector = keywords.tally
             post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 10 }
 
-            sum_of_squares = vector.each_value.sum {|v| v * v }.to_f
-            norm = Math.sqrt(sum_of_squares)
+            norm = Math.sqrt(vector.each_value.sum(0.0) {|v| v * v })
 
             { vector: vector, norm: norm, simhash: calculate_simhash(vector) }
           end
@@ -66,7 +65,7 @@ module Simpress
 
               ids.combination(2) do |i, j|
                 i, j = j, i if i > j
-                key = (i * @size) + j
+                key = (i << 20) | j
                 next unless candidates.add?(key)
 
                 score = cosine(i, j)
@@ -79,16 +78,18 @@ module Simpress
         private
 
         def extract_keywords(post)
-          Cache.fetch("#{post.title} #{post.markdown}") do |data|
-            keywords = {}
+          key = (XXhash.xxh32(post.title) ^ XXhash.xxh32(post.markdown, 1)).to_s
+          Cache.fetch(key) do
+            data = "#{post.title} #{post.markdown}"
+            keywords = Set.new
             NATTO.parse(data).each_line do |line|
               if line =~ NATTO_REGEX
                 surface = Regexp.last_match(1)
-                keywords[surface] ||= true
+                keywords << surface
               end
             end
 
-            keywords.keys
+            keywords.to_a
           end
         end
 
@@ -126,13 +127,11 @@ module Simpress
         end
 
         class Cache
-          def self.fetch(data)
-            key  = XXhash.xxh32(data).to_s
+          def self.fetch(key)
             path = ".cache/#{key}.cache"
-
             return Marshal.load(File.binread(path)) if File.exist?(path) # rubocop:disable Security/MarshalLoad
 
-            result = yield(data)
+            result = yield
             Thread.new { File.binwrite(path, Marshal.dump(result)) }
             result
           end

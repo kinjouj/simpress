@@ -4,7 +4,7 @@ require "simpress/context"
 
 describe Simpress::Context do
   after do
-    described_class.clear
+    described_class.instance.clear
   end
 
   describe "[] and []=" do
@@ -42,7 +42,7 @@ describe Simpress::Context do
       it "ちゃんと値が消えていること" do
         described_class.update({ key: "hoge" })
         expect(described_class[:key]).to eq("hoge")
-        described_class.clear
+        described_class.instance.clear
         expect { described_class[:key] }.to raise_error(KeyError)
       end
     end

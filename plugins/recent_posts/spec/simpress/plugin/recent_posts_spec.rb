@@ -8,7 +8,7 @@ describe Simpress::Plugin::RecentPosts do
   end
 
   after do
-    Simpress::Context.clear
+    Simpress::Context.instance.clear
   end
 
   let(:posts) { [*1..30] }
@@ -28,7 +28,7 @@ describe Simpress::Plugin::RecentPosts do
 
       it "recent_posts.jsonがファイルとして出力されること" do
         described_class.run(posts)
-        expect(Simpress::Writer).to have_received(:write).with("recent_posts.json", Simpress::JSON.dump([*1..3]))
+        expect(Simpress::Writer).to have_received(:write).with("recent_posts.json", Simpress::JSON.dump([*1..5]))
       end
     end
 

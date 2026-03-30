@@ -11,17 +11,18 @@ module Simpress
 
         class << self
           def generate_html(pages)
+            base_path = uri("/page")
             pages.each do |page|
-              context = build_context(post: page)
-              write_html(uri("/page").path(page.permalink), template: "page", context: context) do |file_path|
+              write_html(base_path.path(page.permalink), template: "page", post: page) do |file_path|
                 Simpress::Logger.info("create page: #{file_path}}")
               end
             end
           end
 
           def generate_json(pages)
+            base_path = uri("/page")
             pages.each do |page|
-              write_json(uri("/page").path(page.permalink), page, keys: DATA_JSON_KEYS) do |file_path|
+              write_json(base_path.path(page.permalink), page, keys: DATA_JSON_KEYS) do |file_path|
                 Simpress::Logger.info("create page: #{file_path}")
               end
             end

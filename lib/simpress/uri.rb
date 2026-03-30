@@ -3,12 +3,13 @@
 module Simpress
   class Uri
     def initialize(path = "")
-      @parts = [path]
+      @base  = path
+      @parts = []
       @ext = nil
     end
 
     def path(*others)
-      others.each {|other| @parts << normalize(other) }
+      @parts = others.map {|other| other.to_s.delete_prefix("/") }
       self
     end
 
@@ -18,7 +19,7 @@ module Simpress
     end
 
     def build
-      path = @parts.join("/")
+      path = [@base, *@parts].join("/")
       @ext ? "#{path[0...(path.rindex('.'))]}.#{@ext}" : path
     end
 
@@ -26,12 +27,6 @@ module Simpress
       return path if path.is_a?(self)
 
       new(path)
-    end
-
-    private
-
-    def normalize(path)
-      path.to_s.delete_prefix("/")
     end
   end
 end

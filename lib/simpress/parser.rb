@@ -33,12 +33,12 @@ module Simpress
       private
 
       def build_params!(params, file, body, content, image, toc)
-        params[:id]           = XXhash.xxh64(file).to_s
-        params[:toc]          = toc
-        params[:content]      = content
-        params[:markdown]     = body
-        params[:layout]       = (params[:layout] || :post).to_sym
-        params[:draft]        = params.fetch(:draft, false)
+        params[:id]            = XXhash.xxh64(file).to_s
+        params[:toc]           = toc
+        params[:content]       = content
+        params[:markdown]      = body
+        params[:layout]        = (params[:layout] || :post).to_sym
+        params[:draft]         = params.fetch(:draft, false)
         params[:cover]       ||= image || DEFAULT_COVER
         params[:description] ||= body[REGEX_DESC]&.strip.to_s
       end

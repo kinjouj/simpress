@@ -63,26 +63,4 @@ describe Simpress::Paginator do
       end
     end
   end
-
-=begin
-  describe ".each_page" do
-    it ".each_pageをprefixを指定しない場合" do
-      expect {|b| described_class.each_page([*1..20], nil, &b) }.to yield_successive_args(
-        [[*1..10], have_attributes(page: 1, maxpage: 2, prefix: "/archives/page")],
-        [[*11..20], have_attributes(page: 2, maxpage: 2, prefix: "/archives/page")]
-      )
-    end
-
-    it ".each_pageをprefixを指定する場合" do
-      expect {|b| described_class.each_page([*1..20], "/", &b) }.to yield_successive_args(
-        [[*1..10], have_attributes(page: 1, maxpage: 2, prefix: "/")],
-        [[*11..20], have_attributes(page: 2, maxpage: 2, prefix: "/")]
-      )
-    end
-
-    it "ブロックを指定しない場合にエラーが出ること" do
-      expect { described_class.each_page([*1..20]) }.to raise_error("ERROR")
-    end
-  end
-=end
 end
