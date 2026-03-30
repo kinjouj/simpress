@@ -14,7 +14,7 @@ FactoryBot.define do
     date { Time.new(2025, 1, 1) }
     categories { [] }
     cover { "/images/no_image.webp" }
-    layout { :post }
+    index { true }
     draft { false }
     markdown { "# Test" }
 

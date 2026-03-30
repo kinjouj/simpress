@@ -53,7 +53,6 @@ title: title
 date: 2000-01-01 00:00:00
 permalink: /test
 cover: /images/test.jpg
-layout: post
 description: optional
 categories:
   - test
@@ -69,12 +68,12 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 
 
 |parameter|Description|
-|:-------:|-----------|
+|:---------:|-----------|
 |title      |タイトル   |
 |date       |日付(DateTime)。無い場合はファイル名から算出(yyyy-mm-dd)。ファイル名から算出できない場合はエラーになる|
 |permalink  |パスURL|
 |cover      |サムネイル画像。指定しない場合は/images/no_image.pngが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される|
-|layout     |記事の種類。postかpageで指定。指定しない場合はpost(pageはインデックスが作成されない)|
+|index      |記事インデックスに載せるかのフラグ。デフォルトはtrue|
 |draft      |記事の下書きフラグ。trueの場合は出力されない。デフォルトはfalse|
 |description|meta description値。無い場合はコンテンツから抽出生成される|
 |categories |カテゴリー。配列形式じゃなくても指定可能|
@@ -90,16 +89,16 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 |@key      |String optional|
 
 
-### Theme(post.erb or page.erb) Variables
+### Theme(page.erb) Variables
 
 
 |variable|Description|
 |:------:|:-----------:|
 |@post      |Simpress::Model::Post instance|
-|@paginagtor|Simpress::Paginator::Post instance|
+|@paginagtor|Paginator Data Object|
 
 
-※page.erbに@paginatorは無い
+※index: falseの場合は@paginatorは無い
 
 
 ### Custom Markdown Enhancer

@@ -37,8 +37,8 @@ module Simpress
         params[:toc]           = toc
         params[:content]       = content
         params[:markdown]      = body
-        params[:layout]        = (params[:layout] || :post).to_sym
         params[:draft]         = params.fetch(:draft, false)
+        params[:index]         = params.fetch(:index, true)
         params[:cover]       ||= image || DEFAULT_COVER
         params[:description] ||= body[REGEX_DESC]&.strip.to_s
       end

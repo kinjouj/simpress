@@ -9,8 +9,8 @@ describe Simpress::Generator::Renderer::PageRenderer do
     allow(Simpress::Writer).to receive(:write).and_yield(anything)
   end
 
-  let(:post1) { build(:post, layout: :page) }
-  let(:post2) { build(:post, layout: :page) }
+  let(:post1) { build(:post, index: false) }
+  let(:post2) { build(:post, index: false) }
   let(:pages) { [post1, post2] }
 
   describe ".generate_html" do

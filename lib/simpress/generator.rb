@@ -27,14 +27,7 @@ module Simpress
             end
           end
 
-          case data.layout
-          when :post
-            posts << data
-          when :page
-            pages << data
-          else
-            raise "Unknown layout #{data.layout}"
-          end
+          (data.index ? posts : pages) << data
         end
 
         posts.sort_by! {|post| -post.timestamp }
@@ -46,6 +39,7 @@ module Simpress
       def process_and_generate(posts, pages, categories)
         Simpress::Plugin.process(posts, pages, categories)
         Simpress::Generator::Renderer.generate(posts, pages, categories)
+        Simpress::Theme.clear
       end
     end
   end

@@ -14,7 +14,7 @@ module Simpress
                                       :description,
                                       :toc,
                                       :cover,
-                                      :layout,
+                                      :index,
                                       :draft,
                                       :markdown
 
@@ -28,7 +28,7 @@ module Simpress
       @description = params[:description]
       @toc         = params[:toc]
       @cover       = params[:cover]
-      @layout      = params[:layout]
+      @index       = params[:index]
       @draft       = params[:draft]
       @markdown    = params[:markdown]
     end

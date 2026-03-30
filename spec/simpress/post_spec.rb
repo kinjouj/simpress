@@ -14,8 +14,8 @@ describe Simpress::Post do
       permalink: "/test.html",
       categories: [],
       cover: "/images/no_image.webp",
-      layout: :post,
       draft: true,
+      index: true,
       markdown: "# Test"
     }
   end
@@ -31,7 +31,7 @@ describe Simpress::Post do
       expect(post.permalink).to eq("/test.html")
       expect(post.categories).to eq([])
       expect(post.cover).to eq("/images/no_image.webp")
-      expect(post.layout).to eq(:post)
+      expect(post.index).to be_truthy
       expect(post.draft).to be_truthy
       expect(post.to_s).to eq("title: /test.html")
     end

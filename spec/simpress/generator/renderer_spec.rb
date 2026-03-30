@@ -7,7 +7,7 @@ require "simpress/post"
 describe Simpress::Generator::Renderer do
   let(:post1) { build(:post, categories: [Simpress::Category.fetch("Test1")]) }
   let(:post2) { build(:post, id: 2, categories: [Simpress::Category.fetch("Test2")]) }
-  let(:page) { build(:post, id: 3, layout: :page) }
+  let(:page) { build(:post, id: 3, index: false) }
 
   context "modeがhtmlの場合" do
     before do

@@ -9,12 +9,12 @@ describe Simpress::Theme do
 
   describe ".render" do
     before do
-      allow(Tilt::ErubiTemplate).to receive(:new).with("theme/post.erb", escape: true)
+      allow(Tilt::ErubiTemplate).to receive(:new).with("theme/page.erb", escape: true)
                                                  .and_return(Tilt::ErubiTemplate.new { "<%= @foo %>, <%= @bar %>" })
     end
 
     it "テンプレートをレンダリングして結果を返すこと" do
-      data = described_class.render("post", { foo: "Hello", bar: "World" })
+      data = described_class.render("page", { foo: "Hello", bar: "World" })
       expect(data).to eq("Hello, World")
     end
   end

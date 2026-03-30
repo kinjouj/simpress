@@ -7,7 +7,7 @@ describe Simpress::Generator do
   let(:post1) { build(:post, categories: [category], date: Time.new(2000, 1, 1)) }
   let(:post2) { build(:post, categories: [category], date: Time.new(2000, 2, 1)) }
   let(:post3) { build(:post, draft: true) }
-  let(:page) { build(:post, layout: :page) }
+  let(:page) { build(:post, index: false) }
 
   before do
     allow(Dir).to receive(:glob).and_yield("post1.md").and_yield("post2.md").and_yield("post3.md").and_yield("page1.md")
@@ -30,18 +30,5 @@ describe Simpress::Generator do
       [page],
       hash_including("test" => category)
     )
-  end
-
-  context "layoutが不正な値の場合" do
-    let(:post4) { build(:post, layout: :test) }
-
-    before do
-      allow(Dir).to receive(:glob).and_yield("post.md")
-      allow(Simpress::Parser).to receive(:parse).with("post.md").and_return(post4)
-    end
-
-    it "エラーが送出されること" do
-      expect { described_class.generate }.to raise_error("Unknown layout test")
-    end
   end
 end

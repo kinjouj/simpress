@@ -27,7 +27,7 @@ describe Simpress::Parser do
       expect(post).not_to be_nil
       expect(post.title).to eq("test")
       expect(post.permalink).to eq("/test.html")
-      expect(post.layout).to eq(:post)
+      expect(post.index).to eq(true)
       expect(post.draft).to be_falsy
       expect(post.categories).to eql([Simpress::Category.fetch("test")])
       expect(post.description).to eq("test")
@@ -97,15 +97,15 @@ describe Simpress::Parser do
     end
   end
 
-  context "layoutが指定されている場合" do
-    it "layoutが正しく設定されること" do
+  context "indexが指定されている場合" do
+    it "indexが正しく設定されること" do
       allow(File).to receive(:read) {
         <<~MARKDOWN
           ---
           title: test
           date: 2000-01-01 00:00:00
           permalink: /test.html
-          layout: page
+          index: false
           categories: "test"
           ---
 
@@ -116,7 +116,7 @@ describe Simpress::Parser do
       file = File.expand_path("test4.markdown", __dir__)
       post = described_class.parse(file)
       expect(post).not_to be_nil
-      expect(post.layout).to eq(:page)
+      expect(post.index).to eq(false)
     end
   end
 
