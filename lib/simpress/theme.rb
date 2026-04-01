@@ -23,13 +23,13 @@ module Simpress
 
       private
 
+      def tilt_caches
+        @tilt_caches ||= {}
+      end
+
       def create_tilt(template)
         filename = "#{Simpress::Config.theme_dir}/#{template}.erb"
         tilt_caches[filename] ||= Tilt::ErubiTemplate.new(filename, escape: true)
-      end
-
-      def tilt_caches
-        @tilt_caches ||= {}
       end
 
       def render_internal(template, scope)

@@ -17,7 +17,6 @@ describe Simpress::Category do
   end
 
   describe "#initialize_copy" do
-
     it "正しくchildrenまでコピーできて、コピー側から追加して元のオブジェクトには作用しないこと" do
       category = described_class.fetch("Ruby")
       category.children["rspec"] = described_class.fetch("rspec")

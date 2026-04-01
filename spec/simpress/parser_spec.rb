@@ -27,7 +27,7 @@ describe Simpress::Parser do
       expect(post).not_to be_nil
       expect(post.title).to eq("test")
       expect(post.permalink).to eq("/test.html")
-      expect(post.index).to eq(true)
+      expect(post.index).to be(true)
       expect(post.draft).to be_falsy
       expect(post.categories).to eql([Simpress::Category.fetch("test")])
       expect(post.description).to eq("test")
@@ -116,7 +116,7 @@ describe Simpress::Parser do
       file = File.expand_path("test4.markdown", __dir__)
       post = described_class.parse(file)
       expect(post).not_to be_nil
-      expect(post.index).to eq(false)
+      expect(post.index).to be(false)
     end
   end
 

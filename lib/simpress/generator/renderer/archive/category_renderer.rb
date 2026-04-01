@@ -15,7 +15,7 @@ module Simpress
               prefix = "/archives/category/#{category.key}"
               each_page(posts, prefix) do |slice_posts, paginator|
                 path = paginator.current_page
-                write_html(path, template: "index", key: category.key, posts: slice_posts, paginator: paginator) do |file_path|
+                write_html(path, template: "index", key: category.name, posts: slice_posts, paginator: paginator) do |file_path|
                   Simpress::Logger.info("create category index: #{file_path}")
                 end
               end

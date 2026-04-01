@@ -72,7 +72,7 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 |title      |タイトル   |
 |date       |日付(DateTime)。無い場合はファイル名から算出(yyyy-mm-dd)。ファイル名から算出できない場合はエラーになる|
 |permalink  |パスURL|
-|cover      |サムネイル画像。指定しない場合は/images/no_image.pngが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される|
+|cover      |サムネイル画像。指定しない場合は/images/no_image.webpが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される|
 |index      |記事インデックスに載せるかのフラグ。デフォルトはtrue|
 |draft      |記事の下書きフラグ。trueの場合は出力されない。デフォルトはfalse|
 |description|meta description値。無い場合はコンテンツから抽出生成される|
@@ -82,19 +82,19 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 ### Theme(index.erb) Variables
 
 
-|variable|Description|
-|:------:|:---------:|
-|@posts    |Array[Simpress::Model::Post]|
-|@paginator|Simpress::Paginator::Index instance|
+|variable  |Description|
+|:--------:|:---------:|
+|@posts    |Array[Simpress::Post]|
+|@paginator|Simpress::Paginator|
 |@key      |String optional|
 
 
 ### Theme(page.erb) Variables
 
 
-|variable|Description|
-|:------:|:-----------:|
-|@post      |Simpress::Model::Post instance|
+|variable   |Description|
+|:---------:|:-----------:|
+|@post      |Simpress::Post|
 |@paginagtor|Paginator Data Object|
 
 
@@ -139,8 +139,7 @@ end
 ### Plugin: RecentPosts
 
 
-@postsから先頭から数件だけを切り出したのを@recent_postsとして利用できる。
-切り出される件数はconfig.yamlのpaginateと同数(設定されていない場合には5)
+@postsから先頭から5件だけを切り出したのを@recent_postsとして利用できる。
 
 
 ```erb
@@ -153,7 +152,7 @@ end
 ### Plugin: Similarity
 
 
-パースされたMarkdownから関連記事の情報を取得してJSONで出力するプラグイン。このプラグインを有効にした場合には以下のメソッドでデータを取得できる
+パースされたMarkdownから関連記事の情報を取得するプラグイン。このプラグインを有効にした場合には以下のメソッドでデータを取得できる
 
 
 - Simpress::Post.similarities

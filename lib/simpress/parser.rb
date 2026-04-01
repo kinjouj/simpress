@@ -13,8 +13,8 @@ module Simpress
     class ParseError < StandardError; end
 
     DEFAULT_COVER = "/images/no_image.webp"
-    REGEX_DESC = /\A.*?(?:\r?\n){2}/m
-    REGEX_TIME = /\A(\d{4})-(\d{1,2})-(\d{1,2})/
+    REGEX_DESC    = /\A\s*(.*?)(?:\r?\n\r?\n|\z)/m
+    REGEX_TIME    = /\A(\d{4})-(\d{1,2})-(\d{1,2})/
 
     class << self
       def parse(file)
@@ -33,12 +33,12 @@ module Simpress
       private
 
       def build_params!(params, file, body, content, image, toc)
-        params[:id]            = XXhash.xxh64(file).to_s
-        params[:toc]           = toc
-        params[:content]       = content
-        params[:markdown]      = body
-        params[:draft]         = params.fetch(:draft, false)
-        params[:index]         = params.fetch(:index, true)
+        params[:id]           = XXhash.xxh64(file).to_s
+        params[:toc]          = toc
+        params[:content]      = content
+        params[:markdown]     = body
+        params[:index]        = params.fetch(:index, true)
+        params[:draft]        = params.fetch(:draft, false)
         params[:cover]       ||= image || DEFAULT_COVER
         params[:description] ||= body[REGEX_DESC]&.strip.to_s
       end

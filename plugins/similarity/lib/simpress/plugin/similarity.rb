@@ -25,7 +25,7 @@ module Simpress
           end
 
           post.define_singleton_method(:similarities) { similarities || [] }
-          post.define_singleton_method(:as_json) do |state = {}|
+          post.define_singleton_method(:to_h) do |state = {}|
             hash = super(state)
             hash[:similarities] = similarities if hash.key?(:content)
             hash

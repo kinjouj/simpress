@@ -16,6 +16,6 @@ describe Simpress::Parser::Markdown::Processor do
     body, images, tos = described_class.render(markdown)
     expect(body).not_to be_empty
     expect(images).to eq("/test1.jpg")
-    expect(tos).to match([[anything, "TEST1"]])
+    expect(tos).to match([["section-1", "TEST1"], ["section-2", "TEST2"]])
   end
 end

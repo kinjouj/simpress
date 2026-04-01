@@ -24,8 +24,8 @@ describe Simpress::Parser::Markdown::Renderer do
       renderer.reset!
     end
 
-    it "<h3>以外の場合はデータが入らないこと" do
-      expect(renderer.header("test2", 4)).to eq("<h4>test2</h4>")
+    it "<h1>の場合はデータが入らないこと" do
+      expect(renderer.header("test2", 1)).to eq("<h1>test2</h1>")
       expect(renderer.toc).to be_empty
     end
   end

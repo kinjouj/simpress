@@ -26,12 +26,12 @@ module Simpress
         end
 
         def header(text, header_level)
-          return "<h#{header_level}>#{text}</h#{header_level}>" unless header_level == 3
+          tag = "h#{header_level}"
+          return "<#{tag}>#{text}</#{tag}>" if header_level == 1
 
-          id  = "section-#{@toc.size + 1}"
+          id = "section-#{@toc.size + 1}"
           @toc << [id, text]
-
-          %(<h3 id="#{id}">#{text}</h3>)
+          %(<#{tag} id="#{id}">#{text}</#{tag}>)
         end
 
         def image(path, _title, _alt)

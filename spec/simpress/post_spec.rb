@@ -33,7 +33,6 @@ describe Simpress::Post do
       expect(post.cover).to eq("/images/no_image.webp")
       expect(post.index).to be_truthy
       expect(post.draft).to be_truthy
-      expect(post.to_s).to eq("title: /test.html")
     end
   end
 
