@@ -48,7 +48,7 @@ describe Simpress::Parser do
       }
       post = described_class.parse("dummy.md")
       expect(post).not_to be_nil
-      expect(post.permalink).to eq("/2000/01/dummy.html")
+      expect(post.permalink).to eq("/2000/01/dummy")
     end
   end
 

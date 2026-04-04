@@ -13,7 +13,7 @@ module Simpress
           def generate_html(pages)
             base_path = uri("/page")
             pages.each do |page|
-              write_html(base_path.path(page.permalink), template: "page", post: page) do |file_path|
+              write_html(base_path.path(page.permalink), template: page.layout, post: page) do |file_path|
                 Simpress::Logger.info("create page: #{file_path}}")
               end
             end

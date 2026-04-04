@@ -68,7 +68,7 @@ const PostPage = (): React.JSX.Element => {
         })}
       </Stack>
       <div dangerouslySetInnerHTML={{ __html: post.content }} className="post-content fs-6 my-4 mw-100" />
-      {!!post.similarities && <RelatedPosts similarities={post.similarities} />}
+      {!!post.similarities && post.similarities.length > 0 && <RelatedPosts similarities={post.similarities} />}
       <div style={{ marginTop: '30px' }}>
         <pre className="line-numbers"><code className="language-json">{JSON.stringify(post, null, 2)}</code></pre>
       </div>

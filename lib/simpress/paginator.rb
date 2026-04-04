@@ -5,12 +5,12 @@ module Simpress
     PREFIX_DEFAULT = "/archives/page"
     attr_reader :page, :maxpage, :prefix
 
-    def initialize(page:, maxpage:, prefix: PREFIX_DEFAULT)
+    def initialize(page:, maxpage:, prefix: nil)
       raise ArgumentError, "page=#{page} is out of range (maxpage=#{maxpage})" if page <= 0 || (maxpage - page + 1) <= 0
 
       @page    = page
       @maxpage = maxpage
-      @prefix  = prefix
+      @prefix  = prefix || PREFIX_DEFAULT
     end
 
     def previous_page_exist?

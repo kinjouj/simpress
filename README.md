@@ -72,11 +72,12 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 |title      |タイトル   |
 |date       |日付(DateTime)。無い場合はファイル名から算出(yyyy-mm-dd)。ファイル名から算出できない場合はエラーになる|
 |permalink  |パスURL|
-|cover      |サムネイル画像。指定しない場合は/images/no_image.webpが使用される。コンテンツ中で使用している画像がある場合にはそれが利用される|
+|cover      |サムネイル画像。指定しない場合は/images/no_image.webpが使用される。Markdown記法によって抽出可能|
+|categories |カテゴリー。配列形式じゃなくても指定可能|
+|layout     |記事が使用するテンプレートの指定。デフォルトは"page"|
 |index      |記事インデックスに載せるかのフラグ。デフォルトはtrue|
 |draft      |記事の下書きフラグ。trueの場合は出力されない。デフォルトはfalse|
 |description|meta description値。無い場合はコンテンツから抽出生成される|
-|categories |カテゴリー。配列形式じゃなくても指定可能|
 
 
 ### Theme(index.erb) Variables
@@ -134,26 +135,3 @@ module Simpress
   end
 end
 ```
-
-
-### Plugin: RecentPosts
-
-
-@postsから先頭から5件だけを切り出したのを@recent_postsとして利用できる。
-
-
-```erb
-<% @recent_posts.each |post| %>
-<%= post.title %>
-<% end %>
-```
-
-
-### Plugin: Similarity
-
-
-パースされたMarkdownから関連記事の情報を取得するプラグイン。このプラグインを有効にした場合には以下のメソッドでデータを取得できる
-
-
-- Simpress::Post.similarities
-- Simpress::Post.as_json(as_jsonを行った際にsimilaritiesが注入される)

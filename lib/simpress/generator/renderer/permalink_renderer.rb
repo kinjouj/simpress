@@ -12,7 +12,8 @@ module Simpress
 
         def self.generate_html(post, older_post = nil, newer_post = nil)
           paginator = Paginator.new(newer_post: newer_post, older_post: older_post)
-          write_html(post.permalink, template: "page", post: post, paginator: paginator) do |file_path|
+
+          write_html(post.permalink, template: post.layout, post: post, paginator: paginator) do |file_path|
             File.utime(post.date, post.date, file_path)
             Simpress::Logger.info("#{post.title}: #{file_path}")
           end

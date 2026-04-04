@@ -28,7 +28,7 @@ module Simpress
     class << self
       extend Forwardable
 
-      def_delegators :instance, :info, :debug, :logging?
+      def_delegators :instance, :info, :debug
 
       def clear
         Singleton.__init__(Simpress::Logger)

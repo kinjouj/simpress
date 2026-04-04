@@ -39,10 +39,8 @@ module Simpress
             per_page  = Simpress::Config.instance.paginate || 10
             page_size = (posts.size / per_page.to_f).ceil
             posts.each_slice(per_page).with_index(1) do |slice_posts, page|
-              args = { page: page, maxpage: page_size }
-              args[:prefix] = prefix if prefix
+              args = { page: page, maxpage: page_size, prefix: prefix }
               paginator = Simpress::Paginator.new(**args)
-
               yield slice_posts, paginator
             end
 

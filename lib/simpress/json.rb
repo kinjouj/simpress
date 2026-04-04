@@ -12,12 +12,12 @@ Oj.default_options = {
 module Simpress
   module JSON
     class << self
-      def load(data, options = {})
-        Oj.load(data, **options)
-      end
-
       def load_file(data, options = {})
         Oj.load_file(data, **options)
+      end
+
+      def load(data, options = {})
+        Oj.load(data, **options)
       end
 
       def dump(obj, options = {})
