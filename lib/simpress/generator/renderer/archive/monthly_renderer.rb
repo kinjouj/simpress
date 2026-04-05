@@ -19,7 +19,7 @@ module Simpress
               each_page(posts_by_monthly, prefix) do |slice_posts, paginator|
                 path = paginator.current_page
                 write_html(path, template: "index", key: key, posts: slice_posts, paginator: paginator) do |file_path|
-                  Simpress::Logger.info("create archive: #{file_path}")
+                  Simpress::Logger.info("[BUILD ARCHIVE]: #{file_path}")
                 end
               end
             end
@@ -32,12 +32,12 @@ module Simpress
               base_path = uri("/archives/#{year}/#{month.to_s.rjust(2, '0')}")
               page_size = each_page(posts_by_monthly) do |slice_posts, paginator|
                 write_json(base_path.path(paginator.page), slice_posts, keys: DATA_JSON_KEYS) do |file_path|
-                  Simpress::Logger.info("create archive: #{file_path}")
+                  Simpress::Logger.info("[BUILD ARCHIVE]: #{file_path}")
                 end
               end
 
               write_json(base_path.path("/meta.json"), { total_pages: page_size }) do |file_path|
-                Simpress::Logger.info("create archive: #{file_path}")
+                Simpress::Logger.info("[BUILD ARCHIVE]: #{file_path}")
               end
             end
           end

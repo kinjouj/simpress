@@ -13,7 +13,7 @@ module Simpress
           def self.generate_html(posts)
             each_page(posts) do |slice_posts, paginator|
               write_html(paginator.current_page, template: "index", posts: slice_posts, paginator: paginator) do |file_path|
-                Simpress::Logger.info("create archive: #{file_path}")
+                Simpress::Logger.info("[BUILD ARCHIVE]: #{file_path}")
               end
             end
           end
@@ -22,12 +22,12 @@ module Simpress
             base_path = uri("/archives/page")
             page_size = each_page(posts) do |slice_posts, paginator|
               write_json(base_path.path(paginator.page), slice_posts, keys: DATA_JSON_KEYS) do |file_path|
-                Simpress::Logger.info("create archive: #{file_path}")
+                Simpress::Logger.info("[BUILD ARCHIVE]: #{file_path}")
               end
             end
 
             write_json(base_path.path("/meta.json"), { total_pages: page_size }) do |file_path|
-              Simpress::Logger.info("create archive: #{file_path}")
+              Simpress::Logger.info("[BUILD ARCHIVE]: #{file_path}")
             end
           end
         end

@@ -19,8 +19,8 @@ module Simpress
     end
 
     def build
-      path = [@base, *@parts].join("/")
-      @ext ? "#{path[0...(path.rindex('.'))]}.#{@ext}" : path
+      part = [@base, *@parts].join("/")
+      @ext ? "#{part[0...(part.rindex('.'))]}.#{@ext}" : part
     end
 
     def self.wrap(path)

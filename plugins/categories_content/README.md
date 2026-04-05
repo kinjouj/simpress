@@ -48,14 +48,14 @@
 
 ```erb
 <% categories = @categories.sort_by {|_, value| -value.count }.to_h %>
-  <% categories.each do |key, value| %>
+<% categories.each do |key, value| %>
+<div>
+  <a href="/archives/category/<%== value.key %>"><%= value.name %> (<%== value.count %>)</a>
+  <% if value.children.count > 0 %>
   <div>
-    <a href="/archives/category/<%== value.key %>"><%= value.name %> (<%== value.count %>)</a>
-    <% if value.children.count > 0 %>
-    <div>
-      <%== render_partial("sidebar_categories", categories: value.children) %>
-    </div>
-    <% end %>
+    <%== render_partial("sidebar_categories", categories: value.children) %>
   </div>
   <% end %>
+</div>
+<% end %>
 ```

@@ -13,7 +13,6 @@ module Simpress
         dirname = File.dirname(filepath)
         FileUtils.mkdir_p(dirname)
         File.write(filepath, data)
-
         yield filepath if block_given?
       end
     end

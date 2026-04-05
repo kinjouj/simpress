@@ -14,7 +14,7 @@ module Simpress
             base_path = uri("/page")
             pages.each do |page|
               write_html(base_path.path(page.permalink), template: page.layout, post: page) do |file_path|
-                Simpress::Logger.info("create page: #{file_path}}")
+                Simpress::Logger.info("[BUILD PAGE]: #{page.title} #{file_path}")
               end
             end
           end
@@ -23,7 +23,7 @@ module Simpress
             base_path = uri("/page")
             pages.each do |page|
               write_json(base_path.path(page.permalink), page, keys: DATA_JSON_KEYS) do |file_path|
-                Simpress::Logger.info("create page: #{file_path}")
+                Simpress::Logger.info("[BUILD PAGE]: #{page.title} #{file_path}")
               end
             end
           end

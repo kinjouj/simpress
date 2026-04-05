@@ -15,12 +15,14 @@ module Simpress
 
           write_html(post.permalink, template: post.layout, post: post, paginator: paginator) do |file_path|
             File.utime(post.date, post.date, file_path)
-            Simpress::Logger.info("#{post.title}: #{file_path}")
+            Simpress::Logger.info("[BUILD PAGE]: #{post.title} #{file_path}")
           end
         end
 
         def self.generate_json(post, _older_post = nil, _newer_post = nil)
-          write_json(post.permalink, post, keys: DATA_JSON_KEYS) { Simpress::Logger.info(post.to_s) }
+          write_json(post.permalink, post, keys: DATA_JSON_KEYS) do |file_path|
+            Simpress::Logger.info("[BUILD PAGE]: #{post.title} #{file_path}")
+          end
         end
       end
     end
