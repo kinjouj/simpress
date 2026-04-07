@@ -10,35 +10,24 @@ module Simpress
   module Generator
     class << self
       def generate
-        posts      = []
-        pages      = []
-        categories = {}
+        posts = []
+        pages = []
         Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown") do |file|
           data = Simpress::Parser.parse(file)
           next if data.draft
-
-          data.categories.each do |category|
-            key = category.key
-
-            if categories.key?(key)
-              categories[key].increment!
-            else
-              categories[key] = category
-            end
-          end
 
           (data.index ? posts : pages) << data
         end
 
         posts.sort_by! {|post| -post.timestamp }
-        process_and_generate(posts, pages, categories)
+        process_and_generate(posts, pages)
       end
 
       private
 
-      def process_and_generate(posts, pages, categories)
-        Simpress::Plugin.process(posts, pages, categories)
-        Simpress::Generator::Renderer.generate(posts, pages, categories)
+      def process_and_generate(posts, pages)
+        Simpress::Plugin.process(posts, pages)
+        Simpress::Generator::Renderer.generate(posts, pages)
         Simpress::Theme.clear
       end
     end

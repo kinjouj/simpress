@@ -10,7 +10,7 @@ const LazyPostListSkeleton = React.lazy(() => import('../components/Skeleton/Pos
 const CategoryPage = (): React.JSX.Element | null => {
   const category = useCategory();
   const page = usePage();
-  const { totalPages, isOutOfPage } = useFetchPageMeta(`/archives/category/${category}`);
+  const { totalPages, isOutOfPage } = useFetchPageMeta(`/archives/categories/${category}`);
 
   if (category === null || isOutOfPage(page)) {
     return <NotFound />;

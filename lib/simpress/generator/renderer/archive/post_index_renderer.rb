@@ -8,7 +8,7 @@ module Simpress
     module Renderer
       module Archive
         class PostIndexRenderer < BaseRenderer
-          DATA_JSON_KEYS = [:id, :title, :date, :permalink, :categories, :cover, :description].freeze
+          DATA_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :cover, :description].freeze
 
           def self.generate_html(posts)
             each_page(posts) do |slice_posts, paginator|

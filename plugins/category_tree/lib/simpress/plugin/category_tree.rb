@@ -2,18 +2,21 @@
 
 require "simpress/json"
 require "simpress/plugin"
+require "simpress/taxonomy"
 require "simpress/theme"
 require "simpress/writer"
 
 module Simpress
   module Plugin
-    class CategoriesContent
+    class CategoryTree
       extend Simpress::Plugin
 
       KEYS = [:key, :name, :count, :children].freeze
 
-      def self.run(_, _, categories)
-        nested_categories = categories.transform_values(&:dup)
+      def self.run(_, _)
+        nested_categories = Simpress::Taxonomy.fetch("categories").terms.each_with_object({}) do |(_, term), hash|
+          hash[term.key] = term.dup
+        end
 
         if File.exist?("category_indexes.json")
           category_indexes = Simpress::JSON.load_file("category_indexes.json")

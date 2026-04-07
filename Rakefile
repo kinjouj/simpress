@@ -7,11 +7,13 @@ Bundler.require
 
 require "benchmark"
 require "rake/clean"
+require "rspec/core/rake_task"
 require "simpress"
 require "simpress/sitemap"
 
 OUTPUT_DIR = Simpress::Config.output_dir
 CLEAN.include("#{OUTPUT_DIR}/*")
+RSpec::Core::RakeTask.new(:spec)
 
 desc "build"
 task build: :clean do

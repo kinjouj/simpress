@@ -3,5 +3,7 @@ default:
   logging: false
   host: http://example.com
   paginate: 10
+  taxonomies:
+    - categories
   plugins:
     - recent_posts

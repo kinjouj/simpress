@@ -23,12 +23,12 @@ const PostList = ({ posts }: { posts: PostType[] }): React.JSX.Element => {
             </Card.Body>
             <Card.Footer className="position-relative mt-3">
               <Stack direction="horizontal" gap={3} className="justify-content-end p-2 pe-0">
-                {post.categories.map((category) => {
-                  return (
-                    <div key={category.key}>
-                      <Link to={`/archives/category/${category.key}`} className="post-category">{category.name}</Link>
+                {Object.entries(post.taxonomies).map(([taxonomy, terms]) => {
+                  return terms.map((term) => (
+                    <div key={term.key}>
+                      <Link to={`/archives/${taxonomy}/${term.key}`} className="post-category">{term.name}</Link>
                     </div>
-                  );
+                  ));
                 })}
               </Stack>
             </Card.Footer>

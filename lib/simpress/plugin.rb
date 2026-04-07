@@ -36,14 +36,14 @@ module Simpress
         @register_plugins ||= []
       end
 
-      def process(posts = [], pages = [], categories = {})
+      def process(posts = [], pages = [])
         plugins = Simpress::Config.instance.plugins.to_a.map {|plugin| plugin.downcase.delete("_") }
         allowed_plugins = register_plugins.sort_by {|klass| -klass.priority }
                                           .select {|klass| plugins.include?(klass.name.split("::").last.downcase) }
 
         allowed_plugins.each do |klass|
           Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
-          klass.run(posts, pages, categories)
+          klass.run(posts, pages)
         end
       end
 

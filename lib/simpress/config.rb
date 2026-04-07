@@ -8,7 +8,7 @@ module Simpress
     include Singleton
 
     CONFIG_FILE = File.expand_path("../../config.yaml", __dir__)
-    attr_reader :logging, :host, :mode, :paginate, :plugins
+    attr_reader :logging, :host, :mode, :paginate, :taxonomies, :plugins
 
     def initialize
       config = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
@@ -17,6 +17,7 @@ module Simpress
       @host          = config_default[:host]
       @logging       = config_default[:logging]
       @paginate      = config_default[:paginate]
+      @taxonomies    = config_default.fetch(:taxonomies, [:categories])
       @plugins       = config_default[:plugins]
     end
 

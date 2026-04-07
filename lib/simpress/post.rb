@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 require "simpress/json"
+require "simpress/taxonomy"
 
 module Simpress
   class Post
-    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :categories, :content, :description, :toc, :cover].freeze
+    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover].freeze
     PERMITTED_PARAMS    = attr_reader :id,
                                       :title,
                                       :date,
                                       :permalink,
-                                      :categories,
+                                      :taxonomies,
                                       :content,
                                       :description,
                                       :toc,
@@ -24,7 +25,6 @@ module Simpress
       @title       = params[:title]
       @date        = params[:date]
       @permalink   = params[:permalink]
-      @categories  = params[:categories]
       @content     = params[:content]
       @description = params[:description]
       @toc         = params[:toc]
@@ -33,6 +33,13 @@ module Simpress
       @index       = params[:index]
       @draft       = params[:draft]
       @markdown    = params[:markdown]
+      @taxonomies  = Simpress::Taxonomy.taxonomies.to_h do |taxonomy|
+        terms = Array(params[taxonomy.name.to_sym]).map do |name|
+          taxonomy.term(name).tap {|term| term.posts << self }
+        end
+
+        [taxonomy.name, terms]
+      end
     end
 
     def timestamp

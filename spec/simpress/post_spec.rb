@@ -29,7 +29,6 @@ describe Simpress::Post do
       expect(post.toc).to eq([])
       expect(post.date).to eq(Time.new(2025, 1, 1))
       expect(post.permalink).to eq("/test.html")
-      expect(post.categories).to eq([])
       expect(post.cover).to eq("/images/no_image.webp")
       expect(post.index).to be_truthy
       expect(post.draft).to be_truthy

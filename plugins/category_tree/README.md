@@ -1,7 +1,7 @@
-# Plugin: CategoriesContent
+# Plugin: CategoryTree
 
 
-カテゴリ一覧を処理・出力する Simpress プラグイン。  
+カテゴリ一覧を処理・出力する Simpress プラグイン。
 フラットなカテゴリ構造をネスト構造に変換し、HTML または JSON 形式で出力します。
 
 

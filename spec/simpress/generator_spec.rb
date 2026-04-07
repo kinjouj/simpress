@@ -3,9 +3,9 @@
 require "simpress/generator"
 
 describe Simpress::Generator do
-  let(:category) { Simpress::Category.fetch("Test") }
-  let(:post1) { build(:post, categories: [category], date: Time.new(2000, 1, 1)) }
-  let(:post2) { build(:post, categories: [category], date: Time.new(2000, 2, 1)) }
+  let(:category) { Simpress::Taxonomy::Term.new("Test") }
+  let(:post1) { build(:post, taxonomies: { categories: [category] }, date: Time.new(2000, 1, 1)) }
+  let(:post2) { build(:post, taxonomies: { categories: [category] }, date: Time.new(2000, 2, 1)) }
   let(:post3) { build(:post, draft: true) }
   let(:page) { build(:post, index: false) }
 
@@ -27,8 +27,7 @@ describe Simpress::Generator do
     expect(Simpress::Plugin).to have_received(:process).exactly(1).times
     expect(Simpress::Generator::Renderer).to have_received(:generate).with(
       [post2, post1],
-      [page],
-      hash_including("test" => category)
+      [page]
     )
   end
 end

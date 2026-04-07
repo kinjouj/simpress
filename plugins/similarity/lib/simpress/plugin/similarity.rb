@@ -45,10 +45,11 @@ module Simpress
           @data       = posts.map do |post|
             keywords = extract_keywords(post)
             vector = keywords.tally
-            post.categories.each {|category| vector[category.name] = (vector[category.name] || 0) + 10 }
+            post.taxonomies.each_value do |terms|
+              terms.each {|term| vector[term.name] = (vector[term.name] || 0) + 10 }
+            end
 
             norm = Math.sqrt(vector.each_value.sum(0.0) {|v| v * v })
-
             { vector: vector, norm: norm, simhash: calculate_simhash(vector) }
           end
         end
@@ -69,7 +70,7 @@ module Simpress
                 next unless candidates.add?(key)
 
                 score = cosine(i, j)
-                yield i, j, score if score > 0.3
+                yield i, j, score if score > 0.2
               end
             end
           end

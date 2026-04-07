@@ -8,7 +8,7 @@ module Simpress
     module Renderer
       module Archive
         class MonthlyRenderer < BaseRenderer
-          DATA_JSON_KEYS = [:id, :title, :date, :permalink, :categories, :cover, :description].freeze
+          DATA_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :cover, :description].freeze
 
           def self.generate_html(monthly_archives)
             monthly_archives.each do |date, posts_by_monthly|

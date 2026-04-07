@@ -16,7 +16,7 @@ export default class Simpress {
   }
 
   public static getPostsByCategory(category: string, page: number): Promise<PostType[]> {
-    return Simpress.getData<PostType[]>(`/archives/category/${category}/${page}.json`);
+    return Simpress.getData<PostType[]>(`/archives/categories/${category}/${page}.json`);
   }
 
   public static getPost(permalink: string): Promise<PostType> {

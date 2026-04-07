@@ -5,7 +5,7 @@ import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
 import { CreatedAt, NotFound, RelatedPosts } from '../components';
 import { useFetchData, usePermalink } from '../hooks';
-import type { CategoryType, PostType } from '../types';
+import type { PostType } from '../types';
 import 'prismjs/themes/prism-tomorrow.css';
 import 'prismjs/plugins/autoloader/prism-autoloader';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
@@ -62,9 +62,12 @@ const PostPage = (): React.JSX.Element => {
       <h1 className="post-title fs-3 fw-bold my-3">{post.title}</h1>
       <hr />
       <Stack direction="horizontal" gap={3} className="post-categories position-relative m-0">
-        {post.categories.map((category: CategoryType) => {
-          const to = `/archives/category/${category.key}`;
-          return <Link key={category.key} to={to} className="fs-5">{category.name}</Link>;
+        {Object.entries(post.taxonomies).map(([taxonomy, terms]) => {
+          return terms.map((term) => (
+            <div key={term.key}>
+              <Link to={`/archives/${taxonomy}/${term.key}`} className="post-category">{term.name}</Link>
+            </div>
+          ));
         })}
       </Stack>
       <div dangerouslySetInnerHTML={{ __html: post.content }} className="post-content fs-6 my-4 mw-100" />

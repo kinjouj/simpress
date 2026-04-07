@@ -7,7 +7,7 @@ module Simpress
   module Generator
     module Renderer
       class PermalinkRenderer < BaseRenderer
-        DATA_JSON_KEYS = [:id, :title, :date, :permalink, :categories, :content, :toc].freeze
+        DATA_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :toc].freeze
         Paginator      = Data.define(:newer_post, :older_post)
 
         def self.generate_html(post, older_post = nil, newer_post = nil)

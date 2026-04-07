@@ -1,4 +1,11 @@
-import type { CategoryType } from './category-type';
+type TaxonomyType = {
+  key: string
+  name: string
+};
+
+type TaxonomiesType = {
+  categories: TaxonomyType[]
+};
 
 export type PostType = {
   id: string
@@ -9,7 +16,7 @@ export type PostType = {
   cover: string
   content: string
   description: string
-  categories: CategoryType[]
+  taxonomies: TaxonomiesType
   similarities?: SimilaritiesType[]
 };
 

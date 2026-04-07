@@ -29,7 +29,6 @@ describe Simpress::Parser do
       expect(post.permalink).to eq("/test.html")
       expect(post.index).to be(true)
       expect(post.draft).to be_falsy
-      expect(post.categories).to eql([Simpress::Category.fetch("test")])
       expect(post.description).to eq("test")
     end
   end
@@ -212,7 +211,6 @@ describe Simpress::Parser do
 
       post = described_class.parse("dummy.markdown")
       expect(post).not_to be_nil
-      expect(post.categories).to eql([Simpress::Category.fetch("test")])
     end
   end
 end

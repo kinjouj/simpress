@@ -24,7 +24,7 @@ describe('AppRoutes', () => {
             return Promise.resolve([testPostData]);
           case '/archives/1234/01/1.json':
             return Promise.resolve([testPostData]);
-          case '/archives/category/test/1.json':
+          case '/archives/categories/test/1.json':
             return Promise.resolve([testPostData]);
           case '/test.json':
             return Promise.resolve(testPostData);
@@ -57,9 +57,9 @@ describe('AppRoutes', () => {
     expect(posts).toHaveLength(1);
   });
 
-  test('<AppRoutes> initialEntries=/archives/category/test', async () => {
+  test('<AppRoutes> initialEntries=/archives/categories/test', async () => {
     render(
-      <MemoryRouter initialEntries={['/archives/category/test/1']}>
+      <MemoryRouter initialEntries={['/archives/categories/test/1']}>
         <AppRoutes />
       </MemoryRouter>
     );

@@ -1,29 +1,24 @@
 # frozen_string_literal: true
 
-require "simpress/plugin/categories_content"
+require "simpress/plugin/category_tree"
 
-describe Simpress::Plugin::CategoriesContent do
+describe Simpress::Plugin::CategoryTree do
   before do
     allow(Simpress::Config.instance).to receive(:mode).and_return("html")
     allow(Simpress::Theme).to receive(:render).and_return("test data")
     allow(File).to receive(:exist?).with("category_indexes.json").and_return(false)
     Simpress::Context.instance.clear
-  end
+    Simpress::Taxonomy.clear
 
-  let(:root)     { Simpress::Category.fetch("Root") }
-  let(:child1)   { Simpress::Category.fetch("Child1") }
-  let(:child2)   { Simpress::Category.fetch("Child2") }
-  let(:categories) do
-    {
-      "root" => root,
-      "child1" => child1,
-      "child2" => child2
-    }
+    categories = Simpress::Taxonomy.fetch("categories")
+    categories.term("Root")
+    categories.term("Child1")
+    categories.term("Child2")
   end
 
   context "modeがhtmlの場合" do
     it "Themeが正しい引数で呼ばれ、結果がContextにセットされること" do
-      described_class.run(nil, nil, categories)
+      described_class.run(nil, nil)
       expect(Simpress::Theme).to have_received(:render).with("sidebar_categories", categories: anything)
       expect(Simpress::Context[:sidebar_categories_content]).to eq("test data")
     end
@@ -36,7 +31,7 @@ describe Simpress::Plugin::CategoriesContent do
     end
 
     it "categories.jsonが書き出され、Contextへのセットは行われないこと" do
-      described_class.run(nil, nil, categories)
+      described_class.run(nil, nil)
       expect(Simpress::Writer).to have_received(:write).with("categories.json", anything)
       expect { Simpress::Context[:sidebar_categories_content] }.to raise_error(KeyError)
     end
@@ -48,7 +43,7 @@ describe Simpress::Plugin::CategoriesContent do
     end
 
     it "例外が発生すること" do
-      expect { described_class.run(nil, nil, categories) }.to raise_error(RuntimeError)
+      expect { described_class.run(nil, nil) }.to raise_error(RuntimeError)
     end
   end
 
@@ -65,7 +60,7 @@ describe Simpress::Plugin::CategoriesContent do
       end
 
       it "childrenがrootに移動され、トップレベルから削除されること" do
-        described_class.run(nil, nil, categories)
+        described_class.run(nil, nil)
         expect(Simpress::Writer).to have_received(:write).with("categories.json", anything) do |_, data|
           json = Simpress::JSON.load(data)
           expect(json["root"]["children"].size).to eq(2)
@@ -81,7 +76,7 @@ describe Simpress::Plugin::CategoriesContent do
       end
 
       it "エラーにならずcategoriesの構造が変わらないこと" do
-        expect { described_class.run(nil, nil, categories) }.not_to raise_error
+        expect { described_class.run(nil, nil) }.not_to raise_error
         expect(Simpress::Writer).to have_received(:write).with("categories.json", anything) do |_, data|
           json = Simpress::JSON.load(data)
           expect(json.keys).to contain_exactly("root", "child1", "child2")
@@ -95,7 +90,7 @@ describe Simpress::Plugin::CategoriesContent do
       end
 
       it "エラーにならずrootのchildrenが空のままであること" do
-        expect { described_class.run(nil, nil, categories) }.not_to raise_error
+        expect { described_class.run(nil, nil) }.not_to raise_error
         expect(Simpress::Writer).to have_received(:write).with("categories.json", anything) do |_, data|
           json = Simpress::JSON.load(data)
           expect(json["root"]["children"]).to be_empty
