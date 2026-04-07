@@ -5,6 +5,6 @@ node_modules
 !.cache/.gitkeep
 scss/*
 source/*
-!source/.gitkeep
+!source/momotarou.markdown
 static/*
 !static/.gitkeep
