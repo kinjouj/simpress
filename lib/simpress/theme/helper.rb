@@ -2,6 +2,7 @@
 
 require "simpress/config"
 require "simpress/json"
+require "simpress/uri"
 
 module Simpress
   module Theme
@@ -11,7 +12,11 @@ module Simpress
       end
 
       def canonical(path)
-        "#{Simpress::Config.instance.host.chomp('/')}#{path}"
+        "#{Simpress::Config.instance.host.chomp('/')}#{uri(path)}"
+      end
+
+      def uri(path)
+        Simpress::Uri.wrap(path).with_ext("html")
       end
 
       def link_to(text, path, **options)

@@ -17,7 +17,7 @@ describe Simpress::Plugin::Similarity do
   let(:post5) { load_fixture("data5.yaml") }
   let(:posts) { [post1, post2, post3, post4, post5] }
 
-  it "相関データが正しくファイルとして出力されること" do
+  it "assigns correct similarity data to each post" do
     described_class.run(posts)
 
     expect(post1).to respond_to(:similarities)
@@ -41,30 +41,30 @@ describe Simpress::Plugin::Similarity do
     expect(post5.similarities.map { _1[0] }).to eq(["post_004", "post_002"])
   end
 
-  context "cosineが0を出した場合" do
+  context "when cosine similarity returns 0" do
     before do
       cosine_similarities = Simpress::Plugin::Similarity::CosineSimilarity.new(posts)
       allow(cosine_similarities).to receive(:cosine).and_return(0)
       allow(Simpress::Plugin::Similarity::CosineSimilarity).to receive(:new).and_return(cosine_similarities)
     end
 
-    it "similaritiesが空になること" do
+    it "sets similarities to empty for all posts" do
       described_class.run(posts)
       posts.each {|post| expect(post.similarities).to be_empty }
     end
   end
 
-  context "modeがjsonの場合" do
+  context "when mode is json" do
     before do
       allow(Simpress::Config.instance).to receive(:mode).and_return("json")
     end
 
-    it "as_jsonでsimilaritiesが取得できること" do
+    it "includes similarities in as_json when content key is present" do
       described_class.run(posts)
       expect(post1.as_json(keys: [:title, :content])).to include(:similarities)
     end
 
-    it ":contentが無い場合はas_jsonでsimilaritiesが取得できないこと" do
+    it "excludes similarities from as_json when content key is absent" do
       described_class.run(posts)
       expect(post1.as_json(keys: [:title])).not_to include(:similarities)
     end

@@ -3,19 +3,42 @@
 require "simpress/parser/markdown/processor"
 
 describe Simpress::Parser::Markdown::Processor do
-  it "markdownをrenderすると正しくbody、images、tosが返されること" do
-    markdown = <<~MARKDOWN
-      ### TEST1
+  let(:markdown1) do
+    <<~MD
+      ## Hello
 
-      ![](/test1.jpg)
+      ![alt](cover.png)
 
-      ![](/test2.jpg)
+      some content
+    MD
+  end
 
-      #### TEST2
-    MARKDOWN
-    body, images, tos = described_class.render(markdown)
-    expect(body).not_to be_empty
-    expect(images).to eq("/test1.jpg")
-    expect(tos).to match([["section-1", "TEST1"], ["section-2", "TEST2"]])
+  let(:markdown2) do
+    <<~MD
+      ## World
+
+      some content
+    MD
+  end
+
+  before do
+    described_class.instance_variable_set(:@parser, nil)
+  end
+
+  describe ".render" do
+    it "returns rendered html body, primary_image, and toc" do
+      body, image, toc = described_class.render(markdown1)
+      expect(body).to include("Hello")
+      expect(image).to eq "cover.png"
+      expect(toc).to eq([["section-1", "Hello"]])
+    end
+
+    it "does not carry over state from a previous render" do
+      described_class.render(markdown1)
+      body, image, toc = described_class.render(markdown2)
+      expect(body).to include("World")
+      expect(image).to be_nil
+      expect(toc).to eq([["section-1", "World"]])
+    end
   end
 end

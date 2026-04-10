@@ -37,13 +37,16 @@ module Simpress
         params[:index]         = params.fetch(:index, true)
         params[:draft]         = params.fetch(:draft, false)
         params[:layout]      ||= "page"
-        params[:description] ||= body[REGEX_DESC]&.strip.to_s
+        params[:description] ||= body[REGEX_DESC].strip.to_s
         params[:cover]       ||= image || DEFAULT_COVER
       end
 
       def parse_datetime!(params, basename)
-        if params[:date]
-          params[:date] = Time.new(params[:date]) unless params[:date].is_a?(Time)
+        date = params[:date]
+        return if date.is_a?(Time)
+
+        if date
+          params[:date] = date.respond_to?(:to_time) ? date.to_time : Time.parse(date)
         else
           y, m, d = basename.scan(REGEX_TIME).flatten(1)
           params[:date] = Time.new(y, m, d) if y && m && d

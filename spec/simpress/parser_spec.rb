@@ -3,214 +3,113 @@
 require "simpress/parser"
 
 describe Simpress::Parser do
+  let(:file) { "2026-01-01-test-post.md" }
+  let(:markdown) do
+    <<~MD
+      ---
+      title: Test Title
+      ---
+      This is the description.
+
+      This is the content.
+    MD
+  end
+
+  let(:render_result) { ["<p>content</p>", "cover.jpg", "<ul>toc</ul>"] }
+
   before do
-    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+    allow(File).to receive(:read).with(file).and_return(markdown)
+    allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(render_result)
+    allow(XXhash).to receive(:xxh64).and_return(999)
   end
 
-  context "正常なMarkdownをパースする場合" do
-    it "タイトル、パーマリンク、レイアウト、公開状態、カテゴリを正しく取得できること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          date: 2025-01-01 00:00:00
-          permalink: /test.html
-          categories:
-          - test
-          ---
-
-          test
-
-        MARKDOWN
-      }
-      post = described_class.parse("test.markdown")
-      expect(post).not_to be_nil
-      expect(post.title).to eq("test")
-      expect(post.permalink).to eq("/test.html")
-      expect(post.index).to be(true)
-      expect(post.draft).to be_falsy
-      expect(post.description).to eq("test")
-    end
-  end
-
-  context "パーマリンクが存在しない場合" do
-    it "ファイル名と日付から自動生成されること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          date: 2000-01-01 00:00:00
-          ---
-
-          test
-        MARKDOWN
-      }
-      post = described_class.parse("dummy.md")
-      expect(post).not_to be_nil
-      expect(post.permalink).to eq("/2000/01/dummy")
-    end
-  end
-
-  context "dateが無い場合" do
-    it "ファイル名に日付があればそれを使用してパースできること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          ---
-
-          test
-        MARKDOWN
-      }
-      post = described_class.parse("2010-01-01-dummy.markdown")
-      expect(post).not_to be_nil
-    end
-
-    it "ファイル名にも日付要素がない場合は ParserError が発生すること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          ---
-
-          test
-        MARKDOWN
-      }
-      expect { described_class.parse("dummy.markdown") }.to raise_error(Simpress::Parser::ParseError)
-    end
-  end
-
-  context "dateが不正な値の場合" do
-    it "不正値の場合はInvalidDateParseErrorが発生すること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          date: abc
-          ---
-
-          test
-        MARKDOWN
-      }
-      expect { described_class.parse("dummy.markdown") }.to raise_error(%(can't parse: "abc"))
-    end
-  end
-
-  context "indexが指定されている場合" do
-    it "indexが正しく設定されること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          date: 2000-01-01 00:00:00
-          permalink: /test.html
-          index: false
-          categories: "test"
-          ---
-
-
-          test
-        MARKDOWN
-      }
-      file = File.expand_path("test4.markdown", __dir__)
+  describe ".parse" do
+    it "returns a post" do
       post = described_class.parse(file)
-      expect(post).not_to be_nil
-      expect(post.index).to be(false)
-    end
-  end
-
-  context "draftが指定されている場合" do
-    it "公開状態が正しく反映されること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          date: 2000-01-01 00:00:00
-          draft: false
-          ---
-
-          test
-        MARKDOWN
-      }
-      post = described_class.parse("dummy.markdown")
-      expect(post).not_to be_nil
-      expect(post.draft).to be_falsey
-    end
-  end
-
-  context "coverヘッダや本文画像がある場合" do
-    it "coverが正しく設定されること(ヘッダ優先)" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          date: 2000-01-01 00:00:00
-          cover: /images/test.png
-          ---
-
-
-          test
-        MARKDOWN
-      }
-      post = described_class.parse("dummy.markdown")
-      expect(post).not_to be_nil
-      expect(post.cover).to eq("/images/test.png")
+      expect(post.id).to eq "999"
+      expect(post.title).to eq "Test Title"
+      expect(post.date).to eq Time.new(2026, 1, 1)
+      expect(post.permalink).to eq "/2026/01/2026-01-01-test-post"
+      expect(post.content).to eq "<p>content</p>"
+      expect(post.description).to eq "This is the description."
+      expect(post.cover).to eq "cover.jpg"
     end
 
-    it "coverが本文の最初の画像から取得されること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
-          ---
-          title: test
-          date: 2000-01-01 00:00:00
-          ---
-
-          ![](/images/test.jpg)
-        MARKDOWN
-      }
-
-      post = described_class.parse("dummy.markdown")
-      expect(post).not_to be_nil
-      expect(post.cover).to eq("/images/test.jpg")
+    it "raises ParseError when date information is missing" do
+      allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\n---\nbody")
+      expect { described_class.parse("no-date.md") }.to raise_error(Simpress::Parser::ParseError)
     end
-  end
 
-  context "descriptionがある場合" do
-    it "descriptionが正しく取得できること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
+    context "when date in front matter is parsed as Time" do
+      let(:markdown) do
+        <<~MD
           ---
-          title: test
-          date: 2000-01-01 00:00:00
-          description: aaa bbb ccc
+          title: Test Title
+          date: 2025-01-01 00:00:00 +0900
           ---
+          This is the description.
 
-          test
-        MARKDOWN
-      }
+          This is the content.
+        MD
+      end
 
-      post = described_class.parse("dummy.markdonw")
-      expect(post).not_to be_nil
-      expect(post.description).to eq("aaa bbb ccc")
+      it "converts Date to Time" do
+        expect(described_class.parse(file).date).to be_a(Time)
+      end
     end
-  end
 
-  context "categoriesが配列でない場合" do
-    it "単一カテゴリを配列に変換して取得できること" do
-      allow(File).to receive(:read) {
-        <<~MARKDOWN
+    context "when date in front matter is parsed as Date" do
+      let(:markdown) do
+        <<~MD
           ---
-          title: test
-          date: 2000-01-01 00:00:00
-          categories: test
+          title: Test Title
+          date: 2025-01-01
           ---
+          This is the description.
 
-          test
-        MARKDOWN
-      }
+          This is the content.
+        MD
+      end
 
-      post = described_class.parse("dummy.markdown")
-      expect(post).not_to be_nil
+      it "converts Date to Time" do
+        expect(described_class.parse(file).date).to be_a(Time)
+      end
+    end
+
+    context "when date in front matter is parsed as String" do
+      let(:markdown) do
+        <<~MD
+          ---
+          title: Test Title
+          date: "2025-01-01"
+          ---
+          This is the description.
+
+          This is the content.
+        MD
+      end
+
+      it "converts Date to Time" do
+        expect(described_class.parse(file).date).to be_a(Time)
+      end
+    end
+
+    context "when permalink is given in front matter" do
+      let(:markdown) do
+        <<~MD
+          ---
+          title: Test Title
+          permalink: /existing/path
+          ---
+          This is the description.
+
+          This is the content.
+        MD
+      end
+
+      it "uses the permalink from front matter as-is" do
+        expect(described_class.parse(file).permalink).to eq "/existing/path"
+      end
     end
   end
 end

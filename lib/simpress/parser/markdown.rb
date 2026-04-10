@@ -6,7 +6,7 @@ module Simpress
   module Parser
     module Markdown
       FRONT_MATTER_MARKDOWN_REGEX = /\A---[^\S\n]*\n(?<header>(?:.*\n)*?)---[^\S\n]*\n/
-      PERMITTED_CLASSES = [Time].freeze
+      PERMITTED_CLASSES = [Date, Time].freeze
 
       def self.parse(txt)
         match = txt.match(FRONT_MATTER_MARKDOWN_REGEX)

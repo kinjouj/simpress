@@ -10,11 +10,11 @@ module Simpress
     class << self
       def render(template, data)
         hash = Simpress::Context.to_h.merge(data)
-        render_internal(template, Simpress::Theme::Scope.new(hash))
+        render_internal(template, Scope.new(hash))
       end
 
       def render_partial(template, data)
-        render_internal(template, Simpress::Theme::Scope.new(data))
+        render_internal(template, Scope.new(data))
       end
 
       def clear
@@ -49,5 +49,7 @@ module Simpress
         Simpress::Theme.render_partial(template, data)
       end
     end
+
+    private_constant :Scope
   end
 end

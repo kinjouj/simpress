@@ -4,39 +4,38 @@ require "simpress/generator/renderer/page_renderer"
 require "simpress/post"
 
 describe Simpress::Generator::Renderer::PageRenderer do
+  let(:page)  { build(:post, title: "About", permalink: "about", layout: "page", index: false) }
+  let(:pages) { [page] }
+
   before do
     allow(Simpress::Logger).to receive(:info)
-    allow(Simpress::Writer).to receive(:write).and_yield(anything)
   end
-
-  let(:post1) { build(:post, index: false) }
-  let(:post2) { build(:post, index: false) }
-  let(:pages) { [post1, post2] }
 
   describe ".generate_html" do
     before do
-      allow(Simpress::Theme).to receive(:render).and_return("test")
+      allow(Simpress::Theme).to receive(:render).and_return("<html>content</html>")
+      allow(Simpress::Writer).to receive(:write).and_yield("public/page/about.html")
     end
 
-    it "正常にgenerate_htmlメソッドが呼ばれること" do
+    it "writes html for each page" do
       described_class.generate_html(pages)
-      expect(Simpress::Writer).to have_received(:write).exactly(2).times
-      expect(Simpress::Writer).to have_received(:write).with("/page/test1.html", "test")
-      expect(Simpress::Writer).to have_received(:write).with("/page/test2.html", "test")
-      expect(Simpress::Logger).to have_received(:info).exactly(2).times
-      expect(Simpress::Theme).to have_received(:render).exactly(2).times
+      expect(Simpress::Theme).to have_received(:render).with("page", post: page)
+      expect(Simpress::Writer).to have_received(:write)
+      expect(Simpress::Logger).to have_received(:info).with("[BUILD PAGE]: About public/page/about.html")
     end
   end
 
   describe ".generate_json" do
-    let(:keys) { described_class::DATA_JSON_KEYS }
+    let(:expected_page_json) { Simpress::JSON.dump(page, keys: described_class::DATA_JSON_KEYS) }
 
-    it "正常にgenerate_jsonメソッドが呼ばれること" do
+    before do
+      allow(Simpress::Writer).to receive(:write).with(anything, expected_page_json).and_yield("public/page/about.json")
+    end
+
+    it "writes json for each page with permitted keys" do
       described_class.generate_json(pages)
-      expect(Simpress::Writer).to have_received(:write).exactly(2).times
-      expect(Simpress::Writer).to have_received(:write).with("/page/test1.json", post1.to_json(keys: keys))
-      expect(Simpress::Writer).to have_received(:write).with("/page/test2.json", post2.to_json(keys: keys))
-      expect(Simpress::Logger).to have_received(:info).exactly(2).times
+      expect(Simpress::Writer).to have_received(:write).with(anything, expected_page_json)
+      expect(Simpress::Logger).to have_received(:info).with("[BUILD PAGE]: About public/page/about.json")
     end
   end
 end

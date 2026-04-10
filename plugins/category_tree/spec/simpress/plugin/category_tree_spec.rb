@@ -3,98 +3,81 @@
 require "simpress/plugin/category_tree"
 
 describe Simpress::Plugin::CategoryTree do
+  let(:term) { Simpress::Taxonomy::Term.new("Ruby", key: "ruby") }
+  let(:taxonomy) { instance_double(Simpress::Taxonomy, terms: { "ruby" => term }) }
+
   before do
-    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
-    allow(Simpress::Theme).to receive(:render).and_return("test data")
+    allow(File).to receive(:exist?).and_return(false)
     allow(File).to receive(:exist?).with("category_indexes.json").and_return(false)
-    Simpress::Context.instance.clear
-    Simpress::Taxonomy.clear
-
-    categories = Simpress::Taxonomy.fetch("categories")
-    categories.term("Root")
-    categories.term("Child1")
-    categories.term("Child2")
+    allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(taxonomy)
   end
 
-  context "modeがhtmlの場合" do
-    it "Themeが正しい引数で呼ばれ、結果がContextにセットされること" do
-      described_class.run(nil, nil)
-      expect(Simpress::Theme).to have_received(:render).with("sidebar_categories", categories: anything)
-      expect(Simpress::Context[:sidebar_categories_content]).to eq("test data")
-    end
-  end
-
-  context "modeがjsonの場合" do
-    before do
-      allow(Simpress::Config.instance).to receive(:mode).and_return("json")
-      allow(Simpress::Writer).to receive(:write)
-    end
-
-    it "categories.jsonが書き出され、Contextへのセットは行われないこと" do
-      described_class.run(nil, nil)
-      expect(Simpress::Writer).to have_received(:write).with("categories.json", anything)
-      expect { Simpress::Context[:sidebar_categories_content] }.to raise_error(KeyError)
-    end
-  end
-
-  context "modeが未知の値の場合" do
-    before do
-      allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
-    end
-
-    it "例外が発生すること" do
-      expect { described_class.run(nil, nil) }.to raise_error(RuntimeError)
-    end
-  end
-
-  context "category_indexes.jsonが存在する場合" do
-    before do
-      allow(Simpress::Config.instance).to receive(:mode).and_return("json")
-      allow(Simpress::Writer).to receive(:write)
-      allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)
-    end
-
-    context "rootとchildが両方categoriesに存在する場合" do
+  describe ".run" do
+    context "when mode is html" do
       before do
-        allow(Simpress::JSON).to receive(:load_file).and_return({ "root" => ["child1", "child2"] })
+        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Theme).to receive(:render).and_return("<ul>categories</ul>")
+        allow(Simpress::Context).to receive(:update)
       end
 
-      it "childrenがrootに移動され、トップレベルから削除されること" do
-        described_class.run(nil, nil)
-        expect(Simpress::Writer).to have_received(:write).with("categories.json", anything) do |_, data|
-          json = Simpress::JSON.load(data)
-          expect(json["root"]["children"].size).to eq(2)
-          expect(json).not_to have_key("child1")
-          expect(json).not_to have_key("child2")
-        end
-      end
-    end
-
-    context "category_indexes.jsonのrootキーがcategoriesに存在しない場合" do
-      before do
-        allow(Simpress::JSON).to receive(:load_file).and_return({ "nonexistent" => ["child1"] })
+      it "renders sidebar_categories template with nested categories" do
+        described_class.run([], [])
+        expect(Simpress::Theme).to have_received(:render).with("sidebar_categories", categories: anything)
       end
 
-      it "エラーにならずcategoriesの構造が変わらないこと" do
-        expect { described_class.run(nil, nil) }.not_to raise_error
-        expect(Simpress::Writer).to have_received(:write).with("categories.json", anything) do |_, data|
-          json = Simpress::JSON.load(data)
-          expect(json.keys).to contain_exactly("root", "child1", "child2")
-        end
+      it "binds the rendered content to context" do
+        described_class.run([], [])
+        expect(Simpress::Context).to have_received(:update).with(sidebar_categories_content: "<ul>categories</ul>")
       end
     end
 
-    context "category_indexes.jsonのchildキーがcategoriesに存在しない場合" do
+    context "when mode is json" do
       before do
-        allow(Simpress::JSON).to receive(:load_file).and_return({ "root" => ["nonexistent"] })
+        allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+        allow(Simpress::JSON).to receive(:dump).and_return("{}")
+        allow(Simpress::Writer).to receive(:write)
       end
 
-      it "エラーにならずrootのchildrenが空のままであること" do
-        expect { described_class.run(nil, nil) }.not_to raise_error
-        expect(Simpress::Writer).to have_received(:write).with("categories.json", anything) do |_, data|
-          json = Simpress::JSON.load(data)
-          expect(json["root"]["children"]).to be_empty
-        end
+      it "writes categories.json" do
+        described_class.run([], [])
+        expect(Simpress::Writer).to have_received(:write).with("categories.json", "{}")
+      end
+
+      it "dumps nested categories with permitted keys" do
+        described_class.run([], [])
+        expect(Simpress::JSON).to have_received(:dump).with(anything, keys: described_class::KEYS)
+      end
+    end
+
+    context "when mode is unknown" do
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
+      end
+
+      it "raises an error" do
+        expect { described_class.run([], []) }.to raise_error("Error")
+      end
+    end
+
+    context "when category_indexes.json exists" do
+      let(:rails_term) { Simpress::Taxonomy::Term.new("Rails", key: "rails") }
+      let(:taxonomy)   { instance_double(Simpress::Taxonomy, terms: { "ruby" => term, "rails" => rails_term }) }
+
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Theme).to receive(:render).and_return("")
+        allow(Simpress::Context).to receive(:update)
+        allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)
+        allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "ruby" => ["rails"] })
+      end
+
+      it "nests child categories under their parent and removes them from root" do
+        described_class.run([], [])
+
+        expect(Simpress::Theme).to have_received(:render).with(
+          "sidebar_categories",
+          categories: satisfy {|cats| cats.key?("ruby") && !cats.key?("rails") }
+        )
       end
     end
   end

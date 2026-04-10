@@ -3,15 +3,20 @@
 require "simpress/theme/helper"
 
 describe Simpress::Theme::Helper do
+  let(:helper_test_class) do
+    Class.new do
+      include Simpress::Theme::Helper
+    end
+  end
+
   let(:helper) do
-    Class.new { include Simpress::Theme::Helper }.new
+    helper_test_class.new
   end
 
   describe "#json_encode" do
-    let(:data) { { key: "value", num: 42 } }
-
-    it "Simpress::JSON.encodeに委譲する" do
-      expect(helper.json_encode(data)).to eq('{"key":"value","num":42}')
+    it "delegates to Simpress::JSON.encode" do
+      data = { key: "value" }
+      expect(helper.json_encode(data)).to eq '{"key":"value"}'
     end
   end
 
@@ -20,15 +25,26 @@ describe Simpress::Theme::Helper do
       allow(Simpress::Config.instance).to receive(:host).and_return("https://example.com/")
     end
 
-    it "host + path を返す" do
-      expect(helper.canonical("/about")).to eq("https://example.com/about")
+    it "returns an absolute URL with the hostname and html extension" do
+      expect(helper.canonical("/post-1")).to eq "https://example.com/post-1.html"
+    end
+  end
+
+  describe "#uri" do
+    it "wraps the path with Simpress::Uri and ensures html extension" do
+      expect(helper.uri("/test").to_s).to eq "/test.html"
     end
   end
 
   describe "#link_to" do
-    it "属性を正しく組み立てた <a> タグを生成する" do
-      result = helper.link_to("外部", "https://example.com", target: "_blank", rel: "noopener")
-      expect(result).to eq('<a href="https://example.com" target="_blank" rel="noopener">外部</a>')
+    it "generates a simple anchor tag" do
+      expect(helper.link_to("Home", "/")).to eq '<a href="/">Home</a>'
+    end
+
+    it "includes additional attributes in the anchor tag" do
+      result = helper.link_to("About", "/about", class: "nav-link", target: "_blank")
+      expect(result).to include('class="nav-link"')
+      expect(result).to include('target="_blank"')
     end
   end
 end

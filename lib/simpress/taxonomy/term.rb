@@ -11,8 +11,8 @@ module Simpress
 
       attr_reader :key, :name, :children, :posts
 
-      def initialize(name)
-        @key      = name.to_url
+      def initialize(name, key: nil)
+        @key      = key || name.to_url
         @name     = name
         @posts    = []
         @children = {}

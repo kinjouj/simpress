@@ -3,23 +3,43 @@
 require "simpress/plugin/inline_note"
 
 describe Simpress::Plugin::InlineNote do
-  describe "#preprocess" do
-    it "正常に変換されること" do
-      markdown = <<~MARKDOWN
-        [^]: Hello World
-      MARKDOWN
-
-      res = described_class.preprocess(markdown)
-      expect(res).to eq(%(<div class="note"><i class="fa-solid fa-circle-exclamation"></i>Hello World</div>\n))
+  describe ".preprocess" do
+    it "converts inline note syntax to html div with font-awesome icon" do
+      markdown = "[^]: This is a note."
+      expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i>This is a note.</div>'
+      expect(described_class.preprocess(markdown)).to eq expected
     end
 
-    it "[^]:のあとにスペースがなくても問題ないこと" do
+    it "ignores spaces after the colon but preserves note content" do
+      markdown = "[^]:    Note with leading spaces."
+      expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i>Note with leading spaces.</div>'
+      expect(described_class.preprocess(markdown)).to eq expected
+    end
+
+    it "does not match if the syntax is not at the beginning of the line" do
+      markdown = "Text before [^]: Not a note."
+      expect(described_class.preprocess(markdown)).to eq markdown
+    end
+
+    it "matches multiple notes in different lines" do
       markdown = <<~MARKDOWN
-        [^]:Hello World
+        [^]: First note.
+        Some text.
+        [^]: Second note.
       MARKDOWN
 
-      res = described_class.preprocess(markdown)
-      expect(res).to eq(%(<div class="note"><i class="fa-solid fa-circle-exclamation"></i>Hello World</div>\n))
+      expected = <<~HTML
+        <div class="note"><i class="fa-solid fa-circle-exclamation"></i>First note.</div>
+        Some text.
+        <div class="note"><i class="fa-solid fa-circle-exclamation"></i>Second note.</div>
+      HTML
+
+      expect(described_class.preprocess(markdown)).to eq expected
+    end
+
+    it "does not match incomplete or slightly different syntax" do
+      expect(described_class.preprocess("[^] : No space before colon")).to eq "[^] : No space before colon"
+      expect(described_class.preprocess("[*]: Wrong bracket content")).to eq "[*]: Wrong bracket content"
     end
   end
 end

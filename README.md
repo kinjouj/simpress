@@ -39,8 +39,6 @@ default:
   mode: html
   host: https://example.com
   paginate: 10
-  taxonomies:
-    - categories
   plugins:
     - recent_posts
 ```

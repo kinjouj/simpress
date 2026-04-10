@@ -19,7 +19,7 @@ describe Simpress do
     Dir.glob(create_filepath("public/*")) {|file| FileUtils.rm_rf(file) }
   end
 
-  it do
+  it "builds the site and generates all expected output files" do
     described_class.build
     expect(Simpress::Logger).to have_received(:info).at_least(1).times
     expect(Simpress::Logger).to have_received(:debug).exactly(1).times

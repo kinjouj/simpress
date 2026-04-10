@@ -70,7 +70,7 @@ module Simpress
                 next unless candidates.add?(key)
 
                 score = cosine(i, j)
-                yield i, j, score if score > 0.2
+                yield i, j, score if score > 0.3
               end
             end
           end

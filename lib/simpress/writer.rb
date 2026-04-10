@@ -10,8 +10,7 @@ module Simpress
         filepath = File.join(Simpress::Config.output_dir, file)
         raise "FILE EXISTS: #{filepath}" if File.exist?(filepath)
 
-        dirname = File.dirname(filepath)
-        FileUtils.mkdir_p(dirname)
+        FileUtils.mkdir_p(File.dirname(filepath))
         File.write(filepath, data)
         yield filepath if block_given?
       end

@@ -7,18 +7,19 @@ module Simpress
   class Config
     include Singleton
 
-    CONFIG_FILE = File.expand_path("../../config.yaml", __dir__)
-    attr_reader :logging, :host, :mode, :paginate, :taxonomies, :plugins
+    CONFIG_FILE     = File.expand_path("../../config.yaml", __dir__)
+    TAXONOMIES_FILE = File.expand_path("../../taxonomies.yaml", __dir__)
+
+    attr_reader :logging, :host, :mode, :paginate, :plugins, :taxonomies
 
     def initialize
-      config = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
-      config_default = config[:default]
-      @mode          = config_default[:mode]
-      @host          = config_default[:host]
-      @logging       = config_default[:logging]
-      @paginate      = config_default[:paginate]
-      @taxonomies    = config_default.fetch(:taxonomies, [:categories])
-      @plugins       = config_default[:plugins]
+      config      = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
+      @mode       = config[:default][:mode]
+      @host       = config[:default][:host]
+      @logging    = config[:default][:logging]
+      @paginate   = config[:default][:paginate]
+      @plugins    = config[:default][:plugins]
+      @taxonomies = File.exist?(TAXONOMIES_FILE) ? Psych.load_file(TAXONOMIES_FILE) || {} : {}
     end
 
     class << self

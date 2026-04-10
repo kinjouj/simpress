@@ -1,136 +1,95 @@
 # frozen_string_literal: true
 
-require "spec_helper"
 require "simpress/generator/renderer/base_renderer"
 
-RSpec.describe Simpress::Generator::Renderer::BaseRenderer do
+describe Simpress::Generator::Renderer::BaseRenderer do
   before do
-    allow(Simpress::Config.instance).to receive(:paginate).and_return(10)
+    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+    allow(Simpress::Writer).to receive(:write)
+    allow(Simpress::Theme).to receive(:render).and_return("<html></html>")
+    allow(Simpress::JSON).to receive(:dump).and_return('{"json":true}')
   end
 
   describe ".generate" do
-    context "modeがhtmlのとき" do
-      before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
-        allow(described_class).to receive(:generate_html)
-      end
-
-      it "generate_htmlが実行されること" do
-        described_class.generate(:arg1, :arg2)
-        expect(described_class).to have_received(:generate_html).with(:arg1, :arg2)
-      end
+    it "calls generate_html when mode is html" do
+      allow(described_class).to receive(:generate_html)
+      described_class.generate(:arg)
+      expect(described_class).to have_received(:generate_html).with(:arg)
     end
 
-    context "modeがjsonのとき" do
-      before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("json")
-        allow(described_class).to receive(:generate_json)
-      end
-
-      it "generate_jsonが実行されること" do
-        described_class.generate(:arg1, :arg2)
-        expect(described_class).to have_received(:generate_json).with(:arg1, :arg2)
-      end
+    it "calls generate_json when mode is json" do
+      allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+      allow(described_class).to receive(:generate_json)
+      described_class.generate(:arg)
+      expect(described_class).to have_received(:generate_json).with(:arg)
     end
 
-    context "未知のmodeのとき" do
-      before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("xml")
-      end
-
-      it "RuntimeErrorをraiseする" do
-        expect { described_class.generate }.to raise_error(RuntimeError, "ERROR: Unknown mode")
-      end
+    it "raises error for unknown mode" do
+      allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
+      expect { described_class.generate }.to raise_error("ERROR: Unknown mode")
     end
   end
 
   describe ".each_page" do
-    let(:posts) { (1..25).to_a }
-
-    it "ブロックなしで呼ぶとRuntimeErrorをraiseする" do
-      expect { described_class.each_page(posts) }.to raise_error(RuntimeError, "ERROR")
+    before do
+      allow(Simpress::Config.instance).to receive(:paginate).and_return(2)
     end
 
-    it "各ページのpaginatorに正しい属性を渡し総ページ数を返す" do
-      expect {|b| described_class.each_page(posts, nil, &b) }.to yield_successive_args(
-        [[*1..10], have_attributes(page: 1, maxpage: 3)],
-        [[*11..20], have_attributes(page: 2, maxpage: 3)],
-        [[*21..25], have_attributes(page: 3, maxpage: 3)]
+    it "raises error if block is not given" do
+      expect { described_class.each_page([]) }.to raise_error("ERROR")
+    end
+
+    it "slices posts and yields paginator" do
+      expect {|b| described_class.each_page([1, 2, 3], "blog", &b) }.to yield_successive_args(
+        [[1, 2], have_attributes(page: 1)],
+        [[3], have_attributes(page: 2)]
       )
     end
 
-    context "prefixあり" do
-      it "paginatorにprefixを渡す" do
-        expect {|b| described_class.each_page(posts, "blog", &b) }.to yield_successive_args(
-          [[*1..10], have_attributes(page: 1, maxpage: 3, prefix: "blog")],
-          [[*11..20], have_attributes(page: 2, maxpage: 3, prefix: "blog")],
-          [[*21..25], have_attributes(page: 3, maxpage: 3, prefix: "blog")]
-        )
-      end
-    end
-
-    context "prefixなし" do
-      it "Paginatorにprefixキーを渡さない" do
-        expect {|b| described_class.each_page([*1..10], nil, &b) }.to yield_successive_args(
-          [[*1..10], have_attributes(page: 1, maxpage: 1)]
-        )
-      end
-    end
-
-    context "paginateがnil（デフォルト10）のとき" do
-      before do
-        allow(Simpress::Config.instance).to receive(:paginate).and_return(nil)
-      end
-
-      it "10件ずつに分割する" do
-        expect {|b| described_class.each_page([*1..10], nil, &b) }.to yield_successive_args([[*1..10], anything])
-      end
+    it "returns the total page size" do
+      result = described_class.each_page(Array.new(11)) {} # rubocop:disable Lint/EmptyBlock
+      expect(result).to eq 6
     end
   end
 
   describe ".uri" do
-    it "Simpress::Uriインスタンスを返す" do
-      expect(described_class.uri("/foo/bar")).to be_a(Simpress::Uri)
+    it "returns a Simpress::Uri object" do
+      result = described_class.uri("test")
+      expect(result).to be_a(Simpress::Uri)
+      expect(result.to_s).to eq "test"
     end
   end
 
   describe ".write_html" do
-    before do
-      allow(Simpress::Theme).to receive(:render).and_return("<html>content</html>")
-      allow(Simpress::Writer).to receive(:write)
-    end
-
-    it "Theme.renderの結果をWriterに渡す" do
-      described_class.write_html("/path", template: "my_template", titie: "Test")
-      expect(Simpress::Writer).to have_received(:write).with("/path.html", "<html>content</html>")
+    it "renders template and writes with html extension" do
+      context = { posts: [] }
+      described_class.write_html("index", template: "layout", **context)
+      expect(Simpress::Theme).to have_received(:render).with("layout", **context)
+      expect(Simpress::Writer).to have_received(:write).with("index.html", "<html></html>")
     end
   end
 
   describe ".write_json" do
-    before do
-      allow(Simpress::Writer).to receive(:write)
-    end
-
-    it "dump結果をWriterに渡す" do
+    it "dumps data and writes with json extension" do
       data = { key: "value" }
-      described_class.write_json("/path", data)
-      expect(Simpress::Writer).to have_received(:write).with("/path.json", Simpress::JSON.dump(data))
+      described_class.write_json("api/data", data)
+      expect(Simpress::JSON).to have_received(:dump).with(data)
+      expect(Simpress::Writer).to have_received(:write).with("api/data.json", '{"json":true}')
     end
   end
 
   describe ".write" do
     before do
-      allow(Simpress::Writer).to receive(:write).and_yield("/output/post.html")
+      allow(Simpress::Writer).to receive(:write) {|path, _data, &block| block&.call(path) }
     end
 
-    it "uriを経由してファイルパスを組み立てWriterに書き込みを依頼しブロックを呼ぶ" do
-      expected_path = Simpress::Uri.wrap("/output/post").with_ext("html").build
-      expect {|b| described_class.write("/output/post", "data", "html", &b) }.to yield_control
-      expect(Simpress::Writer).to have_received(:write).with(expected_path, "data")
+    it "builds the path with extension and calls Simpress::Writer" do
+      expect { described_class.write("file", "content", "txt") }.not_to raise_error
+      expect(Simpress::Writer).to have_received(:write).with("file.txt", "content")
     end
 
-    it "例外をraiseしない" do
-      expect { described_class.write("/output/post", "data", "html") }.not_to raise_error
+    it "yields the file path to the block" do
+      expect {|b| described_class.write("file", "content", "txt", &b) }.to yield_with_args("file.txt")
     end
   end
 end

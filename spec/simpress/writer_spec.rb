@@ -1,36 +1,39 @@
 # frozen_string_literal: true
 
-require "tmpdir"
 require "simpress/writer"
 
 describe Simpress::Writer do
-  before do
-    tmpdir = Dir.mktmpdir
-    allow(Simpress::Config).to receive(:output_dir).and_return(tmpdir)
-  end
-
-  after do
-    FileUtils.remove_entry(Simpress::Config.output_dir, true)
-  end
-
   describe ".write" do
-    it "指定したパスにファイルを書き込めること" do
-      described_class.write("test.txt", "hoge")
-      expect(File).to exist(File.join(Simpress::Config.output_dir, "test.txt"))
-    end
+    context "when the file does not exist" do
+      before do
+        allow(File).to receive(:exist?).with("public/test/index.html").and_return(false)
+        allow(File).to receive(:dirname).with("public/test/index.html").and_return("public/test")
+        allow(FileUtils).to receive(:mkdir_p).with("public/test")
+        allow(File).to receive(:write).with("public/test/index.html", "content")
+      end
 
-    context "既に存在するファイルに書き込もうとした場合" do
-      it "RuntimeErrorが発生すること" do
-        described_class.write("test2.txt", "hoge")
-        expect { described_class.write("test2.txt", "fuga") }.to raise_error(RuntimeError)
+      it "creates the directory" do
+        described_class.write("test/index.html", "content")
+        expect(FileUtils).to have_received(:mkdir_p).with("public/test")
+      end
+
+      it "writes data to the filepath" do
+        described_class.write("test/index.html", "content")
+        expect(File).to have_received(:write).with("public/test/index.html", "content")
+      end
+
+      it "yields the filepath if a block is given" do
+        expect {|b| described_class.write("test/index.html", "content", &b) }.to yield_with_args("public/test/index.html")
       end
     end
 
-    context "ブロックを要求した場合" do
-      it "正しいファイルパスが渡されること" do
-        described_class.write("test3.txt", "foobar") do |filepath|
-          expect(filepath).to eq(File.expand_path(File.join(Simpress::Config.output_dir, "test3.txt")))
-        end
+    context "when the file already exists" do
+      before do
+        allow(File).to receive(:exist?).with("public/exists.txt").and_return(true)
+      end
+
+      it "raises an error" do
+        expect { described_class.write("exists.txt", "data") }.to raise_error("FILE EXISTS: public/exists.txt")
       end
     end
   end

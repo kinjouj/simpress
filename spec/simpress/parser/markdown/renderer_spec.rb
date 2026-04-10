@@ -3,75 +3,86 @@
 require "simpress/parser/markdown/renderer"
 
 describe Simpress::Parser::Markdown::Renderer do
-  before do
-    allow(Simpress::Logger).to receive(:debug)
-    renderer.reset!
+  let(:renderer) do
+    described_class.new
   end
 
-  after do
-    Simpress::Parser::Markdown::Enhancer.clear
-  end
-
-  let(:renderer) { described_class.new }
-
-  describe "#header" do
-    it "ヘッダーを適切に生成し、tocを更新すること" do
-      expect(renderer.header("test", 3)).to eq(%(<h3 id="section-1">test</h3>))
-      expect(renderer.toc).to eq([["section-1", "test"]])
-
-      expect(renderer.header("test3", 3)).to eq(%(<h3 id="section-2">test3</h3>))
-      expect(renderer.toc).to eq([["section-1", "test"], ["section-2", "test3"]])
-      renderer.reset!
+  describe "#initialize" do
+    it "sets default renderer options and calls reset!" do
+      expect(renderer.primary_image).to be_nil
+      expect(renderer.toc).to eq []
     end
+  end
 
-    it "<h1>の場合はデータが入らないこと" do
-      expect(renderer.header("test2", 1)).to eq("<h1>test2</h1>")
+  describe "#reset!" do
+    it "clears primary_image and toc" do
+      renderer.instance_variable_set(:@primary_image, "test.png")
+      renderer.instance_variable_set(:@toc, [["id", "text"]])
+      renderer.reset!
+      expect(renderer.primary_image).to be_nil
       expect(renderer.toc).to be_empty
     end
   end
 
+  describe "#preprocess" do
+    before do
+      allow(Simpress::Parser::Markdown::Enhancer).to receive(:run).and_return("enhanced")
+    end
+
+    it "delegates to Simpress::Parser::Markdown::Enhancer.run" do
+      markdown = "# Hello"
+      result = renderer.preprocess(markdown)
+      expect(Simpress::Parser::Markdown::Enhancer).to have_received(:run).with(markdown)
+      expect(result).to eq "enhanced"
+    end
+  end
+
+  describe "#header" do
+    it "returns a simple h1 tag for level 1" do
+      result = renderer.header("Title", 1)
+      expect(result).to eq "<h1>Title</h1>"
+      expect(renderer.toc).to be_empty
+    end
+
+    it "returns header with id and registers to toc for level 2 or higher" do
+      result = renderer.header("SubTitle", 2)
+      expect(result).to eq '<h2 id="section-1">SubTitle</h2>'
+      expect(renderer.toc).to eq [["section-1", "SubTitle"]]
+    end
+
+    it "increments section ids" do
+      renderer.header("First", 2)
+      result = renderer.header("Second", 3)
+      expect(result).to include('id="section-2"')
+      expect(renderer.toc.size).to eq 2
+    end
+  end
+
   describe "#image" do
-    it "画像タグを生成し、primary_imageを設定すること" do
-      expect(renderer.image("/test.jpg", nil, nil)).to eq(%(<img src="/test.jpg" alt="image" />))
-      expect(renderer.primary_image).to eq("/test.jpg")
-      renderer.image("/test2.jpg", nil, nil)
-      expect(renderer.primary_image).to eq("/test.jpg")
+    it "returns an img tag and sets primary_image if it is the first one" do
+      result = renderer.image("first.png", nil, nil)
+      expect(result).to eq '<img src="first.png" alt="image" />'
+      expect(renderer.primary_image).to eq "first.png"
+    end
+
+    it "does not overwrite primary_image with subsequent images" do
+      renderer.image("first.png", nil, nil)
+      renderer.image("second.png", nil, nil)
+      expect(renderer.primary_image).to eq "first.png"
     end
   end
 
   describe "#block_code" do
-    it "コードブロックを適切に生成すること" do
-      expect(
-        renderer.block_code("<test>", "test-lang")
-      ).to eq(%(<pre class="line-numbers"><code class="language-test-lang">&lt;test&gt;</code></pre>))
+    it "returns a pre/code block with escaped html" do
+      code = 'puts "Hello" < & >'
+      result = renderer.block_code(code, "ruby")
+      expect(result).to include('class="language-ruby"')
+      expect(result).to include("puts &quot;Hello&quot; &lt; &amp; &gt;")
     end
-  end
 
-  describe "#preprocess" do
-    it "フィルターを通したデータを返すこと" do
-      test_filter = Class.new do
-        extend Simpress::Parser::Markdown::Enhancer
-
-        def self.preprocess(data)
-          data.upcase
-        end
-      end
-
-      markdown = <<~MARKDOWN
-        #### TEST1
-
-        ![](/test1.jpg)
-
-        ![](/test2.jpg)
-
-        ### TEST2
-      MARKDOWN
-
-      stub_const("TestFilter", test_filter)
-      markdown = renderer.preprocess(markdown)
-      expect(markdown).not_to be_nil
-      expect(markdown).to start_with("#### TEST1")
-      expect(Simpress::Logger).to have_received(:debug).exactly(1).times
+    it "defaults to text language if lang is nil" do
+      result = renderer.block_code("code", nil)
+      expect(result).to include('class="language-text"')
     end
   end
 end

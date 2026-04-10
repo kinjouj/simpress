@@ -4,47 +4,42 @@ require "simpress/context"
 
 describe Simpress::Context do
   after do
-    described_class.instance.clear
+    described_class.clear
   end
 
-  describe "[] and []=" do
-    context "値をつっこんだり取得してみたりした場合" do
-      it "successful" do
-        described_class[:key] = "hoge"
-        expect(described_class[:key]).to eq("hoge")
-      end
+  describe ".[]=" do
+    it "sets a value to the context data" do
+      described_class[:test_key] = "value"
+      expect(described_class[:test_key]).to eq "value"
+    end
+  end
 
-      it "存在しないキーを指定した場合、例外が発生すること" do
-        expect { described_class[:key] }.to raise_error(KeyError)
-      end
+  describe ".[]" do
+    it "raises KeyError when the key does not exist" do
+      expect { described_class[:missing] }.to raise_error(KeyError, "key not found: missing")
     end
   end
 
   describe ".update" do
-    it "ハッシュでまとめて値を更新できること" do
-      described_class.update(key: "test", version: 1)
-      expect(described_class[:key]).to eq("test")
-      expect(described_class[:version]).to eq(1)
+    it "merges hash data into the context" do
+      described_class.update(a: 1, b: 2)
+      expect(described_class[:a]).to eq 1
+      expect(described_class[:b]).to eq 2
     end
   end
 
   describe ".to_h" do
-    it "ハッシュでまとめて値を取得できること" do
-      described_class.update(key: "test", version: 1)
-      hash = described_class.to_h
-      expect(hash[:key]).to eq("test")
-      expect(hash[:version]).to eq(1)
+    it "returns a hash containing the stored data" do
+      described_class[:key] = "val"
+      expect(described_class.to_h).to eq({ key: "val" })
     end
   end
 
   describe ".clear" do
-    context "値をつっこんだあとでclearを呼んだ場合" do
-      it "ちゃんと値が消えていること" do
-        described_class.update({ key: "hoge" })
-        expect(described_class[:key]).to eq("hoge")
-        described_class.instance.clear
-        expect { described_class[:key] }.to raise_error(KeyError)
-      end
+    it "removes all data from the context" do
+      described_class[:key] = "val"
+      described_class.clear
+      expect { described_class[:key] }.to raise_error(KeyError)
     end
   end
 end

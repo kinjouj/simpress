@@ -3,28 +3,25 @@
 require "simpress/parser/markdown"
 
 describe Simpress::Parser::Markdown do
-  let(:markdown_text) do
-    <<~MARKDOWN
-      ---
-      title: test
-      date: 2025-01-01 00:00:00
-      permalink: /test.html
-      categories:
-      - test
-      ---
+  describe ".parse" do
+    it "successfully parses header with Time and returns the body" do
+      txt = <<~MARKDOWN
+        ---
+        title: Hello World
+        date: 2026-01-01 10:00:00 +0900
+        ---
+        # Content
+      MARKDOWN
 
-      test1
+      header, body = described_class.parse(txt)
+      expect(header[:title]).to eq "Hello World"
+      expect(header[:date]).to be_a(Time)
+      expect(body).to eq "# Content\n"
+    end
 
-      test2
-
-      test3
-    MARKDOWN
-  end
-
-  it "Markdownを正しくパースしてメタデータ・本文・説明を取得できること" do
-    metadata, body = described_class.parse(markdown_text)
-    expect(metadata).not_to be_nil
-    expect(body).not_to be_nil
-    expect { described_class.parse("") }.to raise_error("Markdown parse failed")
+    it "raises an error when the markdown does not have front matter" do
+      txt = "No front matter here"
+      expect { described_class.parse(txt) }.to raise_error("Markdown parse failed")
+    end
   end
 end

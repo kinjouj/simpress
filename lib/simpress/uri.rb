@@ -23,6 +23,10 @@ module Simpress
       @ext ? "#{part[0...(part.rindex('.'))]}.#{@ext}" : part
     end
 
+    def to_s
+      build
+    end
+
     def self.wrap(path)
       return path if path.is_a?(self)
 

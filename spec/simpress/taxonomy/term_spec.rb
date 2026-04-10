@@ -3,54 +3,82 @@
 require "simpress/taxonomy/term"
 
 describe Simpress::Taxonomy::Term do
-  context "新しいカテゴリーを作成する場合" do
-    it "カテゴリーが正しく初期化されること" do
-      category = described_class.new("Ruby")
-      expect(category.key).to eq("ruby")
-      expect(category.name).to eq("Ruby")
-      expect(category.count).to eq(0)
+  let(:term_name) do
+    "Ruby on Rails"
+  end
+
+  let(:term) do
+    described_class.new(term_name)
+  end
+
+  describe "#initialize" do
+    it "assigns properties" do
+      expect(term.key).to eq "ruby-on-rails"
+      expect(term.name).to eq term_name
+      expect(term.posts).to eq []
+      expect(term.children).to eq({})
     end
   end
 
   describe "#initialize_copy" do
-    it "正しくchildrenまでコピーできて、コピー側から追加して元のオブジェクトには作用しないこと" do
-      category = described_class.new("Ruby")
-      category.children["rspec"] = described_class.new("rspec")
+    it "performs a deep copy of the children hash" do
+      child_term = described_class.new("Child")
+      term.children["child"] = child_term
+      copy = term.dup
+      expect(copy.children["child"]).not_to equal(child_term)
+      expect(copy.children["child"].name).to eq "Child"
+    end
+  end
 
-      cloned = category.dup
-      cloned.children["rails"] = described_class.new("Rails")
+  describe "#count" do
+    before do
+      allow(term.posts).to receive(:size).and_return(5)
+    end
 
-      expect(category.children).not_to eq(cloned.children)
-      expect(category.children).not_to have_key("rails")
+    it "returns the number of associated posts" do
+      expect(term.count).to eq 5
     end
   end
 
   describe "#as_json" do
-    it "正しいハッシュ形式に変換されること" do
-      category = described_class.new("Ruby")
-      expect(category.as_json).to include(key: "ruby", name: "Ruby")
+    it "returns default keys when no options are provided" do
+      result = term.as_json
+      expect(result.keys).to contain_exactly(:key, :name)
     end
 
-    it "keysで指定したキーだけ取得できること" do
-      category = described_class.new("Ruby")
-      category.children[:rails] = described_class.new("Rails")
-      expect(
-        category.as_json(keys: [:key, :children])
-      ).to eq(
-        {
-          key: "ruby",
-          children: {
-            rails: { key: "rails", children: {} }
-          }
-        }
-      )
+    it "returns requested permitted keys" do
+      result = term.as_json(keys: [:key, :count])
+      expect(result.keys).to contain_exactly(:key, :count)
+    end
+
+    it "recursively calls as_json on children with the same options" do
+      child_term = described_class.new("Child")
+      term.children["child"] = child_term
+      result = term.as_json(keys: [:children])
+      expect(result[:children]["child"]).to eq({ children: {} })
     end
   end
 
   describe "#to_json" do
-    it "JSONデータが取得できること" do
-      category = described_class.new("Ruby")
-      expect(category.to_json).not_to be_empty
+    it "delegates to Simpress::JSON.dump" do
+      result = term.to_json
+      expect(result).to eq '{"key":"ruby-on-rails","name":"Ruby on Rails"}'
+    end
+  end
+
+  describe "#eql?" do
+    it "returns true if the other object has the same key and name" do
+      other = described_class.new(term_name)
+      expect(term.eql?(other)).to be true
+    end
+
+    it "returns false if the key or name differs" do
+      other = described_class.new("Other")
+      expect(term.eql?(other)).to be false
+    end
+
+    it "returns false if the other object is not a Term" do
+      expect(term.eql?("string")).to be false
     end
   end
 end

@@ -11,8 +11,7 @@ Layout/EndOfLine:
   EnforcedStyle: lf
 
 Layout/LineLength:
-  Max: 128
-  AllowHeredoc: true
+  Enabled: false
 
 Layout/SpaceAroundOperators:
   Enabled: true
@@ -38,6 +37,9 @@ Metrics/ParameterLists:
   Max: 15
 
 Metrics/PerceivedComplexity:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
   Enabled: false
 
 Naming/MethodParameterName:

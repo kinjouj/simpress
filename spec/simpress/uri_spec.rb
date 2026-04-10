@@ -3,52 +3,55 @@
 require "simpress/uri"
 
 describe Simpress::Uri do
-  context "初期化" do
-    it "引数なしで初期化した場合、空文字を返す" do
-      expect(described_class.new.build).to eq("")
+  describe ".wrap" do
+    it "returns the same instance if already a Simpress::Uri" do
+      uri = described_class.new("/base")
+      expect(described_class.wrap(uri)).to equal(uri)
     end
 
-    it "パスを渡して初期化した場合、そのパスを返す" do
-      expect(described_class.new("articles").build).to eq("articles")
+    it "creates a new instance if a string is provided" do
+      expect(described_class.wrap("/base")).to be_a(described_class)
+    end
+
+    it "preserves the string value when wrapping" do
+      expect(described_class.wrap("/base").to_s).to eq "/base"
     end
   end
 
   describe "#path" do
-    it "単一セグメントを追加できる" do
-      uri = described_class.new("articles").path("ruby")
-      expect(uri.build).to eq("articles/ruby")
+    it "joins base path with additional parts" do
+      uri = described_class.new("base").path("sub", "dir")
+      expect(uri.to_s).to eq "base/sub/dir"
     end
 
-    it "複数セグメントを一度に追加できる" do
-      uri = described_class.new("articles").path("ruby", "tips")
-      expect(uri.build).to eq("articles/ruby/tips")
-    end
-
-    it "先頭スラッシュ付きのセグメントを正規化する" do
-      uri = described_class.new("articles").path("/ruby")
-      expect(uri.build).to eq("articles/ruby")
-    end
-
-    it "Symbol を文字列に変換する" do
-      uri = described_class.new("articles").path(:ruby)
-      expect(uri.build).to eq("articles/ruby")
+    it "removes leading slashes from parts before joining" do
+      uri = described_class.new("base").path("/sub", "/dir/")
+      expect(uri.to_s).to eq "base/sub/dir/"
     end
   end
 
   describe "#with_ext" do
-    it "拡張子のないパスに拡張子を付ける" do
-      uri = described_class.new("articles/ruby").with_ext("html")
-      expect(uri.build).to eq("articles/ruby.html")
+    it "sets the extension for the built path" do
+      uri = described_class.new("image.png").with_ext("webp")
+      expect(uri.to_s).to eq "image.webp"
+    end
+  end
+
+  describe "#build" do
+    it "joins parts using slashes" do
+      uri = described_class.new("root").path("a", "b")
+      expect(uri.build).to eq "root/a/b"
     end
 
-    it "既存の拡張子を上書きする" do
-      uri = described_class.new("articles/ruby.md").with_ext("html")
-      expect(uri.build).to eq("articles/ruby.html")
+    it "replaces the existing extension if with_ext is used" do
+      uri = described_class.new("archive.tar.gz").with_ext("zip")
+      expect(uri.build).to eq "archive.tar.zip"
     end
+  end
 
-    it "with_ext を呼ばない場合は拡張子を付けない" do
-      uri = described_class.new("articles/ruby")
-      expect(uri.build).to eq("articles/ruby")
+  describe "#to_s" do
+    it "delegates to build" do
+      expect(described_class.new("file.html").to_s).to eq("file.html")
     end
   end
 end

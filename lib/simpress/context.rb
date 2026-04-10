@@ -34,7 +34,7 @@ module Simpress
     class << self
       extend Forwardable
 
-      def_delegators :instance, :[], :[]=, :update, :to_h
+      def_delegators :instance, :[], :[]=, :update, :to_h, :clear
     end
   end
 end

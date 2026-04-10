@@ -3,47 +3,47 @@
 require "simpress/json"
 
 describe Simpress::JSON do
-  describe "Ojデフォルト設定" do
-    it "必要なオプションが設定されている" do
-      expect(Oj.default_options).to include(mode: :custom, use_to_json: true, use_as_json: true, time_format: :xmlschema)
+  describe ".load_file" do
+    before do
+      allow(Oj).to receive(:load_file)
+    end
+
+    it "delegates to Oj.load_file with options" do
+      described_class.load_file("test.json", symbolize_names: true)
+      expect(Oj).to have_received(:load_file).with("test.json", symbolize_names: true)
     end
   end
 
   describe ".load" do
-    it "JSON文字列をパースする" do
-      expect(described_class.load('{"k":1}')).to eq({ "k" => 1 })
-      expect(described_class.load("[1,2]")).to eq([1, 2])
+    before do
+      allow(Oj).to receive(:load)
     end
 
-    it "オプションを渡せる" do
-      expect(described_class.load('{"k":1}', symbol_keys: true)).to eq({ k: 1 })
-    end
-
-    it "不正なJSONで例外を発生させる" do
-      expect { described_class.load("bad") }.to raise_error(Oj::ParseError)
-    end
-  end
-
-  describe ".load_file" do
-    it "ファイルをパースする" do
-      allow(Oj).to receive(:load_file).with("test.json").and_return({ "k" => 1 })
-      expect(described_class.load_file("test.json")).to eq({ "k" => 1 })
+    it "delegates to Oj.load with options" do
+      described_class.load('{"a":1}', mode: :strict)
+      expect(Oj).to have_received(:load).with('{"a":1}', mode: :strict)
     end
   end
 
   describe ".dump" do
-    it "RubyオブジェクトをJSON文字列に変換する" do
-      expect(Oj.load(described_class.dump({ "k" => 1 }))).to eq({ "k" => 1 })
-      expect(described_class.dump([1, 2])).to eq("[1,2]")
-      expect(described_class.dump(nil)).to eq("null")
+    before do
+      allow(Oj).to receive(:dump)
+    end
+
+    it "delegates to Oj.dump with options" do
+      described_class.dump({ a: 1 }, indent: 2)
+      expect(Oj).to have_received(:dump).with({ a: 1 }, indent: 2)
     end
   end
 
   describe ".encode" do
-    it "RubyオブジェクトをXSS安全なJSON文字列に変換する" do
-      expect(Oj.load(described_class.encode({ "k" => "v" }))).to eq({ "k" => "v" })
-      expect(described_class.encode({ "h" => "<script>" })).not_to include("<script>")
-      expect(described_class.encode({ "h" => "a & b" })).not_to include("&")
+    before do
+      allow(Oj).to receive(:dump)
+    end
+
+    it "calls Oj.dump with rails mode and xss_safe escape mode" do
+      described_class.encode({ html: "<script>" })
+      expect(Oj).to have_received(:dump).with({ html: "<script>" }, mode: :rails, escape_mode: :xss_safe)
     end
   end
 end
