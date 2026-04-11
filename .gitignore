@@ -5,6 +5,5 @@ node_modules
 !.cache/.gitkeep
 scss/*
 source/*
-!source/.gitkeep
 static/*
 !static/.gitkeep

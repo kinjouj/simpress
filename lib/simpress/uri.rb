@@ -19,8 +19,15 @@ module Simpress
     end
 
     def build
-      part = [@base, *@parts].join("/")
-      @ext ? "#{part[0...(part.rindex('.'))]}.#{@ext}" : part
+      parts = [@base, *@parts]
+
+      if @ext
+        last = parts.last
+        dot_idx = last.rindex(".")
+        parts[-1] = dot_idx ? "#{last[0...dot_idx]}.#{@ext}" : "#{last}.#{@ext}"
+      end
+
+      parts.join("/")
     end
 
     def to_s

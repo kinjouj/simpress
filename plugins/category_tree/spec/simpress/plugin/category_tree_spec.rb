@@ -12,6 +12,10 @@ describe Simpress::Plugin::CategoryTree do
     allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(taxonomy)
   end
 
+  after do
+    Simpress::Taxonomy.clear
+  end
+
   describe ".run" do
     context "when mode is html" do
       before do
@@ -21,12 +25,12 @@ describe Simpress::Plugin::CategoryTree do
       end
 
       it "renders sidebar_categories template with nested categories" do
-        described_class.run([], [])
+        described_class.run
         expect(Simpress::Theme).to have_received(:render).with("sidebar_categories", categories: anything)
       end
 
       it "binds the rendered content to context" do
-        described_class.run([], [])
+        described_class.run
         expect(Simpress::Context).to have_received(:update).with(sidebar_categories_content: "<ul>categories</ul>")
       end
     end
@@ -39,12 +43,12 @@ describe Simpress::Plugin::CategoryTree do
       end
 
       it "writes categories.json" do
-        described_class.run([], [])
+        described_class.run
         expect(Simpress::Writer).to have_received(:write).with("categories.json", "{}")
       end
 
       it "dumps nested categories with permitted keys" do
-        described_class.run([], [])
+        described_class.run
         expect(Simpress::JSON).to have_received(:dump).with(anything, keys: described_class::KEYS)
       end
     end
@@ -55,7 +59,7 @@ describe Simpress::Plugin::CategoryTree do
       end
 
       it "raises an error" do
-        expect { described_class.run([], []) }.to raise_error("Error")
+        expect { described_class.run }.to raise_error("Unknown mode: unknown")
       end
     end
 
@@ -72,7 +76,7 @@ describe Simpress::Plugin::CategoryTree do
       end
 
       it "nests child categories under their parent and removes them from root" do
-        described_class.run([], [])
+        described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
           "sidebar_categories",

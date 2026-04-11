@@ -13,39 +13,46 @@ module Simpress
 
       KEYS = [:key, :name, :count, :children].freeze
 
-      def self.run(_, _)
-        nested_categories = Simpress::Taxonomy.fetch("categories").terms.each_with_object({}) do |(_, term), hash|
-          hash[term.key] = term.dup
-        end
-
-        if File.exist?("category_indexes.json")
-          category_indexes = Simpress::JSON.load_file("category_indexes.json")
-          moved_keys = category_indexes.each_with_object(Set.new) do |(key, values), acc|
-            root = nested_categories[key]
-            next unless root
-
-            values.each do |value|
-              child = nested_categories[value]
-              next unless child
-
-              root.children[value] = child
-              acc << value
-            end
-          end
-
-          moved_keys.each {|k| nested_categories.delete(k) }
-        end
+      def self.run(*)
+        nested_categories = build_nested_categories
 
         case config.mode
         when "html"
-          sidebar_categories_content = Simpress::Theme.render("sidebar_categories", categories: nested_categories)
-          bind_context(sidebar_categories_content: sidebar_categories_content)
+          process_html(nested_categories)
         when "json"
-          Simpress::Writer.write("categories.json", Simpress::JSON.dump(nested_categories, keys: KEYS))
+          process_json(nested_categories)
         else
-          raise "Error"
+          raise "Unknown mode: #{config.mode}"
         end
       end
+
+      def self.build_nested_categories
+        nested = Simpress::Taxonomy.fetch("categories").terms.each_with_object({}) {|(_, term), hash| hash[term.key] = term.dup }
+        return nested unless File.exist?("category_indexes.json")
+
+        category_indexes = Simpress::JSON.load_file("category_indexes.json")
+        moved_keys = category_indexes.each_with_object(Set.new) do |(key, values), acc|
+          root = nested[key] or next
+          values.each do |value|
+            child = nested[value] or next
+            root.children[value] = child
+            acc << value
+          end
+        end
+
+        nested.except(*moved_keys)
+      end
+
+      def self.process_html(categories)
+        sidebar_categories_content = Simpress::Theme.render("sidebar_categories", categories: categories)
+        bind_context(sidebar_categories_content: sidebar_categories_content)
+      end
+
+      def self.process_json(categories)
+        Simpress::Writer.write("categories.json", Simpress::JSON.dump(categories, keys: KEYS))
+      end
+
+      private_class_method :build_nested_categories, :process_html, :process_json
     end
   end
 end

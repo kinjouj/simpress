@@ -13,7 +13,7 @@ const SidebarCategoriesContent = ({ categories }: { categories: CategoriesType }
     <Stack direction="vertical" gap={1}>
       {sortedList.map((category: CategoryType) => (
         <div key={category.key}>
-          <Link to={`/archives/category/${category.key}`}>{category.name}</Link>
+          <Link to={`/archives/categories/${category.key}`}>{category.name}</Link>
           {!!(category.children && Object.keys(category.children).length > 0) && (
             <Stack direction="vertical" className="ms-3">
               <SidebarCategoriesContent categories={category.children} />

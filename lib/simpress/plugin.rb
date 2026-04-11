@@ -6,7 +6,7 @@ require "simpress/logger"
 
 module Simpress
   module Plugin
-    def run(*_args)
+    def run(posts = [], pages = [])
       raise NotImplementedError
     end
 

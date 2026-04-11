@@ -38,10 +38,10 @@ module Simpress
         NATTO       = Natto::MeCab.new
         HASH_BITS   = 24
         BANDS       = 6
+        SEED_CACHE  = {}
 
         def initialize(posts)
           @size       = posts.size
-          @seed_cache = {}
           @data       = posts.map do |post|
             keywords = extract_keywords(post)
             vector = keywords.tally
@@ -58,7 +58,7 @@ module Simpress
           band_bits  = HASH_BITS / BANDS
           mask       = (1 << band_bits) - 1
           indices    = (0...@size).to_a
-          candidates = Set.new
+          candidates = Array.new(@size * @size, false)
           BANDS.times do |b|
             shift = b * band_bits
             indices.group_by {|i| (@data[i][:simhash] >> shift) & mask }.each_value do |ids|
@@ -66,9 +66,10 @@ module Simpress
 
               ids.combination(2) do |i, j|
                 i, j = j, i if i > j
-                key = (i << 20) | j
-                next unless candidates.add?(key)
+                idx = (i * @size) + j
+                next if candidates[idx]
 
+                candidates[idx] = true
                 score = cosine(i, j)
                 yield i, j, score if score > 0.3
               end
@@ -97,8 +98,8 @@ module Simpress
         def calculate_simhash(vector)
           v = Array.new(HASH_BITS, 0)
           vector.each do |word, weight|
-            seed = (@seed_cache[word] ||= XXhash.xxh32(word))
-            HASH_BITS.times {|bit| v[bit] += ((seed & (1 << bit)) == 0 ? -weight : weight) }
+            seed = (SEED_CACHE[word] ||= XXhash.xxh32(word))
+            HASH_BITS.times {|bit| v[bit] += weight * ((2 * seed[bit]) - 1) }
           end
 
           simhash = 0
@@ -133,7 +134,7 @@ module Simpress
             return Marshal.load(File.binread(path)) if File.exist?(path) # rubocop:disable Security/MarshalLoad
 
             result = yield
-            Thread.new { File.binwrite(path, Marshal.dump(result)) }
+            File.binwrite(path, Marshal.dump(result))
             result
           end
         end
