@@ -39,7 +39,7 @@ module Simpress
             per_page  = Simpress::Config.instance.paginate || 10
             page_size = (posts.size / per_page.to_f).ceil
             posts.each_slice(per_page).with_index(1) do |slice_posts, page|
-              args = { page: page, maxpage: page_size, prefix: prefix }
+              args      = { page: page, maxpage: page_size, prefix: prefix }
               paginator = Simpress::Paginator.new(**args)
               yield slice_posts, paginator
             end
@@ -61,9 +61,9 @@ module Simpress
             write(path, content, "json", &)
           end
 
-          def write(path, data, ext)
+          def write(path, data, ext, &)
             file_path = uri(path).with_ext(ext).build
-            Simpress::Writer.write(file_path, data) {|file_path| yield file_path if block_given? }
+            Simpress::Writer.write(file_path, data, &)
           end
         end
       end

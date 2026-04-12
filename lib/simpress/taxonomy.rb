@@ -6,10 +6,7 @@ require "simpress/taxonomy/term"
 module Simpress
   class Taxonomy
     DEFAULT_TAXONOMIES = ["categories"].freeze
-
     attr_reader :name, :terms
-
-    @cache = {}
 
     def initialize(name)
       @name  = name
@@ -21,13 +18,12 @@ module Simpress
     end
 
     def self.fetch(name)
-      @cache[name] ||= new(name)
+      (@cache ||= {})[name] ||= new(name)
     end
 
     def self.clear
-      @cache.clear
+      @cache&.clear
       @taxonomies = nil
-      Simpress::Config.clear
     end
 
     def self.taxonomies

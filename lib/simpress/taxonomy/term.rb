@@ -8,7 +8,6 @@ module Simpress
     class Term
       PERMITTED_JSON_KEYS = [:key, :name, :count, :children].freeze
       DEFAULT_JSON_KEYS   = [:key, :name].freeze
-
       attr_reader :key, :name, :children, :posts
 
       def initialize(name, key: nil)
@@ -20,7 +19,7 @@ module Simpress
 
       def initialize_copy(orig)
         super
-        @children = orig.instance_variable_get(:@children).transform_values(&:dup)
+        @children = orig.children.transform_values(&:dup)
       end
 
       def count

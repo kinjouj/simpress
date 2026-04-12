@@ -7,13 +7,13 @@ module Simpress
   module Parser
     module Markdown
       module Processor
-        class << self
-          REDCARPET_OPTIONS = {
-            no_intra_emphasis: true,
-            fenced_code_blocks: true,
-            autolink: true
-          }.freeze
+        REDCARPET_OPTIONS = {
+          no_intra_emphasis: true,
+          fenced_code_blocks: true,
+          autolink: true
+        }.freeze
 
+        class << self
           def render(data)
             parser.render(data)
           end

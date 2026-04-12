@@ -18,7 +18,7 @@ module Simpress
 
         def reset!
           @primary_image = nil
-          @toc = []
+          @toc           = []
         end
 
         def preprocess(markdown)

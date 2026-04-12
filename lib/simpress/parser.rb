@@ -12,9 +12,9 @@ module Simpress
   module Parser
     class ParseError < StandardError; end
 
-    DEFAULT_COVER      = "/images/no_image.webp"
     REGEX_DESC         = /\A\s*(.*?)(?:\r?\n\r?\n|\z)/m
     REGEX_TIME         = /\A(\d{4})-(\d{1,2})-(\d{1,2})/
+    DEFAULT_COVER      = "/images/no_image.webp"
 
     class << self
       def parse(file)
@@ -48,8 +48,8 @@ module Simpress
         if date
           params[:date] = date.respond_to?(:to_time) ? date.to_time : Time.parse(date)
         else
-          y, m, d = basename.scan(REGEX_TIME).flatten(1)
-          params[:date] = Time.new(y, m, d) if y && m && d
+          m = REGEX_TIME.match(basename)
+          params[:date] = Time.new(m[1], m[2], m[3]) if m
         end
 
         raise ParseError, "Date missing or invalid in file #{basename}" unless params[:date]

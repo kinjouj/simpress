@@ -33,13 +33,13 @@ module Simpress
       end
 
       def register_plugins
-        @register_plugins ||= []
+        @register_plugins ||= Set.new
       end
 
       def process(posts = [], pages = [])
-        plugins = Simpress::Config.instance.plugins.to_a.map {|plugin| plugin.downcase.delete("_") }
-        allowed_plugins = register_plugins.sort_by {|klass| -klass.priority }
-                                          .select {|klass| plugins.include?(klass.name.split("::").last.downcase) }
+        plugins = Simpress::Config.instance.plugins.to_a.to_set {|plugin| plugin.downcase.delete("_") }
+        allowed_plugins = register_plugins.select {|klass| plugins.include?(klass.name.split("::").last.downcase) }
+                                          .sort_by {|klass| -klass.priority }
 
         allowed_plugins.each do |klass|
           Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
@@ -48,7 +48,7 @@ module Simpress
       end
 
       def clear
-        @register_plugins = []
+        @register_plugins.clear
       end
     end
   end

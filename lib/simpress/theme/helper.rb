@@ -20,7 +20,7 @@ module Simpress
       end
 
       def link_to(text, path, **options)
-        attrs = { href: path }.merge(options)
+        attrs     = { href: path, **options }
         attrs_str = attrs.map {|k, v| %(#{k}="#{v}") }.join(" ")
         %(<a #{attrs_str}>#{text}</a>)
       end

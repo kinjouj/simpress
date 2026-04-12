@@ -17,7 +17,7 @@ describe Simpress::Parser::Markdown::Enhancer do
         extend Simpress::Parser::Markdown::Enhancer
       end
 
-      expect(described_class.classes).to include(filter_class)
+      expect(described_class.register_enhancers).to include(filter_class)
       expect(Simpress::Logger).to have_received(:debug).with("REGISTER FILTER: #{filter_class}")
     end
   end
@@ -65,7 +65,7 @@ describe Simpress::Parser::Markdown::Enhancer do
       end
 
       described_class.clear
-      expect(described_class.classes).to be_empty
+      expect(described_class.register_enhancers).to be_empty
     end
   end
 

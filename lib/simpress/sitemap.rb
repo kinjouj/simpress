@@ -36,9 +36,9 @@ module Simpress
       instance_eval(&)
     end
 
-    def create_element(name, attributes: {}, text: nil)
+    def create_element(name, attributes: nil, text: nil)
       el = Ox::Element.new(name)
-      attributes.each {|k, v| el[k] = v }
+      attributes&.each {|k, v| el[k] = v }
       el << text if text
       el
     end

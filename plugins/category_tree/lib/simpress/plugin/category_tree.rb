@@ -44,8 +44,7 @@ module Simpress
       end
 
       def self.process_html(categories)
-        sidebar_categories_content = Simpress::Theme.render("sidebar_categories", categories: categories)
-        bind_context(sidebar_categories_content: sidebar_categories_content)
+        bind_context(sidebar_categories_content: Simpress::Theme.render("sidebar_categories", categories: categories))
       end
 
       def self.process_json(categories)

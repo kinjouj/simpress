@@ -14,11 +14,12 @@ module Simpress
 
     def initialize
       config      = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
-      @mode       = config[:default][:mode]
-      @host       = config[:default][:host]
-      @logging    = config[:default][:logging]
-      @paginate   = config[:default][:paginate]
-      @plugins    = config[:default][:plugins]
+      defaults    = config[:default]
+      @mode       = defaults[:mode]
+      @host       = defaults[:host]
+      @logging    = defaults[:logging]
+      @paginate   = defaults[:paginate]
+      @plugins    = defaults[:plugins]
       @taxonomies = File.exist?(TAXONOMIES_FILE) ? Psych.load_file(TAXONOMIES_FILE) || {} : {}
     end
 

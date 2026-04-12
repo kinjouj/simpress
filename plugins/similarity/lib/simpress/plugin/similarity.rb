@@ -24,7 +24,7 @@ module Simpress
             [target.id, target.title, target.permalink]
           end
 
-          post.define_singleton_method(:similarities) { similarities || [] }
+          post.define_singleton_method(:similarities) { similarities }
           post.define_singleton_method(:to_h) do |state = {}|
             hash = super(state)
             hash[:similarities] = similarities if hash.key?(:content)
@@ -38,15 +38,19 @@ module Simpress
         NATTO       = Natto::MeCab.new
         HASH_BITS   = 24
         BANDS       = 6
-        SEED_CACHE  = {}
+        SEED_CACHE  = Hash.new {|h, word| h[word] = XXhash.xxh32(word) }
 
         def initialize(posts)
-          @size       = posts.size
-          @data       = posts.map do |post|
+          @size = posts.size
+          @data = posts.map do |post|
             keywords = extract_keywords(post)
             vector = keywords.tally
             post.taxonomies.each_value do |terms|
-              terms.each {|term| vector[term.name] = (vector[term.name] || 0) + 10 }
+              terms.each do |term|
+                n = term.name
+                v = vector[n] || 0
+                vector[n] = v + (Math.log2(v + 2) * 3)
+              end
             end
 
             norm = Math.sqrt(vector.each_value.sum(0.0) {|v| v * v })
@@ -82,23 +86,20 @@ module Simpress
         def extract_keywords(post)
           key = (XXhash.xxh32(post.title) ^ XXhash.xxh32(post.markdown, 1)).to_s
           Cache.fetch(key) do
-            data = "#{post.title} #{post.markdown}"
-            keywords = Set.new
+            data     = "#{post.title} #{post.markdown}"
+            keywords = []
             NATTO.parse(data).each_line do |line|
-              if line =~ NATTO_REGEX
-                surface = Regexp.last_match(1)
-                keywords << surface
-              end
+              keywords << Regexp.last_match(1) if line =~ NATTO_REGEX
             end
 
-            keywords.to_a
+            keywords
           end
         end
 
         def calculate_simhash(vector)
           v = Array.new(HASH_BITS, 0)
           vector.each do |word, weight|
-            seed = (SEED_CACHE[word] ||= XXhash.xxh32(word))
+            seed = SEED_CACHE[word]
             HASH_BITS.times {|bit| v[bit] += weight * ((2 * seed[bit]) - 1) }
           end
 

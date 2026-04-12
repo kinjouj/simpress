@@ -11,19 +11,19 @@ module Simpress
         end
 
         class << self
-          def classes
-            @classes ||= []
+          def register_enhancers
+            @register_enhancers ||= []
           end
 
           def extended(klass)
             super
-            classes << klass
+            register_enhancers << klass
             Simpress::Logger.debug("REGISTER FILTER: #{klass}")
           end
 
           def run(body)
             data = body.dup
-            classes.each do |klass|
+            register_enhancers.each do |klass|
               res  = klass.preprocess(data)
               data = res if res.is_a?(String)
             end
@@ -32,7 +32,7 @@ module Simpress
           end
 
           def clear
-            @classes = []
+            register_enhancers.clear
           end
         end
       end
