@@ -111,5 +111,21 @@ describe Simpress::Parser do
         expect(described_class.parse(file).permalink).to eq "/existing/path"
       end
     end
+
+    context "when expiryDate is in the past" do
+      let(:markdown) do
+        <<~MD
+          ---
+          title: Test Title
+          expiryDate: 2000-01-01
+          ---
+          This is the description.
+        MD
+      end
+
+      it "marks the post as draft" do
+        expect(described_class.parse(file)).to be_nil
+      end
+    end
   end
 end

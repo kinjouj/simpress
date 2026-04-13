@@ -14,7 +14,7 @@ module Simpress
         pages = []
         Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown") do |file|
           data = Simpress::Parser.parse(file)
-          next if data.draft
+          next if data.nil? || data.draft
 
           (data.index ? posts : pages) << data
         end

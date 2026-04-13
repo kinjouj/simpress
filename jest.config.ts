@@ -1,11 +1,13 @@
-import { TextEncoder } from 'node:util';
-
 export default {
   roots: ['<rootDir>/frontend'],
   cacheDirectory: './node_modules/.jest',
   clearMocks: true,
   restoreMocks: true,
-  preset: 'ts-jest',
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: './tsconfig.node.json',
+    }],
+  },
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/frontend/tests/setupTests.ts'],
   collectCoverage: true,
