@@ -2,6 +2,7 @@
 
 source "https://rubygems.org"
 
+gem "benchmark"
 gem "erubi"
 gem "natto"
 gem "oj"
