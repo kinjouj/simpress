@@ -31,7 +31,7 @@ describe Simpress::Theme::Helper do
   end
 
   describe "#uri" do
-    it "wraps the path with Simpress::Uri and ensures html extension" do
+    it "wraps the path and ensures html extension" do
       expect(helper.uri("/test").to_s).to eq "/test.html"
     end
   end

@@ -53,9 +53,9 @@ describe Simpress::Generator::Renderer::BaseRenderer do
   end
 
   describe ".uri" do
-    it "returns a Simpress::Uri object" do
+    it "returns a Pathling object" do
       result = described_class.uri("test")
-      expect(result).to be_a(Simpress::Uri)
+      expect(result).to be_a(Pathling)
       expect(result.to_s).to eq "test"
     end
   end

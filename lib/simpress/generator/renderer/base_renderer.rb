@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
+require "pathling"
 require "simpress/config"
 require "simpress/json"
 require "simpress/paginator"
 require "simpress/theme"
-require "simpress/uri"
 require "simpress/writer"
 
 module Simpress
@@ -39,8 +39,7 @@ module Simpress
             per_page  = Simpress::Config.instance.paginate || 10
             page_size = (posts.size / per_page.to_f).ceil
             posts.each_slice(per_page).with_index(1) do |slice_posts, page|
-              args      = { page: page, maxpage: page_size, prefix: prefix }
-              paginator = Simpress::Paginator.new(**args)
+              paginator = Simpress::Paginator.new(page: page, maxpage: page_size, prefix: prefix)
               yield slice_posts, paginator
             end
 
@@ -48,7 +47,7 @@ module Simpress
           end
 
           def uri(path)
-            Simpress::Uri.wrap(path)
+            Pathling.wrap(path)
           end
 
           def write_html(path, template:, **context, &)

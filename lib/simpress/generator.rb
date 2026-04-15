@@ -13,10 +13,10 @@ module Simpress
         posts = []
         pages = []
         Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown") do |file|
-          data = Simpress::Parser.parse(file)
-          next if data.nil? || data.draft
+          post = Simpress::Parser.parse(file)
+          next if post.nil? || post.draft
 
-          (data.index ? posts : pages) << data
+          (post.index ? posts : pages) << post
         end
 
         posts.sort_by! {|post| -post.timestamp }

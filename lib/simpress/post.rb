@@ -34,16 +34,13 @@ module Simpress
       @draft       = params[:draft]
       @markdown    = params[:markdown]
       @taxonomies  = Simpress::Taxonomy.taxonomies.to_h do |taxonomy|
-        terms = Array(params[taxonomy.name.to_sym]).map do |name|
-          taxonomy.term(name).tap {|term| term.posts << self }
-        end
-
+        terms = Array(params[taxonomy.name.to_sym]).map {|name| taxonomy.term(name).tap {|term| term.posts << self } }
         [taxonomy.name, terms]
       end
     end
 
     def timestamp
-      @date.to_i
+      @timestamp ||= @date.to_i
     end
 
     def to_h(options = {})

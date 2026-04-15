@@ -15,9 +15,9 @@ module Simpress
               taxonomy.terms.each_value do |term|
                 prefix = "/archives/#{taxonomy.name}/#{term.key}"
                 term.posts.sort_by! {|a| -a.timestamp }
-                each_page(term.posts, prefix) do |slice_posts, paginator|
+                each_page(term.posts, prefix) do |posts, paginator|
                   path = paginator.current_page
-                  write_html(path, template: "index", key: term.name, posts: slice_posts, paginator: paginator) do |file_path|
+                  write_html(path, template: "index", key: term.name, posts: posts, paginator: paginator) do |file_path|
                     Simpress::Logger.info("[BUILD CATEGORY]: #{file_path}")
                   end
                 end
@@ -30,8 +30,9 @@ module Simpress
               base_path = uri("/archives/#{taxonomy.name}")
               taxonomy.terms.each_value do |term|
                 term.posts.sort_by! {|a| -a.timestamp }
-                page_size = each_page(term.posts) do |slice_posts, paginator|
-                  write_json(base_path.path(term.key, paginator.page), slice_posts, keys: DATA_JSON_KEYS) do |file_path|
+                page_size = each_page(term.posts) do |posts, paginator|
+                  path = base_path.path(term.key, paginator.page)
+                  write_json(path, posts, keys: DATA_JSON_KEYS) do |file_path|
                     Simpress::Logger.info("[BUILD CATEGORY]: #{file_path}")
                   end
                 end

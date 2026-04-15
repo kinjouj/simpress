@@ -10,7 +10,7 @@ module Simpress
     CONFIG_FILE     = File.expand_path("../../config.yaml", __dir__)
     TAXONOMIES_FILE = File.expand_path("../../taxonomies.yaml", __dir__)
 
-    attr_reader :logging, :host, :mode, :paginate, :plugins, :taxonomies
+    attr_reader :logging, :host, :mode, :paginate, :plugins
 
     def initialize
       config      = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
@@ -20,7 +20,10 @@ module Simpress
       @logging    = defaults[:logging]
       @paginate   = defaults[:paginate]
       @plugins    = defaults[:plugins]
-      @taxonomies = File.exist?(TAXONOMIES_FILE) ? Psych.load_file(TAXONOMIES_FILE) || {} : {}
+    end
+
+    def taxonomies
+      @taxonomies ||= File.exist?(TAXONOMIES_FILE) ? Psych.load_file(TAXONOMIES_FILE) || {} : {}
     end
 
     class << self

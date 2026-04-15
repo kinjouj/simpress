@@ -24,23 +24,26 @@ module Simpress
     def previous_page
       raise "Not Found previous page" unless previous_page_exist?
 
-      @page - 1 > 1 ? "#{@prefix}/#{@page - 1}.html" : File.dirname(first_page)
+      page_path(@page - 1)
+      @page - 1 > 1 ? page_path(@page - 1) : File.dirname(page_path(1))
     end
 
     def next_page
       raise "Not Found next page" unless next_page_exist?
 
-      "#{@prefix}/#{@page + 1}.html"
+      page_path(@page + 1)
     end
 
     def current_page
-      @page > 1 ? "#{@prefix}/#{@page}.html" : first_page
+      page_path(@page)
     end
 
     private
 
-    def first_page
-      @prefix == PREFIX_DEFAULT ? "/index.html" : "#{@prefix}/index.html"
+    def page_path(n)
+      return @prefix == PREFIX_DEFAULT ? "/index.html" : "#{@prefix}/index.html" if n == 1
+
+      "#{@prefix}/#{n}.html"
     end
   end
 end

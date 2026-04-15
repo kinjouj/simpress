@@ -27,9 +27,7 @@ module Simpress
 
           def self.generate_json(monthly_posts)
             monthly_posts.each do |date, posts_by_monthly|
-              year      = date.year
-              month     = date.month
-              base_path = uri("/archives/#{year}/#{month.to_s.rjust(2, '0')}")
+              base_path = uri("/archives/#{date.year}/#{date.month.to_s.rjust(2, '0')}")
               page_size = each_page(posts_by_monthly) do |slice_posts, paginator|
                 write_json(base_path.path(paginator.page), slice_posts, keys: DATA_JSON_KEYS) do |file_path|
                   Simpress::Logger.info("[BUILD ARCHIVE]: #{file_path}")

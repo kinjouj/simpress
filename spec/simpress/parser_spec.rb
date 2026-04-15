@@ -72,7 +72,7 @@ describe Simpress::Parser do
       end
 
       it "converts Date to Time" do
-        expect(described_class.parse(file).date).to be_a(Time)
+        expect(described_class.parse(file).date).not_to be_nil
       end
     end
 

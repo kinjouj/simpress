@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/kinjouj/pathling.git
+  revision: 468f90f66d69075c78e59e65480f1b044789cbd2
+  specs:
+    pathling (0.0.1)
+
 PATH
   remote: ../..
   specs:
@@ -32,13 +38,12 @@ GEM
     ffi (1.17.4-x86_64-linux-musl)
     natto (1.2.0)
       ffi (>= 1.9.0)
-    oj (3.16.16)
+    oj (3.16.17)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     ostruct (0.6.3)
     ox (2.14.23)
       bigdecimal (>= 3.0)
-    rake (13.3.1)
     redcarpet (3.6.1)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
@@ -78,7 +83,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  rake
+  pathling!
   rspec
   simplecov
   simpress!
@@ -100,10 +105,10 @@ CHECKSUMS
   ffi (1.17.4-x86_64-linux-gnu) sha256=9d3db14c2eae074b382fa9c083fe95aec6e0a1451da249eab096c34002bc752d
   ffi (1.17.4-x86_64-linux-musl) sha256=3fdf9888483de005f8ef8d1cf2d3b20d86626af206cbf780f6a6a12439a9c49e
   natto (1.2.0) sha256=07bee10b7b305b34e87eb3b6cd23aa42140816b7088acc5e55b1fbbc35c010c3
-  oj (3.16.16) sha256=3635b36128991796434f55da8decc0de236a323535adcb36fc04e6d0253c013d
+  oj (3.16.17) sha256=a6688f666143632a1ef11a8d80c8d631b1112733c7da698ffafa4a22a8488244
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   ox (2.14.23) sha256=4a9aedb4d6c78c5ebac1d7287dc7cc6808e14a8831d7adb727438f6a1b461b66
-  rake (13.3.1) sha256=8c9e89d09f66a26a01264e7e3480ec0607f0c497a861ef16063604b1b08eb19c
+  pathling (0.0.1)
   redcarpet (3.6.1) sha256=d444910e6aa55480c6bcdc0cdb057626e8a32c054c29e793fa642ba2f155f445
   rspec (3.13.2) sha256=206284a08ad798e61f86d7ca3e376718d52c0bc944626b2349266f239f820587
   rspec-core (3.13.6) sha256=a8823c6411667b60a8bca135364351dda34cd55e44ff94c4be4633b37d828b2d
