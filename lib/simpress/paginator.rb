@@ -40,10 +40,10 @@ module Simpress
 
     private
 
-    def page_path(n)
-      return @prefix == PREFIX_DEFAULT ? "/index.html" : "#{@prefix}/index.html" if n == 1
+    def page_path(page)
+      return @prefix == PREFIX_DEFAULT ? "/index.html" : "#{@prefix}/index.html" if page == 1
 
-      "#{@prefix}/#{n}.html"
+      "#{@prefix}/#{page}.html"
     end
   end
 end

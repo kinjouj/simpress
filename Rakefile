@@ -13,7 +13,9 @@ require "simpress/sitemap"
 
 OUTPUT_DIR = Simpress::Config.output_dir
 CLEAN.include("#{OUTPUT_DIR}/*")
-RSpec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = "spec/**/*_spec.rb,plugins/*/spec/**/*_spec.rb"
+end
 
 desc "build"
 task build: :clean do

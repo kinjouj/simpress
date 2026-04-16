@@ -2,6 +2,10 @@
 
 require "simpress"
 
+def create_filepath(path)
+  File.expand_path(path, __dir__)
+end
+
 describe Simpress do
   before do
     allow(Simpress::Logger).to receive(:info)

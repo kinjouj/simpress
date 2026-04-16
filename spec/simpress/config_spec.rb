@@ -23,9 +23,6 @@ describe Simpress::Config do
     allow(Psych).to receive(:load_file).with(Simpress::Config::CONFIG_FILE, any_args).and_return(config_data)
     allow(File).to receive(:exist?).with(Simpress::Config::TAXONOMIES_FILE).and_return(true)
     allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE).and_return(taxonomies)
-  end
-
-  after do
     described_class.clear
   end
 

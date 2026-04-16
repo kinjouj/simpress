@@ -8,11 +8,8 @@ describe Simpress::Generator::Renderer::Archive::TaxonomyRenderer do
   let!(:taxonomies) { Simpress::Taxonomy.taxonomies }
 
   before do
-    allow(Simpress::Logger).to receive(:info)
-  end
-
-  after do
     Simpress::Taxonomy.clear
+    allow(Simpress::Logger).to receive(:info)
   end
 
   describe ".generate_html" do

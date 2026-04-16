@@ -75,7 +75,7 @@ module Simpress
 
                 candidates[idx] = true
                 score = cosine(i, j)
-                yield i, j, score if score > 0.3
+                yield i, j, score if score > 0.2
               end
             end
           end

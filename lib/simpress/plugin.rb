@@ -48,7 +48,7 @@ module Simpress
       end
 
       def clear
-        @register_plugins.clear
+        @register_plugins&.clear
       end
     end
   end

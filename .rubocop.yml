@@ -115,3 +115,6 @@ RSpec/ReceiveMessages:
 RSpec/ReturnFromStub:
   Enabled: false
 
+RSpec/SpecFilePathFormat:
+  Exclude:
+    - "plugins/*/spec/**/*_spec.rb"

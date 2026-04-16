@@ -3,7 +3,7 @@
 require "simpress/logger"
 
 describe Simpress::Logger do
-  after do
+  before do
     described_class.clear
   end
 
