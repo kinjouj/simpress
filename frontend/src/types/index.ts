@@ -1,3 +1,3 @@
-export * from './category-type';
-export * from './fetch-type';
-export * from './post-type';
+export * from './fetch';
+export * from './post';
+export * from './taxonomy';

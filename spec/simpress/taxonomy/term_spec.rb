@@ -16,17 +16,17 @@ describe Simpress::Taxonomy::Term do
       expect(term.key).to eq "ruby-on-rails"
       expect(term.name).to eq term_name
       expect(term.posts).to eq []
-      expect(term.children).to eq({})
+      expect(term.children).to eq []
     end
   end
 
   describe "#initialize_copy" do
-    it "performs a deep copy of the children hash" do
+    it "performs a deep copy of the children array" do
       child_term = described_class.new("Child")
-      term.children["child"] = child_term
+      term.children << child_term
       copy = term.dup
-      expect(copy.children["child"]).not_to equal(child_term)
-      expect(copy.children["child"].name).to eq "Child"
+      expect(copy.children.first).not_to equal(child_term)
+      expect(copy.children.first.name).to eq "Child"
     end
   end
 
@@ -43,7 +43,7 @@ describe Simpress::Taxonomy::Term do
   describe "#as_json" do
     it "returns default keys when no options are provided" do
       result = term.as_json
-      expect(result.keys).to contain_exactly(:key, :name)
+      expect(result.keys).to contain_exactly(:key, :name, :count)
     end
 
     it "returns requested permitted keys" do
@@ -53,16 +53,16 @@ describe Simpress::Taxonomy::Term do
 
     it "recursively calls as_json on children with the same options" do
       child_term = described_class.new("Child")
-      term.children["child"] = child_term
+      term.children << child_term
       result = term.as_json(keys: [:children])
-      expect(result[:children]["child"]).to eq({ children: {} })
+      expect(result[:children]).to eq [{ children: [] }]
     end
   end
 
   describe "#to_json" do
     it "delegates to Simpress::JSON.dump" do
       result = term.to_json
-      expect(result).to eq '{"key":"ruby-on-rails","name":"Ruby on Rails"}'
+      expect(result).to eq '{"key":"ruby-on-rails","name":"Ruby on Rails","count":0}'
     end
   end
 

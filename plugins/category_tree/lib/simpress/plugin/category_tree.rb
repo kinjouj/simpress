@@ -35,12 +35,12 @@ module Simpress
           root = nested[key] or next
           values.each do |value|
             child = nested[value] or next
-            root.children[value] = child
+            root.children << child
             acc << value
           end
         end
 
-        nested.except(*moved_keys)
+        nested.except(*moved_keys).values
       end
 
       def self.process_html(categories)

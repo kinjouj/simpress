@@ -80,7 +80,7 @@ describe Simpress::Plugin::CategoryTree do
 
         expect(Simpress::Theme).to have_received(:render).with(
           "sidebar_categories",
-          categories: satisfy {|cats| cats.key?("ruby") && !cats.key?("rails") }
+          categories: satisfy {|cats| cats.any? {|c| c.key == "ruby" } && cats.none? {|c| c.key == "rails" } }
         )
       end
     end

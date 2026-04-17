@@ -7,19 +7,19 @@ module Simpress
   class Taxonomy
     class Term
       PERMITTED_JSON_KEYS = [:key, :name, :count, :children].freeze
-      DEFAULT_JSON_KEYS   = [:key, :name].freeze
+      DEFAULT_JSON_KEYS   = [:key, :name, :count].freeze
       attr_reader :key, :name, :children, :posts
 
       def initialize(name, key: nil)
         @key      = key || name.to_url
         @name     = name
         @posts    = []
-        @children = {}
+        @children = []
       end
 
       def initialize_copy(orig)
         super
-        @children = orig.children.transform_values(&:dup)
+        @children = orig.children.map(&:dup)
       end
 
       def count
@@ -30,7 +30,7 @@ module Simpress
         keys = options[:keys] ? PERMITTED_JSON_KEYS & options[:keys] : DEFAULT_JSON_KEYS
         keys.to_h do |key|
           value = public_send(key)
-          value = value.transform_values {|v| v.as_json(options) } if key == :children
+          value = value.map {|v| v.as_json(options) } if key == :children
           [key, value]
         end
       end

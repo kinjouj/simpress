@@ -47,8 +47,8 @@
 
 
 ```erb
-<% categories = @categories.sort_by {|_, value| -value.count }.to_h %>
-<% categories.each do |key, value| %>
+<% categories = @categories.sort_by {|v| -v.count } %>
+<% categories.each do |value| %>
 <div>
   <a href="/archives/category/<%== value.key %>"><%= value.name %> (<%== value.count %>)</a>
   <% if value.children.count > 0 %>

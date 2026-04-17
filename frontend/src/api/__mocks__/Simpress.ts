@@ -1,4 +1,4 @@
-import type { CategoriesType, PostType } from '../../types';
+import type { PostType, TaxonomyType } from '../../types';
 
 const Simpress = {
   getMeta: jest.fn<Promise<number>, [string]>(),
@@ -7,7 +7,7 @@ const Simpress = {
   getPostsByCategory: jest.fn<Promise<PostType[]>, [string]>(),
   getPost: jest.fn<Promise<PostType>, [string]>(),
   getRecentPosts: jest.fn<Promise<PostType[]>, []>(),
-  getCategories: jest.fn<Promise<CategoriesType>, []>(),
+  getCategories: jest.fn<Promise<TaxonomyType[]>, []>(),
 };
 
 export default Simpress;

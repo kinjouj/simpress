@@ -1,4 +1,4 @@
-import type { CategoriesType, PostType } from '../types';
+import type { PostType, TaxonomyType } from '../types';
 
 export default class Simpress {
   public static async getMeta(path: string): Promise<number> {
@@ -27,8 +27,8 @@ export default class Simpress {
     return Simpress.getData<PostType[]>('/recent_posts.json');
   }
 
-  public static getCategories(): Promise<CategoriesType> {
-    return Simpress.getData<CategoriesType>('/categories.json');
+  public static getCategories(): Promise<TaxonomyType[]> {
+    return Simpress.getData<TaxonomyType[]>('/categories.json');
   }
 
   private static async getData<T>(path: string): Promise<T> {
