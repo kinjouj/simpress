@@ -27,11 +27,12 @@ module Simpress
     end
 
     def self.taxonomies
-      @taxonomies ||= DEFAULT_TAXONOMIES.union(Simpress::Config.instance.taxonomies.keys).map {|name| fetch(name) }
+      names  = DEFAULT_TAXONOMIES.union(Simpress::Config.instance.taxonomies["types"] || [])
+      @taxonomies ||= names.map {|name| fetch(name) }
     end
 
     def self.slug_for(taxonomy_name, term_name)
-      Simpress::Config.instance.taxonomies.dig(taxonomy_name, term_name)
+      Simpress::Config.instance.taxonomies.dig("aliases", taxonomy_name, term_name)
     end
 
     private_class_method :new
