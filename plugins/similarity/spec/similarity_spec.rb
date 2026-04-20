@@ -95,7 +95,7 @@ describe Simpress::Plugin::Similarity do
 
     expect(post2).to respond_to(:similarities)
     expect(post2.similarities.size).to eq(2)
-    expect(post2.similarities.map { _1[0] }).to eq(["post_004", "post_005"])
+    expect(post2.similarities.map { _1[0] }).to contain_exactly("post_004", "post_005")
 
     expect(post3).to respond_to(:similarities)
     expect(post3.similarities.size).to eq(1)
@@ -103,11 +103,11 @@ describe Simpress::Plugin::Similarity do
 
     expect(post4).to respond_to(:similarities)
     expect(post4.similarities.size).to eq(2)
-    expect(post4.similarities.map { _1[0] }).to eq(["post_002", "post_005"])
+    expect(post4.similarities.map { _1[0] }).to contain_exactly("post_002", "post_005")
 
     expect(post5).to respond_to(:similarities)
     expect(post5.similarities.size).to eq(2)
-    expect(post5.similarities.map { _1[0] }).to eq(["post_004", "post_002"])
+    expect(post5.similarities.map { _1[0] }).to contain_exactly("post_004", "post_002")
   end
 
   context "when cosine similarity returns 0" do

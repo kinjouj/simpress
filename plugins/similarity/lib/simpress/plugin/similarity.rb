@@ -21,7 +21,8 @@ module Simpress
           post = posts[i]
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
-            [target.id, target.title, target.permalink]
+            [target.id, target.title, target.permalink, cs.keywords[target.id].uniq]
+            #[target.id, target.title, target.permalink]
           end
 
           post.define_singleton_method(:similarities) { similarities }
@@ -34,16 +35,20 @@ module Simpress
       end
 
       class CosineSimilarity
-        NATTO_REGEX = /\A([^\t\n]{3,})\t名詞,(?:固有名詞|一般),[^\n]*\p{Han}/
+        NATTO_REGEX = %r{\A(?![ぁ-ん]+\t)(?![^\t\n]*[<>/\["'=:;{}()|\]]+\t)([^\t\n]{4,})\t名詞,(?:固有名詞|一般|サ変接続),[^\n]*}
         NATTO       = Natto::MeCab.new
-        HASH_BITS   = 24
-        BANDS       = 6
+        HASH_BITS   = 20
+        BANDS       = 5
         SEED_CACHE  = Hash.new {|h, word| h[word] = XXhash.xxh32(word) }
 
+        attr_reader :keywords
+
         def initialize(posts)
+          @keywords = {}
           @size = posts.size
           @data = posts.map do |post|
             keywords = extract_keywords(post)
+            @keywords[post.id] = keywords
             vector = keywords.tally
             post.taxonomies.each_value do |terms|
               terms.each do |term|
@@ -52,6 +57,8 @@ module Simpress
                 vector[n] = v + (Math.log2(v + 2) * 3)
               end
             end
+
+            vector.select! {|_, v| v >= 2 }
 
             norm = Math.sqrt(vector.each_value.sum(0.0) {|v| v * v })
             { vector: vector, norm: norm, simhash: calculate_simhash(vector) }
@@ -75,7 +82,7 @@ module Simpress
 
                 candidates[idx] = true
                 score = cosine(i, j)
-                yield i, j, score if score > 0.2
+                yield i, j, score if score > 0.1
               end
             end
           end
@@ -86,7 +93,7 @@ module Simpress
         def extract_keywords(post)
           key = (XXhash.xxh32(post.title) ^ XXhash.xxh32(post.markdown, 1)).to_s
           Cache.fetch(key) do
-            data     = "#{post.title} #{post.markdown}"
+            data     = "#{post.title}\n#{post.markdown}"
             keywords = []
             NATTO.parse(data).each_line do |line|
               keywords << Regexp.last_match(1) if line =~ NATTO_REGEX

@@ -5,10 +5,12 @@ require "simpress/taxonomy"
 describe Simpress::Taxonomy do
   before do
     described_class.clear
-    allow(Simpress::Config.instance).to receive(:taxonomies).and_return({
-      "types"   => ["tags"],
-      "aliases" => { "categories" => { "Ruby" => "ruby" } }
-    })
+    allow(Simpress::Config.instance).to receive(:taxonomies).and_return(
+      {
+        "types" => ["tags"],
+        "aliases" => { "categories" => { "Ruby" => "ruby" } }
+      }
+    )
   end
 
   after do

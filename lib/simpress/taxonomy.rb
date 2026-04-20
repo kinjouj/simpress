@@ -27,8 +27,7 @@ module Simpress
     end
 
     def self.taxonomies
-      names  = DEFAULT_TAXONOMIES.union(Simpress::Config.instance.taxonomies["types"] || [])
-      @taxonomies ||= names.map {|name| fetch(name) }
+      @taxonomies ||= DEFAULT_TAXONOMIES.union(Simpress::Config.instance.taxonomies["types"] || []).map {|name| fetch(name) }
     end
 
     def self.slug_for(taxonomy_name, term_name)
