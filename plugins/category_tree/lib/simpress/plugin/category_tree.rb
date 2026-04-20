@@ -28,7 +28,7 @@ module Simpress
 
       def self.build_nested_categories
         nested = Simpress::Taxonomy.fetch("categories").terms.each_with_object({}) {|(_, term), hash| hash[term.key] = term.dup }
-        return nested unless File.exist?("category_indexes.json")
+        return nested.values unless File.exist?("category_indexes.json")
 
         category_indexes = Simpress::JSON.load_file("category_indexes.json")
         moved_keys = category_indexes.each_with_object(Set.new) do |(key, values), acc|

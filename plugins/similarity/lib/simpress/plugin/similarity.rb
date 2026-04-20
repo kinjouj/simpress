@@ -21,7 +21,7 @@ module Simpress
           post = posts[i]
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
-            #[target.id, target.title, target.permalink, cs.keywords[target.id].uniq]
+            # [target.id, target.title, target.permalink, cs.keywords[target.id].uniq]
             [target.id, target.title, target.permalink]
           end
 
