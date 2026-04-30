@@ -21,7 +21,7 @@ module Simpress
           post = posts[i]
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
-            # [target.id, target.title, target.permalink, cs.keywords[target.id].uniq]
+            # [_score, target.id, target.title, target.permalink, cs.keywords[target.id]]
             [target.id, target.title, target.permalink]
           end
 
@@ -35,10 +35,10 @@ module Simpress
       end
 
       class CosineSimilarity
-        NATTO_REGEX = %r{\A(?![ぁ-ん]+\t)(?![^\t\n]*[<>/\["'=:;{}()|\]]+\t)([^\t\n]{4,})\t名詞,(?:固有名詞|一般|サ変接続),[^\n]*}
+        NATTO_REGEX = /\A([[:alnum:]]{4,})\t名詞,(?:固有名詞|一般),[^\n]*/
         NATTO       = Natto::MeCab.new
-        HASH_BITS   = 20
-        BANDS       = 5
+        HASH_BITS   = 24
+        BANDS       = 6
         SEED_CACHE  = Hash.new {|h, word| h[word] = XXhash.xxh32(word) }
 
         attr_reader :keywords
@@ -48,7 +48,6 @@ module Simpress
           @size = posts.size
           @data = posts.map do |post|
             keywords = extract_keywords(post)
-            @keywords[post.id] = keywords
             vector = keywords.tally
             post.taxonomies.each_value do |terms|
               terms.each do |term|
@@ -59,7 +58,7 @@ module Simpress
             end
 
             vector.select! {|_, v| v >= 2 }
-
+            @keywords[post.id] = vector
             norm = Math.sqrt(vector.each_value.sum(0.0) {|v| v * v })
             { vector: vector, norm: norm, simhash: calculate_simhash(vector) }
           end
