@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "pathling"
 require "simpress/config"
 require "simpress/json"
+require "simpress/uri"
 
 module Simpress
   module Theme
@@ -16,7 +16,7 @@ module Simpress
       end
 
       def uri(path)
-        Pathling.wrap(path).with_ext("html")
+        Simpress::Uri.wrap(path).with_ext("html")
       end
 
       def link_to(text, path, **options)

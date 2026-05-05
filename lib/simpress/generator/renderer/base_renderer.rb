@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "pathling"
 require "simpress/config"
 require "simpress/json"
 require "simpress/paginator"
 require "simpress/theme"
+require "simpress/uri"
 require "simpress/writer"
 
 module Simpress
@@ -47,7 +47,7 @@ module Simpress
           end
 
           def uri(path)
-            Pathling.wrap(path)
+            Simpress::Uri.wrap(path)
           end
 
           def write_html(path, template:, **context, &)

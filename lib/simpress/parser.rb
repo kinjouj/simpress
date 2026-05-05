@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "pathling"
 require "xxhash"
 
 require "simpress/config"
@@ -8,6 +7,7 @@ require "simpress/parser/markdown"
 require "simpress/parser/markdown/processor"
 require "simpress/post"
 require "simpress/taxonomy"
+require "simpress/uri"
 
 module Simpress
   module Parser
@@ -86,7 +86,7 @@ module Simpress
 
       def parse_permalink
         date = @params[:date]
-        Pathling.new.path(date.year, date.month.to_s.rjust(2, "0"), @basename).build
+        Simpress::Uri.new.path(date.year, date.month.to_s.rjust(2, "0"), @basename).build
       end
     end
   end

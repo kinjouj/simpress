@@ -89,25 +89,25 @@ describe Simpress::Plugin::Similarity do
   it "assigns correct similarity data to each post" do
     described_class.run(posts)
 
-    expect(post1).to respond_to(:similarities)
-    expect(post1.similarities.size).to eq(1)
-    expect(post1.similarities.first[0]).to eq("post_003")
+    expect(posts[0]).to respond_to(:similarities)
+    expect(posts[0].similarities.size).to eq(1)
+    expect(posts[0].similarities.first[0]).to eq("post_003")
 
-    expect(post2).to respond_to(:similarities)
-    expect(post2.similarities.size).to eq(2)
-    expect(post2.similarities.map { _1[0] }).to contain_exactly("post_004", "post_005")
+    expect(posts[1]).to respond_to(:similarities)
+    expect(posts[1].similarities.size).to eq(2)
+    expect(posts[1].similarities.map { _1[0] }).to contain_exactly("post_004", "post_005")
 
-    expect(post3).to respond_to(:similarities)
-    expect(post3.similarities.size).to eq(1)
-    expect(post3.similarities.first[0]).to eq("post_001")
+    expect(posts[2]).to respond_to(:similarities)
+    expect(posts[2].similarities.size).to eq(1)
+    expect(posts[2].similarities.first[0]).to eq("post_001")
 
-    expect(post4).to respond_to(:similarities)
-    expect(post4.similarities.size).to eq(2)
-    expect(post4.similarities.map { _1[0] }).to contain_exactly("post_002", "post_005")
+    expect(posts[3]).to respond_to(:similarities)
+    expect(posts[3].similarities.size).to eq(2)
+    expect(posts[3].similarities.map { _1[0] }).to contain_exactly("post_002", "post_005")
 
-    expect(post5).to respond_to(:similarities)
-    expect(post5.similarities.size).to eq(2)
-    expect(post5.similarities.map { _1[0] }).to contain_exactly("post_004", "post_002")
+    expect(posts[4]).to respond_to(:similarities)
+    expect(posts[4].similarities.size).to eq(2)
+    expect(posts[4].similarities.map { _1[0] }).to contain_exactly("post_004", "post_002")
   end
 
   context "when cosine similarity returns 0" do
@@ -128,14 +128,14 @@ describe Simpress::Plugin::Similarity do
       allow(Simpress::Config.instance).to receive(:mode).and_return("json")
     end
 
-    it "includes similarities in as_json when content key is present" do
+    it "includes similarities in to_h when content key is present" do
       described_class.run(posts)
-      expect(post1.as_json(keys: [:title, :content])).to include(:similarities)
+      expect(posts[0].to_h(keys: [:title, :content])).to include(:similarities)
     end
 
-    it "excludes similarities from as_json when content key is absent" do
+    it "excludes similarities from to_h when content key is absent" do
       described_class.run(posts)
-      expect(post1.as_json(keys: [:title])).not_to include(:similarities)
+      expect(posts[0].to_h(keys: [:title])).not_to include(:similarities)
     end
   end
 end

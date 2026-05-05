@@ -18,19 +18,31 @@ module Simpress
         end
 
         similarity_scores.each_with_index do |scores, i|
-          post = posts[i]
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
-            # [_score, target.id, target.title, target.permalink, cs.keywords[target.id]]
             [target.id, target.title, target.permalink]
           end
 
-          post.define_singleton_method(:similarities) { similarities }
-          post.define_singleton_method(:to_h) do |state = {}|
-            hash = super(state)
-            hash[:similarities] = similarities if hash.key?(:content)
-            hash
-          end
+          posts[i] = PostWithSimilarities.new(posts[i], similarities)
+        end
+      end
+
+      class PostWithSimilarities
+        extend Forwardable
+
+        def_delegators :@post, :id, :title, :date, :permalink, :description, :content, :toc, :layout, :cover, :taxonomies
+
+        attr_reader :similarities
+
+        def initialize(post, similarities)
+          @post = post
+          @similarities = similarities
+        end
+
+        def to_h(state = {})
+          hash = @post.to_h(state)
+          hash[:similarities] = @similarities if hash.key?(:content)
+          hash
         end
       end
 
