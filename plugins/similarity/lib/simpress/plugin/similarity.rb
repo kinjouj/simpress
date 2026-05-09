@@ -2,6 +2,7 @@
 
 require "natto"
 require "xxhash"
+require "simpress/json"
 require "simpress/plugin"
 
 module Simpress
@@ -43,6 +44,14 @@ module Simpress
           hash = @post.to_h(state)
           hash[:similarities] = @similarities if hash.key?(:content)
           hash
+        end
+
+        def as_json(options = {})
+          to_h(options)
+        end
+
+        def to_json(options = {})
+          Simpress::JSON.dump(as_json(options))
         end
       end
 

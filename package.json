@@ -8,13 +8,13 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@jest/globals": "^30.3.0",
+    "@jest/globals": "^30.4.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.6.2",
     "@types/prismjs": "^1.26.6",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -26,13 +26,13 @@
     "eslint-plugin-perfectionist": "^5.9.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "jest": "^30.3.0",
-    "jest-environment-jsdom": "^30.3.0",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
     "sass-embedded": "^1.99.0",
     "ts-jest": "^29.4.9",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.2",
-    "vite": "^8.0.10"
+    "vite": "^8.0.11"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
@@ -40,9 +40,9 @@
     "@fortawesome/react-fontawesome": "^3.3.1",
     "bootstrap": "^5.3.8",
     "prismjs": "^1.30.0",
-    "react": "^19.2.5",
+    "react": "^19.2.6",
     "react-bootstrap": "^2.10.10",
-    "react-dom": "^19.2.5",
+    "react-dom": "^19.2.6",
     "react-loading-skeleton": "^3.5.0",
     "react-router-dom": "^7.15.0"
   }
