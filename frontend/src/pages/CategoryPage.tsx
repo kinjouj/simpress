@@ -1,7 +1,7 @@
 import React, { Suspense, useCallback } from 'react';
 import Simpress from '../api/Simpress';
 import { NotFound, Paginator, PostList } from '../components';
-import { PaginateProvider, usePaginateContext } from '../contexts/PagenateContext';
+import { PaginateProvider, usePaginateContext } from '../contexts/PaginateContext';
 import { useCategory, useFetchData, useFetchPageMeta, usePage } from '../hooks';
 import type { PostType } from '../types';
 

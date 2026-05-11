@@ -79,7 +79,7 @@ GEM
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     ostruct (0.6.3)
-    ox (2.14.25)
+    ox (2.14.26)
       bigdecimal (>= 3.0)
     parallel (2.1.0)
     parser (3.3.11.1)
@@ -271,7 +271,7 @@ CHECKSUMS
   natto (1.2.0) sha256=07bee10b7b305b34e87eb3b6cd23aa42140816b7088acc5e55b1fbbc35c010c3
   oj (3.17.0) sha256=5684b2127fb70e650fae90df521b91336ff8e55e2e1011ed80eb0283beac5360
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
-  ox (2.14.25) sha256=c938bcfce4d8ff2bd2bdbffe1277222a76c0a6e62078d6854bd4d40f34f2f7db
+  ox (2.14.26) sha256=d4a9cb49fb55751631d469623cfb2e7dad7cea89119c93749c1e31a3fb2f4896
   parallel (2.1.0) sha256=b35258865c2e31134c5ecb708beaaf6772adf9d5efae28e93e99260877b09356
   parser (3.3.11.1) sha256=d17ace7aabe3e72c3cc94043714be27cc6f852f104d81aa284c2281aecc65d54
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85

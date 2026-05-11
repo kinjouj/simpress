@@ -21,6 +21,7 @@ describe Simpress do
 
   after do
     Dir.glob(create_filepath("public/*")) {|file| FileUtils.rm_rf(file) }
+    Simpress::Taxonomy.clear
   end
 
   it "builds the site and generates all expected output files" do
