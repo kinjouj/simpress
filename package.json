@@ -14,11 +14,11 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.6.2",
+    "@types/node": "^25.9.0",
     "@types/prismjs": "^1.26.6",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^9.39.4",
     "eslint-plugin-check-file": "^3.3.1",
     "eslint-plugin-import": "^2.32.0",
@@ -31,8 +31,8 @@
     "sass-embedded": "^1.99.0",
     "ts-jest": "^29.4.9",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.2",
-    "vite": "^8.0.12"
+    "typescript-eslint": "^8.59.3",
+    "vite": "^8.0.13"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
@@ -44,6 +44,6 @@
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.6",
     "react-loading-skeleton": "^3.5.0",
-    "react-router-dom": "^7.15.0"
+    "react-router-dom": "^7.15.1"
   }
 }
