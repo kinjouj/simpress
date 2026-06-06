@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift "./lib"
+
+require "bundler/setup"
+Bundler.require
+
+Dir.glob("tasks/*.rb").each {|f| require_relative f }
+SimpressCLI.start(ARGV)

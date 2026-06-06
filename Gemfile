@@ -12,6 +12,7 @@ gem "redcarpet"
 gem "sass-embedded"
 gem "stackprof"
 gem "stringex"
+gem "thor"
 gem "tilt"
 gem "xxhash"
 

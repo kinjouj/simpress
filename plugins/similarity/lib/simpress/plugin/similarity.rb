@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "fileutils"
 require "natto"
 require "xxhash"
 require "simpress/json"
@@ -26,6 +27,8 @@ module Simpress
 
           posts[i] = PostWithSimilarities.new(posts[i], similarities)
         end
+
+        CosineSimilarity::Cache.flush
       end
 
       class PostWithSimilarities
@@ -60,6 +63,8 @@ module Simpress
         NATTO       = Natto::MeCab.new
         HASH_BITS   = 24
         BANDS       = 6
+        BAND_BITS   = HASH_BITS / BANDS
+        BAND_MASK   = (1 << BAND_BITS) - 1
         SEED_CACHE  = Hash.new {|h, word| h[word] = XXhash.xxh32(word) }
 
         attr_reader :keywords
@@ -74,7 +79,7 @@ module Simpress
               terms.each do |term|
                 n = term.name
                 v = vector[n] || 0
-                vector[n] = v + (Math.log2(v + 2) * 3)
+                vector[n] = v + (Math.log2(v + 2) * 5)
               end
             end
 
@@ -86,13 +91,11 @@ module Simpress
         end
 
         def each_similarity
-          band_bits  = HASH_BITS / BANDS
-          mask       = (1 << band_bits) - 1
           indices    = (0...@size).to_a
           candidates = Array.new(@size * @size, false)
           BANDS.times do |b|
-            shift = b * band_bits
-            indices.group_by {|i| (@data[i][:simhash] >> shift) & mask }.each_value do |ids|
+            shift = b * BAND_BITS
+            indices.group_by {|i| (@data[i][:simhash] >> shift) & BAND_MASK }.each_value do |ids|
               next if ids.size < 2
 
               ids.combination(2) do |i, j|
@@ -113,7 +116,7 @@ module Simpress
         def extract_keywords(post)
           key = (XXhash.xxh32(post.title) ^ XXhash.xxh32(post.markdown, 1)).to_s
           Cache.fetch(key) do
-            data     = "#{post.title}\n#{post.markdown}"
+            data     = "#{post.title} #{post.markdown}"
             keywords = []
             NATTO.parse(data).each_line do |line|
               keywords << Regexp.last_match(1) if line =~ NATTO_REGEX
@@ -124,10 +127,10 @@ module Simpress
         end
 
         def calculate_simhash(vector)
-          v = Array.new(HASH_BITS, 0)
+          v = Array.new(HASH_BITS, 0.0)
           vector.each do |word, weight|
             seed = SEED_CACHE[word]
-            HASH_BITS.times {|bit| v[bit] += weight * ((2 * seed[bit]) - 1) }
+            HASH_BITS.times {|bit| v[bit] += seed[bit] == 1 ? weight : -weight }
           end
 
           simhash = 0
@@ -140,7 +143,6 @@ module Simpress
           d2 = @data[j]
           n1 = d1[:norm]
           n2 = d2[:norm]
-
           return 0.0 if n1 == 0 || n2 == 0
 
           v1 = d1[:vector]
@@ -157,13 +159,26 @@ module Simpress
         end
 
         class Cache
-          def self.fetch(key)
-            path = ".cache/#{key}.cache"
-            return Marshal.load(File.binread(path)) if File.exist?(path) # rubocop:disable Security/MarshalLoad
+          CACHE_FILE = ".cache/similarity.cache"
 
-            result = yield
-            File.binwrite(path, Marshal.dump(result))
-            result
+          class << self
+            def fetch(key)
+              return store[key] if store.key?(key)
+
+              result = yield
+              store[key] = result
+              result
+            end
+
+            def flush
+              File.binwrite(CACHE_FILE, Marshal.dump(@store))
+            end
+
+            private
+
+            def store
+              @store ||= (Marshal.load(File.binread(CACHE_FILE)) if File.exist?(CACHE_FILE)) || {} # rubocop:disable Security/MarshalLoad
+            end
           end
         end
       end
