@@ -6,5 +6,7 @@ $LOAD_PATH.unshift "./lib"
 require "bundler/setup"
 Bundler.require
 
+require "simpress"
+
 Dir.glob("tasks/*.rb").each {|f| require_relative f }
 SimpressCLI.start(ARGV)

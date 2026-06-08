@@ -18,7 +18,7 @@ git clone https://github.com/kinjouj/simpress.git blog
 cd blog
 bundle install
 cp config.yaml.orig config.yaml
-rake build
+./simpress build
 ```
 
 

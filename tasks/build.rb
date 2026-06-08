@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
-require "simpress"
+require "simpress/config"
+require "simpress/logger"
 require "simpress/sitemap"
+require "simpress/writer"
 
 class SimpressCLI < Thor
-  OUTPUT_DIR = Simpress::Config.output_dir
-
   desc "build", "Build the site"
   def build
-    Dir.glob("#{OUTPUT_DIR}/*").each {|f| FileUtils.rm_rf(f) }
+    invoke :clean
     result = Benchmark.realtime do
-      FileUtils.cp_r("static/.", OUTPUT_DIR, preserve: true, verbose: false)
+      FileUtils.cp_r("static/.", Simpress::Config.output_dir, preserve: true, verbose: false)
       Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
       Simpress.build { send(:"build_#{Simpress::Config.instance.mode}") }
     end
+
     Simpress::Logger.debug("build time: #{result}")
   end
 
@@ -21,8 +22,11 @@ class SimpressCLI < Thor
 
   def build_html
     build_scss
-    files = Dir.chdir(OUTPUT_DIR) do
-      FileList["**/*.html"].exclude(/^(archives|page)/, /index\.html$/).map {|f| [f, File.mtime(f)] }.sort_by(&:last)
+    files = Dir.chdir(Simpress::Config.output_dir) do
+      files = Dir.glob("**/*.html")
+      files.reject! {|f| f.match?(/^(archives|page)/) || f.match?(/index\.html$/) }
+      files.map! {|f| [f, File.mtime(f)] }
+      files.sort_by(&:last)
     end
 
     Simpress::Sitemap.build(Simpress::Config.instance.host) do
