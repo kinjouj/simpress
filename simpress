@@ -6,7 +6,19 @@ $LOAD_PATH.unshift "./lib"
 require "bundler/setup"
 Bundler.require
 
+class Thor
+  class << self
+    def find_command_possibilities(meth)
+      commands.key?(meth) ? [meth] : []
+    end
+
+    def exit_on_failure?
+      true
+    end
+  end
+end
+
 require "simpress"
 
-Dir.glob("tasks/*.rb").each {|f| require_relative f }
+Dir.glob("{tasks,plugins/*/tasks}/**/*.rb").each {|f| require_relative f }
 SimpressCLI.start(ARGV)

@@ -22,13 +22,12 @@ module Simpress
           end
 
           def run(body)
-            data = body.dup
             register_enhancers.each do |klass|
-              res  = klass.preprocess(data)
-              data = res if res.is_a?(String)
+              res  = klass.preprocess(body)
+              body = res if res.is_a?(String)
             end
 
-            data
+            body
           end
 
           def clear

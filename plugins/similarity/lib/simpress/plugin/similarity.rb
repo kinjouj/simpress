@@ -23,6 +23,7 @@ module Simpress
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
             [target.id, target.title, target.permalink]
+            # [target.id, target.title, target.permalink, cs.keywords[target.id].uniq]
           end
 
           posts[i] = PostWithSimilarities.new(posts[i], similarities)
@@ -61,11 +62,18 @@ module Simpress
       class CosineSimilarity
         NATTO_REGEX = /\A([[:alnum:]]{4,})\t名詞,(?:固有名詞|一般),[^\n]*/
         NATTO       = Natto::MeCab.new
-        HASH_BITS   = 24
+        HASH_BITS   = 36
         BANDS       = 6
         BAND_BITS   = HASH_BITS / BANDS
         BAND_MASK   = (1 << BAND_BITS) - 1
         SEED_CACHE  = Hash.new {|h, word| h[word] = XXhash.xxh32(word) }
+
+        SEED_BITS_CACHE = Hash.new do |h, word|
+          seed = SEED_CACHE[word]
+          h[word] = Array.new(HASH_BITS) {|bit| seed[bit] == 1 ? 1.0 : -1.0 }
+        end
+
+        DataPoint = Struct.new(:vector, :norm, :simhash)
 
         attr_reader :keywords
 
@@ -79,23 +87,24 @@ module Simpress
               terms.each do |term|
                 n = term.name
                 v = vector[n] || 0
-                vector[n] = v + (Math.log2(v + 2) * 5)
+                vector[n] = v + (Math.log2(v + 2) * 3)
               end
             end
 
             vector.select! {|_, v| v >= 2 }
-            @keywords[post.id] = vector
+            @keywords[post.id] = keywords
             norm = Math.sqrt(vector.each_value.sum(0.0) {|v| v * v })
-            { vector: vector, norm: norm, simhash: calculate_simhash(vector) }
+            DataPoint.new(vector, norm, calculate_simhash(vector))
           end
         end
 
         def each_similarity
           indices    = (0...@size).to_a
           candidates = Array.new(@size * @size, false)
+
           BANDS.times do |b|
             shift = b * BAND_BITS
-            indices.group_by {|i| (@data[i][:simhash] >> shift) & BAND_MASK }.each_value do |ids|
+            indices.group_by {|i| (@data[i].simhash >> shift) & BAND_MASK }.each_value do |ids|
               next if ids.size < 2
 
               ids.combination(2) do |i, j|
@@ -105,7 +114,7 @@ module Simpress
 
                 candidates[idx] = true
                 score = cosine(i, j)
-                yield i, j, score if score > 0.1
+                yield i, j, score if score > 0.2
               end
             end
           end
@@ -129,8 +138,8 @@ module Simpress
         def calculate_simhash(vector)
           v = Array.new(HASH_BITS, 0.0)
           vector.each do |word, weight|
-            seed = SEED_CACHE[word]
-            HASH_BITS.times {|bit| v[bit] += seed[bit] == 1 ? weight : -weight }
+            bits = SEED_BITS_CACHE[word]
+            HASH_BITS.times {|bit| v[bit] += bits[bit] * weight }
           end
 
           simhash = 0
@@ -141,12 +150,12 @@ module Simpress
         def cosine(i, j)
           d1 = @data[i]
           d2 = @data[j]
-          n1 = d1[:norm]
-          n2 = d2[:norm]
+          n1 = d1.norm
+          n2 = d2.norm
           return 0.0 if n1 == 0 || n2 == 0
 
-          v1 = d1[:vector]
-          v2 = d2[:vector]
+          v1 = d1.vector
+          v2 = d2.vector
           v1, v2 = v2, v1 if v1.size > v2.size
 
           product = 0.0
