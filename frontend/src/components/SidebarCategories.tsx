@@ -6,13 +6,13 @@ import Simpress from '../api/Simpress';
 import type { TaxonomyType } from '../types';
 
 const SidebarCategoriesContent = ({ categories }: { categories: TaxonomyType[] }): React.JSX.Element => {
-  const sortedList = [...categories].sort((a, b) => b.count - a.count);
+  const sortedList = [...categories].sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
 
   return (
     <Stack direction="vertical" gap={1}>
       {sortedList.map((category: TaxonomyType) => (
         <div key={category.key}>
-          <Link to={`/archives/categories/${category.key}`}>{category.name}</Link>
+          <Link to={`/archives/categories/${category.key}`}>{category.name} ({category.count})</Link>
           {!!(category.children && Object.keys(category.children).length > 0) && (
             <Stack direction="vertical" className="ms-3">
               <SidebarCategoriesContent categories={category.children} />

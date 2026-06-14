@@ -60,7 +60,7 @@ module Simpress
       end
 
       class CosineSimilarity
-        NATTO_REGEX = /\A([[:alnum:]]{4,})\t名詞,(?:固有名詞|一般),[^\n]*/
+        NATTO_REGEX = /^([[:alnum:]]{4,})\t名詞,(?:固有名詞|一般)/
         NATTO       = Natto::MeCab.new
         HASH_BITS   = 36
         BANDS       = 6
@@ -125,13 +125,7 @@ module Simpress
         def extract_keywords(post)
           key = (XXhash.xxh32(post.title) ^ XXhash.xxh32(post.markdown, 1)).to_s
           Cache.fetch(key) do
-            data     = "#{post.title} #{post.markdown}"
-            keywords = []
-            NATTO.parse(data).each_line do |line|
-              keywords << Regexp.last_match(1) if line =~ NATTO_REGEX
-            end
-
-            keywords
+            NATTO.parse("#{post.title} #{post.markdown}").scan(NATTO_REGEX).map!(&:first)
           end
         end
 

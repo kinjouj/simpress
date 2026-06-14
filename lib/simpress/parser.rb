@@ -16,21 +16,9 @@ module Simpress
     class << self
       def parse(file)
         params, body = Simpress::Parser::Markdown.parse(File.read(file))
-        return nil if expired?(params)
-
         content, image, toc = Simpress::Parser::Markdown::Processor.render(body)
         metadata = MetadataBuilder.new(file, params, body, content, image, toc).build
         Simpress::Post.new(metadata)
-      end
-
-      private
-
-      def expired?(params)
-        raw = params.delete(:expiryDate)
-        return false unless raw
-
-        expiry = raw.respond_to?(:to_time) ? raw.to_time : Time.parse(raw.to_s)
-        expiry < Time.now
       end
     end
 

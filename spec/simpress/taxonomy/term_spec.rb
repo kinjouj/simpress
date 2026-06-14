@@ -43,7 +43,7 @@ describe Simpress::Taxonomy::Term do
   describe "#as_json" do
     it "returns default keys when no options are provided" do
       result = term.as_json
-      expect(result.keys).to contain_exactly(:key, :name, :count)
+      expect(result.keys).to contain_exactly(:key, :name)
     end
 
     it "returns requested permitted keys" do
@@ -62,7 +62,7 @@ describe Simpress::Taxonomy::Term do
   describe "#to_json" do
     it "delegates to Simpress::JSON.dump" do
       result = term.to_json
-      expect(result).to eq '{"key":"ruby-on-rails","name":"Ruby on Rails","count":0}'
+      expect(result).to eq '{"key":"ruby-on-rails","name":"Ruby on Rails"}'
     end
   end
 
