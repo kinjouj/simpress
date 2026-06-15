@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# @plugins/similarity/spec/similarity_spec.rb
 
 require "fileutils"
 require "natto"
@@ -12,24 +13,17 @@ module Simpress
       extend Simpress::Plugin
 
       def self.run(posts, *_args)
-        similarity_scores = Array.new(posts.size) { [] }
-        cs = CosineSimilarity.new(posts)
-        cs.each_similarity do |i, j, score|
-          similarity_scores[i] << [score, j]
-          similarity_scores[j] << [score, i]
-        end
-
-        similarity_scores.each_with_index do |scores, i|
+        indexer = Indexer.new(posts)
+        indexer.each_similarity do |scores, i|
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
             [target.id, target.title, target.permalink]
-            # [target.id, target.title, target.permalink, cs.keywords[target.id].uniq]
           end
 
           posts[i] = PostWithSimilarities.new(posts[i], similarities)
         end
 
-        CosineSimilarity::Cache.flush
+        Indexer::Cache.flush
       end
 
       class PostWithSimilarities
@@ -59,65 +53,48 @@ module Simpress
         end
       end
 
-      class CosineSimilarity
+      class Indexer
         NATTO_REGEX = /^([[:alnum:]]{4,})\t名詞,(?:固有名詞|一般)/
         NATTO       = Natto::MeCab.new
-        HASH_BITS   = 36
-        BANDS       = 6
-        BAND_BITS   = HASH_BITS / BANDS
-        BAND_MASK   = (1 << BAND_BITS) - 1
-        SEED_CACHE  = Hash.new {|h, word| h[word] = XXhash.xxh32(word) }
-
-        SEED_BITS_CACHE = Hash.new do |h, word|
-          seed = SEED_CACHE[word]
-          h[word] = Array.new(HASH_BITS) {|bit| seed[bit] == 1 ? 1.0 : -1.0 }
-        end
-
-        DataPoint = Struct.new(:vector, :norm, :simhash)
+        K1 = 1.2
+        B  = 0.75
 
         attr_reader :keywords
 
         def initialize(posts)
-          @keywords = {}
           @size = posts.size
-          @data = posts.map do |post|
+          @keywords = {}
+          @vectors = posts.map do |post|
             keywords = extract_keywords(post)
-            vector = keywords.tally
+            vector   = keywords.tally
             post.taxonomies.each_value do |terms|
               terms.each do |term|
                 n = term.name
                 v = vector[n] || 0
-                vector[n] = v + (Math.log2(v + 2) * 3)
+                vector[n] = v + (Math.log2(v + 2) * 5)
               end
             end
 
             vector.select! {|_, v| v >= 2 }
             @keywords[post.id] = keywords
-            norm = Math.sqrt(vector.each_value.sum(0.0) {|v| v * v })
-            DataPoint.new(vector, norm, calculate_simhash(vector))
+            vector
           end
+
+          @doc_lens = @vectors.map {|v| v.each_value.sum.to_f }
+          @avgdl    = @size > 0 ? (@doc_lens.sum / @size) : 1.0
+
+          df   = @vectors.each_with_object(Hash.new(0)) {|v, h| v.each_key {|word| h[word] += 1 } }
+          @idf = Hash.new(0.0)
+          df.each {|word, count| @idf[word] = Math.log(((@size - count + 0.5) / (count + 0.5)) + 1.0) }
+
+          @inverted_index = Hash.new {|h, k| h[k] = [] }
+          @vectors.each_with_index {|v, i| v.each {|word, weight| @inverted_index[word] << [i, weight.to_f] } }
+          @norm = @doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / @avgdl)) }
+          @accumulator = Array.new(@size, 0.0)
         end
 
         def each_similarity
-          indices    = (0...@size).to_a
-          candidates = Array.new(@size * @size, false)
-
-          BANDS.times do |b|
-            shift = b * BAND_BITS
-            indices.group_by {|i| (@data[i].simhash >> shift) & BAND_MASK }.each_value do |ids|
-              next if ids.size < 2
-
-              ids.combination(2) do |i, j|
-                i, j = j, i if i > j
-                idx = (i * @size) + j
-                next if candidates[idx]
-
-                candidates[idx] = true
-                score = cosine(i, j)
-                yield i, j, score if score > 0.2
-              end
-            end
-          end
+          @size.times {|i| yield scores_for(i), i }
         end
 
         private
@@ -129,36 +106,26 @@ module Simpress
           end
         end
 
-        def calculate_simhash(vector)
-          v = Array.new(HASH_BITS, 0.0)
-          vector.each do |word, weight|
-            bits = SEED_BITS_CACHE[word]
-            HASH_BITS.times {|bit| v[bit] += bits[bit] * weight }
+        def scores_for(i)
+          v1 = @vectors[i]
+          return [] if v1.empty?
+
+          @accumulator.fill(0.0)
+
+          v1.each_key do |word|
+            idf = @idf[word]
+            next if idf <= 0.0
+
+            @inverted_index[word].each do |j, weight|
+              next if j == i
+
+              denominator  = weight + @norm[j]
+              tf_component = (weight * (K1 + 1.0)) / denominator
+              @accumulator[j] += idf * tf_component
+            end
           end
 
-          simhash = 0
-          HASH_BITS.times {|i| simhash |= (1 << i) if v[i] > 0 }
-          simhash
-        end
-
-        def cosine(i, j)
-          d1 = @data[i]
-          d2 = @data[j]
-          n1 = d1.norm
-          n2 = d2.norm
-          return 0.0 if n1 == 0 || n2 == 0
-
-          v1 = d1.vector
-          v2 = d2.vector
-          v1, v2 = v2, v1 if v1.size > v2.size
-
-          product = 0.0
-          v1.each do |k, v|
-            w = v2[k]
-            product += v * w if w
-          end
-
-          product / (n1 * n2)
+          @accumulator.each_with_index.select {|score, _| score > 0.0 }
         end
 
         class Cache

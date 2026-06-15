@@ -110,11 +110,12 @@ describe Simpress::Plugin::Similarity do
     expect(posts[4].similarities.map { _1[0] }).to contain_exactly("post_004", "post_002")
   end
 
-  context "when cosine similarity returns 0" do
+  context "when returns no scores" do
+    let(:indexer) { Simpress::Plugin::Similarity::Indexer.new(posts) }
+
     before do
-      cosine_similarities = Simpress::Plugin::Similarity::CosineSimilarity.new(posts)
-      allow(cosine_similarities).to receive(:cosine).and_return(0)
-      allow(Simpress::Plugin::Similarity::CosineSimilarity).to receive(:new).and_return(cosine_similarities)
+      allow(indexer).to receive(:each_similarity) {|&block| posts.size.times {|i| block.call([], i) } }
+      allow(Simpress::Plugin::Similarity::Indexer).to receive(:new).and_return(indexer)
     end
 
     it "sets similarities to empty for all posts" do

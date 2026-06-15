@@ -10,6 +10,9 @@ AllCops:
 Layout/EndOfLine:
   EnforcedStyle: lf
 
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false
+
 Layout/LineLength:
   Enabled: false
 
