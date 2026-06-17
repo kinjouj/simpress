@@ -44,6 +44,6 @@
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.7",
     "react-loading-skeleton": "^3.5.0",
-    "react-router-dom": "^7.17.0"
+    "react-router-dom": "^7.18.0"
   }
 }

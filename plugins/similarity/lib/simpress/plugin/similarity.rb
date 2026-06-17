@@ -56,22 +56,24 @@ module Simpress
       class Indexer
         NATTO_REGEX = /^([[:alnum:]]{4,})\t名詞,(?:固有名詞|一般)/
         NATTO       = Natto::MeCab.new
-        K1 = 1.2
-        B  = 0.75
+        K1          = 1.2
+        B           = 0.75
+        TF_SCALE    = K1 + 1.0
 
         attr_reader :keywords
 
         def initialize(posts)
-          @size = posts.size
-          @keywords = {}
-          @vectors = posts.map do |post|
+          @size        = posts.size
+          @accumulator = Array.new(@size, 0.0)
+          @keywords    = {}
+          @vectors     = posts.map do |post|
             keywords = extract_keywords(post)
             vector   = keywords.tally
             post.taxonomies.each_value do |terms|
               terms.each do |term|
                 n = term.name
                 v = vector[n] || 0
-                vector[n] = v + (Math.log2(v + 2) * 5)
+                vector[n] = v + (Math.log2(v + 2) * 3)
               end
             end
 
@@ -80,17 +82,11 @@ module Simpress
             vector
           end
 
-          @doc_lens = @vectors.map {|v| v.each_value.sum.to_f }
-          @avgdl    = @size > 0 ? (@doc_lens.sum / @size) : 1.0
-
-          df   = @vectors.each_with_object(Hash.new(0)) {|v, h| v.each_key {|word| h[word] += 1 } }
-          @idf = Hash.new(0.0)
-          df.each {|word, count| @idf[word] = Math.log(((@size - count + 0.5) / (count + 0.5)) + 1.0) }
-
-          @inverted_index = Hash.new {|h, k| h[k] = [] }
-          @vectors.each_with_index {|v, i| v.each {|word, weight| @inverted_index[word] << [i, weight.to_f] } }
-          @norm = @doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / @avgdl)) }
-          @accumulator = Array.new(@size, 0.0)
+          doc_lens       = @vectors.map {|v| v.each_value.sum.to_f }
+          avgdl          = doc_lens.sum / @size
+          @norm           = doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / avgdl)) }
+          @idf            = build_idf
+          @inverted_index = build_inverted_index
         end
 
         def each_similarity
@@ -98,6 +94,20 @@ module Simpress
         end
 
         private
+
+        def build_idf
+          df = @vectors.each_with_object(Hash.new(0)) {|v, h| v.each_key {|word| h[word] += 1 } }
+          Hash.new(0.0).tap do |idf|
+            df.each {|word, count| idf[word] = Math.log(((@size - count + 0.5) / (count + 0.5)) + 1.0) }
+          end
+        end
+
+        def build_inverted_index
+          Hash.new {|h, k| h[k] = [] }.tap do |index|
+            @vectors.each_with_index {|v, i| v.each {|word, weight| index[word] << [i, weight.to_f] } }
+            index.select! {|word, _| @idf[word] > 0.0 }
+          end
+        end
 
         def extract_keywords(post)
           key = (XXhash.xxh32(post.title) ^ XXhash.xxh32(post.markdown, 1)).to_s
@@ -114,18 +124,15 @@ module Simpress
 
           v1.each_key do |word|
             idf = @idf[word]
-            next if idf <= 0.0
-
             @inverted_index[word].each do |j, weight|
               next if j == i
 
-              denominator  = weight + @norm[j]
-              tf_component = (weight * (K1 + 1.0)) / denominator
-              @accumulator[j] += idf * tf_component
+              denominator = weight + @norm[j]
+              @accumulator[j] += idf * ((weight * TF_SCALE) / denominator)
             end
           end
 
-          @accumulator.each_with_index.select {|score, _| score > 0.0 }
+          @accumulator.filter_map.with_index {|score, idx| [score, idx] if score > 0.0 }
         end
 
         class Cache
