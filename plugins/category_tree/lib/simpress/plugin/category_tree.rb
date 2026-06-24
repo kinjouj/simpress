@@ -12,6 +12,7 @@ module Simpress
       extend Simpress::Plugin
 
       KEYS = [:key, :name, :count, :children].freeze
+      ORDER_KEY = "orders"
 
       def self.run(*)
         nested_categories = build_nested_categories
@@ -31,6 +32,8 @@ module Simpress
         return nested.values unless File.exist?("category_indexes.json")
 
         category_indexes = Simpress::JSON.load_file("category_indexes.json")
+        order = category_indexes.delete(ORDER_KEY)
+
         moved_keys = category_indexes.each_with_object(Set.new) do |(key, values), acc|
           root = nested[key] or next
           values.each do |value|
@@ -40,7 +43,14 @@ module Simpress
           end
         end
 
-        nested.except(*moved_keys).values
+        categories = nested.except(*moved_keys).values
+        order ? sort_categories(categories, order) : categories
+      end
+
+      def self.sort_categories(categories, order)
+        priority = order.each_with_index.to_h
+        sorted = categories.sort_by.with_index {|term, i| [priority[term.key] || order.size, i] }
+        sorted.each {|term| term.children.replace(sort_categories(term.children, order)) }
       end
 
       def self.process_html(categories)
@@ -51,7 +61,7 @@ module Simpress
         Simpress::Writer.write("categories.json", Simpress::JSON.dump(categories, keys: KEYS))
       end
 
-      private_class_method :build_nested_categories, :process_html, :process_json
+      private_class_method :build_nested_categories, :sort_categories, :process_html, :process_json
     end
   end
 end

@@ -84,5 +84,82 @@ describe Simpress::Plugin::CategoryTree do
         )
       end
     end
+
+    context "when category_indexes.json contains an orders key" do
+      let(:life_term) { Simpress::Taxonomy::Term.new("Life", key: "life") }
+      let(:tech_term) { Simpress::Taxonomy::Term.new("Tech", key: "tech") }
+      let(:taxonomy)  { instance_double(Simpress::Taxonomy, terms: { "life" => life_term, "tech" => tech_term }) }
+
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Theme).to receive(:render).and_return("")
+        allow(Simpress::Context).to receive(:update)
+        allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)
+        allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return(
+          { "orders" => ["tech", "life"] }
+        )
+      end
+
+      it "sorts root categories according to the orders list" do
+        described_class.run
+
+        expect(Simpress::Theme).to have_received(:render).with(
+          "sidebar_categories",
+          categories: satisfy {|cats| cats.map(&:key) == ["tech", "life"] }
+        )
+      end
+
+      it "does not treat the orders key as a parent-child relationship" do
+        described_class.run
+
+        expect(Simpress::Theme).to have_received(:render).with(
+          "sidebar_categories",
+          categories: satisfy {|cats| cats.none? {|c| c.key == "orders" } }
+        )
+      end
+    end
+
+    context "when category_indexes.json has both nesting and orders" do
+      let(:rails_term) { Simpress::Taxonomy::Term.new("Rails", key: "rails") }
+      let(:sinatra_term) { Simpress::Taxonomy::Term.new("Sinatra", key: "sinatra") }
+      let(:life_term) { Simpress::Taxonomy::Term.new("Life", key: "life") }
+      let(:taxonomy) do
+        instance_double(
+          Simpress::Taxonomy,
+          terms: { "ruby" => term, "rails" => rails_term, "sinatra" => sinatra_term, "life" => life_term }
+        )
+      end
+
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Theme).to receive(:render).and_return("")
+        allow(Simpress::Context).to receive(:update)
+        allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)
+        allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return(
+          { "ruby" => ["sinatra", "rails"], "orders" => ["rails", "sinatra"] }
+        )
+      end
+
+      it "sorts nested children according to the orders list" do
+        described_class.run
+
+        expect(Simpress::Theme).to have_received(:render).with(
+          "sidebar_categories",
+          categories: satisfy do |cats|
+            ruby_category = cats.find {|c| c.key == "ruby" }
+            ruby_category.children.map(&:key) == ["rails", "sinatra"]
+          end
+        )
+      end
+
+      it "sorts root categories that are not in the orders list to the end" do
+        described_class.run
+
+        expect(Simpress::Theme).to have_received(:render).with(
+          "sidebar_categories",
+          categories: satisfy {|cats| cats.map(&:key) == ["ruby", "life"] }
+        )
+      end
+    end
   end
 end

@@ -25,6 +25,14 @@ module Simpress
           Simpress::Parser::Markdown::Enhancer.run(markdown)
         end
 
+        def link(url, _title, content)
+          %(<a href="#{url}" target="_blank" rel="noopener">#{content}</a>)
+        end
+
+        def autolink(url, _link_type)
+          link(url, nil, url)
+        end
+
         def header(text, header_level)
           tag = "h#{header_level}"
           return "<#{tag}>#{text}</#{tag}>" if header_level == 1
