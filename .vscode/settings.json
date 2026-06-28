@@ -1,11 +1,10 @@
 {
   "files.exclude": {
     ".npmrc": true,
-    ".ruby-version": true,
     "package-lock.json": true,
+    "stackprof.dump": true,
     "node_modules": true,
     "public": true,
-    "logs": true,
     ".cache": true,
     "**/.gitkeep": true,
     "**/.gitattributes": true,

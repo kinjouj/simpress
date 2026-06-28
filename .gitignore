@@ -6,4 +6,7 @@ node_modules
 scss/*
 source/*
 static/*
+static/images/*
 !static/.gitkeep
+!static/images
+!static/images/.gitkeep
