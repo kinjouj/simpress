@@ -34,7 +34,7 @@ module Simpress
       @draft       = params[:draft]
       @markdown    = params[:markdown]
       @taxonomies  = Simpress::Taxonomy.taxonomies.to_h do |taxonomy|
-        terms = Array(params[taxonomy.name.to_sym]).map {|name| taxonomy.term(name).tap {|term| term.posts << self } }
+        terms = Array(params[taxonomy.name.to_sym]).map {|name| taxonomy.term(name).tap {|term| term.posts << self unless @draft } }
         [taxonomy.name, terms]
       end
     end
