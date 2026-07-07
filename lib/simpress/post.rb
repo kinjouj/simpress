@@ -33,14 +33,22 @@ module Simpress
       @index       = params[:index]
       @draft       = params[:draft]
       @markdown    = params[:markdown]
-      @taxonomies  = Simpress::Taxonomy.taxonomies.to_h do |taxonomy|
-        terms = Array(params[taxonomy.name.to_sym]).map {|name| taxonomy.term(name).tap {|term| term.posts << self unless @draft } }
-        [taxonomy.name, terms]
-      end
+      @taxonomies  = build_taxonomies(params)
+    end
+
+    def register_taxonomies!
+      return self if @draft
+
+      @taxonomies.each_value {|terms| terms.each {|term| term.posts << self } }
+      self
     end
 
     def timestamp
       @timestamp ||= @date.to_i
+    end
+
+    def month_start
+      @month_start ||= Time.new(@date.year, @date.month, 1)
     end
 
     def to_h(options = {})
@@ -54,6 +62,15 @@ module Simpress
 
     def to_json(options = {})
       Simpress::JSON.dump(as_json(options))
+    end
+
+    private
+
+    def build_taxonomies(params)
+      Simpress::Taxonomy.taxonomies.to_h do |taxonomy|
+        terms = Array(params[taxonomy.name.to_sym]).map {|name| taxonomy.term(name) }
+        [taxonomy.name, terms]
+      end
     end
   end
 end

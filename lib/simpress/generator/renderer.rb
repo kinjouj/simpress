@@ -14,7 +14,7 @@ module Simpress
         monthly_archives = Hash.new {|h, k| h[k] = [] }
         [nil, *posts, nil].each_cons(3) do |newer_post, post, older_post|
           Simpress::Generator::Renderer::PermalinkRenderer.generate(post, older_post, newer_post)
-          monthly_archives[Time.new(post.date.year, post.date.month, 1)] << post
+          monthly_archives[post.month_start] << post
         end
 
         Simpress::Generator::Renderer::PageRenderer.generate(pages)

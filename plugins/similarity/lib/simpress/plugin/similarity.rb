@@ -29,7 +29,7 @@ module Simpress
       class PostWithSimilarities
         extend Forwardable
 
-        def_delegators :@post, :id, :title, :date, :permalink, :description, :content, :toc, :layout, :cover, :taxonomies
+        def_delegators :@post, :id, :title, :date, :permalink, :description, :content, :toc, :layout, :cover, :taxonomies, :month_start
 
         attr_reader :similarities
 
@@ -136,7 +136,7 @@ module Simpress
         end
 
         class Cache
-          CACHE_FILE = ".cache/similarity.cache"
+          CACHE_FILE = "similarity.cache"
 
           class << self
             def fetch(key)

@@ -9,6 +9,7 @@ module Simpress
     module Markdown
       class Renderer < ::Redcarpet::Render::HTML
         RENDERER_OPTIONS = { hard_wrap: true, escape_html: true }.freeze
+
         attr_reader :primary_image, :toc
 
         def initialize(options = nil)
@@ -17,8 +18,11 @@ module Simpress
         end
 
         def reset!
-          @primary_image = nil
-          @toc           = []
+          @primary_image   = nil
+          @toc             = []
+          @current_section = nil
+          @top_level       = nil
+          @section_count   = 0
         end
 
         def preprocess(markdown)
@@ -37,8 +41,8 @@ module Simpress
           tag = "h#{header_level}"
           return "<#{tag}>#{text}</#{tag}>" if header_level == 1
 
-          id = "section-#{@toc.size + 1}"
-          @toc << [id, text]
+          id = "section-#{@section_count += 1}"
+          append_to_toc(id, text, header_level)
           %(<#{tag} id="#{id}">#{text}</#{tag}>)
         end
 
@@ -57,6 +61,20 @@ module Simpress
           html
         end
         # :nocov:
+
+        private
+
+        def append_to_toc(id, text, header_level)
+          @top_level ||= header_level
+
+          if header_level <= @top_level || @current_section.nil?
+            heading = { id: id, text: text, children: [] }
+            @toc << heading
+            @current_section = heading
+          else
+            @current_section[:children] << { id: id, text: text }
+          end
+        end
       end
     end
   end

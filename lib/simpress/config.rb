@@ -14,7 +14,7 @@ module Simpress
 
     def initialize
       config      = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
-      defaults    = config[:default]
+      defaults    = config.fetch(:default) { raise "config.yaml is missing 'default' key" }
       @mode       = defaults[:mode]
       @host       = defaults[:host]
       @logging    = defaults[:logging]
@@ -26,8 +26,8 @@ module Simpress
       @taxonomies ||= File.exist?(TAXONOMIES_FILE) ? Psych.load_file(TAXONOMIES_FILE) || {} : {}
     end
 
+    # :nocov:
     class << self
-      # :nocov:
       def source_dir
         "source"
       end
@@ -43,11 +43,11 @@ module Simpress
       def plugin_dir
         "plugins"
       end
-      # :nocov:
 
       def clear
         Singleton.__init__(Simpress::Config)
       end
     end
+    # :nocov:
   end
 end

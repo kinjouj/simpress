@@ -4,7 +4,7 @@ require "simpress/generator/renderer/archive/taxonomy_renderer"
 require "simpress/post"
 
 describe Simpress::Generator::Renderer::Archive::TaxonomyRenderer do
-  let!(:post)       { build(:post, categories: ["Ruby"]) }
+  let!(:post)       { build(:post, categories: ["Ruby"]).tap(&:register_taxonomies!) }
   let!(:taxonomies) { Simpress::Taxonomy.taxonomies }
 
   before do

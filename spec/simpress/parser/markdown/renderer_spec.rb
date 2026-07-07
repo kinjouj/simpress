@@ -17,7 +17,7 @@ describe Simpress::Parser::Markdown::Renderer do
   describe "#reset!" do
     it "clears primary_image and toc" do
       renderer.instance_variable_set(:@primary_image, "test.png")
-      renderer.instance_variable_set(:@toc, [["id", "text"]])
+      renderer.instance_variable_set(:@toc, [{ id: "id", text: "text", children: [] }])
       renderer.reset!
       expect(renderer.primary_image).to be_nil
       expect(renderer.toc).to be_empty
@@ -47,14 +47,79 @@ describe Simpress::Parser::Markdown::Renderer do
     it "returns header with id and registers to toc for level 2 or higher" do
       result = renderer.header("SubTitle", 2)
       expect(result).to eq '<h2 id="section-1">SubTitle</h2>'
-      expect(renderer.toc).to eq [["section-1", "SubTitle"]]
+      expect(renderer.toc.size).to eq 1
+
+      heading = renderer.toc.first
+      expect(heading[:id]).to eq "section-1"
+      expect(heading[:text]).to eq "SubTitle"
+      expect(heading[:children]).to eq []
     end
 
     it "increments section ids" do
       renderer.header("First", 2)
       result = renderer.header("Second", 3)
       expect(result).to include('id="section-2"')
-      expect(renderer.toc.size).to eq 2
+    end
+
+    it "treats level 2 headers as top-level toc entries" do
+      renderer.header("First", 2)
+      renderer.header("Second", 2)
+
+      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Second"]
+    end
+
+    it "nests a level 3+ header as a child of the preceding level 2 header" do
+      renderer.header("First", 2)
+      renderer.header("Second", 3)
+
+      expect(renderer.toc.size).to eq 1
+      first = renderer.toc.first
+      expect(first[:text]).to eq "First"
+      expect(first[:children].map {|heading| heading[:text] }).to eq ["Second"]
+    end
+
+    it "does not attach a children key to child-level nodes" do
+      renderer.header("First", 2)
+      renderer.header("Second", 3)
+
+      child = renderer.toc.first[:children].first
+      expect(child).to eq({ id: "section-2", text: "Second" })
+    end
+
+    it "flattens consecutive deeper headers into the same child list, regardless of level" do
+      renderer.header("First", 2)
+      renderer.header("Second", 3)
+      renderer.header("Third", 4)
+
+      expect(renderer.toc.first[:children].map {|heading| heading[:text] }).to eq ["Second", "Third"]
+    end
+
+    it "starts a new top-level section, resetting children, on the next level 2 header" do
+      renderer.header("First", 2)
+      renderer.header("Second", 3)
+      renderer.header("Third", 2)
+      renderer.header("Fourth", 3)
+
+      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Third"]
+      expect(renderer.toc[0][:children].map {|heading| heading[:text] }).to eq ["Second"]
+      expect(renderer.toc[1][:children].map {|heading| heading[:text] }).to eq ["Fourth"]
+    end
+
+    it "treats a deeper header as top-level if no level 2 header has appeared yet" do
+      renderer.header("First", 3)
+
+      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First"]
+    end
+
+    it "establishes the top level dynamically from the first header when it is deeper than 2" do
+      renderer.header("First", 3)
+      renderer.header("Second", 4)
+      renderer.header("Third", 4)
+      renderer.header("Fourth", 3)
+
+      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Fourth"]
+      expect(renderer.toc[0][:children].map {|heading| heading[:text] }).to eq ["Second", "Third"]
+      expect(renderer.toc[1][:children]).to eq []
     end
   end
 

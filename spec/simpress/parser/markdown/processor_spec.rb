@@ -30,7 +30,9 @@ describe Simpress::Parser::Markdown::Processor do
       body, image, toc = described_class.render(markdown1)
       expect(body).to include("Hello")
       expect(image).to eq "cover.png"
-      expect(toc).to eq([["section-1", "Hello"]])
+      expect(toc.size).to eq 1
+      expect(toc.first[:id]).to eq "section-1"
+      expect(toc.first[:text]).to eq "Hello"
     end
 
     it "does not carry over state from a previous render" do
@@ -38,7 +40,9 @@ describe Simpress::Parser::Markdown::Processor do
       body, image, toc = described_class.render(markdown2)
       expect(body).to include("World")
       expect(image).to be_nil
-      expect(toc).to eq([["section-1", "World"]])
+      expect(toc.size).to eq 1
+      expect(toc.first[:id]).to eq "section-1"
+      expect(toc.first[:text]).to eq "World"
     end
   end
 end

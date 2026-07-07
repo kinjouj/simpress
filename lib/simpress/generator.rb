@@ -16,6 +16,7 @@ module Simpress
           post = Simpress::Parser.parse(file)
           next if post.nil? || post.draft
 
+          post.register_taxonomies!
           (post.index ? posts : pages) << post
         end
 

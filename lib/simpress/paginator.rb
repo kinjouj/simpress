@@ -24,7 +24,6 @@ module Simpress
     def previous_page
       raise "Not Found previous page" unless previous_page_exist?
 
-      page_path(@page - 1)
       @page - 1 > 1 ? page_path(@page - 1) : File.dirname(page_path(1))
     end
 

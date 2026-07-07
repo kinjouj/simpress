@@ -1,8 +1,6 @@
 /public
 coverage
 node_modules
-.cache/*
-!.cache/.gitkeep
 scss/*
 source/*
 static/*
@@ -10,3 +8,4 @@ static/images/*
 !static/.gitkeep
 !static/images
 !static/images/.gitkeep
+similarity.cache

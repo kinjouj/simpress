@@ -37,8 +37,8 @@ module Simpress
       end
 
       def process(posts = [], pages = [])
-        plugins = Simpress::Config.instance.plugins.to_set {|plugin| plugin.downcase.delete("_") }
-        allowed_plugins = register_plugins.select {|klass| plugins.include?(klass.name.split("::").last.downcase) }
+        enabled_plugins = Simpress::Config.instance.plugins.to_set(&:downcase)
+        allowed_plugins = register_plugins.select {|klass| enabled_plugins.include?(underscore(klass.name.split("::").last)) }
                                           .sort_by {|klass| -klass.priority }
 
         allowed_plugins.each do |klass|
@@ -49,6 +49,12 @@ module Simpress
 
       def clear
         @register_plugins&.clear
+      end
+
+      private
+
+      def underscore(name)
+        name.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
       end
     end
   end

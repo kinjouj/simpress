@@ -41,12 +41,35 @@ describe Simpress::Post do
       expect(post.permalink).to eq "/sample-post"
     end
 
-    it "integrates with real taxonomy terms and registers itself to them" do
+    it "integrates with real taxonomy terms without registering itself yet" do
       post = described_class.new(params)
       category_terms = post.taxonomies["categories"]
       expect(category_terms.size).to eq 1
       expect(category_terms.first.name).to eq "Ruby"
-      expect(category_terms.first.posts).to include(post)
+      expect(category_terms.first.posts).not_to include(post)
+    end
+  end
+
+  describe "#register_taxonomies!" do
+    it "registers itself to each resolved taxonomy term" do
+      post = described_class.new(params)
+      post.register_taxonomies!
+      expect(post.taxonomies["categories"].first.posts).to include(post)
+    end
+
+    it "returns self" do
+      post = described_class.new(params)
+      expect(post.register_taxonomies!).to eq post
+    end
+
+    context "when the post is a draft" do
+      let(:params) { super().merge(draft: true) }
+
+      it "does not register itself to any taxonomy term" do
+        post = described_class.new(params)
+        post.register_taxonomies!
+        expect(post.taxonomies["categories"].first.posts).not_to include(post)
+      end
     end
   end
 

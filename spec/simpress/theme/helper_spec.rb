@@ -47,4 +47,38 @@ describe Simpress::Theme::Helper do
       expect(result).to include('target="_blank"')
     end
   end
+
+  describe "#render_toc" do
+    it "returns an empty array for an empty toc" do
+      expect(helper.render_toc([])).to eq []
+    end
+
+    it "assigns depth 0 to a flat list of headings" do
+      headings = [{ id: "section-1", text: "First", children: [] }]
+      result   = helper.render_toc(headings)
+      expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }]
+    end
+
+    it "keeps sibling headings in order at the same depth" do
+      headings = [
+        { id: "section-1", text: "First", children: [] },
+        { id: "section-2", text: "Second", children: [] }
+      ]
+      result = helper.render_toc(headings)
+      expect(result).to eq [
+        { id: "section-1", text: "First", depth: 0 },
+        { id: "section-2", text: "Second", depth: 0 }
+      ]
+    end
+
+    it "places a child directly after its parent with an incremented depth" do
+      child  = { id: "section-2", text: "Child" }
+      parent = { id: "section-1", text: "Parent", children: [child] }
+      result = helper.render_toc([parent])
+      expect(result).to eq [
+        { id: "section-1", text: "Parent", depth: 0 },
+        { id: "section-2", text: "Child", depth: 1 }
+      ]
+    end
+  end
 end

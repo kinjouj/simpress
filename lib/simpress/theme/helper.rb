@@ -24,6 +24,13 @@ module Simpress
         attrs_str = attrs.map {|k, v| %(#{k}="#{v}") }.join(" ")
         %(<a #{attrs_str}>#{text}</a>)
       end
+
+      def render_toc(toc)
+        toc.flat_map do |heading|
+          children = heading[:children].map {|child| { id: child[:id], text: child[:text], depth: 1 } }
+          [{ id: heading[:id], text: heading[:text], depth: 0 }] + children
+        end
+      end
     end
   end
 end
