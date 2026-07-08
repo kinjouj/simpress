@@ -48,14 +48,14 @@ describe Simpress::Theme::Helper do
     end
   end
 
-  describe "#render_toc" do
+  describe "#flatten_toc" do
     it "returns an empty array for an empty toc" do
-      expect(helper.render_toc([])).to eq []
+      expect(helper.flatten_toc([])).to eq []
     end
 
     it "assigns depth 0 to a flat list of headings" do
       headings = [{ id: "section-1", text: "First", children: [] }]
-      result   = helper.render_toc(headings)
+      result   = helper.flatten_toc(headings)
       expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }]
     end
 
@@ -64,7 +64,7 @@ describe Simpress::Theme::Helper do
         { id: "section-1", text: "First", children: [] },
         { id: "section-2", text: "Second", children: [] }
       ]
-      result = helper.render_toc(headings)
+      result = helper.flatten_toc(headings)
       expect(result).to eq [
         { id: "section-1", text: "First", depth: 0 },
         { id: "section-2", text: "Second", depth: 0 }
@@ -74,7 +74,7 @@ describe Simpress::Theme::Helper do
     it "places a child directly after its parent with an incremented depth" do
       child  = { id: "section-2", text: "Child" }
       parent = { id: "section-1", text: "Parent", children: [child] }
-      result = helper.render_toc([parent])
+      result = helper.flatten_toc([parent])
       expect(result).to eq [
         { id: "section-1", text: "Parent", depth: 0 },
         { id: "section-2", text: "Child", depth: 1 }

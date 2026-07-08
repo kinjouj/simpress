@@ -25,7 +25,7 @@ module Simpress
         %(<a #{attrs_str}>#{text}</a>)
       end
 
-      def render_toc(toc)
+      def flatten_toc(toc)
         toc.flat_map do |heading|
           children = heading[:children].map {|child| { id: child[:id], text: child[:text], depth: 1 } }
           [{ id: heading[:id], text: heading[:text], depth: 0 }] + children

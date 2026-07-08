@@ -1,4 +1,3 @@
-# tasks/server.rb
 # frozen_string_literal: true
 
 require "simpress/config"

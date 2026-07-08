@@ -6,13 +6,13 @@ describe Simpress::Plugin::InlineNote do
   describe ".preprocess" do
     it "converts inline note syntax to html div with font-awesome icon" do
       markdown = "[^]: This is a note."
-      expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i>This is a note.</div>'
+      expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>This is a note.</span></div>'
       expect(described_class.preprocess(markdown)).to eq expected
     end
 
     it "ignores spaces after the colon but preserves note content" do
       markdown = "[^]:    Note with leading spaces."
-      expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i>Note with leading spaces.</div>'
+      expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>Note with leading spaces.</span></div>'
       expect(described_class.preprocess(markdown)).to eq expected
     end
 
@@ -29,9 +29,9 @@ describe Simpress::Plugin::InlineNote do
       MARKDOWN
 
       expected = <<~HTML
-        <div class="note"><i class="fa-solid fa-circle-exclamation"></i>First note.</div>
+        <div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>First note.</span></div>
         Some text.
-        <div class="note"><i class="fa-solid fa-circle-exclamation"></i>Second note.</div>
+        <div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>Second note.</span></div>
       HTML
 
       expect(described_class.preprocess(markdown)).to eq expected

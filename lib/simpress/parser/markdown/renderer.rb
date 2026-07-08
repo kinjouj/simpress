@@ -67,7 +67,7 @@ module Simpress
         def append_to_toc(id, text, header_level)
           @top_level ||= header_level
 
-          if header_level <= @top_level || @current_section.nil?
+          if header_level <= @top_level
             heading = { id: id, text: text, children: [] }
             @toc << heading
             @current_section = heading

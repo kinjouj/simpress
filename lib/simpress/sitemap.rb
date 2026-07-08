@@ -6,8 +6,10 @@ require "simpress/writer"
 
 module Simpress
   class Sitemap
+    class BlockRequiredError < StandardError; end
+
     def self.build(hostname, &)
-      raise "ERROR" unless block_given?
+      raise BlockRequiredError, "Simpress::Sitemap.build requires a block" unless block_given?
 
       sitemap = new(hostname, &)
       sitemap.write

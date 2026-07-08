@@ -111,9 +111,7 @@ module Simpress
 
         def extract_keywords(post)
           key = (XXhash.xxh32(post.title) ^ XXhash.xxh32(post.markdown, 1)).to_s
-          Cache.fetch(key) do
-            NATTO.parse("#{post.title} #{post.markdown}").scan(NATTO_REGEX).map!(&:first)
-          end
+          Cache.fetch(key) { NATTO.parse("#{post.title} #{post.markdown}").scan(NATTO_REGEX).map!(&:first) }
         end
 
         def scores_for(i)

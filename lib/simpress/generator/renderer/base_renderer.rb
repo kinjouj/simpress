@@ -11,6 +11,9 @@ module Simpress
   module Generator
     module Renderer
       class BaseRenderer
+        class UnknownModeError < StandardError; end
+        class BlockRequiredError < StandardError; end
+
         class << self
           def generate(...)
             case Simpress::Config.instance.mode
@@ -19,7 +22,7 @@ module Simpress
             when "json"
               generate_json(...)
             else
-              raise "ERROR: Unknown mode"
+              raise UnknownModeError, "Unknown mode: #{Simpress::Config.instance.mode.inspect}"
             end
           end
 
@@ -34,7 +37,7 @@ module Simpress
           # :nocov:
 
           def each_page(posts, prefix = nil)
-            raise "ERROR" unless block_given?
+            raise BlockRequiredError, "Simpress::Generator::Renderer::BaseRenderer.each_page requires a block" unless block_given?
 
             per_page  = Simpress::Config.instance.paginate || 10
             page_size = (posts.size / per_page.to_f).ceil
