@@ -121,6 +121,16 @@ describe Simpress::Parser::Markdown::Renderer do
       expect(renderer.toc[0][:children].map {|heading| heading[:text] }).to eq ["Second", "Third"]
       expect(renderer.toc[1][:children]).to eq []
     end
+
+    it "re-anchors nesting to a shallower header that appears after a deeper one" do
+      renderer.header("A", 3)
+      renderer.header("B", 2)
+      renderer.header("C", 3)
+
+      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["A", "B"]
+      expect(renderer.toc[0][:children]).to eq []
+      expect(renderer.toc[1][:children].map {|heading| heading[:text] }).to eq ["C"]
+    end
   end
 
   describe "#image" do

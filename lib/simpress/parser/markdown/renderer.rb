@@ -21,7 +21,7 @@ module Simpress
           @primary_image   = nil
           @toc             = []
           @current_section = nil
-          @top_level       = nil
+          @current_level   = nil
           @section_count   = 0
         end
 
@@ -65,12 +65,11 @@ module Simpress
         private
 
         def append_to_toc(id, text, header_level)
-          @top_level ||= header_level
-
-          if header_level <= @top_level
+          if @current_section.nil? || header_level <= @current_level
             heading = { id: id, text: text, children: [] }
             @toc << heading
             @current_section = heading
+            @current_level   = header_level
           else
             @current_section[:children] << { id: id, text: text }
           end
