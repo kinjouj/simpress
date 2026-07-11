@@ -2,6 +2,12 @@
 
 module Simpress
   class Uri
+    def self.wrap(path)
+      return path if path.is_a?(self)
+
+      new(path)
+    end
+
     def initialize(path = "")
       @base  = path
       @parts = []
@@ -32,12 +38,6 @@ module Simpress
 
     def to_s
       build
-    end
-
-    def self.wrap(path)
-      return path if path.is_a?(self)
-
-      new(path)
     end
   end
 end

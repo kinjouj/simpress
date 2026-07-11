@@ -8,15 +8,6 @@ module Simpress
     DEFAULT_TAXONOMIES = ["categories"].freeze
     attr_reader :name, :terms
 
-    def initialize(name)
-      @name  = name
-      @terms = {}
-    end
-
-    def term(name)
-      @terms[name] ||= Simpress::Taxonomy::Term.new(name, key: self.class.slug_for(@name, name))
-    end
-
     def self.fetch(name)
       (@cache ||= {})[name] ||= new(name)
     end
@@ -32,6 +23,15 @@ module Simpress
 
     def self.slug_for(taxonomy_name, term_name)
       Simpress::Config.instance.taxonomies.dig("aliases", taxonomy_name, term_name)
+    end
+
+    def initialize(name)
+      @name  = name
+      @terms = {}
+    end
+
+    def term(name)
+      @terms[name] ||= Simpress::Taxonomy::Term.new(name, key: self.class.slug_for(@name, name))
     end
 
     private_class_method :new

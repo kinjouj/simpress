@@ -29,7 +29,7 @@ module Simpress
 
     private
 
-    def initialize(hostname, &)
+    def initialize(hostname, &) # rubocop:disable Layout/ClassStructure
       @hostname = hostname
       @doc      = Ox::Document.new(version: "1.0", encoding: "UTF-8")
       @root     = create_element("urlset", attributes: { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" })

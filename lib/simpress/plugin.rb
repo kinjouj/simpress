@@ -3,6 +3,7 @@
 require "simpress/config"
 require "simpress/context"
 require "simpress/logger"
+require "zeitwerk"
 
 module Simpress
   module Plugin
@@ -23,25 +24,27 @@ module Simpress
     end
 
     class << self
-      def load
-        Dir["#{Simpress::Config.plugin_dir}/**/lib/simpress/plugin/*.rb"].each {|plugin| Kernel.load(plugin) }
-      end
-
-      def extended(klass)
-        super
-        register_plugins << klass
-      end
-
       def register_plugins
         @register_plugins ||= Set.new
       end
 
-      def process(posts = [], pages = [])
-        enabled_plugins = Simpress::Config.instance.plugins.to_set(&:downcase)
-        allowed_plugins = register_plugins.select {|klass| enabled_plugins.include?(underscore(klass.name.split("::").last)) }
-                                          .sort_by {|klass| -klass.priority }
+      def load
+        enabled_plugins = Simpress::Config.instance.plugins.to_set
+        @loader = Zeitwerk::Loader.new
+        @loader.on_load do |cpath, value, _abspath|
+          next unless value.is_a?(Simpress::Plugin)
 
-        allowed_plugins.each do |klass|
+          name = underscore(cpath.split("::").last)
+          register_plugins << value if enabled_plugins.include?(name)
+        end
+
+        Dir["#{Simpress::Config.plugin_dir}/*/lib"].each {|lib_dir| @loader.push_dir(lib_dir) }
+        @loader.setup
+        @loader.eager_load
+      end
+
+      def process(posts = [], pages = [])
+        register_plugins.sort_by {|klass| -klass.priority }.each do |klass|
           Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
           klass.run(posts, pages)
         end
@@ -49,6 +52,8 @@ module Simpress
 
       def clear
         @register_plugins&.clear
+        @loader&.unload
+        @loader = nil
       end
 
       private

@@ -6,6 +6,7 @@ import Simpress from '../api/Simpress';
 import { CreatedAt, NotFound, RelatedPosts } from '../components';
 import { useFetchData, usePermalink } from '../hooks';
 import type { PostType } from '../types';
+
 import 'prismjs/themes/prism-tomorrow.css';
 import 'prismjs/plugins/autoloader/prism-autoloader';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';

@@ -1,29 +1,66 @@
 # frozen_string_literal: true
 
+require "tmpdir"
 require "simpress/plugin"
 
 describe Simpress::Plugin do
+  let(:plugin_dir) { Dir.mktmpdir }
+
   before do
-    allow(Simpress::Config).to receive(:plugin_dir).and_return("plugins")
+    allow(Simpress::Config).to receive(:plugin_dir).and_return(plugin_dir)
     allow(Simpress::Config.instance).to receive(:plugins).and_return([])
     allow(Simpress::Logger).to receive(:debug)
   end
 
   after do
     described_class.clear
+    FileUtils.remove_entry(plugin_dir)
+  end
+
+  def write_plugin_file(dir_name, file_name, class_name, content = nil)
+    path = File.join(plugin_dir, dir_name, "lib", "simpress", "plugin", "#{file_name}.rb")
+    FileUtils.mkdir_p(File.dirname(path))
+    File.write(path, content || <<~RUBY)
+      module Simpress
+        module Plugin
+          class #{class_name}
+            extend Simpress::Plugin
+
+            def self.run(posts, pages); end
+          end
+        end
+      end
+    RUBY
   end
 
   describe ".load" do
-    let(:plugin_path) { "plugins/test_plugin/lib/simpress/plugin/test_plugin.rb" }
+    it "registers a plugin class whose underscored name is listed in config" do
+      write_plugin_file("test1", "test1", "Test1")
+      allow(Simpress::Config.instance).to receive(:plugins).and_return(["test1"])
 
-    before do
-      allow(Dir).to receive(:[]).and_return([plugin_path])
-      allow(Kernel).to receive(:load).with(plugin_path)
+      described_class.load
+
+      expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test1"]
     end
 
-    it "loads plugin files from the plugin directory" do
+    it "does not register a plugin class that is not listed in config" do
+      write_plugin_file("test2", "test2", "Test2")
+      allow(Simpress::Config.instance).to receive(:plugins).and_return([])
+
       described_class.load
-      expect(Kernel).to have_received(:load).with(plugin_path)
+
+      expect(described_class.register_plugins).to be_empty
+    end
+
+    it "loads plugins from multiple plugin directories" do
+      write_plugin_file("test3", "test3", "Test3")
+      write_plugin_file("test4", "test4", "Test4")
+      allow(Simpress::Config.instance).to receive(:plugins).and_return(["test3", "test4"])
+
+      described_class.load
+
+      names = described_class.register_plugins.map(&:name)
+      expect(names).to include("Simpress::Plugin::Test3", "Simpress::Plugin::Test4")
     end
   end
 
@@ -42,6 +79,7 @@ describe Simpress::Plugin do
       end
 
       stub_const("Simpress::Plugin::Test", test_plugin)
+      described_class.register_plugins << test_plugin
       allow(Simpress::Plugin::Test).to receive(:run)
       described_class.process([], [])
       expect(Simpress::Plugin::Test).to have_received(:run)
@@ -74,7 +112,7 @@ describe Simpress::Plugin do
 
       stub_const("Simpress::Plugin::High", high_plugin)
       stub_const("Simpress::Plugin::Low", low_plugin)
-      allow(Simpress::Config.instance).to receive(:plugins).and_return(["High", "Low"])
+      described_class.register_plugins << low_plugin << high_plugin
       allow(Simpress::Plugin::High).to receive(:run)
       allow(Simpress::Plugin::Low).to receive(:run)
       described_class.process([], [])
@@ -106,20 +144,9 @@ describe Simpress::Plugin do
   end
 
   describe "#run" do
-    before do
-      allow(Simpress::Config.instance).to receive(:plugins).and_return(["Test"])
-    end
-
     it "raises NotImplementedError" do
-      Class.new do
-        extend Simpress::Plugin
-
-        def self.name
-          "Test"
-        end
-      end
-
-      expect { described_class.process([], []) }.to raise_error(NotImplementedError)
+      test_klass = Class.new { extend Simpress::Plugin }
+      expect { test_klass.run }.to raise_error(NotImplementedError)
     end
   end
 end

@@ -21,6 +21,7 @@ describe Simpress do
 
   after do
     Dir.glob(create_filepath("public/*")) {|file| FileUtils.rm_rf(file) }
+    Simpress::Plugin.clear
     Simpress::Taxonomy.clear
   end
 

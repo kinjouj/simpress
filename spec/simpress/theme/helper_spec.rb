@@ -13,10 +13,10 @@ describe Simpress::Theme::Helper do
     helper_test_class.new
   end
 
-  describe "#json_encode" do
+  describe "#encode_json" do
     it "delegates to Simpress::JSON.encode" do
       data = { key: "value" }
-      expect(helper.json_encode(data)).to eq '{"key":"value"}'
+      expect(helper.encode_json(data)).to eq '{"key":"value"}'
     end
   end
 
@@ -33,18 +33,6 @@ describe Simpress::Theme::Helper do
   describe "#uri" do
     it "wraps the path and ensures html extension" do
       expect(helper.uri("/test").to_s).to eq "/test.html"
-    end
-  end
-
-  describe "#link_to" do
-    it "generates a simple anchor tag" do
-      expect(helper.link_to("Home", "/")).to eq '<a href="/">Home</a>'
-    end
-
-    it "includes additional attributes in the anchor tag" do
-      result = helper.link_to("About", "/about", class: "nav-link", target: "_blank")
-      expect(result).to include('class="nav-link"')
-      expect(result).to include('target="_blank"')
     end
   end
 

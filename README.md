@@ -8,6 +8,7 @@ a simple static blog generator
 
 
 * Ruby3.x
+* MeCab (required by the `natto` gem for Japanese morphological analysis)
 
 
 ### Installation
@@ -22,7 +23,7 @@ cp config.yaml.orig config.yaml
 ```
 
 
-jsonモード使う場合は以下も必要
+If you use JSON mode, the following is also required
 
 
 ```bash
@@ -85,21 +86,20 @@ TEST BODY
 ```
 
 
-title以外は基本optional。但し、date/permalinkなどはMarkdownのファイル名などから算出される場合もあるためdate/permalinkは
-適切に設定推奨。以下参照
+All parameters except `title` are basically optional. However, since `date`/`permalink` may be derived from the Markdown file name, it is recommended to set them explicitly. See below for details.
 
 
 |parameter|Description|
 |:---------:|-----------|
-|title      |タイトル   |
-|date       |日付(DateTime)。無い場合はファイル名から算出(yyyy-mm-dd)。ファイル名から算出できない場合はエラーになる|
-|permalink  |パスURL|
-|cover      |サムネイル画像。指定しない場合は/images/no_image.webpが使用される。Markdown記法によって抽出可能|
-|categories |カテゴリー。配列形式じゃなくても指定可能|
-|layout     |記事が使用するテンプレートの指定。デフォルトは"page"|
-|index      |記事インデックスに載せるかのフラグ。デフォルトはtrue|
-|draft      |記事の下書きフラグ。trueの場合は出力されない。デフォルトはfalse|
-|description|meta description値。無い場合はコンテンツから抽出生成される|
+|title      |The title|
+|date       |Date (DateTime). If omitted, it is derived from the file name (yyyy-mm-dd). An error occurs if it cannot be derived from the file name|
+|permalink  |The URL path|
+|cover      |Thumbnail image. If omitted, `/images/no_image.webp` is used. Can also be extracted from Markdown syntax|
+|categories |Categories. Can be specified even without array syntax|
+|layout     |Specifies the template used by the post. Defaults to `"page"`|
+|index      |Flag for whether the post appears in the index. Defaults to `true`|
+|draft      |Draft flag for the post. If `true`, the post is not output. Defaults to `false`|
+|description|The meta description value. If omitted, it is generated from the content|
 
 
 ### Theme(index.erb) Variables
@@ -121,7 +121,7 @@ title以外は基本optional。但し、date/permalinkなどはMarkdownのファ
 |@paginagtor|Paginator Data Object|
 
 
-※index: falseの場合は@paginatorは無い
+※ If `index: false`, `@paginator` is not present
 
 
 ### Custom Markdown Enhancer
@@ -157,3 +157,30 @@ module Simpress
   end
 end
 ```
+
+
+### Custom Theme Helper
+
+
+Add methods that are usable inside `.erb` templates by including `Simpress::Theme::Helper::Plugin`.
+
+
+```ruby
+module Simpress
+  module Plugin
+    module SampleHelper
+      include Simpress::Theme::Helper::Plugin
+
+      def sample_helper(value)
+        # TODO
+      end
+    end
+  end
+end
+```
+
+
+into plugins directory ruby project structures(plugins/sample_helper/lib/sample_helper.rb)
+
+
+Once included, the module is registered automatically and its methods become available in any theme template, e.g. `<%= sample_helper(post) %>`.

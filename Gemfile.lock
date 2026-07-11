@@ -108,7 +108,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
-    rubocop (1.88.1)
+    rubocop (1.88.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -186,6 +186,7 @@ GEM
     uri (1.1.1)
     webrick (1.9.2)
     xxhash (0.7.0)
+    zeitwerk (2.8.2)
 
 PLATFORMS
   aarch64-linux-android
@@ -209,27 +210,28 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  benchmark
-  erubi
-  factory_bot
-  natto
-  oj
-  ox
-  rake
-  redcarpet
-  rspec
-  rubocop
-  rubocop-performance
-  rubocop-rspec
-  ruby-lsp
-  sass-embedded
-  simplecov
-  stackprof
-  stringex
-  thor
-  tilt
-  webrick
-  xxhash
+  benchmark (~> 0.5)
+  erubi (~> 1.13)
+  factory_bot (~> 6.6)
+  natto (~> 1.2)
+  oj (~> 3.17)
+  ox (~> 2.14)
+  rake (~> 13.4)
+  redcarpet (~> 3.6)
+  rspec (~> 3.13)
+  rubocop (~> 1.88)
+  rubocop-performance (~> 1.26)
+  rubocop-rspec (~> 3.10)
+  ruby-lsp (~> 0.26)
+  sass-embedded (~> 1.101)
+  simplecov (~> 0.22)
+  stackprof (~> 0.2.28)
+  stringex (~> 2.8)
+  thor (~> 1.5)
+  tilt (~> 2.8)
+  webrick (~> 1.9)
+  xxhash (~> 0.7)
+  zeitwerk (~> 2.8)
 
 CHECKSUMS
   activesupport (8.1.3) sha256=21a5e0dfbd4c3ddd9e1317ec6a4d782fa226e7867dc70b0743acda81a1dca20e
@@ -288,7 +290,7 @@ CHECKSUMS
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
   rspec-mocks (3.13.8) sha256=086ad3d3d17533f4237643de0b5c42f04b66348c28bf6b9c2d3f4a3b01af1d47
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
-  rubocop (1.88.1) sha256=726af773d6bc169ed3ff852f3ca020b7c58d39c34e7a8d879a8e0147cc994f26
+  rubocop (1.88.2) sha256=8def251c90cd955feb4daa3edc0ab56893250c4ce90ef81e6c80c03f9a939bbf
   rubocop-ast (1.50.0) sha256=b9ca88300da0803ee222ad20cdb30494c0a784eed06fdc35d254b06d662788db
   rubocop-performance (1.26.1) sha256=cd19b936ff196df85829d264b522fd4f98b6c89ad271fa52744a8c11b8f71834
   rubocop-rspec (3.10.2) sha256=0b3e2ecc592cd10ecbf0095bb58d1e357905276e069643523cc19eb7495f65e2
@@ -324,6 +326,7 @@ CHECKSUMS
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
   webrick (1.9.2) sha256=beb4a15fc474defed24a3bda4ffd88a490d517c9e4e6118c3edce59e45864131
   xxhash (0.7.0) sha256=1177e65232a4ede2f8022b0d062cc4bb25b4aaf32e81657e8140e0bff7b49fc3
+  zeitwerk (2.8.2) sha256=7212a61311083c604184b1ea2574b9aa05cd14f855a0841c06985cabe9181d12
 
 BUNDLED WITH
-  4.0.15
+  4.0.16
