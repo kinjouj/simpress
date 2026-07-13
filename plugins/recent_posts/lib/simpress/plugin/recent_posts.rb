@@ -20,7 +20,7 @@ module Simpress
         when "json"
           Simpress::Writer.write("recent_posts.json", Simpress::JSON.dump(recent_posts, keys: KEYS))
         else
-          raise "Error"
+          raise "Unknown mode: #{config.mode}"
         end
       end
     end

@@ -1,9 +1,7 @@
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { Stack } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
-import { CreatedAt, NotFound, RelatedPosts } from '../components';
+import { CreatedAt, NotFound, PostCategories, RelatedPosts } from '../components';
 import { useFetchData, usePermalink } from '../hooks';
 import type { PostType } from '../types';
 
@@ -62,15 +60,7 @@ const PostPage = (): React.JSX.Element => {
       </div>
       <h1 className="post-title fs-3 fw-bold my-3">{post.title}</h1>
       <hr />
-      <Stack direction="horizontal" gap={3} className="post-categories position-relative m-0">
-        {Object.entries(post.taxonomies).map(([taxonomy, terms]) => {
-          return terms.map((term) => (
-            <div key={term.key}>
-              <Link to={`/archives/${taxonomy}/${term.key}`} className="post-category">{term.name}</Link>
-            </div>
-          ));
-        })}
-      </Stack>
+      <PostCategories taxonomies={post.taxonomies} className="post-categories position-relative m-0" />
       <div dangerouslySetInnerHTML={{ __html: post.content }} className="post-content fs-6 my-4 mw-100" />
       {!!post.similarities && post.similarities.length > 0 && <RelatedPosts similarities={post.similarities} />}
       <div style={{ marginTop: '30px' }}>

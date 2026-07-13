@@ -59,7 +59,7 @@ describe Simpress::Plugin::RecentPosts do
       end
 
       it "raises an error" do
-        expect { described_class.run(posts) }.to raise_error("Error")
+        expect { described_class.run(posts) }.to raise_error("Unknown mode: xml")
       end
     end
   end

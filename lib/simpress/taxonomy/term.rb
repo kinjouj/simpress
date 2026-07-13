@@ -42,6 +42,10 @@ module Simpress
       def eql?(other)
         other.is_a?(Term) && key == other.key && name == other.name
       end
+
+      def hash
+        [@key, @name].hash
+      end
     end
   end
 end

@@ -3,7 +3,7 @@ import { userEvent } from '@testing-library/user-event';
 import PageToTopFloatingButton from '../../../src/components/ui/PageToTopFloatingButton';
 
 const mockScrollTo = jest.fn();
-document.body.scrollTo = mockScrollTo;
+window.scrollTo = mockScrollTo;
 
 describe('PageToTopFloatingButton', () => {
   test('<PageToTopFloatingButton> test', async () => {

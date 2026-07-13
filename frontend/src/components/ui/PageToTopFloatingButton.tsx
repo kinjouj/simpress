@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const PageToTopFloatingButton = (): React.JSX.Element => {
   const onClickHandler = useCallback((): void => {
-    document.body.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   return (

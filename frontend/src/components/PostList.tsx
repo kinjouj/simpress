@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Card, Stack } from 'react-bootstrap';
-import { CreatedAt } from './ui';
+import { Card } from 'react-bootstrap';
+import { CreatedAt, PostCategories } from './ui';
 import type { PostType } from '../types';
 
 const PostList = ({ posts }: { posts: PostType[] }): React.JSX.Element => {
@@ -22,15 +22,7 @@ const PostList = ({ posts }: { posts: PostType[] }): React.JSX.Element => {
               </Card.Text>
             </Card.Body>
             <Card.Footer className="position-relative mt-3">
-              <Stack direction="horizontal" gap={3} className="justify-content-end p-2 pe-0">
-                {Object.entries(post.taxonomies).map(([taxonomy, terms]) => {
-                  return terms.map((term) => (
-                    <div key={term.key}>
-                      <Link to={`/archives/${taxonomy}/${term.key}`} className="post-category">{term.name}</Link>
-                    </div>
-                  ));
-                })}
-              </Stack>
+              <PostCategories taxonomies={post.taxonomies} className="justify-content-end p-2 pe-0" />
             </Card.Footer>
           </Card>
         );

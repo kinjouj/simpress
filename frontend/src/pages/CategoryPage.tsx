@@ -52,7 +52,7 @@ const CategoryPageContent = ({ category }: { category: string }): React.JSX.Elem
   return (
     <div>
       <PostList posts={posts} />
-      <Paginator basePath={`/archives/category/${category}`} />
+      <Paginator basePath={`/archives/categories/${category}`} />
     </div>
   );
 };

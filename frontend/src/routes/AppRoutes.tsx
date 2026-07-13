@@ -5,6 +5,11 @@ import { useCategory, useYearOfMonth } from '../hooks';
 
 const CategoryRedirectRoute = (): React.JSX.Element => {
   const category = useCategory();
+
+  if (!category) {
+    return <Navigate to="/error" replace />;
+  }
+
   return <Navigate to={`/archives/categories/${category}/1`} replace />;
 };
 

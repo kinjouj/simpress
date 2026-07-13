@@ -4,9 +4,11 @@ const Footer = (): React.JSX.Element => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setLoaded(true);
     }, 500);
+
+    return (): void => clearTimeout(timer);
   }, []);
 
   return (
