@@ -21,11 +21,21 @@ const renderPostListPage = (): RenderResult => {
 describe('PostListPage', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
   afterEach(() => {
+    jest.restoreAllMocks();
     jest.clearAllTimers();
     jest.useRealTimers();
+  });
+
+  test('shows a loading indicator (not a blank screen) while page meta is being fetched', () => {
+    SimpressMock.getMeta.mockReturnValue(new Promise(() => {}));
+    const { container } = renderPostListPage();
+
+    expect(screen.getByText('loading...')).toBeInTheDocument();
+    expect(container).not.toBeEmptyDOMElement();
   });
 
   test('<PostListPage> test', async () => {

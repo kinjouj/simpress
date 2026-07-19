@@ -21,6 +21,7 @@ const renderPostPage = (): RenderResult => {
 describe('PostPage', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
   afterEach(() => {

@@ -24,10 +24,19 @@ describe Simpress::Generator::Renderer do
   end
 
   describe ".generate" do
-    it "calls PermalinkRenderer.generate for each post with neighbors" do
+    it "calls PermalinkRenderer.generate for each post" do
       described_class.generate(posts, pages)
-      expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate).with(post1, post2, nil)
-      expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate).with(post2, nil, post1)
+      expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate).with(post1)
+      expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate).with(post2)
+    end
+
+    it "assigns next to the newer post and prev to the older post" do
+      described_class.generate(posts, pages)
+      newer, older = posts
+      expect(newer.adjacent.prev).to eq Simpress::Post::Adjacent.summarize(older)
+      expect(newer.adjacent.next).to be_nil
+      expect(older.adjacent.next).to eq Simpress::Post::Adjacent.summarize(newer)
+      expect(older.adjacent.prev).to be_nil
     end
 
     it "calls MonthlyRenderer.generate with grouped posts by month" do

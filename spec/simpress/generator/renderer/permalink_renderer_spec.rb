@@ -4,9 +4,7 @@ require "simpress/generator/renderer/permalink_renderer"
 require "simpress/post"
 
 describe Simpress::Generator::Renderer::PermalinkRenderer do
-  let(:post)       { build(:post, title: "My Post", permalink: "my-post", layout: "page", date: Time.new(2026, 1, 1)) }
-  let(:older_post) { build(:post, title: "Old Post") }
-  let(:newer_post) { build(:post, title: "New Post") }
+  let(:post) { build(:post, title: "My Post", permalink: "my-post", layout: "page", date: Time.new(2026, 1, 1)) }
 
   before do
     allow(Simpress::Logger).to receive(:info)
@@ -19,13 +17,9 @@ describe Simpress::Generator::Renderer::PermalinkRenderer do
       allow(File).to receive(:utime)
     end
 
-    it "writes html with paginator containing newer and older posts" do
-      described_class.generate_html(post, older_post, newer_post)
-      expect(Simpress::Theme).to have_received(:render).with(
-        "page",
-        post: post,
-        paginator: have_attributes(newer_post: newer_post, older_post: older_post)
-      )
+    it "writes html for the post" do
+      described_class.generate_html(post)
+      expect(Simpress::Theme).to have_received(:render).with("page", post: post)
       expect(Simpress::Writer).to have_received(:write).with("my-post.html", "<html>content</html>")
       expect(File).to have_received(:utime).with(post.date, post.date, "public/my-post.html")
       expect(Simpress::Logger).to have_received(:info).with("[BUILD PAGE]: My Post public/my-post.html")

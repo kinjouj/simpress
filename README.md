@@ -118,10 +118,6 @@ All parameters except `title` are basically optional. However, since `date`/`per
 |variable   |Description|
 |:---------:|:-----------:|
 |@post      |Simpress::Post|
-|@paginagtor|Paginator Data Object|
-
-
-※ If `index: false`, `@paginator` is not present
 
 
 ### Custom Markdown Enhancer

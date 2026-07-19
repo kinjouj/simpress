@@ -10,10 +10,14 @@ const RecentPosts = (): React.JSX.Element => {
     return Simpress.getRecentPosts();
   }, []);
 
-  const { data, isError } = useFetchData(fetcher);
+  const { data, isLoading, isError } = useFetchData(fetcher);
 
   if (isError) {
     return (<div>Error</div>);
+  }
+
+  if (isLoading) {
+    return (<div>loading...</div>);
   }
 
   if (data === null) {

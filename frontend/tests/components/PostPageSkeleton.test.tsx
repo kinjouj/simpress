@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import PostPageSkeleton from '../../../src/components/Skeleton/PostPageSkeleton';
+import PostPageSkeleton from '../../src/components/PostPageSkeleton';
 
 describe('PostPageSkeleton', () => {
   test('<PostPageSkeleton> test', () => {

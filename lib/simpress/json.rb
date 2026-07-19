@@ -28,5 +28,15 @@ module Simpress
         Oj.dump(data, mode: :rails, escape_mode: :xss_safe)
       end
     end
+
+    module Serializable
+      def as_json(options = {})
+        to_h(options)
+      end
+
+      def to_json(options = {})
+        Simpress::JSON.dump(as_json(options))
+      end
+    end
   end
 end

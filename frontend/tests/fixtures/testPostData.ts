@@ -3,10 +3,13 @@ export const testPostData = {
   title: 'test1',
   date: Date.now().toString(),
   permalink: '/test.html',
-  source: '/test.json',
   cover: '/images/no_image.png',
   taxonomies: { categories: [{ key: 'test', count: 1, name: 'Test' }] },
   content: 'test1',
   description: 'test1',
   similarity: null,
+  adjacent: {
+    prev: null,
+    next: null,
+  },
 };

@@ -6,7 +6,7 @@ import { useCategory, useYearOfMonth } from '../hooks';
 const CategoryRedirectRoute = (): React.JSX.Element => {
   const category = useCategory();
 
-  if (!category) {
+  if (category === null) {
     return <Navigate to="/error" replace />;
   }
 
@@ -16,7 +16,7 @@ const CategoryRedirectRoute = (): React.JSX.Element => {
 const ArchivePageRedirectRoute = (): React.JSX.Element => {
   const { year, month } = useYearOfMonth();
 
-  if (!year || !month) {
+  if (year === null || month === null) {
     return <Navigate to="/error" replace />;
   }
 

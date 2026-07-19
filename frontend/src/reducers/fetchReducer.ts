@@ -8,6 +8,7 @@ export const fetchReducer = <T>(state: FetchState<T>, action: FetchAction<T>): F
       return {
         ...state,
         data: null,
+        isLoading: true,
         isError: false,
       };
 
@@ -15,6 +16,7 @@ export const fetchReducer = <T>(state: FetchState<T>, action: FetchAction<T>): F
       return {
         ...state,
         data: action.payload,
+        isLoading: false,
         isError: false,
       };
 
@@ -22,6 +24,7 @@ export const fetchReducer = <T>(state: FetchState<T>, action: FetchAction<T>): F
       return {
         ...state,
         data: null,
+        isLoading: false,
         isError: true,
       };
 
@@ -29,6 +32,7 @@ export const fetchReducer = <T>(state: FetchState<T>, action: FetchAction<T>): F
       return {
         ...state,
         data: null,
+        isLoading: false,
         isError: true,
       };
   }

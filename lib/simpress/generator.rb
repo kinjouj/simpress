@@ -20,7 +20,7 @@ module Simpress
           (post.index ? posts : pages) << post
         end
 
-        posts.sort_by! {|post| -post.timestamp }
+        posts.sort_by! {|post| -post.date.to_i }
         process_and_generate(posts, pages)
       end
 

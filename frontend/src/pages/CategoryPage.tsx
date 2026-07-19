@@ -1,23 +1,31 @@
-import React, { Suspense, useCallback } from 'react';
+import React, { Suspense, useCallback, useLayoutEffect } from 'react';
 import Simpress from '../api/Simpress';
 import { NotFound, Paginator, PostList } from '../components';
 import { PaginateProvider, usePaginateContext } from '../contexts/PaginateContext';
 import { useCategory, useFetchData, useFetchPageMeta, usePage } from '../hooks';
 import type { PostType } from '../types';
 
-const LazyPostListSkeleton = React.lazy(() => import('../components/Skeleton/PostListSkeleton'));
+const LazyPostListSkeleton = React.lazy(() => import('../components/PostListSkeleton'));
 
 const CategoryPage = (): React.JSX.Element | null => {
   const category = useCategory();
   const page = usePage();
-  const { totalPages, isOutOfPage } = useFetchPageMeta(`/archives/categories/${category}`);
+  const { totalPages, isLoading, isOutOfPage } = useFetchPageMeta(`/archives/categories/${category}`);
+
+  useLayoutEffect(() => {
+    if (category === null) {
+      return;
+    }
+
+    window.scrollTo(0, 0);
+  }, [category, page]);
 
   if (category === null || isOutOfPage(page)) {
     return <NotFound />;
   }
 
-  if (totalPages === null) {
-    return null;
+  if (isLoading || totalPages === null) {
+    return <div>loading...</div>;
   }
 
   return (

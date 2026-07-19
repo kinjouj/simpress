@@ -21,6 +21,7 @@ const renderCategortPostListPage = (): RenderResult => {
 describe('CategoryPage', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
   afterEach(() => {

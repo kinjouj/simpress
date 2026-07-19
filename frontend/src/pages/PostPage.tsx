@@ -1,7 +1,8 @@
-import React, { Suspense, useCallback, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect, useLayoutEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
-import { CreatedAt, NotFound, PostCategories, RelatedPosts } from '../components';
+import { AdjacentPosts, CreatedAt, NotFound, PostCategories, RelatedPosts, TableOfContents } from '../components';
 import { useFetchData, usePermalink } from '../hooks';
 import type { PostType } from '../types';
 
@@ -10,12 +11,12 @@ import 'prismjs/plugins/autoloader/prism-autoloader';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
 
-// eslint-disable-next-line
-(Prism as any).plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/'; // eslint-disable-line
 
-const LazyPostPageSkeleton = React.lazy(() => import('../components/Skeleton/PostPageSkeleton'));
+const LazyPostPageSkeleton = React.lazy(() => import('../components/PostPageSkeleton'));
 
 const PostPage = (): React.JSX.Element => {
+  const location = useLocation();
   const permalink = usePermalink();
 
   const fetcher = useCallback(async () => {
@@ -30,6 +31,14 @@ const PostPage = (): React.JSX.Element => {
 
   const { data: post, isError } = useFetchData<PostType>(fetcher);
 
+  useLayoutEffect(() => {
+    if (post === null) {
+      return;
+    }
+
+    window.scrollTo(0, 0);
+  }, [post]);
+
   useEffect(() => {
     if (post === null) {
       return;
@@ -39,7 +48,7 @@ const PostPage = (): React.JSX.Element => {
       /* istanbul ignore next */
       Prism.highlightAll();
     });
-  });
+  }, [post, location.key]);
 
   if (isError) {
     return <NotFound />;
@@ -61,8 +70,10 @@ const PostPage = (): React.JSX.Element => {
       <h1 className="post-title fs-3 fw-bold my-3">{post.title}</h1>
       <hr />
       <PostCategories taxonomies={post.taxonomies} className="post-categories position-relative m-0" />
-      <div dangerouslySetInnerHTML={{ __html: post.content }} className="post-content fs-6 my-4 mw-100" />
+      <div dangerouslySetInnerHTML={{ __html: post.content ?? '' }} className="post-content fs-6 my-4 mw-100" />
+      {!!post.toc && <TableOfContents toc={post.toc} />}
       {!!post.similarities && post.similarities.length > 0 && <RelatedPosts similarities={post.similarities} />}
+      {!!post.adjacent && <AdjacentPosts adjacent={post.adjacent} />}
       <div style={{ marginTop: '30px' }}>
         <pre className="line-numbers"><code className="language-json">{JSON.stringify(post, null, 2)}</code></pre>
       </div>

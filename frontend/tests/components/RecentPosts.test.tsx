@@ -8,6 +8,24 @@ jest.mock('../../src/api/Simpress');
 const SimpressMock = jest.mocked(Simpress);
 
 describe('RecentPosts', () => {
+  test('does not show NotFound while the fetch is still in flight', () => {
+    let resolveFetch: (value: (typeof testPostData)[]) => void = () => {};
+    SimpressMock.getRecentPosts.mockReturnValue(
+      new Promise((resolve) => {
+        resolveFetch = resolve;
+      })
+    );
+
+    render(
+      <MemoryRouter>
+        <RecentPosts />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText(/not found/i)).not.toBeInTheDocument();
+    void resolveFetch;
+  });
+
   test('<RecentPosts> test', async () => {
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     render(

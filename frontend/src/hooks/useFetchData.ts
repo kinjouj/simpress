@@ -3,7 +3,7 @@ import { fetchReducer } from '../reducers/fetchReducer';
 import type { FetchState } from '../types';
 
 export const useFetchData = <T>(fetcher: () => Promise<T>): FetchState<T> => {
-  const [state, dispatch] = useReducer(fetchReducer<T>, { data: null, isError: false });
+  const [state, dispatch] = useReducer(fetchReducer<T>, { data: null, isLoading: true, isError: false });
 
   useEffect(() => {
     let cancelled = false;

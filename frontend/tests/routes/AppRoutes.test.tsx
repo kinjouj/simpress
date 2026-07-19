@@ -9,6 +9,7 @@ let dataSpy: jest.SpyInstance<Promise<unknown>, [ string ]>;
 describe('AppRoutes', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
     /* eslint-disable */
     dataSpy = jest.spyOn(Simpress as any, 'getData').mockImplementation(

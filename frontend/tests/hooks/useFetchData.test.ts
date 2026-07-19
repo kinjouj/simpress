@@ -6,6 +6,18 @@ import type { PostType } from '../../src/types';
 
 describe('useFetchData', () => {
   describe('useFetchData test', () => {
+    test('isLoading is true on initial render, before the fetcher resolves', () => {
+      const { result } = renderHook(() => {
+        const fetcher = useCallback(() => new Promise<PostType>(() => {}), []);
+        return useFetchData<PostType>(fetcher);
+      });
+
+      const { data, isLoading, isError } = result.current;
+      expect(isLoading).toBeTruthy();
+      expect(isError).toBeFalsy();
+      expect(data).toBeNull();
+    });
+
     test('successful', async () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => Promise.resolve(testPostData), []);
@@ -13,7 +25,8 @@ describe('useFetchData', () => {
       });
 
       await waitFor(() => {
-        const { data, isError } = result.current;
+        const { data, isLoading, isError } = result.current;
+        expect(isLoading).toBeFalsy();
         expect(isError).toBeFalsy();
         expect(data?.title).toBe('test1');
       });
@@ -43,7 +56,8 @@ describe('useFetchData', () => {
       });
 
       await waitFor(() => {
-        const { data, isError } = result.current;
+        const { data, isLoading, isError } = result.current;
+        expect(isLoading).toBeFalsy();
         expect(isError).toBeTruthy();
         expect(data).toBeNull();
       });

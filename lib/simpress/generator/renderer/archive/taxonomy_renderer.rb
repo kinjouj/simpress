@@ -14,7 +14,7 @@ module Simpress
             taxonomies.each do |taxonomy|
               taxonomy.terms.each_value do |term|
                 prefix = "/archives/#{taxonomy.name}/#{term.key}"
-                term.posts.sort_by! {|a| -a.timestamp }
+                term.posts.sort_by! {|a| -a.date.to_i }
                 each_page(term.posts, prefix) do |posts, paginator|
                   path = paginator.current_page
                   write_html(path, template: "index", key: term.name, posts: posts, paginator: paginator) do |file_path|
@@ -29,7 +29,7 @@ module Simpress
             taxonomies.each do |taxonomy|
               base_path = uri("/archives/#{taxonomy.name}")
               taxonomy.terms.each_value do |term|
-                term.posts.sort_by! {|a| -a.timestamp }
+                term.posts.sort_by! {|a| -a.date.to_i }
                 page_size = each_page(term.posts) do |posts, paginator|
                   path = base_path.path(term.key, paginator.page)
                   write_json(path, posts, keys: DATA_JSON_KEYS) do |file_path|

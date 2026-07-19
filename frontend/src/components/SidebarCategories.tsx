@@ -29,9 +29,17 @@ const SidebarCategories = (): React.JSX.Element => {
     return Simpress.getCategories();
   }, []);
 
-  const { data, isError } = useFetchData(fetcher);
+  const { data, isLoading, isError } = useFetchData(fetcher);
 
-  if (data == null || isError) {
+  if (isError) {
+    return <div>Error</div>;
+  }
+
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
+
+  if (data === null) {
     return <div>Error</div>;
   }
 

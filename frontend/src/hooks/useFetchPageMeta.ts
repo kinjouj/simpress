@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import Simpress from '../api/Simpress';
 import { useFetchData } from './useFetchData';
 
-export const useFetchPageMeta = (path: string | null): { totalPages: number | null, isOutOfPage: (currentPage: number) => boolean } => {
+export const useFetchPageMeta = (path: string | null): { totalPages: number | null, isLoading: boolean, isOutOfPage: (currentPage: number) => boolean } => {
   const fetcher = useCallback(() => {
     if (path === null) {
       return Promise.resolve(null);
@@ -11,7 +11,7 @@ export const useFetchPageMeta = (path: string | null): { totalPages: number | nu
     return Simpress.getMeta(path);
   }, [path]);
 
-  const { data: totalPages } = useFetchData(fetcher);
+  const { data: totalPages, isLoading } = useFetchData(fetcher);
   const isOutOfPage = useCallback((currentPage: number) => {
     if (totalPages === null) {
       return false;
@@ -20,5 +20,5 @@ export const useFetchPageMeta = (path: string | null): { totalPages: number | nu
     return totalPages < currentPage;
   }, [totalPages]);
 
-  return { totalPages: totalPages, isOutOfPage };
+  return { totalPages: totalPages, isLoading, isOutOfPage };
 };

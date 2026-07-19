@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # @plugins/similarity/spec/similarity_spec.rb
 
+require "delegate"
 require "fileutils"
 require "natto"
 require "xxhash"
@@ -24,33 +25,6 @@ module Simpress
         end
 
         Indexer::Cache.flush
-      end
-
-      class PostWithSimilarities
-        extend Forwardable
-
-        def_delegators :@post, :id, :title, :date, :permalink, :description, :content, :toc, :layout, :cover, :taxonomies, :month_start
-
-        attr_reader :similarities
-
-        def initialize(post, similarities)
-          @post = post
-          @similarities = similarities
-        end
-
-        def to_h(state = {})
-          hash = @post.to_h(state)
-          hash[:similarities] = @similarities if hash.key?(:content)
-          hash
-        end
-
-        def as_json(options = {})
-          to_h(options)
-        end
-
-        def to_json(options = {})
-          Simpress::JSON.dump(as_json(options))
-        end
       end
 
       class Indexer
@@ -155,6 +129,23 @@ module Simpress
               @store ||= (Marshal.load(File.binread(CACHE_FILE)) if File.exist?(CACHE_FILE)) || {} # rubocop:disable Security/MarshalLoad
             end
           end
+        end
+      end
+
+      class PostWithSimilarities < SimpleDelegator
+        include Simpress::JSON::Serializable
+
+        attr_reader :similarities
+
+        def initialize(post, similarities)
+          super(post)
+          @similarities = similarities
+        end
+
+        def to_h(state = {})
+          hash = __getobj__.to_h(state)
+          hash[:similarities] = @similarities if hash.key?(:content)
+          hash
         end
       end
     end

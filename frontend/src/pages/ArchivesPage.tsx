@@ -1,25 +1,25 @@
-import React, { Suspense, useCallback } from 'react';
+import React, { Suspense, useCallback, useLayoutEffect } from 'react';
 import Simpress from '../api/Simpress';
 import { NotFound, Paginator, PostList } from '../components';
 import { PaginateProvider, usePaginateContext } from '../contexts/PaginateContext';
 import { useFetchData, useFetchPageMeta, usePage, useYearOfMonth } from '../hooks';
 import type { PostType } from '../types';
 
-const LazyPostListSkeleton = React.lazy(() => import('../components/Skeleton/PostListSkeleton'));
+const LazyPostListSkeleton = React.lazy(() => import('../components/PostListSkeleton'));
 
 const ArchivesPage = (): React.JSX.Element | null => {
   const { year, month } = useYearOfMonth();
-  const padMonth = month ? month.toString().padStart(2, '0') : null;
+  const padMonth = month !== null ? String(month).padStart(2, '0') : null;
   const page = usePage();
   const path = year !== null && padMonth !== null ? `/archives/${year}/${padMonth}` : null;
-  const { totalPages, isOutOfPage } = useFetchPageMeta(path);
+  const { totalPages, isLoading, isOutOfPage } = useFetchPageMeta(path);
 
   if (year === null || month === null || isOutOfPage(page)) {
     return <NotFound />;
   }
 
-  if (totalPages === null) {
-    return null;
+  if (isLoading || totalPages === null) {
+    return <div>loading...</div>;
   }
 
   return (
@@ -38,6 +38,16 @@ const ArchivesPageContent = ({ year, month }: { year: number, month: number }): 
   }, [year, month, page]);
 
   const { data: posts, isError } = useFetchData<PostType[]>(fetcher);
+
+  useLayoutEffect(() => {
+    if (posts === null) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    });
+  }, [posts, page]);
 
   if (isError) {
     return <NotFound />;

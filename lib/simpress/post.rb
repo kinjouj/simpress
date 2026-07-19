@@ -5,7 +5,9 @@ require "simpress/taxonomy"
 
 module Simpress
   class Post
-    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover].freeze
+    include Simpress::JSON::Serializable
+
+    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :adjacent].freeze
     PERMITTED_PARAMS    = attr_reader :id,
                                       :title,
                                       :date,
@@ -19,6 +21,8 @@ module Simpress
                                       :index,
                                       :draft,
                                       :markdown
+
+    attr_accessor :adjacent
 
     def initialize(params)
       @id          = params[:id]
@@ -34,21 +38,13 @@ module Simpress
       @draft       = params[:draft]
       @markdown    = params[:markdown]
       @taxonomies  = build_taxonomies(params)
+      @adjacent    = nil
     end
 
     def register_taxonomies!
       return self if @draft
 
       @taxonomies.each_value {|terms| terms.each {|term| term.posts << self } }
-      self
-    end
-
-    def timestamp
-      @timestamp ||= @date.to_i
-    end
-
-    def month_start
-      @month_start ||= Time.new(@date.year, @date.month, 1)
     end
 
     def to_h(options = {})
@@ -56,12 +52,27 @@ module Simpress
       (keys ? PERMITTED_JSON_KEYS & keys : PERMITTED_JSON_KEYS).to_h {|key| [key, instance_variable_get("@#{key}")] }
     end
 
-    def as_json(options = {})
-      to_h(options)
-    end
+    class Adjacent
+      include Simpress::JSON::Serializable
 
-    def to_json(options = {})
-      Simpress::JSON.dump(as_json(options))
+      Summary = Data.define(:id, :title, :permalink)
+
+      attr_reader :prev, :next
+
+      def self.summarize(post)
+        return nil if post.nil?
+
+        Summary.new(id: post.id, title: post.title, permalink: post.permalink)
+      end
+
+      def initialize(newer_post, older_post)
+        @prev = self.class.summarize(older_post)
+        @next = self.class.summarize(newer_post)
+      end
+
+      def to_h(*)
+        { prev: @prev, next: @next }
+      end
     end
 
     private

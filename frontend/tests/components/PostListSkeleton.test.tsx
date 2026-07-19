@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import PostListSkeleton from '../../../src/components/Skeleton/PostListSkeleton';
+import PostListSkeleton from '../../src/components/PostListSkeleton';
 
 describe('PostListSkeleton', () => {
   test('renders five skeleton placeholders', () => {
