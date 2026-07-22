@@ -9,6 +9,22 @@ AllCops:
 
 Layout/ClassStructure:
   Enabled: true
+  Categories:
+    public_attribute_macros:
+      - attr_accessor
+      - attr_reader
+      - attr_writer
+  ExpectedOrder:
+    - module_inclusion
+    - constants
+    - public_attribute_macros
+    - public_delegate
+    - macros
+    - public_class_methods
+    - initializer
+    - public_methods
+    - protected_methods
+    - private_methods
 
 Layout/EndOfLine:
   EnforcedStyle: lf

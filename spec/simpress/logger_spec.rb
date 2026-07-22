@@ -14,7 +14,7 @@ describe Simpress::Logger do
       end
 
       it "logs the message to stdout" do
-        expect { described_class.info("test info message") }.to output(/INFO -- : test info message/).to_stdout
+        expect { described_class.verbose("test info message") }.to output(/INFO -- : test info message/).to_stdout
       end
     end
 
@@ -24,7 +24,7 @@ describe Simpress::Logger do
       end
 
       it "does not log the message" do
-        expect { described_class.info("test info message") }.not_to output.to_stdout
+        expect { described_class.verbose("test info message") }.not_to output.to_stdout
       end
     end
   end

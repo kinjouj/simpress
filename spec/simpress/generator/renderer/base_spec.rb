@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/base_renderer"
+require "simpress/generator/renderer/base"
 
-describe Simpress::Generator::Renderer::BaseRenderer do
+describe Simpress::Generator::Renderer::Base do
   before do
     allow(Simpress::Config.instance).to receive(:mode).and_return("html")
     allow(Simpress::Writer).to receive(:write)

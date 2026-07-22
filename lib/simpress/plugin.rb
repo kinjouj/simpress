@@ -7,6 +7,8 @@ require "zeitwerk"
 
 module Simpress
   module Plugin
+    class UnknownModeError < StandardError; end
+
     def run(posts = [], pages = [])
       raise NotImplementedError
     end

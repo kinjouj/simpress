@@ -10,7 +10,7 @@ require "simpress/writer"
 module Simpress
   module Generator
     module Renderer
-      class BaseRenderer
+      class Base
         class UnknownModeError < StandardError; end
         class BlockRequiredError < StandardError; end
 

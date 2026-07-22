@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/archive/post_index_renderer"
+require "simpress/generator/renderer/archive/post_index"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::Archive::PostIndexRenderer do
+describe Simpress::Generator::Renderer::Archive::PostIndex do
   let(:post)  { build(:post) }
   let(:posts) { [post] }
 
   before do
-    allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Logger).to receive(:verbose)
   end
 
   describe ".generate_html" do
@@ -21,7 +21,7 @@ describe Simpress::Generator::Renderer::Archive::PostIndexRenderer do
       described_class.generate_html(posts)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/index.html", "<html>content</html>")
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD ARCHIVE]: public/index.html")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/index.html")
     end
   end
 
@@ -38,8 +38,8 @@ describe Simpress::Generator::Renderer::Archive::PostIndexRenderer do
       described_class.generate_json(posts)
       expect(Simpress::Writer).to have_received(:write).with("/archives/page/1.json", expected_page_json)
       expect(Simpress::Writer).to have_received(:write).with("/archives/page/meta.json", expected_meta_json)
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD ARCHIVE]: public/archives/page/1.json")
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD ARCHIVE]: public/archives/page/meta.json")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/page/1.json")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/page/meta.json")
     end
   end
 end

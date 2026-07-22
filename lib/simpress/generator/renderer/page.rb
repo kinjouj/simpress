@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/base_renderer"
+require "simpress/generator/renderer/base"
 require "simpress/logger"
 
 module Simpress
   module Generator
     module Renderer
-      class PageRenderer < BaseRenderer
+      class Page < Simpress::Generator::Renderer::Base
         DATA_JSON_KEYS = [:id, :title, :content].freeze
 
         class << self
@@ -14,7 +14,7 @@ module Simpress
             base_path = uri("/page")
             pages.each do |page|
               write_html(base_path.path(page.permalink), template: page.layout, post: page) do |file_path|
-                Simpress::Logger.info("[BUILD PAGE]: #{page.title} #{file_path}")
+                Simpress::Logger.verbose("[BUILD PAGE]: #{page.title} #{file_path}")
               end
             end
           end
@@ -23,7 +23,7 @@ module Simpress
             base_path = uri("/page")
             pages.each do |page|
               write_json(base_path.path(page.permalink), page, keys: DATA_JSON_KEYS) do |file_path|
-                Simpress::Logger.info("[BUILD PAGE]: #{page.title} #{file_path}")
+                Simpress::Logger.verbose("[BUILD PAGE]: #{page.title} #{file_path}")
               end
             end
           end

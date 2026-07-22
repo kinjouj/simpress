@@ -23,7 +23,7 @@ module Simpress
         when "json"
           process_json(nested_categories)
         else
-          raise "Unknown mode: #{config.mode}"
+          raise Simpress::Plugin::UnknownModeError, "Unknown mode: #{config.mode}"
         end
       end
 

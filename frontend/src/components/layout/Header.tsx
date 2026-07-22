@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Button, Container, Form, InputGroup, Modal, Nav, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faHome } from '@fortawesome/free-solid-svg-icons/faHome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons/faXTwitter';
 
 /* eslint-disable react/jsx-no-bind */
 const Header = (): React.JSX.Element => {

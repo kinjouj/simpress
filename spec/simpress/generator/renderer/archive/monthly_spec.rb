@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/archive/monthly_renderer"
+require "simpress/generator/renderer/archive/monthly"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::Archive::MonthlyRenderer do
+describe Simpress::Generator::Renderer::Archive::Monthly do
   let(:date)  { Time.new(2026, 1, 1) }
   let(:post)  { build(:post) }
   let(:monthly_archives) { { date => [post] } }
 
   before do
-    allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Logger).to receive(:verbose)
   end
 
   describe ".generate_html" do
@@ -22,7 +22,7 @@ describe Simpress::Generator::Renderer::Archive::MonthlyRenderer do
       described_class.generate_html(monthly_archives)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/index.html", "<html>content</html>")
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD ARCHIVE]: public/archives/2026/01/index.html")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/2026/01/index.html")
     end
   end
 
@@ -39,8 +39,8 @@ describe Simpress::Generator::Renderer::Archive::MonthlyRenderer do
       described_class.generate_json(monthly_archives)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/1.json", expected_index_json)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/meta.json", expected_meta_json)
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD ARCHIVE]: public/archives/2026/01/1.json")
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD ARCHIVE]: public/archives/2026/01/meta.json")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/2026/01/1.json")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/2026/01/meta.json")
     end
   end
 end

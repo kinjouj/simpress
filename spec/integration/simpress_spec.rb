@@ -8,7 +8,7 @@ end
 
 describe Simpress do
   before do
-    allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Logger).to receive(:verbose)
     allow(Simpress::Logger).to receive(:debug)
     allow(Simpress::Config).to receive(:source_dir).and_return(create_filepath("source"))
     allow(Simpress::Config).to receive(:theme_dir).and_return(create_filepath("theme"))
@@ -27,7 +27,7 @@ describe Simpress do
 
   it "builds the site and generates all expected output files" do
     described_class.build
-    expect(Simpress::Logger).to have_received(:info).at_least(1).times
+    expect(Simpress::Logger).to have_received(:verbose).at_least(1).times
     expect(Simpress::Logger).to have_received(:debug).exactly(1).times
     expect(File).to exist(create_filepath("public/count.txt"))
     expect(File).to exist(create_filepath("public/test.html"))

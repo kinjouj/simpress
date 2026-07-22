@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/page_renderer"
+require "simpress/generator/renderer/page"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::PageRenderer do
+describe Simpress::Generator::Renderer::Page do
   let(:page)  { build(:post, title: "About", permalink: "about", layout: "page", index: false) }
   let(:pages) { [page] }
 
   before do
-    allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Logger).to receive(:verbose)
   end
 
   describe ".generate_html" do
@@ -21,7 +21,7 @@ describe Simpress::Generator::Renderer::PageRenderer do
       described_class.generate_html(pages)
       expect(Simpress::Theme).to have_received(:render).with("page", post: page)
       expect(Simpress::Writer).to have_received(:write)
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD PAGE]: About public/page/about.html")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: About public/page/about.html")
     end
   end
 
@@ -35,7 +35,7 @@ describe Simpress::Generator::Renderer::PageRenderer do
     it "writes json for each page with permitted keys" do
       described_class.generate_json(pages)
       expect(Simpress::Writer).to have_received(:write).with(anything, expected_page_json)
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD PAGE]: About public/page/about.json")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: About public/page/about.json")
     end
   end
 end

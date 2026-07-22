@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/archive/taxonomy_renderer"
+require "simpress/generator/renderer/archive/taxonomy"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::Archive::TaxonomyRenderer do
+describe Simpress::Generator::Renderer::Archive::Taxonomy do
   let!(:post)       { build(:post, categories: ["Ruby"]).tap(&:register_taxonomies!) }
   let!(:taxonomies) { Simpress::Taxonomy.taxonomies }
 
   before do
     Simpress::Taxonomy.clear
-    allow(Simpress::Logger).to receive(:info)
+    allow(Simpress::Logger).to receive(:verbose)
   end
 
   describe ".generate_html" do
@@ -22,7 +22,7 @@ describe Simpress::Generator::Renderer::Archive::TaxonomyRenderer do
       described_class.generate_html(taxonomies)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/index.html", "<html>content</html>")
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD CATEGORY]: public/archives/categories/ruby/index.html")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD CATEGORY]: public/archives/categories/ruby/index.html")
     end
   end
 
@@ -39,8 +39,8 @@ describe Simpress::Generator::Renderer::Archive::TaxonomyRenderer do
       described_class.generate_json(taxonomies)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/1.json", expected_index_json)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/meta.json", expected_meta_json)
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD CATEGORY]: public/archives/categories/ruby/1.json")
-      expect(Simpress::Logger).to have_received(:info).with("[BUILD CATEGORY]: public/archives/categories/ruby/meta.json")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD CATEGORY]: public/archives/categories/ruby/1.json")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD CATEGORY]: public/archives/categories/ruby/meta.json")
     end
   end
 end

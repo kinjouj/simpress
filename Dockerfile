@@ -1,4 +1,4 @@
-from nginx
+FROM nginx
 WORKDIR /usr/share/nginx/html
-copy public .
+COPY public .
 EXPOSE 80

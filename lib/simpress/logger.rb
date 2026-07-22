@@ -13,7 +13,7 @@ module Simpress
       @logger = ::Logger.new($stdout)
     end
 
-    def info(message)
+    def verbose(message)
       @logger.info(message) if logging?
     end
 
@@ -28,7 +28,7 @@ module Simpress
     class << self
       extend Forwardable
 
-      def_delegators :instance, :info, :debug, :logging?
+      def_delegators :instance, :verbose, :debug, :logging?
 
       # :nocov:
       def clear

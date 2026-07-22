@@ -12,11 +12,11 @@ describe Simpress::Generator::Renderer do
 
   before do
     allow(Simpress::Taxonomy).to receive(:taxonomies).and_return([taxonomy])
-    allow(Simpress::Generator::Renderer::PermalinkRenderer).to receive(:generate)
-    allow(Simpress::Generator::Renderer::PageRenderer).to receive(:generate)
-    allow(Simpress::Generator::Renderer::Archive::PostIndexRenderer).to receive(:generate)
-    allow(Simpress::Generator::Renderer::Archive::MonthlyRenderer).to receive(:generate)
-    allow(Simpress::Generator::Renderer::Archive::TaxonomyRenderer).to receive(:generate)
+    allow(Simpress::Generator::Renderer::Permalink).to receive(:generate)
+    allow(Simpress::Generator::Renderer::Page).to receive(:generate)
+    allow(Simpress::Generator::Renderer::Archive::PostIndex).to receive(:generate)
+    allow(Simpress::Generator::Renderer::Archive::Monthly).to receive(:generate)
+    allow(Simpress::Generator::Renderer::Archive::Taxonomy).to receive(:generate)
   end
 
   after do
@@ -26,8 +26,8 @@ describe Simpress::Generator::Renderer do
   describe ".generate" do
     it "calls PermalinkRenderer.generate for each post" do
       described_class.generate(posts, pages)
-      expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate).with(post1)
-      expect(Simpress::Generator::Renderer::PermalinkRenderer).to have_received(:generate).with(post2)
+      expect(Simpress::Generator::Renderer::Permalink).to have_received(:generate).with(post1)
+      expect(Simpress::Generator::Renderer::Permalink).to have_received(:generate).with(post2)
     end
 
     it "assigns next to the newer post and prev to the older post" do
@@ -39,17 +39,17 @@ describe Simpress::Generator::Renderer do
       expect(older.adjacent.prev).to be_nil
     end
 
-    it "calls MonthlyRenderer.generate with grouped posts by month" do
+    it "calls Monthly.generate with grouped posts by month" do
       described_class.generate(posts, pages)
       expected_archives = { Time.new(2026, 1, 1) => [post1, post2] }
-      expect(Simpress::Generator::Renderer::Archive::MonthlyRenderer).to have_received(:generate).with(expected_archives)
+      expect(Simpress::Generator::Renderer::Archive::Monthly).to have_received(:generate).with(expected_archives)
     end
 
     it "calls other renderers with correct arguments" do
       described_class.generate(posts, pages)
-      expect(Simpress::Generator::Renderer::PageRenderer).to have_received(:generate).with(pages)
-      expect(Simpress::Generator::Renderer::Archive::PostIndexRenderer).to have_received(:generate).with(posts)
-      expect(Simpress::Generator::Renderer::Archive::TaxonomyRenderer).to have_received(:generate).with([taxonomy])
+      expect(Simpress::Generator::Renderer::Page).to have_received(:generate).with(pages)
+      expect(Simpress::Generator::Renderer::Archive::PostIndex).to have_received(:generate).with(posts)
+      expect(Simpress::Generator::Renderer::Archive::Taxonomy).to have_received(:generate).with([taxonomy])
     end
   end
 end

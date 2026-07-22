@@ -14,10 +14,11 @@ class SimpressCLI < Thor
       Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
       GC.disable
       Simpress.build { send(:"build_#{Simpress::Config.instance.mode}") }
-      GC.enable
     end
 
     Simpress::Logger.debug("build time: #{result}")
+  ensure
+    GC.enable
   end
 
   private

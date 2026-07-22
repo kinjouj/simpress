@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Button } from 'react-bootstrap';
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons/faArrowUp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const PageToTopFloatingButton = (): React.JSX.Element => {
