@@ -91,23 +91,23 @@ describe Simpress::Plugin::Similarity do
 
     expect(posts[0]).to respond_to(:similarities)
     expect(posts[0].similarities.size).to eq(1)
-    expect(posts[0].similarities.first[0]).to eq("post_003")
+    expect(posts[0].similarities.first.id).to eq("post_003")
 
     expect(posts[1]).to respond_to(:similarities)
     expect(posts[1].similarities.size).to eq(2)
-    expect(posts[1].similarities.map { _1[0] }).to contain_exactly("post_004", "post_005")
+    expect(posts[1].similarities.map(&:id)).to contain_exactly("post_004", "post_005")
 
     expect(posts[2]).to respond_to(:similarities)
     expect(posts[2].similarities.size).to eq(1)
-    expect(posts[2].similarities.first[0]).to eq("post_001")
+    expect(posts[2].similarities.first.id).to eq("post_001")
 
     expect(posts[3]).to respond_to(:similarities)
     expect(posts[3].similarities.size).to eq(2)
-    expect(posts[3].similarities.map { _1[0] }).to contain_exactly("post_002", "post_005")
+    expect(posts[3].similarities.map(&:id)).to contain_exactly("post_002", "post_005")
 
     expect(posts[4]).to respond_to(:similarities)
     expect(posts[4].similarities.size).to eq(2)
-    expect(posts[4].similarities.map { _1[0] }).to contain_exactly("post_004", "post_002")
+    expect(posts[4].similarities.map(&:id)).to contain_exactly("post_004", "post_002")
   end
 
   context "when returns no scores" do

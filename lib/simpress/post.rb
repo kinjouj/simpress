@@ -25,8 +25,8 @@ module Simpress
       @index       = params[:index]
       @draft       = params[:draft]
       @markdown    = params[:markdown]
-      @adjacent    = nil
       @taxonomies  = build_taxonomies(params)
+      @adjacent    = nil
     end
 
     def register_taxonomies!
@@ -43,14 +43,14 @@ module Simpress
     class Adjacent
       include Simpress::JSON::Serializable
 
-      Summary = Data.define(:id, :title, :permalink)
+      PostLink = Data.define(:id, :title, :permalink)
 
       attr_reader :prev, :next
 
       def self.summarize(post)
         return nil if post.nil?
 
-        Summary.new(id: post.id, title: post.title, permalink: post.permalink)
+        PostLink.new(id: post.id, title: post.title, permalink: post.permalink)
       end
 
       def initialize(newer_post, older_post)

@@ -7,7 +7,7 @@ describe('RelatedPosts', () => {
   test('<RelatedPosts> test', async () => {
     render(
       <MemoryRouter>
-        <RelatedPosts similarities={[[testPostData.id, testPostData.title, testPostData.permalink]]} />
+        <RelatedPosts similarities={[{ id: testPostData.id, title: testPostData.title, permalink: testPostData.permalink }]} />
       </MemoryRouter>
     );
 

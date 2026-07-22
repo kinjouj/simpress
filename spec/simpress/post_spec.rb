@@ -157,9 +157,9 @@ describe Simpress::Post do
     end
 
     describe ".summarize" do
-      it "returns a Summary with id, title, and permalink" do
+      it "returns a PostLink with id, title, and permalink" do
         result = described_class.summarize(newer_post)
-        expect(result).to eq described_class::Summary.new(id: "post-456", title: "Newer Post", permalink: "/newer-post")
+        expect(result).to eq described_class::PostLink.new(id: "post-456", title: "Newer Post", permalink: "/newer-post")
       end
 
       it "returns nil when post is nil" do

@@ -6,21 +6,14 @@ export type TaxonomyType = {
 };
 
 export type TaxonomiesType = Record<string, TaxonomyType[]>;
-
-export type AdjacentSummaryType = Pick<PostType, 'id' | 'title' | 'permalink'>;
-
-export type AdjacentType = {
-  prev: AdjacentSummaryType | null
-  next: AdjacentSummaryType | null
-};
+export type PostLinkType = Pick<PostType, 'id' | 'title' | 'permalink'>;
+export type AdjacentType = Record<'prev' | 'next', PostLinkType | null>;
 
 export type TocType = {
   id: string
   text: string
   children: Omit<TocType, 'children'>[]
 };
-
-export type SimilaritiesType = [id: string, title: string, permalink: string];
 
 export type PostType = {
   id: string
@@ -33,5 +26,5 @@ export type PostType = {
   description?: string
   toc?: TocType[]
   adjacent?: AdjacentType
-  similarities?: SimilaritiesType[]
+  similarities?: PostLinkType[]
 };

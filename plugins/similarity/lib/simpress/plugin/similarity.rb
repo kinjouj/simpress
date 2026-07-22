@@ -13,12 +13,14 @@ module Simpress
     class Similarity
       extend Simpress::Plugin
 
+      PostLink = Data.define(:id, :title, :permalink)
+
       def self.run(posts, *_args)
         indexer = Indexer.new(posts)
         indexer.each_similarity do |scores, i|
           similarities = scores.max_by(5, &:first).map do |_score, index|
             target = posts[index]
-            [target.id, target.title, target.permalink]
+            PostLink.new(id: target.id, title: target.title, permalink: target.permalink)
           end
 
           posts[i] = PostWithSimilarities.new(posts[i], similarities)
