@@ -1,12 +1,12 @@
 import { render, screen, type RenderResult } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import AdjacentPosts from '../../../src/components/ui/AdjacentPosts';
-import type { AdjacentType } from '../../../src/types';
+import type { PostLinkType } from '../../../src/types';
 
-const renderWithRouter = (adjacent: AdjacentType): RenderResult => {
+const renderWithRouter = ({ next, prev }: { next: PostLinkType | null, prev: PostLinkType | null }): RenderResult => {
   return render(
     <MemoryRouter>
-      <AdjacentPosts adjacent={adjacent} />
+      <AdjacentPosts next={next} prev={prev} />
     </MemoryRouter>
   );
 };

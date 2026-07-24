@@ -13,7 +13,7 @@ module Simpress
       def self.generate(posts, pages)
         monthly_archives = Hash.new {|h, k| h[k] = [] }
         [nil, *posts, nil].each_cons(3) do |newer_post, post, older_post|
-          post.adjacent = Simpress::Post::Adjacent.new(newer_post, older_post)
+          post.set_adjacent!(newer_post, older_post)
           Simpress::Generator::Renderer::Permalink.generate(post)
           monthly_archives[Time.new(post.date.year, post.date.month)] << post
         end

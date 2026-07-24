@@ -33,10 +33,10 @@ describe Simpress::Generator::Renderer do
     it "assigns next to the newer post and prev to the older post" do
       described_class.generate(posts, pages)
       newer, older = posts
-      expect(newer.adjacent.prev).to eq Simpress::Post::Adjacent.summarize(older)
-      expect(newer.adjacent.next).to be_nil
-      expect(older.adjacent.next).to eq Simpress::Post::Adjacent.summarize(newer)
-      expect(older.adjacent.prev).to be_nil
+      expect(newer.prev).to eq Simpress::Post::PostLink.new(id: older.id, title: older.title, permalink: older.permalink)
+      expect(newer.next).to be_nil
+      expect(older.next).to eq Simpress::Post::PostLink.new(id: newer.id, title: newer.title, permalink: newer.permalink)
+      expect(older.prev).to be_nil
     end
 
     it "calls Monthly.generate with grouped posts by month" do

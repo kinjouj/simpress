@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
-import type { AdjacentType } from '../../types';
+import type { PostLinkType } from '../../types';
 
-const AdjacentPosts = ({ adjacent }: { adjacent: AdjacentType }): React.JSX.Element => {
+const AdjacentPosts = ({ next, prev }: { next: PostLinkType | null, prev: PostLinkType | null }): React.JSX.Element => {
   return (
     <div className="paginator d-flex my-5">
-      {!!adjacent.next && (
-        <Link to={adjacent.next.permalink} rel="prev">&lt;&nbsp;{adjacent.next.title}</Link>
+      {!!next && (
+        <Link to={next.permalink} rel="prev">&lt;&nbsp;{next.title}</Link>
       )}
-      {!!adjacent.prev && (
-        <Link to={adjacent.prev.permalink} rel="next">{adjacent.prev.title}&nbsp;&gt;</Link>
+      {!!prev && (
+        <Link to={prev.permalink} rel="next">{prev.title}&nbsp;&gt;</Link>
       )}
     </div>
   );

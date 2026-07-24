@@ -7,7 +7,7 @@ module Simpress
   module Generator
     module Renderer
       class Permalink < Simpress::Generator::Renderer::Base
-        DATA_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :toc, :adjacent].freeze
+        DATA_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :toc, :next, :prev].freeze
 
         def self.generate_html(post)
           write_html(post.permalink, template: post.layout, post: post) do |file_path|

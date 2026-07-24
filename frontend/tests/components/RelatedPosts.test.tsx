@@ -7,10 +7,10 @@ describe('RelatedPosts', () => {
   test('<RelatedPosts> test', async () => {
     render(
       <MemoryRouter>
-        <RelatedPosts similarities={[{ id: testPostData.id, title: testPostData.title, permalink: testPostData.permalink }]} />
+        <RelatedPosts similarities={testPostData.similarities} />
       </MemoryRouter>
     );
 
-    expect(await screen.findAllByRole('listitem')).toHaveLength(1);
+    expect(await screen.findAllByRole('listitem')).toHaveLength(2);
   });
 });

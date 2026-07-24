@@ -7,7 +7,6 @@ export type TaxonomyType = {
 
 export type TaxonomiesType = Record<string, TaxonomyType[]>;
 export type PostLinkType = Pick<PostType, 'id' | 'title' | 'permalink'>;
-export type AdjacentType = Record<'prev' | 'next', PostLinkType | null>;
 
 export type TocType = {
   id: string
@@ -24,7 +23,8 @@ export type PostType = {
   content?: string
   cover?: string
   description?: string
-  toc?: TocType[]
-  adjacent?: AdjacentType
+  toc: TocType[]
+  next: PostLinkType | null
+  prev: PostLinkType | null
   similarities?: PostLinkType[]
 };

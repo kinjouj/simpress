@@ -7,10 +7,11 @@ module Simpress
   class Post
     include Simpress::JSON::Serializable
 
-    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :adjacent].freeze
+    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next].freeze
+    PostLink = Data.define(:id, :title, :permalink)
 
-    attr_reader :id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :layout, :index, :draft, :markdown
-    attr_accessor :adjacent
+    attr_reader :id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next,
+                :layout, :index, :draft, :markdown
 
     def initialize(params)
       @id          = params[:id]
@@ -21,12 +22,13 @@ module Simpress
       @description = params[:description]
       @toc         = params[:toc]
       @cover       = params[:cover]
+      @prev        = nil
+      @next        = nil
       @layout      = params[:layout]
       @index       = params[:index]
       @draft       = params[:draft]
       @markdown    = params[:markdown]
       @taxonomies  = build_taxonomies(params)
-      @adjacent    = nil
     end
 
     def register_taxonomies!
@@ -35,35 +37,23 @@ module Simpress
       @taxonomies.each_value {|terms| terms.each {|term| term.posts << self } }
     end
 
+    def set_adjacent!(newer_post, older_post)
+      @prev = summarize(older_post)
+      @next = summarize(newer_post)
+    end
+
     def to_h(options = {})
       keys = options[:keys]
       (keys ? PERMITTED_JSON_KEYS & keys : PERMITTED_JSON_KEYS).to_h {|key| [key, instance_variable_get("@#{key}")] }
     end
 
-    class Adjacent
-      include Simpress::JSON::Serializable
-
-      PostLink = Data.define(:id, :title, :permalink)
-
-      attr_reader :prev, :next
-
-      def self.summarize(post)
-        return nil if post.nil?
-
-        PostLink.new(id: post.id, title: post.title, permalink: post.permalink)
-      end
-
-      def initialize(newer_post, older_post)
-        @prev = self.class.summarize(older_post)
-        @next = self.class.summarize(newer_post)
-      end
-
-      def to_h(*)
-        { prev: @prev, next: @next }
-      end
-    end
-
     private
+
+    def summarize(post)
+      return nil if post.nil?
+
+      PostLink.new(id: post.id, title: post.title, permalink: post.permalink)
+    end
 
     def build_taxonomies(params)
       Simpress::Taxonomy.taxonomies.to_h do |taxonomy|

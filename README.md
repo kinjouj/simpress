@@ -90,7 +90,7 @@ All parameters except `title` are basically optional. However, since `date`/`per
 
 
 |parameter|Description|
-|:---------:|-----------|
+|:---------:|:-----------|
 |title      |The title|
 |date       |Date (DateTime). If omitted, it is derived from the file name (yyyy-mm-dd). An error occurs if it cannot be derived from the file name|
 |permalink  |The URL path|
@@ -106,7 +106,7 @@ All parameters except `title` are basically optional. However, since `date`/`per
 
 
 |variable  |Description|
-|:--------:|:---------:|
+|:--------:|:---------|
 |@posts    |Array[Simpress::Post]|
 |@paginator|Simpress::Paginator|
 |@key      |String optional|
@@ -116,8 +116,13 @@ All parameters except `title` are basically optional. However, since `date`/`per
 
 
 |variable   |Description|
-|:---------:|:-----------:|
+|:---------:|:-----------|
 |@post      |Simpress::Post|
+
+
+### JSON Data Format
+ 
+- [JSON data format](docs/json.md)
 
 
 ### Custom Markdown Enhancer
@@ -125,7 +130,7 @@ All parameters except `title` are basically optional. However, since `date`/`per
 
 ```ruby
 class SampleFilter
-  extend Simpress::Parser::Redcarpet::Enhancer
+  extend Simpress::Parser::Markdown::Enhancer
 
   def self.preprocess(markdown)
     # TODO

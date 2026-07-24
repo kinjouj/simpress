@@ -71,9 +71,9 @@ const PostPage = (): React.JSX.Element => {
       <hr />
       <PostCategories taxonomies={post.taxonomies} className="post-categories position-relative m-0" />
       <div dangerouslySetInnerHTML={{ __html: post.content ?? '' }} className="post-content fs-6 my-4 mw-100" />
-      {!!post.toc && <TableOfContents toc={post.toc} />}
+      <TableOfContents toc={post.toc} />
+      {(!!post.prev || !!post.next) && <AdjacentPosts next={post.next} prev={post.prev} />}
       {!!post.similarities && post.similarities.length > 0 && <RelatedPosts similarities={post.similarities} />}
-      {!!post.adjacent && <AdjacentPosts adjacent={post.adjacent} />}
       <div style={{ marginTop: '30px' }}>
         <pre className="line-numbers"><code className="language-json">{JSON.stringify(post, null, 2)}</code></pre>
       </div>
