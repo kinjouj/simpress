@@ -45,28 +45,6 @@ default:
 ```
 
 
-# taxonomies.yaml
-
-
-Defines taxonomies and their URL slug aliases.
-
-
-```yaml
-types:
-  - series
-  - tags
- 
-aliases:
-  categories:
-    社会: shakai
-  series:
-    Ruby入門: ruby-intro
-```
-
-
-Both `types` and `aliases` are optional.
-
-
 ### Markdown Format
 
 
@@ -102,86 +80,10 @@ All parameters except `title` are basically optional. However, since `date`/`per
 |description|The meta description value. If omitted, it is generated from the content|
 
 
-### Theme(index.erb) Variables
+### SEE ALSO
 
 
-|variable  |Description|
-|:--------:|:---------|
-|@posts    |Array[Simpress::Post]|
-|@paginator|Simpress::Paginator|
-|@key      |String optional|
-
-
-### Theme(page.erb) Variables
-
-
-|variable   |Description|
-|:---------:|:-----------|
-|@post      |Simpress::Post|
-
-
-### JSON Data Format
- 
+- [taxonomies.yaml](docs/taxonomies.md)
+- [Theme Variables](docs/theme.md)
 - [JSON data format](docs/json.md)
-
-
-### Custom Markdown Enhancer
-
-
-```ruby
-class SampleFilter
-  extend Simpress::Parser::Markdown::Enhancer
-
-  def self.preprocess(markdown)
-    # TODO
-  end
-end
-```
-
-
-into plugins directory ruby project structures(plugins/sample_filter/lib/sample_filter.rb)
-
-
-### Custom Plugin
-
-
-```ruby
-module Simpress
-  module Plugin
-    class Sample
-      extend Simpress::Plugin
-
-      def self.run(posts, pages, categories)
-        # TODO
-      end
-    end
-  end
-end
-```
-
-
-### Custom Theme Helper
-
-
-Add methods that are usable inside `.erb` templates by including `Simpress::Theme::Helper::Plugin`.
-
-
-```ruby
-module Simpress
-  module Plugin
-    module SampleHelper
-      include Simpress::Theme::Helper::Plugin
-
-      def sample_helper(value)
-        # TODO
-      end
-    end
-  end
-end
-```
-
-
-into plugins directory ruby project structures(plugins/sample_helper/lib/sample_helper.rb)
-
-
-Once included, the module is registered automatically and its methods become available in any theme template, e.g. `<%= sample_helper(post) %>`.
+- [Plugin](docs/plugins.md)
