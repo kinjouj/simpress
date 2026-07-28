@@ -6,7 +6,6 @@ import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 import checkFile from "eslint-plugin-check-file";
-import jest from "eslint-plugin-jest";
 import importPlugin from "eslint-plugin-import";
 import perfectionist from "eslint-plugin-perfectionist";
 
@@ -22,7 +21,7 @@ export default defineConfig(
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parserOptions: {
-        project: ['tsconfig.json', 'tsconfig.node.json'],
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
           jsx: true,
@@ -34,7 +33,6 @@ export default defineConfig(
     },
     plugins: {
       react,
-      jest,
       perfectionist,
       "react-hooks": reactHooks,
       "@stylistic": stylistic,
@@ -42,7 +40,6 @@ export default defineConfig(
       "import": importPlugin,
     },
     rules: {
-      ...jest.configs["recommended"].rules,
       "curly": ["error", "all"],
       "eqeqeq": ["error", "always", { "null": "always" }],
       "no-empty": ["error", { allowEmptyCatch: false }],

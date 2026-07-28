@@ -2,8 +2,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { useFetchPageMeta } from '../../src/hooks/useFetchPageMeta';
 import Simpress from '../../src/api/Simpress';
 
-jest.mock('../../src/api/Simpress');
-const SimpressMock = jest.mocked(Simpress);
+vi.mock('../../src/api/Simpress');
+const SimpressMock = vi.mocked(Simpress);
 
 describe('useFetchPageMeta', () => {
   test('fetches total pages for the given path', async () => {

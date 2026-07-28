@@ -1,5 +1,5 @@
 import { render, screen, type RenderResult } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import AdjacentPosts from '../../../src/components/ui/AdjacentPosts';
 import type { PostLinkType } from '../../../src/types';
 

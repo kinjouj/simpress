@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import Simpress from '../../src/api/Simpress';
 import SidebarCategories from '../../src/components/SidebarCategories';
 
-jest.mock('../../src/api/Simpress');
-const SimpressMock = jest.mocked(Simpress);
+vi.mock('../../src/api/Simpress');
+const SimpressMock = vi.mocked(Simpress);
 
 describe('SidebarCategories', () => {
   test('renders categories sorted by post count, most posts first', async () => {

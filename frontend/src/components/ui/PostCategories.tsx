@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Stack, type StackProps } from 'react-bootstrap';
 import type { TaxonomiesType } from '../../types';
 

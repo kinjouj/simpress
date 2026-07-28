@@ -1,5 +1,5 @@
 import { render, screen, type RenderResult } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import PostCategories from '../../../src/components/ui/PostCategories';
 import type { TaxonomiesType } from '../../../src/types';
 

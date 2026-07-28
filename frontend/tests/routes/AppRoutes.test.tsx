@@ -1,46 +1,41 @@
-import { act, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import AppRoutes from '../../src/routes/AppRoutes';
-import Simpress from '../../src/api/Simpress';
 import { testPostData } from '../fixtures/testPostData';
-
-let dataSpy: jest.SpyInstance<Promise<unknown>, [ string ]>;
 
 describe('AppRoutes', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.spyOn(global, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
+      const path = input instanceof Request ? input.url : input.toString();
+      let res: Response;
 
-    /* eslint-disable */
-    dataSpy = jest.spyOn(Simpress as any, 'getData').mockImplementation(
-      (path): Promise<any> => {
-        if (path?.toString().endsWith('meta.json')) {
-          return Promise.resolve(1);
-        }
+      switch (true) {
+        case path.endsWith('meta.json'):
+          res = new Response(JSON.stringify({ total_pages: 1 }), { status: 200 });
+          break;
 
-        switch (path) {
-          case '/recent_posts.json':
-            return Promise.resolve([testPostData]);
-          case '/archives/page/1.json':
-            return Promise.resolve([testPostData]);
-          case '/archives/1234/01/1.json':
-            return Promise.resolve([testPostData]);
-          case '/archives/categories/test/1.json':
-            return Promise.resolve([testPostData]);
-          case '/test.json':
-            return Promise.resolve(testPostData);
-          default:
-            return Promise.reject(new Error('ERROR'));
-        }
+        case path.endsWith('/recent_posts.json'):
+        case path.endsWith('/archives/page/1.json'):
+        case path.endsWith('/archives/1234/01/1.json'):
+        case path.endsWith('/archives/categories/test/1.json'):
+          res = new Response(JSON.stringify([testPostData]), { status: 200 });
+          break;
+
+        case path.endsWith('/test.json'):
+          res = new Response(JSON.stringify(testPostData), { status: 200 });
+          break;
+
+        default:
+          res = new Response(null, { status: 404, statusText: 'Not Found' });
       }
-    ) as jest.MockInstance<Promise<any>, [ string ]>;
-    /* eslint-enable */
+
+      return Promise.resolve(res);
+    });
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
-    jest.useRealTimers();
-    dataSpy.mockRestore();
+    vi.restoreAllMocks();
   });
 
   test('<AppRoutes> initialEntries=/page/1 test', async () => {
@@ -49,12 +44,8 @@ describe('AppRoutes', () => {
         <AppRoutes />
       </MemoryRouter>
     );
-    await act(async () => {
-      void jest.runAllTimersAsync();
-      await Promise.resolve();
-    });
 
-    const posts = await screen.findAllByRole('listitem', { name: 'post' });
+    const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });
     expect(posts).toHaveLength(1);
   });
 
@@ -64,12 +55,8 @@ describe('AppRoutes', () => {
         <AppRoutes />
       </MemoryRouter>
     );
-    await act(async () => {
-      void jest.runAllTimersAsync();
-      await Promise.resolve();
-    });
 
-    const posts = await screen.findAllByRole('listitem', { name: 'post' });
+    const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });
     expect(posts).toHaveLength(1);
   });
 
@@ -79,12 +66,8 @@ describe('AppRoutes', () => {
         <AppRoutes />
       </MemoryRouter>
     );
-    await act(async () => {
-      void jest.runAllTimersAsync();
-      await Promise.resolve();
-    });
 
-    const posts = await screen.findAllByRole('listitem', { name: 'post' });
+    const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });
     expect(posts).toHaveLength(1);
   });
 
@@ -94,12 +77,8 @@ describe('AppRoutes', () => {
         <AppRoutes />
       </MemoryRouter>
     );
-    await act(async () => {
-      void jest.runAllTimers();
-      await Promise.resolve();
-    });
 
-    const post = await screen.findByRole('main');
+    const post = await screen.findByRole('main', {}, { timeout: 10000 });
     expect(post).toBeInTheDocument();
   });
 });

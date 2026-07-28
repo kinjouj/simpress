@@ -1,12 +1,12 @@
-import { act, render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import PostListPage from '../../src/pages/PostListPage';
 import Simpress from '../../src/api/Simpress';
 import { testPostData } from '../fixtures/testPostData';
 import type { RenderResult } from '@testing-library/react';
 
-jest.mock('../../src/api/Simpress');
-const SimpressMock = jest.mocked(Simpress);
+vi.mock('../../src/api/Simpress');
+const SimpressMock = vi.mocked(Simpress);
 
 const renderPostListPage = (): RenderResult => {
   return render(
@@ -20,14 +20,11 @@ const renderPostListPage = (): RenderResult => {
 
 describe('PostListPage', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
-    jest.clearAllTimers();
-    jest.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   test('shows a loading indicator (not a blank screen) while page meta is being fetched', () => {
@@ -43,12 +40,8 @@ describe('PostListPage', () => {
     SimpressMock.getPostsByPage.mockResolvedValue([testPostData]);
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderPostListPage();
-    await act(async () => {
-      void jest.runAllTimersAsync();
-      await Promise.resolve();
-    });
 
-    const posts = await screen.findAllByRole('listitem', { name: 'post' });
+    const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });
     expect(posts).toHaveLength(1);
   });
 
@@ -56,11 +49,7 @@ describe('PostListPage', () => {
     SimpressMock.getMeta.mockResolvedValue(1);
     SimpressMock.getPostsByPage.mockRejectedValue(new Error('ERR'));
     renderPostListPage();
-    await act(async () => {
-      void jest.runAllTimersAsync();
-      await Promise.resolve();
-    });
 
-    expect(await screen.findByText('Not Found')).toBeInTheDocument();
+    expect(await screen.findByText('Not Found', {}, { timeout: 10000 })).toBeInTheDocument();
   });
 });

@@ -60,7 +60,7 @@ describe('TableOfContents', () => {
       const target = document.createElement('div');
       target.id = testPostData.toc[0].id;
       document.body.appendChild(target);
-      const scrollIntoView = jest.fn();
+      const scrollIntoView = vi.fn();
       target.scrollIntoView = scrollIntoView;
 
       const user = userEvent.setup();

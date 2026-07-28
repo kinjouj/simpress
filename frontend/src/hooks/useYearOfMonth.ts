@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 export const useYearOfMonth = (): { year: number | null, month: number | null } => {
   const { year, month } = useParams();

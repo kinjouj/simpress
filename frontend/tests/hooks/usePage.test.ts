@@ -1,16 +1,19 @@
-import * as Router from 'react-router-dom';
+import * as Router from 'react-router';
 import { usePage } from '../../src/hooks/usePage';
 
-jest.mock('react-router-dom', (): typeof Router => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(),
-}));
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof Router>('react-router');
+  return {
+    ...actual,
+    useParams: vi.fn(),
+  };
+});
 
-const mockedUseParams = Router.useParams as jest.Mock;
+const mockedUseParams = vi.mocked(Router.useParams);
 
 describe('usePage', () => {
   test('usePage test', () => {
-    mockedUseParams.mockReturnValue({ page: 10 });
+    mockedUseParams.mockReturnValue({ page: '10' });
     const page = usePage();
     expect(page).toBe(10);
   });

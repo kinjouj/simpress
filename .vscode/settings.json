@@ -2,6 +2,7 @@
   "files.exclude": {
     ".npmrc": true,
     "package-lock.json": true,
+    "similarity.cache": true,
     "stackprof.dump": true,
     "node_modules": true,
     "public": true,

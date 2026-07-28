@@ -1,4 +1,4 @@
-import { HashRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router';
 import AppRoutes from './routes/AppRoutes';
 
 const App = (): React.JSX.Element => {

@@ -1,5 +1,5 @@
 import { Col, Container, Row } from 'react-bootstrap';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import { PageToTopFloatingButton } from '../ui';
 import { RecentPosts } from '../';
 import Footer from './Footer';

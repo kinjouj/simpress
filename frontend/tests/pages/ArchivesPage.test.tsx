@@ -1,12 +1,12 @@
-import { act, render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import ArchivesPage from '../../src/pages/ArchivesPage';
 import Simpress from '../../src/api/Simpress';
 import { testPostData } from '../fixtures/testPostData';
 import type { RenderResult } from '@testing-library/react';
 
-jest.mock('../../src/api/Simpress');
-const SimpressMock = jest.mocked(Simpress);
+vi.mock('../../src/api/Simpress');
+const SimpressMock = vi.mocked(Simpress);
 
 const renderArchives = (): RenderResult => {
   return render(
@@ -20,25 +20,18 @@ const renderArchives = (): RenderResult => {
 
 describe('ArchivesPage', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
+    vi.clearAllMocks();
   });
 
   test('<ArchivesPage> test', async () => {
-    SimpressMock.getMeta.mockResolvedValue(1);
     SimpressMock.getPostsByArchive.mockResolvedValue([testPostData]);
-    SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderArchives();
-    await act(async () => {
-      void jest.runAllTimersAsync();
-      await Promise.resolve();
-    });
 
-    const posts = await screen.findAllByRole('listitem', { name: 'post' });
+    const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });
     expect(posts).toHaveLength(1);
   });
 
@@ -55,11 +48,7 @@ describe('ArchivesPage', () => {
   test('Simpress.getPostsByArchiveがエラーを吐いた場合', async () => {
     SimpressMock.getPostsByArchive.mockRejectedValue(new Error('ERROR'));
     renderArchives();
-    await act(async () => {
-      void jest.runAllTimersAsync();
-      await Promise.resolve();
-    });
 
-    expect(await screen.findByText('Not Found')).toBeInTheDocument();
+    expect(await screen.findByText('Not Found', {}, { timeout: 10000 })).toBeInTheDocument();
   });
 });

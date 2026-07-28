@@ -1,4 +1,8 @@
 {
-  "extends": "./tsconfig.json",
-  "include": ["./jest.config.ts", "./vite.config.ts"]
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tsbuildinfo.node",
+    "types": ["node"]
+  },
+  "include": ["./vite.config.ts", "./vitest.config.ts"]
 }

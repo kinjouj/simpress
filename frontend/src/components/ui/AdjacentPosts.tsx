@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import type { PostLinkType } from '../../types';
 
 const AdjacentPosts = ({ next, prev }: { next: PostLinkType | null, prev: PostLinkType | null }): React.JSX.Element => {

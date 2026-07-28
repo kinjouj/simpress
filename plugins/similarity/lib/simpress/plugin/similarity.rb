@@ -41,6 +41,7 @@ module Simpress
         def initialize(posts)
           @size        = posts.size
           @accumulator = Array.new(@size, 0.0)
+          @touched     = Array.new(@size)
           @keywords    = {}
           @vectors     = posts.map do |post|
             keywords = extract_keywords(post)
@@ -58,11 +59,11 @@ module Simpress
             vector
           end
 
-          doc_lens       = @vectors.map {|v| v.each_value.sum.to_f }
-          avgdl          = doc_lens.sum / @size
-          @norm           = doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / avgdl)) }
+          doc_lens        = @vectors.map {|v| v.each_value.sum.to_f }
+          avgdl           = doc_lens.sum / @size
+          norm            = doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / avgdl)) }
           @idf            = build_idf
-          @inverted_index = build_inverted_index
+          @inverted_index = build_inverted_index(norm)
         end
 
         def each_similarity
@@ -78,10 +79,15 @@ module Simpress
           end
         end
 
-        def build_inverted_index
+        def build_inverted_index(norm)
           Hash.new {|h, k| h[k] = [] }.tap do |index|
-            @vectors.each_with_index {|v, i| v.each {|word, weight| index[word] << [i, weight.to_f] } }
-            index.select! {|word, _| @idf[word] > 0.0 }
+            @vectors.each_with_index do |v, i|
+              ni = norm[i]
+              v.each do |word, weight|
+                term_score = (weight * TF_SCALE) / (weight + ni)
+                index[word] << [i, term_score]
+              end
+            end
           end
         end
 
@@ -94,19 +100,30 @@ module Simpress
           v1 = @vectors[i]
           return [] if v1.empty?
 
-          @accumulator.fill(0.0)
+          touched_count = 0
 
           v1.each_key do |word|
             idf = @idf[word]
-            @inverted_index[word].each do |j, weight|
+            @inverted_index[word].each do |j, term_score|
               next if j == i
 
-              denominator = weight + @norm[j]
-              @accumulator[j] += idf * ((weight * TF_SCALE) / denominator)
+              if @accumulator[j] == 0.0
+                @touched[touched_count] = j
+                touched_count += 1
+              end
+
+              @accumulator[j] += idf * term_score
             end
           end
 
-          @accumulator.filter_map.with_index {|score, idx| [score, idx] if score > 0.0 }
+          result = Array.new(touched_count)
+          touched_count.times do |k|
+            j = @touched[k]
+            result[k] = [@accumulator[j], j]
+            @accumulator[j] = 0.0
+          end
+
+          result
         end
 
         class Cache

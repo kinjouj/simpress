@@ -1,4 +1,4 @@
-import * as Router from 'react-router-dom';
+import * as Router from 'react-router';
 import { useYearOfMonth } from '../../src/hooks/useYearOfMonth';
 
 /*
@@ -24,12 +24,15 @@ const requestTest = <T,>(path: string, initialEntry: string, callback: (initialP
 const page = requestTest<number>('/page/:page', '/page/10', usePage);
 */
 
-jest.mock('react-router-dom', (): typeof Router => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(),
-}));
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof Router>('react-router');
+  return {
+    ...actual,
+    useParams: vi.fn(),
+  };
+});
 
-const mockedUseParams = Router.useParams as jest.Mock;
+const mockedUseParams = vi.mocked(Router.useParams);
 
 describe('hooks', () => {
   describe('useYearOfMonth', () => {
@@ -45,7 +48,7 @@ describe('hooks', () => {
     });
 
     test('yearパラメーターが不正な場合', () => {
-      mockedUseParams.mockReturnValue({ year: null, month: '1' });
+      mockedUseParams.mockReturnValue({ year: undefined, month: '1' });
       const yearOfMonth = useYearOfMonth();
       expect(yearOfMonth).toHaveProperty('year', null);
       expect(yearOfMonth).toHaveProperty('month', null);
@@ -59,7 +62,7 @@ describe('hooks', () => {
     });
 
     test('monthパラメーターが不正な場合', () => {
-      mockedUseParams.mockReturnValue({ year: '2000', month: null });
+      mockedUseParams.mockReturnValue({ year: '2000', month: undefined });
       const yearOfMonth = useYearOfMonth();
       expect(yearOfMonth).toHaveProperty('year', null);
       expect(yearOfMonth).toHaveProperty('month', null);

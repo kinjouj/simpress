@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import PostList from '../../src/components/PostList';
 import { testPostData } from '../fixtures/testPostData';
 import type { PostType } from '../../src/types';

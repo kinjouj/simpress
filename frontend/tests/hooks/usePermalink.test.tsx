@@ -1,4 +1,4 @@
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { renderHook } from '@testing-library/react';
 import { usePermalink } from '../../src/hooks/usePermalink';
 

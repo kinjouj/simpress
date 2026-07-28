@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { usePaginateContext } from '../../contexts/PaginateContext';
 
 const Paginator = ({ basePath }: { basePath: string }): React.JSX.Element => {

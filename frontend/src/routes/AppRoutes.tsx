@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router';
 import { ArchivesPage, CategoryPage, PostListPage, PostPage } from '../pages';
 import { Layout, NotFound } from '../components';
 import { useCategory, useYearOfMonth } from '../hooks';

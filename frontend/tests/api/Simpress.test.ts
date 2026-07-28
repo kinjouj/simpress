@@ -1,7 +1,7 @@
 import Simpress from '../../src/api/Simpress';
 import { testPostData } from '../fixtures/testPostData';
 
-const mockFetch = jest.fn();
+const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
 
 describe('Simpress', () => {

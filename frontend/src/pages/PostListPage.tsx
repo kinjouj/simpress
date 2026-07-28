@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback, useLayoutEffect } from 'react';
-import { NavigationType, useNavigationType } from 'react-router-dom';
+import { NavigationType, useNavigationType } from 'react-router';
 import Simpress from '../api/Simpress';
 import { NotFound, Paginator, PostList } from '../components';
 import { PaginateProvider, usePaginateContext } from '../contexts/PaginateContext';

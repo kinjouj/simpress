@@ -1,22 +1,13 @@
-import { act, render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import Simpress from '../../../src/api/Simpress';
 import Layout from '../../../src/components/layout/Layout';
 import { testPostData } from '../../fixtures/testPostData';
 
-jest.mock('../../../src/api/Simpress');
-const SimpressMock = jest.mocked(Simpress);
+vi.mock('../../../src/api/Simpress');
+const SimpressMock = vi.mocked(Simpress);
 
 describe('Layout', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.clearAllTimers();
-    jest.useRealTimers();
-  });
-
   test('renders header, footer, the outlet content, and the recent posts sidebar', async () => {
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
 
@@ -33,11 +24,7 @@ describe('Layout', () => {
     expect(screen.getByText('page content')).toBeInTheDocument();
     expect(screen.getByText('Recent Posts')).toBeInTheDocument();
 
-    await act(async () => {
-      await jest.runAllTimersAsync();
-    });
-
-    const posts = await screen.findAllByRole('listitem');
+    const posts = await screen.findAllByRole('listitem', {}, { timeout: 10000 });
     expect(posts).toHaveLength(1);
   });
 });

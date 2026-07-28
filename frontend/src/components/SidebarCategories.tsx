@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Stack } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useFetchData } from '../hooks';
 import Simpress from '../api/Simpress';
 import type { TaxonomyType } from '../types';

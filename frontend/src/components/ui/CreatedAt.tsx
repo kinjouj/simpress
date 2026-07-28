@@ -1,4 +1,4 @@
-import { generatePath, Link } from 'react-router-dom';
+import { generatePath, Link } from 'react-router';
 
 const CreatedAt = ({ dateString }: { dateString: string }): React.JSX.Element | null => {
   const date = new Date(dateString);

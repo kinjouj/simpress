@@ -14,7 +14,7 @@ describe('PaginateContext', () => {
   });
 
   test('throws when used outside of a PaginateProvider', () => {
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     expect(() => renderHook(() => usePaginateContext())).toThrow(
       'usePaginateContext must be used within a PaginateProvider'

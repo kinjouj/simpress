@@ -1,12 +1,12 @@
 import { act, render, screen } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import PostPage from '../../src/pages/PostPage';
 import Simpress from '../../src/api/Simpress';
 import { testPostData } from '../fixtures/testPostData';
 import type { RenderResult } from '@testing-library/react';
 
-jest.mock('../../src/api/Simpress');
-const SimpressMock = jest.mocked(Simpress);
+vi.mock('../../src/api/Simpress');
+const SimpressMock = vi.mocked(Simpress);
 
 const renderPostPage = (): RenderResult => {
   return render(
@@ -20,12 +20,13 @@ const renderPostPage = (): RenderResult => {
 
 describe('PostPage', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   test('<PostPage> test', async () => {
@@ -33,7 +34,7 @@ describe('PostPage', () => {
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderPostPage();
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
 
     const post = await screen.findByRole('article');
@@ -54,7 +55,7 @@ describe('PostPage', () => {
     SimpressMock.getPost.mockRejectedValue(new Error('ERROR'));
     renderPostPage();
     act(() => {
-      jest.runAllTimers();
+      vi.runAllTimers();
     });
 
     expect(await screen.findByText('Not Found')).toBeInTheDocument();

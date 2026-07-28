@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Stack } from 'react-bootstrap';
 import Simpress from '../api/Simpress';
 import { useFetchData } from '../hooks';

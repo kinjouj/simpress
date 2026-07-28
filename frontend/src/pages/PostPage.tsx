@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback, useEffect, useLayoutEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import Prism from 'prismjs';
 import Simpress from '../api/Simpress';
 import { AdjacentPosts, CreatedAt, NotFound, PostCategories, RelatedPosts, TableOfContents } from '../components';
