@@ -13,12 +13,13 @@ module Simpress
     class Similarity
       extend Simpress::Plugin
 
+      TOP_K = 5
       PostLink = Data.define(:id, :title, :permalink)
 
       def self.run(posts, *_args)
         indexer = Indexer.new(posts)
         indexer.each_similarity do |scores, i|
-          similarities = scores.max_by(5, &:first).map do |_score, index|
+          similarities = top_k(scores, TOP_K).map do |_score, index|
             target = posts[index]
             PostLink.new(id: target.id, title: target.title, permalink: target.permalink)
           end
@@ -28,6 +29,22 @@ module Simpress
 
         Indexer::Cache.flush
       end
+
+      def self.top_k(scores, k)
+        top = []
+
+        scores.each do |score, post_index|
+          next if top.size == k && score <= top.last[0]
+
+          pos = top.bsearch_index {|s, _| s <= score } || top.size
+          top.insert(pos, [score, post_index])
+          top.pop if top.size > k
+        end
+
+        top
+      end
+
+      private_class_method :top_k
 
       class Indexer
         NATTO_REGEX = /^([[:alnum:]]{4,})\t名詞,(?:固有名詞|一般)/
@@ -55,7 +72,7 @@ module Simpress
             end
 
             vector.select! {|_, v| v >= 2 }
-            @keywords[post.id] = keywords
+            # @keywords[post.id] = keywords
             vector
           end
 
