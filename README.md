@@ -74,6 +74,7 @@ All parameters except `title` are basically optional. However, since `date`/`per
 |permalink  |The URL path|
 |cover      |Thumbnail image. If omitted, `/images/no_image.webp` is used. Can also be extracted from Markdown syntax|
 |categories |Categories. Can be specified even without array syntax|
+|tags       |Tags. Can be specified even without array syntax|
 |layout     |Specifies the template used by the post. Defaults to `"page"`|
 |index      |Flag for whether the post appears in the index. Defaults to `true`|
 |draft      |Draft flag for the post. If `true`, the post is not output. Defaults to `false`|

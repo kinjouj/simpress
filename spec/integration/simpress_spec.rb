@@ -38,5 +38,6 @@ describe Simpress do
     expect(File).to exist(create_filepath("public/archives/2000/01/2.html"))
     expect(File).to exist(create_filepath("public/archives/categories/test/index.html"))
     expect(File).to exist(create_filepath("public/archives/categories/test/2.html"))
+    expect(File).to exist(create_filepath("public/archives/tags/test/index.html"))
   end
 end

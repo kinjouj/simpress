@@ -5,7 +5,7 @@ require "simpress/taxonomy/term"
 
 module Simpress
   class Taxonomy
-    DEFAULT_TAXONOMIES = ["categories"].freeze
+    DEFAULT_TAXONOMIES = ["categories", "tags"].freeze
 
     attr_reader :name, :terms
 
