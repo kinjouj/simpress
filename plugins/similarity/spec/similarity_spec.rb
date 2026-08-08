@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# @plugins/similarity/lib/simpress/plugin/similarity.rb
 
 require "simpress/post"
 require "simpress/plugin/similarity"
