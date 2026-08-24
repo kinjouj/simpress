@@ -56,11 +56,11 @@ module Simpress
           %(<pre class="line-numbers"><code class="language-#{lang}">#{CGI.escapeHTML(code)}</code></pre>)
         end
 
-        # :nocov:
+        # simplecov:disable
         def block_html(html)
           html
         end
-        # :nocov:
+        # simplecov:enable
 
         private
 

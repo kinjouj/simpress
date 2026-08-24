@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-require "stackprof"
+# require "stackprof"
 require "simpress/generator"
 require "simpress/plugin"
 
 module Simpress
   def self.build
     Simpress::Plugin.load
-    StackProf.run(mode: :wall, out: "stackprof.dump") do
-      Simpress::Generator.generate
-    end
+    Simpress::Generator.generate
 
-    # :nocov:
-    yield if block_given?
-    # :nocov:
+    # StackProf.run(mode: :wall, out: "stackprof.dump") do
+    #  Simpress::Generator.generate
+    # end
+
+    yield if block_given? # simplecov:disable
   end
 end

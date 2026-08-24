@@ -26,7 +26,7 @@ module Simpress
       @taxonomies ||= File.exist?(TAXONOMIES_FILE) ? Psych.load_file(TAXONOMIES_FILE) || {} : {}
     end
 
-    # :nocov:
+    # simplecov:disable
     class << self
       def source_dir
         "source"
@@ -48,6 +48,6 @@ module Simpress
         Singleton.__init__(Simpress::Config)
       end
     end
-    # :nocov:
+    # simplecov:enable
   end
 end

@@ -16,7 +16,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
-      reportsDirectory: path.resolve(__dirname, 'coverage'),
+      reportsDirectory: path.resolve(__dirname, 'frontend/coverage'),
     },
   },
 });

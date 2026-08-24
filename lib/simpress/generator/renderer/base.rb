@@ -26,7 +26,7 @@ module Simpress
             end
           end
 
-          # :nocov:
+          # simplecov:disable
           def generate_html(...)
             raise NotImplementedError
           end
@@ -34,7 +34,7 @@ module Simpress
           def generate_json(...)
             raise NotImplementedError
           end
-          # :nocov:
+          # simplecov:enable
 
           def each_page(posts, prefix = nil)
             raise BlockRequiredError, "Simpress::Generator::Renderer::BaseRenderer.each_page requires a block" unless block_given?

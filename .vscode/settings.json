@@ -16,10 +16,10 @@
   },
   "[typescript]": {
     "editor.indentSize": "tabSize",
-    "editor.tabSize": 2,
+    "editor.tabSize": 2
   },
   "[typescriptreact]": {
-    "editor.tabSize": 2,
+    "editor.tabSize": 2
   },
   "rubyLsp.rubyVersionManager": {
     "identifier": "mise"

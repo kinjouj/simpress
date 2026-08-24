@@ -30,11 +30,11 @@ module Simpress
 
       def_delegators :instance, :verbose, :debug, :logging?
 
-      # :nocov:
+      # simplecov:disable
       def clear
         Singleton.__init__(Simpress::Logger)
       end
-      # :nocov:
+      # simplecov:enable
     end
   end
 end
