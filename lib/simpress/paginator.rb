@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
+require "simpress/errors"
+
 module Simpress
   class Paginator
-    class PageNotFoundError < StandardError; end
-
     PREFIX_DEFAULT = "/archives/page"
 
     attr_reader :page, :maxpage, :prefix
@@ -25,13 +25,13 @@ module Simpress
     end
 
     def previous_page
-      raise PageNotFoundError, "Not Found previous page" unless previous_page_exist?
+      raise Simpress::Errors::PageNotFoundError, "Not Found previous page" unless previous_page_exist?
 
       @page - 1 > 1 ? page_path(@page - 1) : File.dirname(page_path(1))
     end
 
     def next_page
-      raise PageNotFoundError, "Not Found next page" unless next_page_exist?
+      raise Simpress::Errors::PageNotFoundError, "Not Found next page" unless next_page_exist?
 
       page_path(@page + 1)
     end

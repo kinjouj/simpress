@@ -2,6 +2,7 @@
 
 require "cgi"
 require "redcarpet"
+
 require "simpress/parser/markdown/enhancer"
 
 module Simpress
@@ -10,7 +11,7 @@ module Simpress
       class Renderer < ::Redcarpet::Render::HTML
         RENDERER_OPTIONS = { hard_wrap: true, escape_html: true }.freeze
 
-        attr_reader :primary_image, :toc
+        attr_reader :primary_image, :links
 
         def initialize(options = nil)
           super(options || RENDERER_OPTIONS)
@@ -18,11 +19,10 @@ module Simpress
         end
 
         def reset!
-          @primary_image   = nil
-          @toc             = []
-          @current_section = nil
-          @current_level   = nil
-          @section_count   = 0
+          @primary_image = nil
+          @headings      = []
+          @links         = []
+          @section_count = 0
         end
 
         def preprocess(markdown)
@@ -30,6 +30,7 @@ module Simpress
         end
 
         def link(url, _title, content)
+          @links << url if url&.start_with?("/")
           %(<a href="#{url}" target="_blank" rel="noopener">#{content}</a>)
         end
 
@@ -42,8 +43,21 @@ module Simpress
           return "<#{tag}>#{text}</#{tag}>" if header_level == 1
 
           id = "section-#{@section_count += 1}"
-          append_to_toc(id, text, header_level)
+          @headings << { id: id, text: text, level: header_level }
           %(<#{tag} id="#{id}">#{text}</#{tag}>)
+        end
+
+        def toc
+          state = @headings.each_with_object({ result: [], current_level: nil }) do |heading, s|
+            if s[:current_level].nil? || heading[:level] <= s[:current_level]
+              s[:result] << { id: heading[:id], text: heading[:text], children: [] }
+              s[:current_level] = heading[:level]
+            else
+              s[:result].last[:children] << { id: heading[:id], text: heading[:text] }
+            end
+          end
+
+          state[:result]
         end
 
         def image(path, _title, _alt)
@@ -61,19 +75,6 @@ module Simpress
           html
         end
         # simplecov:enable
-
-        private
-
-        def append_to_toc(id, text, header_level)
-          if @current_section.nil? || header_level <= @current_level
-            heading = { id: id, text: text, children: [] }
-            @toc << heading
-            @current_section = heading
-            @current_level   = header_level
-          else
-            @current_section[:children] << { id: id, text: text }
-          end
-        end
       end
     end
   end

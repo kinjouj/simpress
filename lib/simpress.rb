@@ -10,7 +10,7 @@ module Simpress
     Simpress::Generator.generate
 
     # StackProf.run(mode: :wall, out: "stackprof.dump") do
-    #  Simpress::Generator.generate
+    #   Simpress::Generator.generate
     # end
 
     yield if block_given? # simplecov:disable

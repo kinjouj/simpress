@@ -88,3 +88,4 @@ All parameters except `title` are basically optional. However, since `date`/`per
 - [Theme Variables](docs/theme.md)
 - [JSON data format](docs/json.md)
 - [Plugin](docs/plugins.md)
+- [Backlinks](docs/backlinks.md)

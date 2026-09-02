@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "simpress/config"
+require "simpress/errors"
 require "simpress/json"
 require "simpress/paginator"
 require "simpress/theme"
@@ -11,9 +12,6 @@ module Simpress
   module Generator
     module Renderer
       class Base
-        class UnknownModeError < StandardError; end
-        class BlockRequiredError < StandardError; end
-
         class << self
           def generate(...)
             case Simpress::Config.instance.mode
@@ -22,7 +20,7 @@ module Simpress
             when "json"
               generate_json(...)
             else
-              raise UnknownModeError, "Unknown mode: #{Simpress::Config.instance.mode.inspect}"
+              raise Simpress::Errors::UnknownModeError, "Unknown mode: #{Simpress::Config.instance.mode.inspect}"
             end
           end
 
@@ -37,7 +35,7 @@ module Simpress
           # simplecov:enable
 
           def each_page(posts, prefix = nil)
-            raise BlockRequiredError, "Simpress::Generator::Renderer::BaseRenderer.each_page requires a block" unless block_given?
+            raise Simpress::Errors::BlockRequiredError, "Simpress::Generator::Renderer::BaseRenderer.each_page requires a block" unless block_given?
 
             per_page  = Simpress::Config.instance.paginate || 10
             page_size = (posts.size / per_page.to_f).ceil

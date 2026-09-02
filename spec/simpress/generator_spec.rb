@@ -57,4 +57,24 @@ describe Simpress::Generator do
       expect(Simpress::Theme).to have_received(:clear).ordered
     end
   end
+
+  describe ".build_backlinks" do
+    let(:post_a) { build(:post, permalink: "/post-a.html", title: "Post A", links: ["/post-b.html", "/post-c.html"]) }
+    let(:post_b) { build(:post, permalink: "/post-b.html", title: "Post B", links: ["/post-a.html"]) }
+    let(:post_c) { build(:post, permalink: "/post-c.html", title: "Post C", links: []) }
+
+    before { described_class.send(:build_backlinks, [post_a, post_b, post_c]) }
+
+    it "sets inbound links correctly" do
+      expect(post_a.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/post-b.html", "Post B"])
+      expect(post_b.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/post-a.html", "Post A"])
+      expect(post_c.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/post-a.html", "Post A"])
+    end
+
+    it "ignores links not matching any post permalink" do
+      post = build(:post, permalink: "/post-x.html", links: ["https://example.com"])
+      described_class.send(:build_backlinks, [post])
+      expect(post.backlinks).to be_empty
+    end
+  end
 end

@@ -27,4 +27,5 @@ export type PostType = {
   next: PostLinkType | null
   prev: PostLinkType | null
   similarities?: PostLinkType[]
+  backlinks?: PostLinkType[]
 };

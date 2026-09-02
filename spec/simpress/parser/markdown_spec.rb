@@ -21,7 +21,7 @@ describe Simpress::Parser::Markdown do
 
     it "raises an error when the markdown does not have front matter" do
       txt = "No front matter here"
-      expect { described_class.parse(txt) }.to raise_error("Markdown parse failed")
+      expect { described_class.parse(txt) }.to raise_error(Simpress::Errors::ParseError, "Markdown parse failed")
     end
   end
 end

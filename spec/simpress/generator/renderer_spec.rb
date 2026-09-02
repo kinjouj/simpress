@@ -33,9 +33,11 @@ describe Simpress::Generator::Renderer do
     it "assigns next to the newer post and prev to the older post" do
       described_class.generate(posts, pages)
       newer, older = posts
-      expect(newer.prev).to eq Simpress::Post::PostLink.new(id: older.id, title: older.title, permalink: older.permalink)
+      expect(newer.prev.id).to eq older.id
+      expect(newer.prev.permalink).to eq older.permalink
       expect(newer.next).to be_nil
-      expect(older.next).to eq Simpress::Post::PostLink.new(id: newer.id, title: newer.title, permalink: newer.permalink)
+      expect(older.next.id).to eq newer.id
+      expect(older.next.permalink).to eq newer.permalink
       expect(older.prev).to be_nil
     end
 

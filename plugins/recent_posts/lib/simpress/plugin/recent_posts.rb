@@ -9,7 +9,7 @@ module Simpress
     class RecentPosts
       extend Simpress::Plugin
 
-      KEYS = [:title, :permalink].freeze
+      KEYS = [:id, :title, :permalink].freeze
 
       def self.run(posts, *_args)
         recent_posts = Array(posts).take(5)

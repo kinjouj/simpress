@@ -3,6 +3,8 @@
 require "psych"
 require "singleton"
 
+require "simpress/errors"
+
 module Simpress
   class Config
     include Singleton
@@ -14,7 +16,7 @@ module Simpress
 
     def initialize
       config      = Psych.load_file(CONFIG_FILE, symbolize_names: true, freeze: true, permitted_classes: [], aliases: false)
-      defaults    = config.fetch(:default) { raise "config.yaml is missing 'default' key" }
+      defaults    = config.fetch(:default) { raise Simpress::Errors::ConfigError, "config.yaml is missing 'default' key" }
       @mode       = defaults[:mode]
       @host       = defaults[:host]
       @logging    = defaults[:logging]

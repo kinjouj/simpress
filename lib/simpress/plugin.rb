@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
+require "zeitwerk"
+
 require "simpress/config"
 require "simpress/context"
+require "simpress/errors"
 require "simpress/logger"
-require "zeitwerk"
 
 module Simpress
   module Plugin
-    class UnknownModeError < StandardError; end
-
     def run(posts = [], pages = [])
       raise NotImplementedError
     end

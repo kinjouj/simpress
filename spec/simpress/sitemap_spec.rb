@@ -12,7 +12,7 @@ describe Simpress::Sitemap do
 
   describe ".build" do
     it "raises error when block is not given" do
-      expect { described_class.build(hostname) }.to raise_error(described_class::BlockRequiredError)
+      expect { described_class.build(hostname) }.to raise_error(Simpress::Errors::BlockRequiredError)
     end
 
     it "initializes, yields block, and writes sitemap" do

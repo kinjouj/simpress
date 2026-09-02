@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "redcarpet"
+
 require "simpress/parser/markdown/renderer"
 
 module Simpress
@@ -29,7 +30,7 @@ module Simpress
           def render(data)
             renderer.reset!
             body = super
-            [body, renderer.primary_image, renderer.toc]
+            [body, renderer]
           end
         end
 

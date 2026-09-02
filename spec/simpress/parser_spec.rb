@@ -15,7 +15,15 @@ describe Simpress::Parser do
     MD
   end
 
-  let(:render_result) { ["<p>content</p>", "cover.jpg", "<ul>toc</ul>"] }
+  let(:mock_renderer) do
+    instance_double(
+      Simpress::Parser::Markdown::Renderer,
+      primary_image: "cover.jpg",
+      toc: [],
+      links: ["/2026/01/other-post.html"]
+    )
+  end
+  let(:render_result) { ["<p>content</p>", mock_renderer] }
 
   before do
     allow(File).to receive(:read).with(file).and_return(markdown)
@@ -33,11 +41,12 @@ describe Simpress::Parser do
       expect(post.content).to eq "<p>content</p>"
       expect(post.description).to eq "This is the description."
       expect(post.cover).to eq "cover.jpg"
+      expect(post.links).to eq ["/2026/01/other-post.html"]
     end
 
     it "raises ParseError when date information is missing" do
       allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\n---\nbody")
-      expect { described_class.parse("no-date.md") }.to raise_error(Simpress::Parser::ParseError)
+      expect { described_class.parse("no-date.md") }.to raise_error(Simpress::Errors::ParseError)
     end
 
     context "when date in front matter is parsed as Time" do

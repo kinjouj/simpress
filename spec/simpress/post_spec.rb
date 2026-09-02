@@ -79,19 +79,23 @@ describe Simpress::Post do
   end
 
   describe "#set_adjacent!" do
-    let(:newer_post) { described_class.new(id: "post-456", title: "Newer Post", permalink: "/newer-post") }
-    let(:older_post) { described_class.new(id: "post-789", title: "Older Post", permalink: "/older-post") }
+    let(:newer_post) { build(:post, id: "post-456", title: "Newer Post", permalink: "/newer-post") }
+    let(:older_post) { build(:post, id: "post-789", title: "Older Post", permalink: "/older-post") }
 
     it "assigns prev from the older post summary" do
       post = described_class.new(params)
       post.set_adjacent!(newer_post, older_post)
-      expect(post.prev).to eq described_class::PostLink.new(id: "post-789", title: "Older Post", permalink: "/older-post")
+      expect(post.prev.id).to eq "post-789"
+      expect(post.prev.title).to eq "Older Post"
+      expect(post.prev.permalink).to eq "/older-post"
     end
 
     it "assigns next from the newer post summary" do
       post = described_class.new(params)
       post.set_adjacent!(newer_post, older_post)
-      expect(post.next).to eq described_class::PostLink.new(id: "post-456", title: "Newer Post", permalink: "/newer-post")
+      expect(post.next.id).to eq "post-456"
+      expect(post.next.title).to eq "Newer Post"
+      expect(post.next.permalink).to eq "/newer-post"
     end
 
     it "assigns nil prev when older_post is nil" do

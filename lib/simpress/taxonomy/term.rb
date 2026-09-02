@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "stringex"
+
 require "simpress/json"
 
 module Simpress

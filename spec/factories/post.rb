@@ -17,6 +17,7 @@ FactoryBot.define do
     index { true }
     draft { false }
     markdown { "# Test" }
+    links { [] }
 
     initialize_with { new(attributes) }
   end

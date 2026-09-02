@@ -5,7 +5,6 @@ require "simpress/generator/renderer/permalink"
 require "simpress/generator/renderer/archive/monthly"
 require "simpress/generator/renderer/archive/post_index"
 require "simpress/generator/renderer/archive/taxonomy"
-require "simpress/paginator"
 
 module Simpress
   module Generator

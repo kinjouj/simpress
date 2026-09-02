@@ -11,16 +11,41 @@ describe Simpress::Parser::Markdown::Renderer do
     it "sets default renderer options and calls reset!" do
       expect(renderer.primary_image).to be_nil
       expect(renderer.toc).to eq []
+      expect(renderer.links).to eq []
     end
   end
 
   describe "#reset!" do
-    it "clears primary_image and toc" do
+    it "clears primary_image, toc and links" do
       renderer.instance_variable_set(:@primary_image, "test.png")
-      renderer.instance_variable_set(:@toc, [{ id: "id", text: "text", children: [] }])
+      renderer.instance_variable_set(:@headings, [{ id: "id", text: "text", level: 2 }])
+      renderer.instance_variable_set(:@links, ["/some/path.html"])
       renderer.reset!
       expect(renderer.primary_image).to be_nil
       expect(renderer.toc).to be_empty
+      expect(renderer.links).to be_empty
+    end
+  end
+
+  describe "#link" do
+    it "collects internal links starting with /" do
+      renderer.link("/2026/01/post.html", nil, "post")
+      expect(renderer.links).to eq ["/2026/01/post.html"]
+    end
+
+    it "ignores external links" do
+      renderer.link("https://example.com", nil, "example")
+      expect(renderer.links).to be_empty
+    end
+
+    it "ignores nil url" do
+      renderer.link(nil, nil, "empty")
+      expect(renderer.links).to be_empty
+    end
+
+    it "returns an anchor tag" do
+      result = renderer.link("/2026/01/post.html", nil, "post")
+      expect(result).to eq '<a href="/2026/01/post.html" target="_blank" rel="noopener">post</a>'
     end
   end
 

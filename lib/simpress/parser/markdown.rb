@@ -2,6 +2,8 @@
 
 require "psych"
 
+require "simpress/errors"
+
 module Simpress
   module Parser
     module Markdown
@@ -10,7 +12,7 @@ module Simpress
 
       def self.parse(txt)
         match = txt.match(FRONT_MATTER_MARKDOWN_REGEX)
-        raise "Markdown parse failed" unless match
+        raise Simpress::Errors::ParseError, "Markdown parse failed" unless match
 
         header = Psych.load(match[:header], symbolize_names: true, permitted_classes: PERMITTED_CLASSES, aliases: false)
         body   = match.post_match

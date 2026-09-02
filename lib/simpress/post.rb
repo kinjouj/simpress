@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "forwardable"
 require "simpress/json"
 require "simpress/taxonomy"
 
@@ -7,11 +8,27 @@ module Simpress
   class Post
     include Simpress::JSON::Serializable
 
-    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next].freeze
-    PostLink = Data.define(:id, :title, :permalink)
+    PERMITTED_JSON_KEYS = [
+      :id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next, :backlinks
+    ].freeze
 
-    attr_reader :id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next,
-                :layout, :index, :draft, :markdown
+    attr_reader :id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next, :layout, :index, :draft, :markdown, :links, :params
+    attr_accessor :backlinks
+
+    class PostLink
+      include Simpress::JSON::Serializable
+      extend Forwardable
+
+      def_delegators :@post, :id, :title, :permalink
+
+      def initialize(post)
+        @post = post
+      end
+
+      def to_h(_options = {})
+        { id: id, title: title, permalink: permalink }
+      end
+    end
 
     def initialize(params)
       @id          = params[:id]
@@ -28,7 +45,9 @@ module Simpress
       @index       = params[:index]
       @draft       = params[:draft]
       @markdown    = params[:markdown]
-      @taxonomies  = build_taxonomies(params)
+      @links       = params[:links] || []
+      @taxonomies  = Simpress::Taxonomy.taxonomies.to_h {|t| [t.name, Array(params[t.name.to_sym]).map {|name| t.term(name) }] }
+      @params      = params
     end
 
     def register_taxonomies!
@@ -44,7 +63,7 @@ module Simpress
 
     def to_h(options = {})
       keys = options[:keys]
-      (keys ? PERMITTED_JSON_KEYS & keys : PERMITTED_JSON_KEYS).to_h {|key| [key, instance_variable_get("@#{key}")] }
+      (keys ? PERMITTED_JSON_KEYS & keys : PERMITTED_JSON_KEYS).to_h {|key| [key, public_send(key)] }
     end
 
     private
@@ -52,14 +71,7 @@ module Simpress
     def summarize(post)
       return nil if post.nil?
 
-      PostLink.new(id: post.id, title: post.title, permalink: post.permalink)
-    end
-
-    def build_taxonomies(params)
-      Simpress::Taxonomy.taxonomies.to_h do |taxonomy|
-        terms = Array(params[taxonomy.name.to_sym]).map {|name| taxonomy.term(name) }
-        [taxonomy.name, terms]
-      end
+      PostLink.new(post)
     end
   end
 end

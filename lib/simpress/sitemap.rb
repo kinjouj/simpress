@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require "ox"
+
+require "simpress/errors"
 require "simpress/logger"
 require "simpress/writer"
 
 module Simpress
   class Sitemap
-    class BlockRequiredError < StandardError; end
-
     def self.build(hostname, &)
-      raise BlockRequiredError, "Simpress::Sitemap.build requires a block" unless block_given?
+      raise Simpress::Errors::BlockRequiredError, "Simpress::Sitemap.build requires a block" unless block_given?
 
       sitemap = new(hostname, &)
       sitemap.write

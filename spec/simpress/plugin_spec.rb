@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "tmpdir"
+
 require "simpress/plugin"
 
 describe Simpress::Plugin do

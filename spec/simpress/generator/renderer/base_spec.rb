@@ -26,7 +26,7 @@ describe Simpress::Generator::Renderer::Base do
 
     it "raises error for unknown mode" do
       allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
-      expect { described_class.generate }.to raise_error(described_class::UnknownModeError, "Unknown mode: \"unknown\"")
+      expect { described_class.generate }.to raise_error(Simpress::Errors::UnknownModeError, "Unknown mode: \"unknown\"")
     end
   end
 
@@ -36,7 +36,7 @@ describe Simpress::Generator::Renderer::Base do
     end
 
     it "raises error if block is not given" do
-      expect { described_class.each_page([]) }.to raise_error(described_class::BlockRequiredError)
+      expect { described_class.each_page([]) }.to raise_error(Simpress::Errors::BlockRequiredError)
     end
 
     it "slices posts and yields paginator" do

@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 gem "benchmark", "~> 0.5"
 gem "erubi", "~> 1.13"
+gem "msgpack", "~> 1.7"
 gem "natto", "~> 1.2"
 gem "oj", "~> 3.17"
 gem "ox", "~> 2.14"
