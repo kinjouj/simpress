@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "simpress/post"
 require "simpress/taxonomy"
 
 describe Simpress::Taxonomy do
@@ -30,6 +31,38 @@ describe Simpress::Taxonomy do
     it "includes default and yaml-defined taxonomies" do
       names = described_class.taxonomies.map(&:name)
       expect(names).to include("categories", "tags")
+    end
+  end
+
+  describe ".resolve" do
+    it "resolves terms for each taxonomy present in params" do
+      params = { categories: ["Ruby"], tags: ["oss", "gem"] }
+      result = described_class.resolve(params)
+
+      expect(result.keys).to match_array(described_class.taxonomies.map(&:name))
+      expect(result["categories"].map(&:name)).to eq ["Ruby"]
+      expect(result["tags"].map(&:name)).to eq ["oss", "gem"]
+    end
+
+    it "returns an empty array for taxonomies missing from params" do
+      params = { categories: ["Ruby"] }
+      result = described_class.resolve(params)
+
+      expect(result["tags"]).to eq []
+    end
+
+    it "returns empty arrays for all taxonomies when params has none" do
+      result = described_class.resolve({})
+
+      expect(result.values).to all(eq [])
+    end
+  end
+
+  describe ".register" do
+    it "registers the post to each term in the given taxonomies" do
+      post = build(:post, categories: ["Ruby"])
+      described_class.register(post.taxonomies, post)
+      expect(post.taxonomies["categories"].first.posts).to include(post)
     end
   end
 

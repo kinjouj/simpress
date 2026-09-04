@@ -5,14 +5,14 @@ require "simpress/generator/renderer/permalink"
 require "simpress/generator/renderer/archive/monthly"
 require "simpress/generator/renderer/archive/post_index"
 require "simpress/generator/renderer/archive/taxonomy"
+require "simpress/paginator"
 
 module Simpress
   module Generator
     module Renderer
       def self.generate(posts, pages)
         monthly_archives = Hash.new {|h, k| h[k] = [] }
-        [nil, *posts, nil].each_cons(3) do |newer_post, post, older_post|
-          post.set_adjacent!(newer_post, older_post)
+        posts.each do |post|
           Simpress::Generator::Renderer::Permalink.generate(post)
           monthly_archives[Time.new(post.date.year, post.date.month)] << post
         end

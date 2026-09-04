@@ -41,7 +41,7 @@ describe Simpress::Parser do
       expect(post.content).to eq "<p>content</p>"
       expect(post.description).to eq "This is the description."
       expect(post.cover).to eq "cover.jpg"
-      expect(post.links).to eq ["/2026/01/other-post.html"]
+      expect(post.params[:links]).to eq ["/2026/01/other-post.html"]
     end
 
     it "raises ParseError when date information is missing" do

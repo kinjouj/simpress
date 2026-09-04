@@ -18,7 +18,7 @@ module Simpress
       def self.run(posts, *_args)
         indexer = Indexer.new(posts)
         indexer.each_similarity do |scores, i|
-          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Post::PostLink.new(posts[index]) }
+          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Post::Link.new(posts[index]) }
           posts[i] = PostWithSimilarities.new(posts[i], similarities)
         end
 
@@ -40,8 +40,8 @@ module Simpress
           @accumulator    = Array.new(@size, 0.0)
           @touched        = Array.new(@size)
           @keywords       = {}
-          @backlink_pairs = []
           permalink_index = posts.each_with_index.to_h {|post, i| [post.permalink, i] }
+          @backlink_pairs = []
           doc_lens        = []
           @vectors = posts.map do |post|
             @backlink_pairs << (post.backlinks || []).filter_map {|entry| permalink_index[entry.permalink] }
@@ -124,7 +124,7 @@ module Simpress
               touched_count += 1
             end
 
-            @accumulator[j] *= LINK_WEIGHT
+            @accumulator[j] += LINK_WEIGHT
           end
 
           result = Array.new(touched_count)

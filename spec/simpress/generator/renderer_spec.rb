@@ -30,17 +30,6 @@ describe Simpress::Generator::Renderer do
       expect(Simpress::Generator::Renderer::Permalink).to have_received(:generate).with(post2)
     end
 
-    it "assigns next to the newer post and prev to the older post" do
-      described_class.generate(posts, pages)
-      newer, older = posts
-      expect(newer.prev.id).to eq older.id
-      expect(newer.prev.permalink).to eq older.permalink
-      expect(newer.next).to be_nil
-      expect(older.next.id).to eq newer.id
-      expect(older.next.permalink).to eq newer.permalink
-      expect(older.prev).to be_nil
-    end
-
     it "calls Monthly.generate with grouped posts by month" do
       described_class.generate(posts, pages)
       expected_archives = { Time.new(2026, 1, 1) => [post1, post2] }

@@ -58,12 +58,12 @@ describe Simpress::Generator do
     end
   end
 
-  describe ".build_backlinks" do
+  describe ".build_post_relations!" do
     let(:post_a) { build(:post, permalink: "/post-a.html", title: "Post A", links: ["/post-b.html", "/post-c.html"]) }
     let(:post_b) { build(:post, permalink: "/post-b.html", title: "Post B", links: ["/post-a.html"]) }
     let(:post_c) { build(:post, permalink: "/post-c.html", title: "Post C", links: []) }
 
-    before { described_class.send(:build_backlinks, [post_a, post_b, post_c]) }
+    before { described_class.send(:build_post_relations!, [post_a, post_b, post_c]) }
 
     it "sets inbound links correctly" do
       expect(post_a.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/post-b.html", "Post B"])
@@ -73,8 +73,23 @@ describe Simpress::Generator do
 
     it "ignores links not matching any post permalink" do
       post = build(:post, permalink: "/post-x.html", links: ["https://example.com"])
-      described_class.send(:build_backlinks, [post])
+      described_class.send(:build_post_relations!, [post])
       expect(post.backlinks).to be_empty
+    end
+
+    it "assigns next to the newer post and prev to the older post" do
+      expect(post_a.prev.permalink).to eq "/post-b.html"
+      expect(post_a.next).to be_nil
+      expect(post_b.prev.permalink).to eq "/post-c.html"
+      expect(post_b.next.permalink).to eq "/post-a.html"
+      expect(post_c.prev).to be_nil
+      expect(post_c.next.permalink).to eq "/post-b.html"
+    end
+
+    it "freezes each post" do
+      expect(post_a).to be_frozen
+      expect(post_b).to be_frozen
+      expect(post_c).to be_frozen
     end
   end
 end

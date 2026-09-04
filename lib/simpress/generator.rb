@@ -28,18 +28,25 @@ module Simpress
       private
 
       def process_and_generate(posts, pages)
-        build_backlinks(posts)
+        build_post_relations!(posts)
         Simpress::Plugin.process(posts, pages)
         Simpress::Generator::Renderer.generate(posts, pages)
         Simpress::Theme.clear
       end
 
-      def build_backlinks(posts)
+      def build_post_relations!(posts)
         link_index = posts.to_h {|p| [p.permalink, p] }
         inbound = {}
-        posts.each do |post|
-          post.links.select {|link| link_index.key?(link) }.each {|link| (inbound[link] ||= []) << Simpress::Post::PostLink.new(post) }
+
+        [nil, *posts, nil].each_cons(3) do |newer_post, post, older_post|
+          post.prev = Simpress::Post::Link.build(older_post)
+          post.next = Simpress::Post::Link.build(newer_post)
+
+          (post.params[:links] || []).select {|url| link_index.key?(url) }.each do |permalink|
+            (inbound[permalink] ||= []) << Simpress::Post::Link.new(post)
+          end
           post.backlinks = (inbound[post.permalink] ||= [])
+          post.freeze
         end
       end
     end

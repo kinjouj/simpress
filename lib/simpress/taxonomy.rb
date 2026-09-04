@@ -22,6 +22,14 @@ module Simpress
       @taxonomies ||= DEFAULT_TAXONOMIES.union(Simpress::Config.instance.taxonomies["types"] || []).map {|name| fetch(name) }
     end
 
+    def self.resolve(params)
+      taxonomies.to_h {|taxonomy| [taxonomy.name, Array(params[taxonomy.name.to_sym]).map {|name| taxonomy.term(name) }] }
+    end
+
+    def self.register(taxonomies, post)
+      taxonomies.each_value {|terms| terms.each {|term| term.posts << post } }
+    end
+
     def self.slug_for(taxonomy_name, term_name)
       Simpress::Config.instance.taxonomies.dig("aliases", taxonomy_name, term_name)
     end

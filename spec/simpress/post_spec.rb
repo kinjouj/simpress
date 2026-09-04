@@ -78,36 +78,17 @@ describe Simpress::Post do
     end
   end
 
-  describe "#set_adjacent!" do
-    let(:newer_post) { build(:post, id: "post-456", title: "Newer Post", permalink: "/newer-post") }
-    let(:older_post) { build(:post, id: "post-789", title: "Older Post", permalink: "/older-post") }
-
-    it "assigns prev from the older post summary" do
+  describe "#prev and #next" do
+    it "is nil by default and can be assigned" do
       post = described_class.new(params)
-      post.set_adjacent!(newer_post, older_post)
-      expect(post.prev.id).to eq "post-789"
-      expect(post.prev.title).to eq "Older Post"
-      expect(post.prev.permalink).to eq "/older-post"
-    end
-
-    it "assigns next from the newer post summary" do
-      post = described_class.new(params)
-      post.set_adjacent!(newer_post, older_post)
-      expect(post.next.id).to eq "post-456"
-      expect(post.next.title).to eq "Newer Post"
-      expect(post.next.permalink).to eq "/newer-post"
-    end
-
-    it "assigns nil prev when older_post is nil" do
-      post = described_class.new(params)
-      post.set_adjacent!(newer_post, nil)
       expect(post.prev).to be_nil
-    end
-
-    it "assigns nil next when newer_post is nil" do
-      post = described_class.new(params)
-      post.set_adjacent!(nil, older_post)
       expect(post.next).to be_nil
+
+      link = Simpress::Post::Link.new(post)
+      post.prev = link
+      post.next = link
+      expect(post.prev).to eq link
+      expect(post.next).to eq link
     end
   end
 
@@ -129,7 +110,8 @@ describe Simpress::Post do
       newer_post = described_class.new(id: "post-456", title: "Newer Post", permalink: "/newer-post")
       older_post = described_class.new(id: "post-789", title: "Older Post", permalink: "/older-post")
       post = described_class.new(params)
-      post.set_adjacent!(newer_post, older_post)
+      post.prev = Simpress::Post::Link.new(older_post)
+      post.next = Simpress::Post::Link.new(newer_post)
       result = post.to_h
       expect(result[:prev]).to eq post.prev
       expect(result[:next]).to eq post.next
