@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/permalink"
+require "simpress/generator/pipeline/permalink"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::Permalink do
+describe Simpress::Generator::Pipeline::Permalink do
   let(:post) { build(:post, title: "My Post", permalink: "my-post", layout: "page", date: Time.new(2026, 1, 1)) }
 
   before do

@@ -3,7 +3,7 @@
 require "simpress/config"
 require "simpress/logger"
 require "simpress/json"
-require "simpress/uri"
+require "simpress/path"
 
 module Simpress
   module Theme
@@ -32,7 +32,7 @@ module Simpress
         end
 
         def uri(path)
-          Simpress::Uri.wrap(path).with_ext("html")
+          Simpress::Path.wrap(path).with_ext("html")
         end
 
         def flatten_toc(toc)

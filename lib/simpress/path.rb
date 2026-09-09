@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Simpress
-  class Uri
+  class Path
     def self.wrap(path)
       return path if path.is_a?(self)
 

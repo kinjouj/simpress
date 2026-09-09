@@ -9,7 +9,7 @@ require "simpress/parser/markdown"
 require "simpress/parser/markdown/processor"
 require "simpress/post"
 require "simpress/taxonomy"
-require "simpress/uri"
+require "simpress/path"
 
 module Simpress
   module Parser
@@ -76,7 +76,7 @@ module Simpress
 
       def parse_permalink
         date = @params[:date]
-        Simpress::Uri.new.path(date.year, date.month.to_s.rjust(2, "0"), @basename).build
+        Simpress::Path.new.path(date.year, date.month.to_s.rjust(2, "0"), @basename).build
       end
     end
   end

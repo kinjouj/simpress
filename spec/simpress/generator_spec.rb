@@ -18,7 +18,7 @@ describe Simpress::Generator do
     allow(Simpress::Parser).to receive(:parse).with("post2.markdown").and_return(post2)
     allow(Simpress::Parser).to receive(:parse).with("page.markdown").and_return(page)
     allow(Simpress::Plugin).to receive(:process)
-    allow(Simpress::Generator::Renderer).to receive(:generate)
+    allow(Simpress::Generator::Pipeline).to receive(:generate)
     allow(Simpress::Theme).to receive(:clear)
   end
 
@@ -53,7 +53,7 @@ describe Simpress::Generator do
     it "executes the generation pipeline in the correct order" do
       described_class.generate
       expect(Simpress::Plugin).to have_received(:process).ordered
-      expect(Simpress::Generator::Renderer).to have_received(:generate).ordered
+      expect(Simpress::Generator::Pipeline).to have_received(:generate).ordered
       expect(Simpress::Theme).to have_received(:clear).ordered
     end
   end

@@ -2,7 +2,6 @@
 
 require "cgi"
 require "redcarpet"
-
 require "simpress/parser/markdown/enhancer"
 
 module Simpress

@@ -3,7 +3,6 @@
 require "forwardable"
 require "logger"
 require "singleton"
-
 require "simpress/config"
 
 module Simpress

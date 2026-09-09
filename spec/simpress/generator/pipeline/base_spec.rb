@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/base"
+require "simpress/generator/pipeline/base"
 
-describe Simpress::Generator::Renderer::Base do
+describe Simpress::Generator::Pipeline::Base do
   before do
     allow(Simpress::Config.instance).to receive(:mode).and_return("html")
     allow(Simpress::Writer).to receive(:write)
@@ -52,10 +52,10 @@ describe Simpress::Generator::Renderer::Base do
     end
   end
 
-  describe ".uri" do
-    it "returns a Simpress::Uri object" do
-      result = described_class.uri("test")
-      expect(result).to be_a(Simpress::Uri)
+  describe ".path" do
+    it "returns a Simpress::Path object" do
+      result = described_class.path("test")
+      expect(result).to be_a(Simpress::Path)
       expect(result.to_s).to eq "test"
     end
   end

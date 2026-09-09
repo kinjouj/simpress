@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/base"
+require "simpress/generator/pipeline/base"
 require "simpress/logger"
 
 module Simpress
   module Generator
-    module Renderer
+    module Pipeline
       module Archive
-        class Taxonomy < Simpress::Generator::Renderer::Base
+        class Taxonomy < Simpress::Generator::Pipeline::Base
           DATA_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :cover, :description].freeze
 
           def self.generate_html(taxonomies)
@@ -16,9 +16,8 @@ module Simpress
                 prefix = "/archives/#{taxonomy.name}/#{term.key}"
                 term.posts.sort_by! {|a| -a.date.to_i }
                 each_page(term.posts, prefix) do |posts, paginator|
-                  path = paginator.current_page
-                  write_html(path, template: "index", key: term.name, posts: posts, paginator: paginator) do |file_path|
-                    Simpress::Logger.verbose("[BUILD CATEGORY]: #{file_path}")
+                  write_html(paginator.current_page, template: "index", key: term.name, posts: posts, paginator: paginator) do |file|
+                    Simpress::Logger.verbose("[BUILD CATEGORY]: #{file}")
                   end
                 end
               end
@@ -27,18 +26,18 @@ module Simpress
 
           def self.generate_json(taxonomies)
             taxonomies.each do |taxonomy|
-              base_path = uri("/archives/#{taxonomy.name}")
+              base_path = path("/archives/#{taxonomy.name}")
               taxonomy.terms.each_value do |term|
                 term.posts.sort_by! {|a| -a.date.to_i }
                 page_size = each_page(term.posts) do |posts, paginator|
-                  path = base_path.path(term.key, paginator.page)
-                  write_json(path, posts, keys: DATA_JSON_KEYS) do |file_path|
-                    Simpress::Logger.verbose("[BUILD CATEGORY]: #{file_path}")
+                  dest = base_path.path(term.key, paginator.page)
+                  write_json(dest, posts, keys: DATA_JSON_KEYS) do |file|
+                    Simpress::Logger.verbose("[BUILD CATEGORY]: #{file}")
                   end
                 end
 
-                write_json(base_path.path(term.key, "meta.json"), { total_pages: page_size }) do |file_path|
-                  Simpress::Logger.verbose("[BUILD CATEGORY]: #{file_path}")
+                write_json(base_path.path(term.key, "meta.json"), { total_pages: page_size }) do |file|
+                  Simpress::Logger.verbose("[BUILD CATEGORY]: #{file}")
                 end
               end
             end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/page"
+require "simpress/generator/pipeline/page"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::Page do
+describe Simpress::Generator::Pipeline::Page do
   let(:page)  { build(:post, title: "About", permalink: "about", layout: "page", index: false) }
   let(:pages) { [page] }
 

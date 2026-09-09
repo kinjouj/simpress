@@ -4,13 +4,13 @@ require "simpress/config"
 require "simpress/errors"
 require "simpress/json"
 require "simpress/paginator"
+require "simpress/path"
 require "simpress/theme"
-require "simpress/uri"
 require "simpress/writer"
 
 module Simpress
   module Generator
-    module Renderer
+    module Pipeline
       class Base
         class << self
           def generate(...)
@@ -35,7 +35,7 @@ module Simpress
           # simplecov:enable
 
           def each_page(posts, prefix = nil)
-            raise Simpress::Errors::BlockRequiredError, "Simpress::Generator::Renderer::BaseRenderer.each_page requires a block" unless block_given?
+            raise Simpress::Errors::BlockRequiredError, "Simpress::Generator::Pipeline::BaseRenderer.each_page requires a block" unless block_given?
 
             per_page  = Simpress::Config.instance.paginate || 10
             page_size = (posts.size / per_page.to_f).ceil
@@ -47,22 +47,22 @@ module Simpress
             page_size
           end
 
-          def uri(path)
-            Simpress::Uri.wrap(path)
+          def path(dest)
+            Simpress::Path.wrap(dest)
           end
 
-          def write_html(path, template:, **context, &)
+          def write_html(dest, template:, **context, &)
             content = Simpress::Theme.render(template, **context)
-            write(path, content, "html", &)
+            write(dest, content, "html", &)
           end
 
-          def write_json(path, data, **, &)
+          def write_json(dest, data, **, &)
             content = Simpress::JSON.dump(data, **)
-            write(path, content, "json", &)
+            write(dest, content, "json", &)
           end
 
-          def write(path, data, ext, &)
-            file_path = uri(path).with_ext(ext).build
+          def write(dest, data, ext, &)
+            file_path = path(dest).with_ext(ext).build
             Simpress::Writer.write(file_path, data, &)
           end
         end

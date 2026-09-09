@@ -10,11 +10,11 @@ module Simpress
 
     PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next, :backlinks].freeze
 
-    attr_reader :id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover,
-                :layout, :index, :draft, :markdown, :params
+    attr_reader :id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :layout, :index, :draft, :markdown, :params
     attr_accessor :prev, :next, :backlinks
 
     def initialize(params)
+      @params      = params
       @id          = params[:id]
       @title       = params[:title]
       @date        = params[:date]
@@ -23,14 +23,11 @@ module Simpress
       @description = params[:description]
       @toc         = params[:toc]
       @cover       = params[:cover]
-      @prev        = nil
-      @next        = nil
       @layout      = params[:layout]
       @index       = params[:index]
       @draft       = params[:draft]
       @markdown    = params[:markdown]
       @taxonomies  = Simpress::Taxonomy.resolve(params)
-      @params      = params
     end
 
     def register_taxonomies!

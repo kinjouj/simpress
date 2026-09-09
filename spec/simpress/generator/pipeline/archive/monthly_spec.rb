@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/archive/monthly"
+require "simpress/generator/pipeline/archive/monthly"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::Archive::Monthly do
+describe Simpress::Generator::Pipeline::Archive::Monthly do
   let(:date)  { Time.new(2026, 1, 1) }
   let(:post)  { build(:post) }
   let(:monthly_archives) { { date => [post] } }

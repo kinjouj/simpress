@@ -2,7 +2,6 @@
 
 require "psych"
 require "singleton"
-
 require "simpress/errors"
 
 module Simpress

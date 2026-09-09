@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/archive/taxonomy"
+require "simpress/generator/pipeline/archive/taxonomy"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::Archive::Taxonomy do
+describe Simpress::Generator::Pipeline::Archive::Taxonomy do
   let!(:post)       { build(:post, categories: ["Ruby"]).tap(&:register_taxonomies!) }
   let!(:taxonomies) { Simpress::Taxonomy.taxonomies }
 

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "simpress/generator/renderer/archive/post_index"
+require "simpress/generator/pipeline/archive/post_index"
 require "simpress/post"
 
-describe Simpress::Generator::Renderer::Archive::PostIndex do
+describe Simpress::Generator::Pipeline::Archive::PostIndex do
   let(:post)  { build(:post) }
   let(:posts) { [post] }
 

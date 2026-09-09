@@ -57,7 +57,7 @@ module Simpress
             end
 
             vector.select! {|_, v| v >= 2 }
-            @keywords[post.id] = keywords
+            # @keywords[post.id] = keywords
             doc_lens << vector.each_value.sum.to_f
             vector
           end
