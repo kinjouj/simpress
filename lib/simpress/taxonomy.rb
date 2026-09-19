@@ -35,7 +35,7 @@ module Simpress
     end
 
     def initialize(name)
-      @name  = name
+      @name = name
       @terms = {}
     end
 

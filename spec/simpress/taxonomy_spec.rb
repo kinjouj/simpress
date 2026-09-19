@@ -7,10 +7,7 @@ describe Simpress::Taxonomy do
   before do
     described_class.clear
     allow(Simpress::Config.instance).to receive(:taxonomies).and_return(
-      {
-        "types" => ["tags"],
-        "aliases" => { "categories" => { "Ruby" => "ruby" } }
-      }
+      { "types" => ["tags"], "aliases" => { "categories" => { "Ruby" => "ruby" } } }
     )
   end
 

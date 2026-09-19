@@ -22,6 +22,31 @@ describe Simpress::Generator do
     allow(Simpress::Theme).to receive(:clear)
   end
 
+  after { described_class.clear }
+
+  describe ".clear" do
+    it "resets link_index to nil" do
+      described_class.send(:build_post_relations!, [build(:post)])
+      expect(described_class.link_index).not_to be_nil
+      described_class.clear
+      expect(described_class.link_index).to be_nil
+    end
+  end
+
+  describe ".each_file" do
+    it "raises when called without a block" do
+      expect { described_class.each_file }.to raise_error(ArgumentError)
+    end
+
+    it "yields each markdown file path found under source_dir" do
+      allow(Dir).to receive(:glob).and_yield("post1.markdown").and_yield("post2.markdown")
+      yielded = []
+      described_class.each_file {|file| yielded << file }
+      expect(Dir).to have_received(:glob).with("source/**/*.markdown")
+      expect(yielded).to eq ["post1.markdown", "post2.markdown"]
+    end
+  end
+
   describe ".generate" do
     it "globs markdown files under source_dir" do
       described_class.generate
@@ -50,6 +75,12 @@ describe Simpress::Generator do
       end
     end
 
+    it "loads pages as well as posts, since pages are not covered by build_post_relations!" do
+      allow(page).to receive(:load!).and_call_original
+      described_class.generate
+      expect(page).to have_received(:load!)
+    end
+
     it "executes the generation pipeline in the correct order" do
       described_class.generate
       expect(Simpress::Plugin).to have_received(:process).ordered
@@ -59,9 +90,9 @@ describe Simpress::Generator do
   end
 
   describe ".build_post_relations!" do
-    let(:post_a) { build(:post, permalink: "/post-a.html", title: "Post A", links: ["/post-b.html", "/post-c.html"]) }
-    let(:post_b) { build(:post, permalink: "/post-b.html", title: "Post B", links: ["/post-a.html"]) }
-    let(:post_c) { build(:post, permalink: "/post-c.html", title: "Post C", links: []) }
+    let(:post_a) { build(:post, permalink: "/post-a.html", title: "Post A", markdown: "[b](/post-b.html) [c](/post-c.html)") }
+    let(:post_b) { build(:post, permalink: "/post-b.html", title: "Post B", markdown: "[a](/post-a.html)") }
+    let(:post_c) { build(:post, permalink: "/post-c.html", title: "Post C", markdown: "no links here") }
 
     before { described_class.send(:build_post_relations!, [post_a, post_b, post_c]) }
 
@@ -72,7 +103,7 @@ describe Simpress::Generator do
     end
 
     it "ignores links not matching any post permalink" do
-      post = build(:post, permalink: "/post-x.html", links: ["https://example.com"])
+      post = build(:post, permalink: "/post-x.html", markdown: "[external](https://example.com)")
       described_class.send(:build_post_relations!, [post])
       expect(post.backlinks).to be_empty
     end

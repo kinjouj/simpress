@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-require "simpress/errors"
-
 module Simpress
   class Paginator
-    PREFIX_DEFAULT = "/archives/page"
+    DEFAULT_PREFIX = "/archives/page"
 
     attr_reader :page, :maxpage, :prefix
 
     def initialize(page:, maxpage:, prefix: nil)
       raise ArgumentError, "page=#{page} is out of range (maxpage=#{maxpage})" if page <= 0 || (maxpage - page + 1) <= 0
 
-      @page    = page
+      @page = page
       @maxpage = maxpage
-      @prefix  = prefix || PREFIX_DEFAULT
+      @prefix = prefix || DEFAULT_PREFIX
     end
 
     def previous_page_exist?
@@ -25,13 +23,13 @@ module Simpress
     end
 
     def previous_page
-      raise Simpress::Errors::PageNotFoundError, "Not Found previous page" unless previous_page_exist?
+      raise "Not Found previous page" unless previous_page_exist?
 
       @page - 1 > 1 ? page_path(@page - 1) : File.dirname(page_path(1))
     end
 
     def next_page
-      raise Simpress::Errors::PageNotFoundError, "Not Found next page" unless next_page_exist?
+      raise "Not Found next page" unless next_page_exist?
 
       page_path(@page + 1)
     end
@@ -43,7 +41,7 @@ module Simpress
     private
 
     def page_path(page)
-      return @prefix == PREFIX_DEFAULT ? "/index.html" : "#{@prefix}/index.html" if page == 1
+      return @prefix == DEFAULT_PREFIX ? "/index.html" : "#{@prefix}/index.html" if page == 1
 
       "#{@prefix}/#{page}.html"
     end

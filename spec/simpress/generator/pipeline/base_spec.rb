@@ -26,7 +26,7 @@ describe Simpress::Generator::Pipeline::Base do
 
     it "raises error for unknown mode" do
       allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
-      expect { described_class.generate }.to raise_error(Simpress::Errors::UnknownModeError, "Unknown mode: \"unknown\"")
+      expect { described_class.generate }.to raise_error("Unknown mode: unknown")
     end
   end
 
@@ -36,7 +36,7 @@ describe Simpress::Generator::Pipeline::Base do
     end
 
     it "raises error if block is not given" do
-      expect { described_class.each_page([]) }.to raise_error(Simpress::Errors::BlockRequiredError)
+      expect { described_class.each_page([]) }.to raise_error("block is required")
     end
 
     it "slices posts and yields paginator" do
@@ -44,11 +44,6 @@ describe Simpress::Generator::Pipeline::Base do
         [[1, 2], have_attributes(page: 1)],
         [[3], have_attributes(page: 2)]
       )
-    end
-
-    it "returns the total page size" do
-      result = described_class.each_page(Array.new(11)) {} # rubocop:disable Lint/EmptyBlock
-      expect(result).to eq 6
     end
   end
 

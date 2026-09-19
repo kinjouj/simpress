@@ -2,14 +2,13 @@
 
 require "fileutils"
 require "simpress/config"
-require "simpress/errors"
 
 module Simpress
   module Writer
     class << self
       def write(file, data)
         filepath = File.join(Simpress::Config.output_dir, file)
-        raise Simpress::Errors::FileExistsError, "FILE EXISTS: #{filepath}" if File.exist?(filepath)
+        raise "FILE EXISTS: #{filepath}" if File.exist?(filepath)
 
         FileUtils.mkdir_p(File.dirname(filepath))
         File.write(filepath, data)

@@ -1,24 +1,17 @@
 # frozen_string_literal: true
 
-require "forwardable"
+require "delegate"
 require "simpress/json"
 
 module Simpress
   class Post
-    class Link
+    class Link < SimpleDelegator
       include Simpress::JSON::Serializable
-      extend Forwardable
-
-      def_delegators :@post, :id, :title, :permalink
 
       def self.build(post)
         return nil if post.nil?
 
         new(post)
-      end
-
-      def initialize(post)
-        @post = post
       end
 
       def to_h(_options = {})

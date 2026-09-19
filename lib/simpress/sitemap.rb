@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 require "ox"
-
-require "simpress/errors"
 require "simpress/logger"
 require "simpress/writer"
 
 module Simpress
   class Sitemap
     def self.build(hostname, &)
-      raise Simpress::Errors::BlockRequiredError, "Simpress::Sitemap.build requires a block" unless block_given?
+      raise "block is required" unless block_given?
 
       sitemap = new(hostname, &)
       sitemap.write
@@ -31,8 +29,8 @@ module Simpress
 
     def initialize(hostname, &) # rubocop:disable Layout/ClassStructure
       @hostname = hostname
-      @doc      = Ox::Document.new(version: "1.0", encoding: "UTF-8")
-      @root     = create_element("urlset", attributes: { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" })
+      @doc = Ox::Document.new(version: "1.0", encoding: "UTF-8")
+      @root = create_element("urlset", attributes: { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" })
       @doc << @root
 
       instance_eval(&)

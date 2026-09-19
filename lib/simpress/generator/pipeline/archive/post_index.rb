@@ -20,14 +20,11 @@ module Simpress
 
           def self.generate_json(posts)
             base_path = path("/archives/page")
-            page_size = each_page(posts) do |slice_posts, paginator|
-              write_json(base_path.path(paginator.page), slice_posts, keys: DATA_JSON_KEYS) do |file|
+            each_page(posts) do |slice_posts, paginator|
+              data = { posts: slice_posts.map {|post| post.to_h(keys: DATA_JSON_KEYS) }, total_pages: paginator.maxpage }
+              write_json(base_path.path(paginator.page), data) do |file|
                 Simpress::Logger.verbose("[BUILD ARCHIVE]: #{file}")
               end
-            end
-
-            write_json(base_path.path("/meta.json"), { total_pages: page_size }) do |file|
-              Simpress::Logger.verbose("[BUILD ARCHIVE]: #{file}")
             end
           end
         end

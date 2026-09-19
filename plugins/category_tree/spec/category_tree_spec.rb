@@ -65,7 +65,7 @@ describe Simpress::Plugin::CategoryTree do
 
     context "when category_indexes.json exists" do
       let(:rails_term) { Simpress::Taxonomy::Term.new("Rails", key: "rails") }
-      let(:taxonomy)   { instance_double(Simpress::Taxonomy, terms: { "ruby" => term, "rails" => rails_term }) }
+      let(:taxonomy) { instance_double(Simpress::Taxonomy, terms: { "ruby" => term, "rails" => rails_term }) }
 
       before do
         allow(Simpress::Config.instance).to receive(:mode).and_return("html")
@@ -88,16 +88,14 @@ describe Simpress::Plugin::CategoryTree do
     context "when category_indexes.json contains an orders key" do
       let(:life_term) { Simpress::Taxonomy::Term.new("Life", key: "life") }
       let(:tech_term) { Simpress::Taxonomy::Term.new("Tech", key: "tech") }
-      let(:taxonomy)  { instance_double(Simpress::Taxonomy, terms: { "life" => life_term, "tech" => tech_term }) }
+      let(:taxonomy) { instance_double(Simpress::Taxonomy, terms: { "life" => life_term, "tech" => tech_term }) }
 
       before do
         allow(Simpress::Config.instance).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("")
         allow(Simpress::Context).to receive(:update)
         allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)
-        allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return(
-          { "orders" => ["tech", "life"] }
-        )
+        allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "orders" => ["tech", "life"] })
       end
 
       it "sorts root categories according to the orders list" do

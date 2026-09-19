@@ -29,6 +29,9 @@ Layout/ClassStructure:
 Layout/EndOfLine:
   EnforcedStyle: lf
 
+Layout/ExtraSpacing:
+  AllowForAlignment: false
+
 Layout/EmptyLineAfterMagicComment:
   Enabled: false
 
@@ -38,6 +41,7 @@ Layout/LineLength:
 Layout/SpaceAroundOperators:
   Enabled: true
   EnforcedStyleForExponentOperator: space
+  AllowForAlignment: false
 
 Layout/SpaceInsideBlockBraces:
   Enabled: true

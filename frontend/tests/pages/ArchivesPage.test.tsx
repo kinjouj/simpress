@@ -28,7 +28,7 @@ describe('ArchivesPage', () => {
   });
 
   test('<ArchivesPage> test', async () => {
-    SimpressMock.getPostsByArchive.mockResolvedValue([testPostData]);
+    SimpressMock.getPostsByArchive.mockResolvedValue({ posts: [testPostData], total_pages: 1 });
     renderArchives();
 
     const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });

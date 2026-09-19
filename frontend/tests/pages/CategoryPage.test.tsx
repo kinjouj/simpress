@@ -28,8 +28,7 @@ describe('CategoryPage', () => {
   });
 
   test('<CategoryPage> test', async () => {
-    SimpressMock.getMeta.mockResolvedValue(1);
-    SimpressMock.getPostsByCategory.mockResolvedValue([testPostData]);
+    SimpressMock.getPostsByCategory.mockResolvedValue({ posts: [testPostData], total_pages: 1 });
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderCategortPostListPage();
 

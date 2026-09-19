@@ -27,32 +27,31 @@ module Simpress
 
       class Indexer
         NATTO_REGEX = /^([[:alnum:]]{3,})\t名詞,(?:固有名詞|一般)/
-        NATTO       = Natto::MeCab.new
-        K1          = 1.2
-        B           = 0.75
-        TF_SCALE    = K1 + 1.0
+        NATTO = Natto::MeCab.new
+        K1 = 1.2
+        B = 0.75
+        TF_SCALE = K1 + 1.0
         LINK_WEIGHT = 10.0
 
         attr_reader :keywords
 
         def initialize(posts)
-          @size           = posts.size
-          @accumulator    = Array.new(@size, 0.0)
-          @touched        = Array.new(@size)
-          @keywords       = {}
-          permalink_index = posts.each_with_index.to_h {|post, i| [post.permalink, i] }
+          @size = posts.size
+          @accumulator = Array.new(@size, 0.0)
+          @touched = Array.new(@size)
+          @keywords = {}
           @backlink_pairs = []
-          doc_lens        = []
+          permalink_index = posts.each_with_index.to_h {|post, i| [post.permalink, i] }
+          doc_lens = []
           @vectors = posts.map do |post|
             @backlink_pairs << (post.backlinks || []).filter_map {|entry| permalink_index[entry.permalink] }
-
             keywords = extract_keywords(post)
-            vector   = keywords.tally
+            vector = keywords.tally
             post.taxonomies.each_value do |terms|
               terms.each do |term|
                 n = term.name
                 v = vector[n] || 0
-                vector[n] = v + (Math.log2(v + 2) * 3)
+                vector[n] = v + (Math.log2(v + 2) * 5)
               end
             end
 
@@ -63,7 +62,7 @@ module Simpress
           end
 
           avgdl = doc_lens.sum / @size
-          norm  = doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / avgdl)) }
+          norm = doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / avgdl)) }
           @idf, @inverted_index = build_idf_and_inverted_index(norm)
         end
 
@@ -74,7 +73,7 @@ module Simpress
         private
 
         def build_idf_and_inverted_index(norm)
-          df    = Hash.new(0)
+          df = Hash.new(0)
           index = Hash.new {|h, k| h[k] = [] }
 
           @vectors.each_with_index do |v, i|

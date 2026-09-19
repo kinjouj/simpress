@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "simpress/config"
-require "simpress/errors"
 require "simpress/json"
 require "simpress/paginator"
 require "simpress/path"
@@ -20,7 +19,7 @@ module Simpress
             when "json"
               generate_json(...)
             else
-              raise Simpress::Errors::UnknownModeError, "Unknown mode: #{Simpress::Config.instance.mode.inspect}"
+              raise "Unknown mode: #{Simpress::Config.instance.mode.to_s}"
             end
           end
 
@@ -35,16 +34,14 @@ module Simpress
           # simplecov:enable
 
           def each_page(posts, prefix = nil)
-            raise Simpress::Errors::BlockRequiredError, "Simpress::Generator::Pipeline::BaseRenderer.each_page requires a block" unless block_given?
+            raise "block is required" unless block_given?
 
-            per_page  = Simpress::Config.instance.paginate || 10
+            per_page = Simpress::Config.instance.paginate || 10
             page_size = (posts.size / per_page.to_f).ceil
             posts.each_slice(per_page).with_index(1) do |slice_posts, page|
               paginator = Simpress::Paginator.new(page: page, maxpage: page_size, prefix: prefix)
               yield slice_posts, paginator
             end
-
-            page_size
           end
 
           def path(dest)

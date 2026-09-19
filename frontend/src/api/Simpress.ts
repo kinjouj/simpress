@@ -1,22 +1,17 @@
-import type { PostType, TaxonomyType } from '../types';
+import type { PagedPostsType, PostType, TaxonomyType } from '../types';
 
 export default class Simpress {
-  public static async getMeta(path: string): Promise<number> {
-    const meta: { total_pages: number } = await Simpress.getData<{ total_pages: number }>(`${path}/meta.json`);
-    return meta.total_pages;
+  public static getPostsByPage(page: number): Promise<PagedPostsType> {
+    return Simpress.getData<PagedPostsType>(`/archives/page/${page}.json`);
   }
 
-  public static getPostsByPage(page: number): Promise<PostType[]> {
-    return Simpress.getData<PostType[]>(`/archives/page/${page}.json`);
-  }
-
-  public static getPostsByArchive(year: number, month: number, page: number): Promise<PostType[]> {
+  public static getPostsByArchive(year: number, month: number, page: number): Promise<PagedPostsType> {
     const twoDigitMonth = month.toString().padStart(2, '0');
-    return Simpress.getData<PostType[]>(`/archives/${year}/${twoDigitMonth}/${page}.json`);
+    return Simpress.getData<PagedPostsType>(`/archives/${year}/${twoDigitMonth}/${page}.json`);
   }
 
-  public static getPostsByCategory(category: string, page: number): Promise<PostType[]> {
-    return Simpress.getData<PostType[]>(`/archives/categories/${category}/${page}.json`);
+  public static getPostsByCategory(category: string, page: number): Promise<PagedPostsType> {
+    return Simpress.getData<PagedPostsType>(`/archives/categories/${category}/${page}.json`);
   }
 
   public static getPost(permalink: string): Promise<PostType> {

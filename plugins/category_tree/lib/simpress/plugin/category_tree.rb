@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "simpress/errors"
 require "simpress/json"
 require "simpress/plugin"
 require "simpress/taxonomy"
@@ -24,7 +23,7 @@ module Simpress
         when "json"
           process_json(nested_categories)
         else
-          raise Simpress::Errors::UnknownModeError, "Unknown mode: #{config.mode}"
+          raise "Unknown mode: #{config.mode}"
         end
       end
 

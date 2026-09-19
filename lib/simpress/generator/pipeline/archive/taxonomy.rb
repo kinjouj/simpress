@@ -29,15 +29,11 @@ module Simpress
               base_path = path("/archives/#{taxonomy.name}")
               taxonomy.terms.each_value do |term|
                 term.posts.sort_by! {|a| -a.date.to_i }
-                page_size = each_page(term.posts) do |posts, paginator|
-                  dest = base_path.path(term.key, paginator.page)
-                  write_json(dest, posts, keys: DATA_JSON_KEYS) do |file|
+                each_page(term.posts) do |posts, paginator|
+                  data = { posts: posts.map {|post| post.to_h(keys: DATA_JSON_KEYS) }, total_pages: paginator.maxpage }
+                  write_json(base_path.path(term.key, paginator.page), data) do |file|
                     Simpress::Logger.verbose("[BUILD CATEGORY]: #{file}")
                   end
-                end
-
-                write_json(base_path.path(term.key, "meta.json"), { total_pages: page_size }) do |file|
-                  Simpress::Logger.verbose("[BUILD CATEGORY]: #{file}")
                 end
               end
             end

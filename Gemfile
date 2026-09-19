@@ -3,6 +3,7 @@
 source "https://rubygems.org"
 
 gem "benchmark", "~> 0.5"
+gem "dry-schema", "~> 1.14"
 gem "erubi", "~> 1.13"
 gem "msgpack", "~> 1.7"
 gem "natto", "~> 1.2"
@@ -29,5 +30,5 @@ end
 group :test do
   gem "factory_bot", "~> 6.6"
   gem "rspec", "~> 3.13"
-  gem "simplecov", "~> 1.2.0", require: false
+  gem "simplecov", "~> 1.3.0", require: false
 end

@@ -4,7 +4,6 @@ require "zeitwerk"
 
 require "simpress/config"
 require "simpress/context"
-require "simpress/errors"
 require "simpress/logger"
 
 module Simpress

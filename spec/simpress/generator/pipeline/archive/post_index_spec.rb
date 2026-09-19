@@ -4,7 +4,7 @@ require "simpress/generator/pipeline/archive/post_index"
 require "simpress/post"
 
 describe Simpress::Generator::Pipeline::Archive::PostIndex do
-  let(:post)  { build(:post) }
+  let(:post) { build(:post) }
   let(:posts) { [post] }
 
   before do
@@ -26,20 +26,16 @@ describe Simpress::Generator::Pipeline::Archive::PostIndex do
   end
 
   describe ".generate_json" do
-    let(:expected_page_json) { Simpress::JSON.dump(posts, keys: described_class::DATA_JSON_KEYS) }
-    let(:expected_meta_json) { Simpress::JSON.dump({ total_pages: 1 }) }
+    let(:expected_page_json) { Simpress::JSON.dump({ posts: [post.to_h(keys: described_class::DATA_JSON_KEYS)], total_pages: 1 }) }
 
     before do
       allow(Simpress::Writer).to receive(:write).with("/archives/page/1.json", anything).and_yield("public/archives/page/1.json")
-      allow(Simpress::Writer).to receive(:write).with("/archives/page/meta.json", anything).and_yield("public/archives/page/meta.json")
     end
 
     it "writes paginated json" do
       described_class.generate_json(posts)
       expect(Simpress::Writer).to have_received(:write).with("/archives/page/1.json", expected_page_json)
-      expect(Simpress::Writer).to have_received(:write).with("/archives/page/meta.json", expected_meta_json)
       expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/page/1.json")
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/page/meta.json")
     end
   end
 end

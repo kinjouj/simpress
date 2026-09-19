@@ -13,6 +13,8 @@ module Simpress
           autolink: true
         }.freeze
 
+        Result = Data.define(:content, :toc, :links, :cover)
+
         class << self
           def render(data)
             parser.render(data)
@@ -28,8 +30,8 @@ module Simpress
         class Markdown < ::Redcarpet::Markdown
           def render(data)
             renderer.reset!
-            body = super
-            [body, renderer]
+            content = super
+            Result.new(content: content, toc: renderer.toc, links: renderer.links, cover: renderer.primary_image)
           end
         end
 

@@ -7,14 +7,14 @@ module Simpress
   class Taxonomy
     class Term
       PERMITTED_JSON_KEYS = [:key, :name, :count, :children].freeze
-      DEFAULT_JSON_KEYS   = [:key, :name].freeze
+      DEFAULT_JSON_KEYS = [:key, :name].freeze
 
       attr_reader :key, :name, :children, :posts
 
       def initialize(name, key: nil)
-        @key      = key || name.to_url
-        @name     = name
-        @posts    = []
+        @key = key || name.to_url
+        @name = name
+        @posts = []
         @children = []
       end
 

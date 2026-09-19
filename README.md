@@ -64,28 +64,12 @@ TEST BODY
 ```
 
 
-All parameters except `title` are basically optional. However, since `date`/`permalink` may be derived from the Markdown file name, it is recommended to set them explicitly. See below for details.
-
-
-|parameter|Description|
-|:---------:|:-----------|
-|title      |The title|
-|date       |Date (DateTime). If omitted, it is derived from the file name (yyyy-mm-dd). An error occurs if it cannot be derived from the file name|
-|permalink  |The URL path|
-|cover      |Thumbnail image. If omitted, `/images/no_image.webp` is used. Can also be extracted from Markdown syntax|
-|categories |Categories. Can be specified even without array syntax|
-|tags       |Tags. Can be specified even without array syntax|
-|layout     |Specifies the template used by the post. Defaults to `"page"`|
-|index      |Flag for whether the post appears in the index. Defaults to `true`|
-|draft      |Draft flag for the post. If `true`, the post is not output. Defaults to `false`|
-|description|The meta description value. If omitted, it is generated from the content|
-
-
 ### SEE ALSO
 
 
+- [Simpress::Post Object Specification](docs/post.md)
+- [Parameters](docs/parameters.md)
 - [taxonomies.yaml](docs/taxonomies.md)
 - [Theme Variables](docs/theme.md)
 - [JSON data format](docs/json.md)
 - [Plugin](docs/plugins.md)
-- [Backlinks](docs/backlinks.md)

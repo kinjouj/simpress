@@ -16,73 +16,78 @@ describe Simpress::Plugin::Similarity do
   end
 
   let(:post1) do
-    build(:post,
-          id: "post_001",
-          title: "東京観光案内",
-          date: Time.new(2026, 1, 23, 10, 0, 0),
-          permalink: "/posts/tokyo_travel_intro",
-          categories: ["旅行"],
-          content: "## 浅草寺\n浅草寺は東京の有名寺院です。\n## 東京タワー\n東京タワーも観光名所です。",
-          description: "東京観光のおすすめスポット",
-          cover: "/images/no_image.png",
-          draft: false,
-          markdown: "## 浅草寺\n浅草寺は東京の有名寺院です。\n## 東京タワー\n東京タワーも観光名所です。")
+    build(
+      :post,
+      id: "post_001",
+      title: "東京観光案内",
+      date: Time.new(2026, 1, 23, 10, 0, 0),
+      permalink: "/posts/tokyo_travel_intro",
+      categories: ["旅行"],
+      description: "東京観光のおすすめスポット",
+      cover: "/images/no_image.png",
+      draft: false,
+      markdown: "## 浅草寺\n浅草寺は東京の有名寺院です。\n## 東京タワー\n東京タワーも観光名所です。"
+    )
   end
 
   let(:post2) do
-    build(:post,
-          id: "post_002",
-          title: "家庭料理簡単レシピ",
-          date: Time.new(2026, 1, 22, 9, 30, 0),
-          permalink: "/posts/home_cooking",
-          categories: ["料理"],
-          content: "## 材料\n鶏肉, 玉ねぎ, にんじん\n## 作り方\n1. 切る\n2. 炒める\n3. 煮る",
-          description: "家庭料理の基本レシピ",
-          cover: "/images/no_image.png",
-          draft: false,
-          markdown: "## 材料\n鶏肉, 玉ねぎ, にんじん\n## 作り方\n1. 切る\n2. 炒める\n3. 煮る")
+    build(
+      :post,
+      id: "post_002",
+      title: "家庭料理簡単レシピ",
+      date: Time.new(2026, 1, 22, 9, 30, 0),
+      permalink: "/posts/home_cooking",
+      categories: ["料理"],
+      description: "家庭料理の基本レシピ",
+      cover: "/images/no_image.png",
+      draft: false,
+      markdown: "## 材料\n鶏肉, 玉ねぎ, にんじん\n## 作り方\n1. 切る\n2. 炒める\n3. 煮る"
+    )
   end
 
   let(:post3) do
-    build(:post,
-          id: "post_003",
-          title: "東京観光ガイド",
-          date: Time.new(2026, 1, 20, 15, 0, 0),
-          permalink: "/posts/tokyo_travel_guide",
-          categories: ["旅行"],
-          content: "## 浅草寺\n浅草寺は有名な観光スポットです。\n## 上野公園\n上野公園も東京の名所です。",
-          description: "東京旅行の定番スポット紹介",
-          cover: "/images/no_image.png",
-          draft: false,
-          markdown: "## 浅草寺\n浅草寺は有名な観光スポットです。\n## 上野公園\n上野公園も東京の名所です。")
+    build(
+      :post,
+      id: "post_003",
+      title: "東京観光ガイド",
+      date: Time.new(2026, 1, 20, 15, 0, 0),
+      permalink: "/posts/tokyo_travel_guide",
+      categories: ["旅行"],
+      description: "東京旅行の定番スポット紹介",
+      cover: "/images/no_image.png",
+      draft: false,
+      markdown: "## 浅草寺\n浅草寺は有名な観光スポットです。\n## 上野公園\n上野公園も東京の名所です。"
+    )
   end
 
   let(:post4) do
-    build(:post,
-          id: "post_004",
-          title: "料理レシピ: カレー",
-          date: Time.new(2026, 1, 21, 12, 0, 0),
-          permalink: "/posts/curry_recipe",
-          categories: ["料理"],
-          content: "## 材料\n鶏肉, 玉ねぎ, ...\n## 作り方\n1. 切る\n2. 炒める\n3. 煮る",
-          description: "家庭で作れるカレー",
-          cover: "/images/no_image.png",
-          draft: false,
-          markdown: "## 材料\n鶏肉, 玉ねぎ, ...\n## 作り方\n1. 切る\n2. 炒める\n3. 煮る")
+    build(
+      :post,
+      id: "post_004",
+      title: "料理レシピ: カレー",
+      date: Time.new(2026, 1, 21, 12, 0, 0),
+      permalink: "/posts/curry_recipe",
+      categories: ["料理"],
+      description: "家庭で作れるカレー",
+      cover: "/images/no_image.png",
+      draft: false,
+      markdown: "## 材料\n鶏肉, 玉ねぎ, ...\n## 作り方\n1. 切る\n2. 炒める\n3. 煮る"
+    )
   end
 
   let(:post5) do
-    build(:post,
-          id: "post_005",
-          title: "料理レシピ: かんたんパスタ",
-          date: Time.new(2026, 1, 21, 12, 0, 0),
-          permalink: "/posts/pasta_recipe",
-          categories: ["料理"],
-          content: "## 麺を茹でる\n## 麺を冷やす\n## 麺に和風ドレッシングをかける\n## 食べる\n## 終わり",
-          description: "時短かんたんパスタ",
-          cover: "/images/no_image.png",
-          draft: false,
-          markdown: "## 麺を茹でる\n## 麺を冷やす\n## 麺に和風ドレッシングをかける\n## 食べる\n## 終わり")
+    build(
+      :post,
+      id: "post_005",
+      title: "料理レシピ: かんたんパスタ",
+      date: Time.new(2026, 1, 21, 12, 0, 0),
+      permalink: "/posts/pasta_recipe",
+      categories: ["料理"],
+      description: "時短かんたんパスタ",
+      cover: "/images/no_image.png",
+      draft: false,
+      markdown: "## 麺を茹でる\n## 麺を冷やす\n## 麺に和風ドレッシングをかける\n## 食べる\n## 終わり"
+    )
   end
 
   let(:posts) { [post1, post2, post3, post4, post5] }

@@ -4,7 +4,7 @@ require "simpress/generator/pipeline/page"
 require "simpress/post"
 
 describe Simpress::Generator::Pipeline::Page do
-  let(:page)  { build(:post, title: "About", permalink: "about", layout: "page", index: false) }
+  let(:page) { build(:post, title: "About", permalink: "about", layout: "page", index: false) }
   let(:pages) { [page] }
 
   before do

@@ -9,9 +9,9 @@ module Simpress
     end
 
     def initialize(path = "")
-      @base  = path
+      @base = path
       @parts = []
-      @ext   = nil
+      @ext = nil
     end
 
     def path(*paths)
@@ -28,8 +28,8 @@ module Simpress
       parts = [@base, *@parts]
 
       if @ext
-        last      = parts.last
-        dot_idx   = last.rindex(".")
+        last = parts.last
+        dot_idx = last.rindex(".")
         parts[-1] = dot_idx ? "#{last[0...dot_idx]}.#{@ext}" : "#{last}.#{@ext}"
       end
 

@@ -23,7 +23,7 @@ module Simpress
 
           def run(body)
             register_enhancers.each do |klass|
-              res  = klass.preprocess(body)
+              res = klass.preprocess(body)
               body = res if res.is_a?(String)
             end
 

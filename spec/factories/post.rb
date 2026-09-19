@@ -9,16 +9,14 @@ FactoryBot.define do
 
     title { "title" }
     description { "content description" }
-    content { "<p>content\n123</p>" }
-    toc { [] }
     date { Time.new(2025, 1, 1) }
     categories { [] }
     cover { "/images/no_image.webp" }
     index { true }
     draft { false }
-    markdown { "# Test" }
-    links { [] }
+    markdown { "# Test\n\ncontent\n123" }
 
     initialize_with { new(attributes) }
+    after(:build, &:load!)
   end
 end

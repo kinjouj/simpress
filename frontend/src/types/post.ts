@@ -27,5 +27,9 @@ export type PostType = {
   next: PostLinkType | null
   prev: PostLinkType | null
   similarities?: PostLinkType[]
-  backlinks?: PostLinkType[]
+};
+
+export type PagedPostsType = {
+  posts: PostType[]
+  total_pages: number
 };

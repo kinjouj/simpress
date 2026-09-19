@@ -11,15 +11,14 @@ describe('AppRoutes', () => {
       let res: Response;
 
       switch (true) {
-        case path.endsWith('meta.json'):
-          res = new Response(JSON.stringify({ total_pages: 1 }), { status: 200 });
+        case path.endsWith('/recent_posts.json'):
+          res = new Response(JSON.stringify([testPostData]), { status: 200 });
           break;
 
-        case path.endsWith('/recent_posts.json'):
         case path.endsWith('/archives/page/1.json'):
         case path.endsWith('/archives/1234/01/1.json'):
         case path.endsWith('/archives/categories/test/1.json'):
-          res = new Response(JSON.stringify([testPostData]), { status: 200 });
+          res = new Response(JSON.stringify({ posts: [testPostData], total_pages: 1 }), { status: 200 });
           break;
 
         case path.endsWith('/test.json'):

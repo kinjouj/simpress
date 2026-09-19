@@ -27,8 +27,8 @@ describe('PostListPage', () => {
     vi.restoreAllMocks();
   });
 
-  test('shows a loading indicator (not a blank screen) while page meta is being fetched', () => {
-    SimpressMock.getMeta.mockReturnValue(new Promise(() => {}));
+  test('shows a loading indicator (not a blank screen) while posts are being fetched', () => {
+    SimpressMock.getPostsByPage.mockReturnValue(new Promise(() => {}));
     const { container } = renderPostListPage();
 
     expect(screen.getByText('loading...')).toBeInTheDocument();
@@ -36,8 +36,7 @@ describe('PostListPage', () => {
   });
 
   test('<PostListPage> test', async () => {
-    SimpressMock.getMeta.mockResolvedValue(1);
-    SimpressMock.getPostsByPage.mockResolvedValue([testPostData]);
+    SimpressMock.getPostsByPage.mockResolvedValue({ posts: [testPostData], total_pages: 1 });
     SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
     renderPostListPage();
 
@@ -46,7 +45,6 @@ describe('PostListPage', () => {
   });
 
   test('Simpress.getPostsByPageがエラーを吐いた場合', async () => {
-    SimpressMock.getMeta.mockResolvedValue(1);
     SimpressMock.getPostsByPage.mockRejectedValue(new Error('ERR'));
     renderPostListPage();
 

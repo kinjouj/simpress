@@ -13,28 +13,31 @@ describe('Simpress', () => {
   test('getPostsByPage test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve([testPostData, testPostData]),
+      json: () => Promise.resolve({ posts: [testPostData, testPostData], total_pages: 1 }),
     });
-    const posts = await Simpress.getPostsByPage(1);
+    const { posts, total_pages: totalPages } = await Simpress.getPostsByPage(1);
     expect(posts).toHaveLength(2);
+    expect(totalPages).toBe(1);
   });
 
   test('getPostsByArchive test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve([testPostData]),
+      json: () => Promise.resolve({ posts: [testPostData], total_pages: 1 }),
     });
-    const posts = await Simpress.getPostsByArchive(2000, 1, 1);
+    const { posts, total_pages: totalPages } = await Simpress.getPostsByArchive(2000, 1, 1);
     expect(posts).toHaveLength(1);
+    expect(totalPages).toBe(1);
   });
 
   test('getPostsByCategory test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve([testPostData]),
+      json: () => Promise.resolve({ posts: [testPostData], total_pages: 1 }),
     });
-    const posts = await Simpress.getPostsByCategory('test', 1);
+    const { posts, total_pages: totalPages } = await Simpress.getPostsByCategory('test', 1);
     expect(posts).toHaveLength(1);
+    expect(totalPages).toBe(1);
   });
 
   test('getPost test', async () => {
@@ -48,9 +51,7 @@ describe('Simpress', () => {
   });
 
   test('getData test', async () => {
-    /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any */
-    const getData: <T>(url: string) => Promise<T> = (Simpress as any).getData.bind(Simpress);
-    /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any */
+    const getData: <T>(url: string) => Promise<T> = (Simpress as any).getData.bind(Simpress); // eslint-disable-line
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ test: true }),

@@ -4,9 +4,7 @@ require "time"
 require "xxhash"
 
 require "simpress/config"
-require "simpress/errors"
 require "simpress/parser/markdown"
-require "simpress/parser/markdown/processor"
 require "simpress/post"
 require "simpress/taxonomy"
 require "simpress/path"
@@ -16,26 +14,19 @@ module Simpress
     class << self
       def parse(file)
         params, markdown = Simpress::Parser::Markdown.parse(File.read(file))
-        content, renderer = Simpress::Parser::Markdown::Processor.render(markdown)
-        metadata = MetadataBuilder.new(file, params, markdown, content, renderer).build
+        metadata = MetadataBuilder.new(file, params, markdown).build
         Simpress::Post.new(metadata)
       end
     end
 
     class MetadataBuilder
-      DESC_REGEX    = /\A\s*(.*?)(?:\r?\n\r?\n|\z)/m
-      TIME_REGEX    = /\A(\d{4})-(\d{1,2})-(\d{1,2})/
-      DEFAULT_COVER = "/images/no_image.webp"
+      TIME_REGEX = /\A(\d{4})-(\d{1,2})-(\d{1,2})/
 
-      def initialize(file, params, markdown, content, renderer)
-        @file     = file
+      def initialize(file, params, markdown)
+        @file = file
         @basename = File.basename(file, ".*")
-        @params   = params
+        @params = params
         @markdown = markdown
-        @content  = content
-        @image    = renderer.primary_image
-        @toc      = renderer.toc
-        @links    = renderer.links
       end
 
       def build
@@ -46,18 +37,13 @@ module Simpress
       private
 
       def assign_metadata!
-        @params[:id]            = XXhash.xxh64(@file).to_s
-        @params[:date]          = parse_datetime
-        @params[:content]       = @content
-        @params[:toc]           = @toc
-        @params[:index]         = @params.fetch(:index, true)
-        @params[:draft]         = @params.fetch(:draft, false)
-        @params[:markdown]      = @markdown
-        @params[:links]         = @links
-        @params[:permalink]   ||= parse_permalink
-        @params[:layout]      ||= "page"
-        @params[:cover]       ||= @image || DEFAULT_COVER
-        @params[:description] ||= @markdown[DESC_REGEX].strip.to_s
+        @params[:id] = XXhash.xxh64(@file).to_s
+        @params[:date] = parse_datetime
+        @params[:index] = @params.fetch(:index, true)
+        @params[:draft] = @params.fetch(:draft, false)
+        @params[:markdown] = @markdown
+        @params[:layout] ||= "page"
+        @params[:permalink] ||= parse_permalink
       end
 
       def parse_datetime
@@ -65,13 +51,13 @@ module Simpress
         return date.to_time if date.respond_to?(:to_time)
 
         parsed = if date
-                   Time.parse(date.to_s)
+                   Time.parse(date.to_s) rescue nil # rubocop:disable Style/RescueModifier
                  else
                    m = TIME_REGEX.match(@basename)
                    Time.new(*m.captures) if m
                  end
 
-        parsed || raise(Simpress::Errors::ParseError, "Date missing or invalid in file #{@basename}")
+        parsed or raise "Date missing or invalid in file #{@basename}"
       end
 
       def parse_permalink
