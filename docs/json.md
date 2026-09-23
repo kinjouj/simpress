@@ -74,6 +74,3 @@
   "total_pages": 3
 }
 ```
-
-
-Output path: `/page/:permalink.json`
