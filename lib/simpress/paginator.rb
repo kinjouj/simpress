@@ -7,7 +7,7 @@ module Simpress
     attr_reader :page, :maxpage, :prefix
 
     def initialize(page:, maxpage:, prefix: nil)
-      raise ArgumentError, "page=#{page} is out of range (maxpage=#{maxpage})" if page <= 0 || (maxpage - page + 1) <= 0
+      raise "page=#{page} is out of range (maxpage=#{maxpage})" if page <= 0 || (maxpage - page + 1) <= 0
 
       @page = page
       @maxpage = maxpage

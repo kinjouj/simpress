@@ -5,10 +5,11 @@ require "zeitwerk"
 require "simpress/config"
 require "simpress/context"
 require "simpress/logger"
+require "simpress/parser/markdown/enhancer"
 
 module Simpress
   module Plugin
-    def run(posts = [], pages = [])
+    def run(posts = [])
       raise NotImplementedError
     end
 
@@ -30,37 +31,32 @@ module Simpress
       end
 
       def load
-        enabled_plugins = Simpress::Config.instance.plugins.to_set
         @loader = Zeitwerk::Loader.new
-        @loader.on_load do |cpath, value, _abspath|
-          next unless value.is_a?(Simpress::Plugin)
-
-          name = underscore(cpath.split("::").last)
-          register_plugins << value if enabled_plugins.include?(name)
+        @loader.on_load do |_cpath, value, _abspath|
+          case value
+          when Simpress::Plugin
+            Simpress::Logger.debug("REGISTER PLUGIN: #{value}")
+            register_plugins << value
+          when Simpress::Parser::Markdown::Enhancer
+            Simpress::Logger.debug("REGISTER FILTER: #{value}")
+            Simpress::Parser::Markdown::Enhancer.register_enhancers << value
+          end
         end
 
-        Dir["#{Simpress::Config.plugin_dir}/*/lib"].each {|lib_dir| @loader.push_dir(lib_dir) }
+        Simpress::Config.instance.plugins.each {|name| @loader.push_dir("#{Simpress::Config.plugin_dir}/#{name}/lib") }
         @loader.setup
         @loader.eager_load
       end
 
-      def process(posts = [], pages = [])
-        register_plugins.sort_by {|klass| -klass.priority }.each do |klass|
-          Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
-          klass.run(posts, pages)
-        end
+      def process(posts = [])
+        register_plugins.sort_by {|klass| -klass.priority }.each {|klass| klass.run(posts) }
       end
 
       def clear
-        @register_plugins&.clear
+        Simpress::Parser::Markdown::Enhancer.clear
         @loader&.unload
+        @register_plugins&.clear
         @loader = nil
-      end
-
-      private
-
-      def underscore(name)
-        name.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase
       end
     end
   end

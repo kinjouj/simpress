@@ -14,6 +14,7 @@ describe Simpress::Plugin::CategoryTree do
 
   after do
     Simpress::Taxonomy.clear
+    Simpress::Plugin.clear
   end
 
   describe ".run" do

@@ -27,7 +27,7 @@ describe Simpress::Plugin do
           class #{class_name}
             extend Simpress::Plugin
 
-            def self.run(posts, pages); end
+            def self.run(posts); end
           end
         end
       end
@@ -49,7 +49,6 @@ describe Simpress::Plugin do
       allow(Simpress::Config.instance).to receive(:plugins).and_return([])
 
       described_class.load
-
       expect(described_class.register_plugins).to be_empty
     end
 
@@ -63,6 +62,54 @@ describe Simpress::Plugin do
       names = described_class.register_plugins.map(&:name)
       expect(names).to include("Simpress::Plugin::Test3", "Simpress::Plugin::Test4")
     end
+
+    it "registers a Markdown enhancer class whose underscored name is listed in config" do
+      write_plugin_file("test5", "test5", "Test5", <<~RUBY)
+        module Simpress
+          module Plugin
+            class Test5
+              extend Simpress::Parser::Markdown::Enhancer
+
+              def self.preprocess(data); data; end
+            end
+          end
+        end
+      RUBY
+
+      allow(Simpress::Config.instance).to receive(:plugins).and_return(["test5"])
+      described_class.load
+
+      names = Simpress::Parser::Markdown::Enhancer.register_enhancers.map(&:name)
+      expect(names).to eq ["Simpress::Plugin::Test5"]
+    end
+
+    it "does not register a Markdown enhancer class that is not listed in config" do
+      write_plugin_file("test6", "test6", "Test6", <<~RUBY)
+        module Simpress
+          module Plugin
+            class Test6
+              extend Simpress::Parser::Markdown::Enhancer
+
+              def self.preprocess(data); data; end
+            end
+          end
+        end
+      RUBY
+
+      allow(Simpress::Config.instance).to receive(:plugins).and_return([])
+      described_class.load
+
+      expect(Simpress::Parser::Markdown::Enhancer.register_enhancers).to be_empty
+    end
+  end
+
+  describe ".clear" do
+    it "also clears the registered Markdown enhancers" do
+      filter_class = Class.new { extend Simpress::Parser::Markdown::Enhancer }
+      Simpress::Parser::Markdown::Enhancer.register_enhancers << filter_class
+      described_class.clear
+      expect(Simpress::Parser::Markdown::Enhancer.register_enhancers).to be_empty
+    end
   end
 
   describe ".process" do
@@ -74,7 +121,7 @@ describe Simpress::Plugin do
       test_plugin = Class.new do
         extend Simpress::Plugin
 
-        def self.run(posts, pages)
+        def self.run(posts)
           # TEST
         end
       end
@@ -82,7 +129,7 @@ describe Simpress::Plugin do
       stub_const("Simpress::Plugin::Test", test_plugin)
       described_class.register_plugins << test_plugin
       allow(Simpress::Plugin::Test).to receive(:run)
-      described_class.process([], [])
+      described_class.process([])
       expect(Simpress::Plugin::Test).to have_received(:run)
     end
 
@@ -94,7 +141,7 @@ describe Simpress::Plugin do
           10
         end
 
-        def self.run(posts, pages)
+        def self.run(posts)
           # TEST
         end
       end
@@ -106,7 +153,7 @@ describe Simpress::Plugin do
           1
         end
 
-        def self.run(posts, pages)
+        def self.run(posts)
           # TEST
         end
       end
@@ -116,7 +163,7 @@ describe Simpress::Plugin do
       described_class.register_plugins << low_plugin << high_plugin
       allow(Simpress::Plugin::High).to receive(:run)
       allow(Simpress::Plugin::Low).to receive(:run)
-      described_class.process([], [])
+      described_class.process([])
       expect(Simpress::Plugin::High).to have_received(:run).ordered
       expect(Simpress::Plugin::Low).to have_received(:run).ordered
     end

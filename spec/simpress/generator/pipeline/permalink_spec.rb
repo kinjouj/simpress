@@ -17,7 +17,7 @@ describe Simpress::Generator::Pipeline::Permalink do
       allow(File).to receive(:utime)
     end
 
-    it "writes html for the post" do
+    it "writes html and sets mtime for the post" do
       described_class.generate_html(post)
       expect(Simpress::Theme).to have_received(:render).with("page", post: post)
       expect(Simpress::Writer).to have_received(:write).with("my-post.html", "<html>content</html>")

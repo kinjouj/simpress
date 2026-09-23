@@ -1,8 +1,6 @@
 # Simpress Data Format Specification
 
-
 ## Post (`Permalink` renderer)
-
 
 ```json
 {
@@ -49,12 +47,9 @@
 }
 ```
 
-
 ## Post list
 
-
 `/archives/page/:n.json`, `/archives/:year/:month/:n.json`, `/archives/:taxonomy/:term/:n.json`:
-
 
 ```json
 {
@@ -77,18 +72,6 @@
     }
   ],
   "total_pages": 3
-}
-```
-
-
-## Page (`Page` renderer)
-
-
-```json
-{
-  "id": "page-1",
-  "title": "string",
-  "content": "<p>...</p>"
 }
 ```
 

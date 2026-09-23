@@ -11,7 +11,7 @@ module Simpress
 
       KEYS = [:id, :title, :permalink].freeze
 
-      def self.run(posts, *_args)
+      def self.run(posts)
         recent_posts = Array(posts).take(5)
 
         case config.mode

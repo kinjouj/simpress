@@ -37,12 +37,40 @@ module Simpress
       private
 
       def assign_metadata!
+        assign_id!
+        assign_date!
+        assign_index!
+        assign_draft!
+        assign_markdown!
+        assign_layout!
+        assign_permalink!
+      end
+
+      def assign_id!
         @params[:id] = XXhash.xxh64(@file).to_s
+      end
+
+      def assign_date!
         @params[:date] = parse_datetime
+      end
+
+      def assign_index!
         @params[:index] = @params.fetch(:index, true)
+      end
+
+      def assign_draft!
         @params[:draft] = @params.fetch(:draft, false)
+      end
+
+      def assign_markdown!
         @params[:markdown] = @markdown
+      end
+
+      def assign_layout!
         @params[:layout] ||= "page"
+      end
+
+      def assign_permalink!
         @params[:permalink] ||= parse_permalink
       end
 
@@ -53,11 +81,11 @@ module Simpress
         parsed = if date
                    Time.parse(date.to_s) rescue nil # rubocop:disable Style/RescueModifier
                  else
-                   m = TIME_REGEX.match(@basename)
-                   Time.new(*m.captures) if m
+                   TIME_REGEX.match(@basename)&.then {|m| Time.new(*m.captures) }
                  end
 
-        parsed or raise "Date missing or invalid in file #{@basename}"
+        @params[:index] = false unless parsed
+        parsed || Time.now
       end
 
       def parse_permalink

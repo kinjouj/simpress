@@ -13,6 +13,7 @@ describe Simpress::Plugin::Similarity do
 
   after do
     Simpress::Taxonomy.clear
+    Simpress::Plugin.clear
   end
 
   let(:post1) do

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "simpress/logger"
-
 module Simpress
   module Parser
     module Markdown
@@ -13,12 +11,6 @@ module Simpress
         class << self
           def register_enhancers
             @register_enhancers ||= []
-          end
-
-          def extended(klass)
-            super
-            register_enhancers << klass
-            Simpress::Logger.debug("REGISTER FILTER: #{klass}")
           end
 
           def run(body)

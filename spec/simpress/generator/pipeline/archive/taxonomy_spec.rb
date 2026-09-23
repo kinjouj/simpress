@@ -4,7 +4,10 @@ require "simpress/generator/pipeline/archive/taxonomy"
 require "simpress/post"
 
 describe Simpress::Generator::Pipeline::Archive::Taxonomy do
-  let!(:post) { build(:post, categories: ["Ruby"]).tap(&:register_taxonomies!) }
+  let!(:post) do
+    build(:post, categories: ["Ruby"]).tap {|post| Simpress::Taxonomy.register(post.taxonomies, post) }
+  end
+
   let!(:taxonomies) { Simpress::Taxonomy.taxonomies }
 
   before do

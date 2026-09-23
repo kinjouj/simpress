@@ -152,24 +152,6 @@ describe Simpress::Post do
     end
   end
 
-  describe "#register_taxonomies!" do
-    it "registers itself to each resolved taxonomy term" do
-      post = described_class.new(params)
-      post.register_taxonomies!
-      expect(post.taxonomies["categories"].first.posts).to include(post)
-    end
-
-    context "when the post is a draft" do
-      let(:params) { super().merge(draft: true) }
-
-      it "does not register itself to any taxonomy term" do
-        post = described_class.new(params)
-        post.register_taxonomies!
-        expect(post.taxonomies["categories"].first.posts).not_to include(post)
-      end
-    end
-  end
-
   describe "#prev and #next" do
     it "is nil by default and can be assigned" do
       post = described_class.new(params)

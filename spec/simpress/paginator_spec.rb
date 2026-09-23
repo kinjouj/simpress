@@ -17,11 +17,11 @@ describe Simpress::Paginator do
     end
 
     it "raises ArgumentError when page is 0 or less" do
-      expect { described_class.new(page: 0, maxpage: 5) }.to raise_error(ArgumentError, /is out of range/)
+      expect { described_class.new(page: 0, maxpage: 5) }.to raise_error(/is out of range/)
     end
 
     it "raises ArgumentError when page exceeds maxpage" do
-      expect { described_class.new(page: 6, maxpage: 5) }.to raise_error(ArgumentError, /is out of range/)
+      expect { described_class.new(page: 6, maxpage: 5) }.to raise_error(/is out of range/)
     end
   end
 

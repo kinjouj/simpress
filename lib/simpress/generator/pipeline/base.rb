@@ -19,7 +19,7 @@ module Simpress
             when "json"
               generate_json(...)
             else
-              raise "Unknown mode: #{Simpress::Config.instance.mode.to_s}"
+              raise "Unknown mode: #{Simpress::Config.instance.mode}"
             end
           end
 

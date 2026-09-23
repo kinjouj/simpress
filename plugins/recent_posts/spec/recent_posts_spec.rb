@@ -17,6 +17,11 @@ describe Simpress::Plugin::RecentPosts do
     allow(Simpress::JSON).to receive(:dump).and_return('{"json": true}')
   end
 
+  after do
+    Simpress::Taxonomy.clear
+    Simpress::Plugin.clear
+  end
+
   describe ".run" do
     context "when mode is html" do
       before do

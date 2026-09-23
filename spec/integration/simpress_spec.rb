@@ -15,7 +15,7 @@ describe Simpress do
     allow(Simpress::Config).to receive(:output_dir).and_return(create_filepath("public"))
     allow(Simpress::Config).to receive(:plugin_dir).and_return(create_filepath("plugins"))
     allow(Simpress::Config.instance).to receive(:mode).and_return("html")
-    allow(Simpress::Config.instance).to receive(:plugins).and_return(["main_test"])
+    allow(Simpress::Config.instance).to receive(:plugins).and_return(["sample"])
     allow(Simpress::Config.instance).to receive(:paginate).and_return(1)
   end
 

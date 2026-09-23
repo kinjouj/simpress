@@ -15,7 +15,7 @@ module Simpress
     class Similarity
       extend Simpress::Plugin
 
-      def self.run(posts, *_args)
+      def self.run(posts)
         indexer = Indexer.new(posts)
         indexer.each_similarity do |scores, i|
           similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Post::Link.new(posts[index]) }
