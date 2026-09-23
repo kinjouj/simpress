@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/parser/markdown/enhancer"
+require "simpress/parser/markdown/filter"
 
-describe Simpress::Parser::Markdown::Enhancer do
+describe Simpress::Parser::Markdown::Filter do
   after do
     described_class.clear
   end
@@ -10,7 +10,7 @@ describe Simpress::Parser::Markdown::Enhancer do
   describe ".run" do
     it "executes preprocessors in order and updates data if a string is returned" do
       filter1 = Class.new do
-        extend Simpress::Parser::Markdown::Enhancer
+        extend Simpress::Parser::Markdown::Filter
 
         def self.preprocess(data)
           "#{data} + Filter1"
@@ -18,14 +18,14 @@ describe Simpress::Parser::Markdown::Enhancer do
       end
 
       filter2 = Class.new do
-        extend Simpress::Parser::Markdown::Enhancer
+        extend Simpress::Parser::Markdown::Filter
 
         def self.preprocess(data)
           "#{data} + Filter2"
         end
       end
 
-      described_class.register_enhancers << filter1 << filter2
+      described_class.register_filters << filter1 << filter2
 
       result = described_class.run("Base")
       expect(result).to eq "Base + Filter1 + Filter2"
@@ -33,14 +33,14 @@ describe Simpress::Parser::Markdown::Enhancer do
 
     it "ignores non-string return values from preprocessors" do
       filter = Class.new do
-        extend Simpress::Parser::Markdown::Enhancer
+        extend Simpress::Parser::Markdown::Filter
 
         def self.preprocess(_data)
           nil
         end
       end
 
-      described_class.register_enhancers << filter
+      described_class.register_filters << filter
       result = described_class.run("Original")
       expect(result).to eq "Original"
     end
@@ -49,22 +49,22 @@ describe Simpress::Parser::Markdown::Enhancer do
   describe ".clear" do
     it "resets the registered classes" do
       filter = Class.new do
-        extend Simpress::Parser::Markdown::Enhancer
+        extend Simpress::Parser::Markdown::Filter
       end
 
-      described_class.register_enhancers << filter
+      described_class.register_filters << filter
       described_class.clear
-      expect(described_class.register_enhancers).to be_empty
+      expect(described_class.register_filters).to be_empty
     end
   end
 
   describe "#preprocess" do
     it "raises NotImplementedError when called on an instance" do
       filter = Class.new do
-        extend Simpress::Parser::Markdown::Enhancer
+        extend Simpress::Parser::Markdown::Filter
       end
 
-      described_class.register_enhancers << filter
+      described_class.register_filters << filter
       expect { described_class.run("data") }.to raise_error(NotImplementedError)
     end
   end

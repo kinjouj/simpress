@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "simpress/parser/markdown/enhancer"
+require "simpress/parser/markdown/filter"
 
 module Simpress
   module Plugin
     class InlineNote
-      extend Simpress::Parser::Markdown::Enhancer
+      extend Simpress::Parser::Markdown::Filter
 
       INLINE_NOTE_REGEX = /^\[\^\]:[^\S\r\n]*([^\r\n]+)$/
 

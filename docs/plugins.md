@@ -1,8 +1,8 @@
-### Custom Markdown Enhancer
+### Custom Markdown Filter
 
 ```ruby
 class SampleFilter
-  extend Simpress::Parser::Markdown::Enhancer
+  extend Simpress::Parser::Markdown::Filter
 
   def self.preprocess(markdown)
     # TODO

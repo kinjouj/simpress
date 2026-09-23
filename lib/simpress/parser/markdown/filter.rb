@@ -3,18 +3,18 @@
 module Simpress
   module Parser
     module Markdown
-      module Enhancer
+      module Filter
         def preprocess(_data)
           raise NotImplementedError
         end
 
         class << self
-          def register_enhancers
-            @register_enhancers ||= []
+          def register_filters
+            @register_filters ||= []
           end
 
           def run(body)
-            register_enhancers.each do |klass|
+            register_filters.each do |klass|
               res = klass.preprocess(body)
               body = res if res.is_a?(String)
             end
@@ -23,7 +23,7 @@ module Simpress
           end
 
           def clear
-            register_enhancers.clear
+            register_filters.clear
           end
         end
       end

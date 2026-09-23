@@ -63,12 +63,12 @@ describe Simpress::Plugin do
       expect(names).to include("Simpress::Plugin::Test3", "Simpress::Plugin::Test4")
     end
 
-    it "registers a Markdown enhancer class whose underscored name is listed in config" do
+    it "registers a Markdown filter class whose underscored name is listed in config" do
       write_plugin_file("test5", "test5", "Test5", <<~RUBY)
         module Simpress
           module Plugin
             class Test5
-              extend Simpress::Parser::Markdown::Enhancer
+              extend Simpress::Parser::Markdown::Filter
 
               def self.preprocess(data); data; end
             end
@@ -79,16 +79,16 @@ describe Simpress::Plugin do
       allow(Simpress::Config.instance).to receive(:plugins).and_return(["test5"])
       described_class.load
 
-      names = Simpress::Parser::Markdown::Enhancer.register_enhancers.map(&:name)
+      names = Simpress::Parser::Markdown::Filter.register_filters.map(&:name)
       expect(names).to eq ["Simpress::Plugin::Test5"]
     end
 
-    it "does not register a Markdown enhancer class that is not listed in config" do
+    it "does not register a Markdown filter class that is not listed in config" do
       write_plugin_file("test6", "test6", "Test6", <<~RUBY)
         module Simpress
           module Plugin
             class Test6
-              extend Simpress::Parser::Markdown::Enhancer
+              extend Simpress::Parser::Markdown::Filter
 
               def self.preprocess(data); data; end
             end
@@ -99,16 +99,16 @@ describe Simpress::Plugin do
       allow(Simpress::Config.instance).to receive(:plugins).and_return([])
       described_class.load
 
-      expect(Simpress::Parser::Markdown::Enhancer.register_enhancers).to be_empty
+      expect(Simpress::Parser::Markdown::Filter.register_filters).to be_empty
     end
   end
 
   describe ".clear" do
-    it "also clears the registered Markdown enhancers" do
-      filter_class = Class.new { extend Simpress::Parser::Markdown::Enhancer }
-      Simpress::Parser::Markdown::Enhancer.register_enhancers << filter_class
+    it "also clears the registered Markdown filters" do
+      filter_class = Class.new { extend Simpress::Parser::Markdown::Filter }
+      Simpress::Parser::Markdown::Filter.register_filters << filter_class
       described_class.clear
-      expect(Simpress::Parser::Markdown::Enhancer.register_enhancers).to be_empty
+      expect(Simpress::Parser::Markdown::Filter.register_filters).to be_empty
     end
   end
 

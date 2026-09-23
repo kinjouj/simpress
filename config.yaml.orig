@@ -4,4 +4,5 @@ default:
   host: http://example.com
   paginate: 10
   plugins:
+    - inline_note_filter
     - recent_posts

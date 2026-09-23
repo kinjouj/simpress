@@ -5,7 +5,7 @@ require "zeitwerk"
 require "simpress/config"
 require "simpress/context"
 require "simpress/logger"
-require "simpress/parser/markdown/enhancer"
+require "simpress/parser/markdown/filter"
 
 module Simpress
   module Plugin
@@ -37,9 +37,9 @@ module Simpress
           when Simpress::Plugin
             Simpress::Logger.debug("REGISTER PLUGIN: #{value}")
             register_plugins << value
-          when Simpress::Parser::Markdown::Enhancer
+          when Simpress::Parser::Markdown::Filter
             Simpress::Logger.debug("REGISTER FILTER: #{value}")
-            Simpress::Parser::Markdown::Enhancer.register_enhancers << value
+            Simpress::Parser::Markdown::Filter.register_filters << value
           end
         end
 
@@ -53,7 +53,7 @@ module Simpress
       end
 
       def clear
-        Simpress::Parser::Markdown::Enhancer.clear
+        Simpress::Parser::Markdown::Filter.clear
         @loader&.unload
         @register_plugins&.clear
         @loader = nil

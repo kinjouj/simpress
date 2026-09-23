@@ -51,13 +51,13 @@ describe Simpress::Parser::Markdown::Renderer do
 
   describe "#preprocess" do
     before do
-      allow(Simpress::Parser::Markdown::Enhancer).to receive(:run).and_return("enhanced")
+      allow(Simpress::Parser::Markdown::Filter).to receive(:run).and_return("enhanced")
     end
 
-    it "delegates to Simpress::Parser::Markdown::Enhancer.run" do
+    it "delegates to Simpress::Parser::Markdown::Filter.run" do
       markdown = "# Hello"
       result = renderer.preprocess(markdown)
-      expect(Simpress::Parser::Markdown::Enhancer).to have_received(:run).with(markdown)
+      expect(Simpress::Parser::Markdown::Filter).to have_received(:run).with(markdown)
       expect(result).to eq "enhanced"
     end
   end

@@ -2,7 +2,7 @@
 
 require "cgi"
 require "redcarpet"
-require "simpress/parser/markdown/enhancer"
+require "simpress/parser/markdown/filter"
 
 module Simpress
   module Parser
@@ -27,7 +27,7 @@ module Simpress
         end
 
         def preprocess(markdown)
-          Simpress::Parser::Markdown::Enhancer.run(markdown)
+          Simpress::Parser::Markdown::Filter.run(markdown)
         end
 
         def link(url, _title, content)
