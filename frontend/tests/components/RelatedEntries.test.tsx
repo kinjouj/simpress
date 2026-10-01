@@ -4,7 +4,7 @@ import { RelatedEntries } from '../../src/components';
 import { testEntryData } from '../fixtures/testEntryData';
 
 describe('RelatedEntries', () => {
-  test('<RelatedEntries> test', async () => {
+  it('<RelatedEntries> test', async () => {
     render(
       <MemoryRouter>
         <RelatedEntries similarities={testEntryData.similarities} />

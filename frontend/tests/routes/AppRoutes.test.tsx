@@ -33,7 +33,7 @@ describe('AppRoutes', () => {
     });
   });
 
-  test('<AppRoutes> initialEntries=/page/1 test', async () => {
+  it('<AppRoutes> initialEntries=/page/1 test', async () => {
     render(
       <MemoryRouter initialEntries={['/page/1']}>
         <AppRoutes />
@@ -44,7 +44,7 @@ describe('AppRoutes', () => {
     expect(entries).toHaveLength(1);
   });
 
-  test('<AppRoutes> initialEntries=/archives/categories/test', async () => {
+  it('<AppRoutes> initialEntries=/archives/categories/test', async () => {
     render(
       <MemoryRouter initialEntries={['/archives/categories/test/1']}>
         <AppRoutes />
@@ -55,7 +55,7 @@ describe('AppRoutes', () => {
     expect(entries).toHaveLength(1);
   });
 
-  test('<AppRoutes> initialEntries=/archives/1234/01', async () => {
+  it('<AppRoutes> initialEntries=/archives/1234/01', async () => {
     render(
       <MemoryRouter initialEntries={['/archives/1234/01/1']}>
         <AppRoutes />
@@ -66,7 +66,7 @@ describe('AppRoutes', () => {
     expect(entries).toHaveLength(1);
   });
 
-  test('<AppRoutes> initialEntries=/test.html', async () => {
+  it('<AppRoutes> initialEntries=/test.html', async () => {
     render(
       <MemoryRouter initialEntries={['/test.html']}>
         <AppRoutes />

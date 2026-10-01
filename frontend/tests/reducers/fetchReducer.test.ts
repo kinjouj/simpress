@@ -3,7 +3,7 @@ import { testEntryData } from '../fixtures/testEntryData';
 import type { EntryType } from '../../src/types';
 
 describe('fetchReducer', () => {
-  test('fetchReducer test', () => {
+  it('fetchReducer test', () => {
     const stateDefault = fetchReducer<null>(
       { data: null, isLoading: false, isError: false },
       { type: 'FETCH_DEFAULT' } as any // eslint-disable-line

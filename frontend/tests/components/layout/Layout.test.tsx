@@ -8,7 +8,7 @@ vi.mock('../../../src/api/Simpress');
 const SimpressMock = vi.mocked(Simpress);
 
 describe('Layout', () => {
-  test('renders header, footer, the outlet content, and the recent entries sidebar', async () => {
+  it('renders header, footer, the outlet content, and the recent entries sidebar', async () => {
     SimpressMock.getRecentEntries.mockResolvedValueOnce([testEntryData]);
 
     render(

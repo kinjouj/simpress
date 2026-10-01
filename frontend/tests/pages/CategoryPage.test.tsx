@@ -23,7 +23,7 @@ describe('CategoryPage', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
-  test('<CategoryPage> test', async () => {
+  it('<CategoryPage> test', async () => {
     SimpressMock.getEntriesByCategory.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     renderCategoryEntryListPage();
@@ -32,7 +32,7 @@ describe('CategoryPage', () => {
     expect(entries).toHaveLength(1);
   });
 
-  test('useCategoryがnullを返した場合', async () => {
+  it('useCategoryがnullを返した場合', async () => {
     render(
       <MemoryRouter>
         <CategoryPage />
@@ -42,7 +42,7 @@ describe('CategoryPage', () => {
     expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 
-  test('Simpress.getEntriesByCategoryがエラーを吐いた場合', async () => {
+  it('Simpress.getEntriesByCategoryがエラーを吐いた場合', async () => {
     SimpressMock.getEntriesByCategory.mockRejectedValue(new Error('ERROR'));
     renderCategoryEntryListPage();
 

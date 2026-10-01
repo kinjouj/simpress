@@ -7,7 +7,7 @@ vi.mock('../../src/api/Simpress');
 const SimpressMock = vi.mocked(Simpress);
 
 describe('SidebarCategories', () => {
-  test('renders categories sorted by entry count, most entries first', async () => {
+  it('renders categories sorted by entry count, most entries first', async () => {
     SimpressMock.getCategories.mockResolvedValue([
       { key: 'ruby', name: 'Ruby', count: 1 },
       { key: 'js', name: 'JavaScript', count: 3 },
@@ -24,7 +24,7 @@ describe('SidebarCategories', () => {
     expect(links[0]).toHaveAttribute('href', '/archives/categories/js');
   });
 
-  test('renders nested child categories', async () => {
+  it('renders nested child categories', async () => {
     SimpressMock.getCategories.mockResolvedValue([
       {
         key: 'programming',
@@ -43,7 +43,7 @@ describe('SidebarCategories', () => {
     expect(await screen.findByText('Ruby (4)')).toBeInTheDocument();
   });
 
-  test('shows an error message when the request fails', async () => {
+  it('shows an error message when the request fails', async () => {
     SimpressMock.getCategories.mockRejectedValue(new Error('ERROR'));
 
     render(

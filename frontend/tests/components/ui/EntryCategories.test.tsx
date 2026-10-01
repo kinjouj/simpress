@@ -22,7 +22,7 @@ describe('EntryCategories', () => {
     ],
   };
 
-  test('renders a link for every term across all taxonomies', () => {
+  it('renders a link for every term across all taxonomies', () => {
     renderWithRouter(taxonomies);
 
     expect(screen.getByRole('link', { name: 'Ruby' })).toBeInTheDocument();
@@ -30,26 +30,26 @@ describe('EntryCategories', () => {
     expect(screen.getByRole('link', { name: 'Tips' })).toBeInTheDocument();
   });
 
-  test('links to the correct taxonomy/term path', () => {
+  it('links to the correct taxonomy/term path', () => {
     renderWithRouter(taxonomies);
 
     expect(screen.getByRole('link', { name: 'Ruby' })).toHaveAttribute('href', '/archives/categories/ruby');
     expect(screen.getByRole('link', { name: 'Tips' })).toHaveAttribute('href', '/archives/tags/tips');
   });
 
-  test('applies the entry-category class to each link', () => {
+  it('applies the entry-category class to each link', () => {
     renderWithRouter(taxonomies);
 
     expect(screen.getByRole('link', { name: 'Ruby' })).toHaveClass('entry-category');
   });
 
-  test('renders no links when taxonomies is empty', () => {
+  it('renders no links when taxonomies is empty', () => {
     renderWithRouter({});
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 
-  test('renders no links when a taxonomy has no terms', () => {
+  it('renders no links when a taxonomy has no terms', () => {
     renderWithRouter({ categories: [] });
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument();

@@ -5,7 +5,7 @@ const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
 
 describe('Simpress', () => {
-  test('getEntriesByPage test', async () => {
+  it('getEntriesByPage test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ entries: [testEntryData, testEntryData], total_pages: 1 }),
@@ -15,7 +15,7 @@ describe('Simpress', () => {
     expect(totalPages).toBe(1);
   });
 
-  test('getEntriesByArchive test', async () => {
+  it('getEntriesByArchive test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ entries: [testEntryData], total_pages: 1 }),
@@ -25,7 +25,7 @@ describe('Simpress', () => {
     expect(totalPages).toBe(1);
   });
 
-  test('getEntriesByCategory test', async () => {
+  it('getEntriesByCategory test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ entries: [testEntryData], total_pages: 1 }),
@@ -35,7 +35,7 @@ describe('Simpress', () => {
     expect(totalPages).toBe(1);
   });
 
-  test('getEntry test', async () => {
+  it('getEntry test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(testEntryData),
@@ -45,7 +45,7 @@ describe('Simpress', () => {
     expect(mockFetch).toHaveBeenCalled();
   });
 
-  test('getData test', async () => {
+  it('getData test', async () => {
     const getData: <T>(url: string) => Promise<T> = (Simpress as any).getData.bind(Simpress); // eslint-disable-line
     mockFetch.mockResolvedValue({
       ok: true,

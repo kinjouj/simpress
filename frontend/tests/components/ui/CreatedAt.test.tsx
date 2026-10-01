@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router';
 import CreatedAt from '../../../src/components/ui/CreatedAt';
 
 describe('CreatedAt Component', () => {
-  test('<CreatedAt> test', () => {
+  it('<CreatedAt> test', () => {
     render(
       <MemoryRouter>
         <CreatedAt dateString="2000-01-01T00:00:00" />
@@ -14,7 +14,7 @@ describe('CreatedAt Component', () => {
     expect(elm).toHaveTextContent('2000-01-01');
   });
 
-  test('dateStringが不正な場合', () => {
+  it('dateStringが不正な場合', () => {
     render(
       <MemoryRouter>
         <CreatedAt dateString="" />

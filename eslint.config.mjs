@@ -184,7 +184,7 @@ export default defineConfig(
     rules: {
       ...vitest.configs.recommended.rules,
       "vitest/consistent-test-filename": "error",
-      "vitest/consistent-test-it": ["error", { fn: "test" }],
+      "vitest/consistent-test-it": ["error", { fn: "it" }],
       "vitest/no-alias-methods": "error",
       "vitest/prefer-to-be": "error",
       "vitest/prefer-to-have-length": "error",

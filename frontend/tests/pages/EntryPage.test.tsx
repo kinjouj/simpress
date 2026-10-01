@@ -28,7 +28,7 @@ describe('EntryPage', () => {
     vi.useRealTimers();
   });
 
-  test('<EntryPage> test', async () => {
+  it('<EntryPage> test', async () => {
     SimpressMock.getEntry.mockResolvedValue(testEntryData);
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     renderEntryPage();
@@ -40,7 +40,7 @@ describe('EntryPage', () => {
     expect(entry).toBeInTheDocument();
   });
 
-  test('usePermalinkがnullを返した場合', async () => {
+  it('usePermalinkがnullを返した場合', async () => {
     render(
       <MemoryRouter>
         <EntryPage />
@@ -50,7 +50,7 @@ describe('EntryPage', () => {
     expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 
-  test('Simpress.getEntryがエラーを出した場合', async () => {
+  it('Simpress.getEntryがエラーを出した場合', async () => {
     SimpressMock.getEntry.mockRejectedValue(new Error('ERROR'));
     renderEntryPage();
     act(() => {

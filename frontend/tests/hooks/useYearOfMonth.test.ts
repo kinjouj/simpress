@@ -36,35 +36,35 @@ const mockedUseParams = vi.mocked(Router.useParams);
 
 describe('hooks', () => {
   describe('useYearOfMonth', () => {
-    test('useYearOfMonth test', () => {
+    it('useYearOfMonth test', () => {
       mockedUseParams.mockReturnValue({ year: '2000', month: '1' });
       const yearOfMonth = useYearOfMonth();
       expect(yearOfMonth).toHaveProperty('year', 2000);
       expect(yearOfMonth).toHaveProperty('month', 1);
     });
 
-    test('yearパラメーターが不正な場合', () => {
+    it('yearパラメーターが不正な場合', () => {
       mockedUseParams.mockReturnValue({ year: undefined, month: '1' });
       const yearOfMonth = useYearOfMonth();
       expect(yearOfMonth).toHaveProperty('year', null);
       expect(yearOfMonth).toHaveProperty('month', null);
     });
 
-    test('yearパラメーターが"a"の場合', () => {
+    it('yearパラメーターが"a"の場合', () => {
       mockedUseParams.mockReturnValue({ year: 'a', month: '1' });
       const yearOfMonth = useYearOfMonth();
       expect(yearOfMonth.year).toBeNull();
       expect(yearOfMonth.month).toBeNull();
     });
 
-    test('monthパラメーターが不正な場合', () => {
+    it('monthパラメーターが不正な場合', () => {
       mockedUseParams.mockReturnValue({ year: '2000', month: undefined });
       const yearOfMonth = useYearOfMonth();
       expect(yearOfMonth).toHaveProperty('year', null);
       expect(yearOfMonth).toHaveProperty('month', null);
     });
 
-    test('monthパラメーターが"a"の場合', () => {
+    it('monthパラメーターが"a"の場合', () => {
       mockedUseParams.mockReturnValue({ year: '2000', month: 'a' });
       const yearOfMonth = useYearOfMonth();
       expect(yearOfMonth).toHaveProperty('year', null);

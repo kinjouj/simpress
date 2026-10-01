@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { usePermalink } from '../../src/hooks/usePermalink';
 
 describe('usePermalink', () => {
-  test('usePermalink', () => {
+  it('usePermalink', () => {
     const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
       <MemoryRouter initialEntries={[`/test.html`]}>
         <Routes>
@@ -16,7 +16,7 @@ describe('usePermalink', () => {
     expect(result.current).toBe('/test.json');
   });
 
-  test('permalinkパラメーターが不正な場合', () => {
+  it('permalinkパラメーターが不正な場合', () => {
     const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
       <MemoryRouter>
         {children}

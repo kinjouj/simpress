@@ -23,7 +23,7 @@ describe('ArchivesPage', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
-  test('<ArchivesPage> test', async () => {
+  it('<ArchivesPage> test', async () => {
     SimpressMock.getEntriesByArchive.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     renderArchives();
 
@@ -31,7 +31,7 @@ describe('ArchivesPage', () => {
     expect(entries).toHaveLength(1);
   });
 
-  test('useYearOfMonthから返ってくる値にnullが入ってる場合', async () => {
+  it('useYearOfMonthから返ってくる値にnullが入ってる場合', async () => {
     render(
       <MemoryRouter>
         <ArchivesPage />
@@ -41,7 +41,7 @@ describe('ArchivesPage', () => {
     expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 
-  test('Simpress.getEntriesByArchiveがエラーを吐いた場合', async () => {
+  it('Simpress.getEntriesByArchiveがエラーを吐いた場合', async () => {
     SimpressMock.getEntriesByArchive.mockRejectedValue(new Error('ERROR'));
     renderArchives();
 

@@ -6,7 +6,7 @@ import type { EntryType } from '../../src/types';
 
 describe('useFetchData', () => {
   describe('useFetchData test', () => {
-    test('isLoading is true on initial render, before the fetcher resolves', () => {
+    it('isLoading is true on initial render, before the fetcher resolves', () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => new Promise<EntryType>(() => {}), []);
         return useFetchData(fetcher);
@@ -18,7 +18,7 @@ describe('useFetchData', () => {
       expect(data).toBeNull();
     });
 
-    test('successful', async () => {
+    it('successful', async () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => Promise.resolve(testEntryData), []);
         return useFetchData(fetcher);
@@ -32,7 +32,7 @@ describe('useFetchData', () => {
       });
     });
 
-    test('unmount test', async () => {
+    it('unmount test', async () => {
       const { result, unmount } = renderHook(() => {
         const fetcher = useCallback(() => Promise.resolve(testEntryData), []);
         return useFetchData(fetcher);
@@ -49,7 +49,7 @@ describe('useFetchData', () => {
   });
 
   describe('if fetcher throw error', () => {
-    test('successful', async () => {
+    it('successful', async () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => Promise.reject(new Error('error')), []);
         return useFetchData(fetcher);
@@ -63,7 +63,7 @@ describe('useFetchData', () => {
       });
     });
 
-    test('unmount test', async () => {
+    it('unmount test', async () => {
       const { result, unmount } = renderHook(() => {
         const fetcher = useCallback(() => Promise.reject(new Error('error')), []);
         return useFetchData(fetcher);

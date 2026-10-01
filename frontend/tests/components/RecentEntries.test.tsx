@@ -8,7 +8,7 @@ vi.mock('../../src/api/Simpress');
 const SimpressMock = vi.mocked(Simpress);
 
 describe('RecentEntries', () => {
-  test('does not show NotFound while the fetch is still in flight', () => {
+  it('does not show NotFound while the fetch is still in flight', () => {
     let resolveFetch: (value: (typeof testEntryData)[]) => void = () => {};
     SimpressMock.getRecentEntries.mockReturnValue(
       new Promise((resolve) => {
@@ -26,7 +26,7 @@ describe('RecentEntries', () => {
     void resolveFetch;
   });
 
-  test('<RecentEntries> test', async () => {
+  it('<RecentEntries> test', async () => {
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     render(
       <MemoryRouter>

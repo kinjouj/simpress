@@ -24,14 +24,14 @@ describe('AdjacentEntries', () => {
     permalink: '/older-entry',
   };
 
-  test('renders both links when next and prev are present', () => {
+  it('renders both links when next and prev are present', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     expect(screen.getByRole('link', { name: new RegExp(nextSummary.title) })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: new RegExp(prevSummary.title) })).toBeInTheDocument();
   });
 
-  test('links to the correct permalink with rel="prev" for next', () => {
+  it('links to the correct permalink with rel="prev" for next', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     const link = screen.getByRole('link', { name: new RegExp(nextSummary.title) });
@@ -39,7 +39,7 @@ describe('AdjacentEntries', () => {
     expect(link).toHaveAttribute('rel', 'prev');
   });
 
-  test('links to the correct permalink with rel="next" for prev', () => {
+  it('links to the correct permalink with rel="next" for prev', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     const link = screen.getByRole('link', { name: new RegExp(prevSummary.title) });
@@ -47,21 +47,21 @@ describe('AdjacentEntries', () => {
     expect(link).toHaveAttribute('rel', 'next');
   });
 
-  test('does not render the next link when next is null', () => {
+  it('does not render the next link when next is null', () => {
     renderWithRouter({ next: null, prev: prevSummary });
 
     expect(screen.queryByRole('link', { name: new RegExp(nextSummary.title) })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: new RegExp(prevSummary.title) })).toBeInTheDocument();
   });
 
-  test('does not render the prev link when prev is null', () => {
+  it('does not render the prev link when prev is null', () => {
     renderWithRouter({ next: nextSummary, prev: null });
 
     expect(screen.getByRole('link', { name: new RegExp(nextSummary.title) })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: new RegExp(prevSummary.title) })).not.toBeInTheDocument();
   });
 
-  test('renders an empty container when both next and prev are null', () => {
+  it('renders an empty container when both next and prev are null', () => {
     renderWithRouter({ next: null, prev: null });
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument();

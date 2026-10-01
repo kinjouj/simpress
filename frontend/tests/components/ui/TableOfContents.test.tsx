@@ -5,14 +5,14 @@ import { testEntryData } from '../../fixtures/testEntryData';
 import type { TocType } from '../../../src/types';
 
 describe('TableOfContents', () => {
-  test('renders nothing when toc has only 1 item', () => {
+  it('renders nothing when toc has only 1 item', () => {
     const toc: TocType[] = [testEntryData.toc[0]];
     const { container } = render(<TableOfContents toc={toc} />);
 
     expect(container).toBeEmptyDOMElement();
   });
 
-  test('renders the heading and links when toc has more than 1 item', () => {
+  it('renders the heading and links when toc has more than 1 item', () => {
     render(<TableOfContents toc={testEntryData.toc} />);
 
     expect(screen.getByText('Table of Contents')).toBeInTheDocument();
@@ -20,14 +20,14 @@ describe('TableOfContents', () => {
     expect(screen.getByRole('link', { name: testEntryData.toc[1].text })).toBeInTheDocument();
   });
 
-  test('links to the anchor built from the section id', () => {
+  it('links to the anchor built from the section id', () => {
     render(<TableOfContents toc={testEntryData.toc} />);
 
     expect(screen.getByRole('link', { name: testEntryData.toc[0].text })).toHaveAttribute('href', `#${testEntryData.toc[0].id}`);
     expect(screen.getByRole('link', { name: testEntryData.toc[1].text })).toHaveAttribute('href', `#${testEntryData.toc[1].id}`);
   });
 
-  test('flattens, indents, and links children relative to their parent', () => {
+  it('flattens, indents, and links children relative to their parent', () => {
     const toc: TocType[] = [
       { id: 'section-1', text: 'Intro', children: [{ id: 'section-1-1', text: 'Intro Detail' }] },
       { id: 'section-2', text: 'Summary', children: [] },
@@ -44,7 +44,7 @@ describe('TableOfContents', () => {
   });
 
   describe('when a link is clicked', () => {
-    test('prevents the default navigation', () => {
+    it('prevents the default navigation', () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const link = screen.getByRole('link', { name: testEntryData.toc[0].text });
@@ -54,7 +54,7 @@ describe('TableOfContents', () => {
       expect(clickEvent.defaultPrevented).toBe(true);
     });
 
-    test('scrolls the target section into view', async () => {
+    it('scrolls the target section into view', async () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const target = document.createElement('div');
@@ -71,7 +71,7 @@ describe('TableOfContents', () => {
       document.body.removeChild(target);
     });
 
-    test('does not throw when the target section does not exist', async () => {
+    it('does not throw when the target section does not exist', async () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const user = userEvent.setup();
