@@ -39,7 +39,7 @@ module Simpress
       @toc = result.toc
       @links = result.links
       @cover ||= result.cover || DEFAULT_COVER
-      @description ||= @content[DESC_REGEX, 1].to_s.gsub(/<[^>]*>/, "").gsub(/[<>]/, "").strip
+      @description ||= @content[DESC_REGEX, 1].to_s.gsub(/[<>]/, "").strip
     end
 
     def to_h(options = {})

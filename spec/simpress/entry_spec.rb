@@ -120,7 +120,7 @@ describe Simpress::Entry do
       it "strips inline tags from the extracted description" do
         entry = described_class.new(params)
         entry.load!
-        expect(entry.description).to eq "Hello world!"
+        expect(entry.description).to eq "Hello strongworld/strong!"
       end
     end
 
