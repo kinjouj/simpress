@@ -36,10 +36,6 @@ const mockedUseParams = vi.mocked(Router.useParams);
 
 describe('hooks', () => {
   describe('useYearOfMonth', () => {
-    afterEach(() => {
-      mockedUseParams.mockReset();
-    });
-
     test('useYearOfMonth test', () => {
       mockedUseParams.mockReturnValue({ year: '2000', month: '1' });
       const yearOfMonth = useYearOfMonth();

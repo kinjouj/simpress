@@ -23,10 +23,6 @@ describe('CategoryPage', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   test('<CategoryPage> test', async () => {
     SimpressMock.getEntriesByCategory.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);

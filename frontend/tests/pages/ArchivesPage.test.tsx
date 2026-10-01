@@ -23,10 +23,6 @@ describe('ArchivesPage', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   test('<ArchivesPage> test', async () => {
     SimpressMock.getEntriesByArchive.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     renderArchives();

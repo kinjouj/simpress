@@ -12,10 +12,6 @@ vi.mock('react-router', async () => {
 const mockedUseParams = vi.mocked(Router.useParams);
 
 describe('useCategor', () => {
-  afterEach(() => {
-    mockedUseParams.mockReset();
-  });
-
   test('useCategory test', () => {
     mockedUseParams.mockReturnValue({ category: 'test' });
     expect(useCategory()).toBe('test');

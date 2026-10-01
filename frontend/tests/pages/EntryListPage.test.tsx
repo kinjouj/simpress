@@ -23,10 +23,6 @@ describe('EntryListPage', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   test('shows a loading indicator (not a blank screen) while entries are being fetched', () => {
     SimpressMock.getEntriesByPage.mockReturnValue(new Promise(() => {}));
     const { container } = renderEntryListPage();

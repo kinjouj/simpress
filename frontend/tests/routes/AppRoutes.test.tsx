@@ -6,7 +6,7 @@ import { testEntryData } from '../fixtures/testEntryData';
 describe('AppRoutes', () => {
   beforeEach(() => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
-    vi.spyOn(global, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
       const path = input instanceof Request ? input.url : input.toString();
       let res: Response;
 
@@ -31,10 +31,6 @@ describe('AppRoutes', () => {
 
       return Promise.resolve(res);
     });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test('<AppRoutes> initialEntries=/page/1 test', async () => {

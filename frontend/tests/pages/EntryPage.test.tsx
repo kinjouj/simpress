@@ -25,7 +25,6 @@ describe('EntryPage', () => {
   });
 
   afterEach(() => {
-    vi.clearAllTimers();
     vi.useRealTimers();
   });
 

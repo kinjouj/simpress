@@ -9,7 +9,7 @@ export default defineConfig({
     root: './frontend',
     include: ['tests/**/*.test.{ts,tsx}'],
     globals: true,
-    environment: 'jsdom',
+    environment: 'happy-dom',
     css: false,
     setupFiles: ['tests/setupTests.ts'],
     mockReset: true,

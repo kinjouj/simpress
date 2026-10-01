@@ -14,12 +14,10 @@ describe('PaginateContext', () => {
   });
 
   test('throws when used outside of a PaginateProvider', () => {
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
 
     expect(() => renderHook(() => usePaginateContext())).toThrow(
       'usePaginateContext must be used within a PaginateProvider'
     );
-
-    spy.mockRestore();
   });
 });
