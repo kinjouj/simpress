@@ -1,52 +1,47 @@
 import Simpress from '../../src/api/Simpress';
-import { testPostData } from '../fixtures/testPostData';
+import { testEntryData } from '../fixtures/testEntryData';
 
 const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
 
 describe('Simpress', () => {
-  beforeEach(() => {
-    mockFetch.mockClear();
-    mockFetch.mockReset();
-  });
-
-  test('getPostsByPage test', async () => {
+  test('getEntriesByPage test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({ posts: [testPostData, testPostData], total_pages: 1 }),
+      json: () => Promise.resolve({ entries: [testEntryData, testEntryData], total_pages: 1 }),
     });
-    const { posts, total_pages: totalPages } = await Simpress.getPostsByPage(1);
-    expect(posts).toHaveLength(2);
+    const { entries, total_pages: totalPages } = await Simpress.getEntriesByPage(1);
+    expect(entries).toHaveLength(2);
     expect(totalPages).toBe(1);
   });
 
-  test('getPostsByArchive test', async () => {
+  test('getEntriesByArchive test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({ posts: [testPostData], total_pages: 1 }),
+      json: () => Promise.resolve({ entries: [testEntryData], total_pages: 1 }),
     });
-    const { posts, total_pages: totalPages } = await Simpress.getPostsByArchive(2000, 1, 1);
-    expect(posts).toHaveLength(1);
+    const { entries, total_pages: totalPages } = await Simpress.getEntriesByArchive(2000, 1, 1);
+    expect(entries).toHaveLength(1);
     expect(totalPages).toBe(1);
   });
 
-  test('getPostsByCategory test', async () => {
+  test('getEntriesByCategory test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({ posts: [testPostData], total_pages: 1 }),
+      json: () => Promise.resolve({ entries: [testEntryData], total_pages: 1 }),
     });
-    const { posts, total_pages: totalPages } = await Simpress.getPostsByCategory('test', 1);
-    expect(posts).toHaveLength(1);
+    const { entries, total_pages: totalPages } = await Simpress.getEntriesByCategory('test', 1);
+    expect(entries).toHaveLength(1);
     expect(totalPages).toBe(1);
   });
 
-  test('getPost test', async () => {
+  test('getEntry test', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve(testPostData),
+      json: () => Promise.resolve(testEntryData),
     });
-    const post = await Simpress.getPost('/test');
-    expect(post).not.toBeNull();
+    const entry = await Simpress.getEntry('/test');
+    expect(entry).not.toBeNull();
     expect(mockFetch).toHaveBeenCalled();
   });
 
@@ -60,6 +55,6 @@ describe('Simpress', () => {
     expect(result).toHaveProperty('test', true);
 
     mockFetch.mockResolvedValue({ ok: false });
-    await expect(async () => { await getData('/test'); }).rejects.toThrow();
+    await expect(getData('/test')).rejects.toThrow();
   });
 });

@@ -5,7 +5,7 @@ require "xxhash"
 
 require "simpress/config"
 require "simpress/parser/markdown"
-require "simpress/post"
+require "simpress/entry"
 require "simpress/taxonomy"
 require "simpress/path"
 
@@ -15,7 +15,7 @@ module Simpress
       def parse(file)
         params, markdown = Simpress::Parser::Markdown.parse(File.read(file))
         metadata = MetadataBuilder.new(file, params, markdown).build
-        Simpress::Post.new(metadata)
+        Simpress::Entry.new(metadata)
       end
     end
 

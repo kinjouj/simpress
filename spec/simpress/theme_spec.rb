@@ -22,12 +22,12 @@ describe Simpress::Theme do
     end
 
     it "initializes the template with the correct path" do
-      described_class.render("layout", { page_title: "Post" })
+      described_class.render("layout", { page_title: "Entry" })
       expect(Tilt::ErubiTemplate).to have_received(:new).with("spec/fixtures/theme/layout.erb", escape: true)
     end
 
     it "returns the rendered result" do
-      expect(described_class.render("layout", { page_title: "Post" })).to eq "<html>My Blog</html>"
+      expect(described_class.render("layout", { page_title: "Entry" })).to eq "<html>My Blog</html>"
     end
   end
 

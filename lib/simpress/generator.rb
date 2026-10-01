@@ -4,7 +4,7 @@ require "simpress/config"
 require "simpress/generator/pipeline"
 require "simpress/parser"
 require "simpress/plugin"
-require "simpress/post"
+require "simpress/entry"
 require "simpress/taxonomy"
 require "simpress/theme"
 
@@ -20,17 +20,17 @@ module Simpress
       end
 
       def generate
-        posts = []
+        entries = []
         each_file do |file|
-          post = Simpress::Parser.parse(file)
-          next if post.nil? || post.draft
+          entry = Simpress::Parser.parse(file)
+          next if entry.nil? || entry.draft
 
-          Simpress::Taxonomy.register(post.taxonomies, post)
-          posts << post
+          Simpress::Taxonomy.register(entry.taxonomies, entry)
+          entries << entry
         end
 
-        posts.sort_by! {|post| -post.date.to_i }
-        process_and_generate(posts)
+        entries.sort_by! {|entry| -entry.date.to_i }
+        process_and_generate(entries)
       end
 
       def clear
@@ -39,26 +39,26 @@ module Simpress
 
       private
 
-      def process_and_generate(posts)
-        build_post_relations!(posts)
-        Simpress::Plugin.process(posts)
-        Simpress::Generator::Pipeline.generate(posts)
+      def process_and_generate(entries)
+        build_entry_relations!(entries)
+        Simpress::Plugin.process(entries)
+        Simpress::Generator::Pipeline.generate(entries)
         Simpress::Theme.clear
         clear
       end
 
-      def build_post_relations!(posts)
-        @link_index = posts.to_h {|p| [p.permalink, p] }
+      def build_entry_relations!(entries)
+        @link_index = entries.to_h {|e| [e.permalink, e] }
         refs = Hash.new {|h, k| h[k] = [] }
 
-        [nil, *posts, nil].each_cons(3) do |newer_post, post, older_post|
-          post.load!
-          post.prev = Simpress::Post::Link.build(older_post)
-          post.next = Simpress::Post::Link.build(newer_post)
+        [nil, *entries, nil].each_cons(3) do |newer, entry, older|
+          entry.load!
+          entry.prev = Simpress::Entry::Link.build(older)
+          entry.next = Simpress::Entry::Link.build(newer)
 
-          post.links.each {|link| refs[link] << Simpress::Post::Link.new(post) if @link_index.key?(link) }
-          post.backlinks = (refs[post.permalink] ||= [])
-          post.freeze
+          entry.links.each {|link| refs[link] << Simpress::Entry::Link.new(entry) if @link_index.key?(link) }
+          entry.backlinks = (refs[entry.permalink] ||= [])
+          entry.freeze
         end
       end
     end

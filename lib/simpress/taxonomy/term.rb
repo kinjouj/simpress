@@ -9,12 +9,12 @@ module Simpress
       PERMITTED_JSON_KEYS = [:key, :name, :count, :children].freeze
       DEFAULT_JSON_KEYS = [:key, :name].freeze
 
-      attr_reader :key, :name, :children, :posts
+      attr_reader :key, :name, :children, :entries
 
       def initialize(name, key: nil)
         @key = key || name.to_url
         @name = name
-        @posts = []
+        @entries = []
         @children = []
       end
 
@@ -24,7 +24,7 @@ module Simpress
       end
 
       def count
-        @posts.size
+        @entries.size
       end
 
       def as_json(options = {})

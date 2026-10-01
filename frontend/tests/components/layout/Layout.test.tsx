@@ -2,14 +2,14 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import Simpress from '../../../src/api/Simpress';
 import Layout from '../../../src/components/layout/Layout';
-import { testPostData } from '../../fixtures/testPostData';
+import { testEntryData } from '../../fixtures/testEntryData';
 
 vi.mock('../../../src/api/Simpress');
 const SimpressMock = vi.mocked(Simpress);
 
 describe('Layout', () => {
-  test('renders header, footer, the outlet content, and the recent posts sidebar', async () => {
-    SimpressMock.getRecentPosts.mockResolvedValue([testPostData]);
+  test('renders header, footer, the outlet content, and the recent entries sidebar', async () => {
+    SimpressMock.getRecentEntries.mockResolvedValueOnce([testEntryData]);
 
     render(
       <MemoryRouter initialEntries={['/']}>
@@ -22,9 +22,9 @@ describe('Layout', () => {
     );
 
     expect(screen.getByText('page content')).toBeInTheDocument();
-    expect(screen.getByText('Recent Posts')).toBeInTheDocument();
+    expect(screen.getByText('Recent Entries')).toBeInTheDocument();
 
-    const posts = await screen.findAllByRole('listitem', {}, { timeout: 10000 });
-    expect(posts).toHaveLength(1);
+    const entries = await screen.findAllByRole('listitem', {}, { timeout: 10000 });
+    expect(entries).toHaveLength(1);
   });
 });

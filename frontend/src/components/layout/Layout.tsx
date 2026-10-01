@@ -1,7 +1,7 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { Outlet } from 'react-router';
 import { PageToTopFloatingButton } from '../ui';
-import { RecentPosts } from '../';
+import { RecentEntries } from '../';
 import Footer from './Footer';
 import Header from './Header';
 
@@ -17,9 +17,9 @@ const Layout = (): React.JSX.Element => {
             </main>
           </Col>
           <Col xs={12} lg={4} as="aside" className="sidebar ms-auto ps-5">
-            <div id="recent_posts">
-              <h4>Recent Posts</h4>
-              <RecentPosts />
+            <div id="recent_entries">
+              <h4>Recent Entries</h4>
+              <RecentEntries />
             </div>
             {/*
             <div id="categories">

@@ -5,9 +5,9 @@ module Simpress
     class MainTest
       extend Simpress::Plugin
 
-      def self.run(posts, *_args)
-        Simpress::Writer.write("count.txt", posts.size)
-        bind_context(sample: "size:: #{posts.size}")
+      def self.run(entries)
+        Simpress::Writer.write("count.txt", entries.size)
+        bind_context(sample: "size:: #{entries.size}")
       end
     end
   end

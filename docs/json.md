@@ -1,13 +1,13 @@
 # Simpress Data Format Specification
 
-## Post (`Permalink` renderer)
+## Entry (`Permalink` renderer)
 
 ```json
 {
-  "id": "post-123",
+  "id": "entry-123",
   "title": "string",
   "date": "2026-01-01T00:00:00+09:00",
-  "permalink": "/sample-post",
+  "permalink": "/sample-entry",
   "taxonomies": {
     "categories": [
       {
@@ -35,30 +35,30 @@
     }
   ],
   "prev": {
-    "id": "post-789",
-    "title": "Older Post",
-    "permalink": "/older-post"
+    "id": "entry-789",
+    "title": "Older Entry",
+    "permalink": "/older-entry"
   },
   "next": {
-    "id": "post-456",
-    "title": "Newer Post",
-    "permalink": "/newer-post"
+    "id": "entry-456",
+    "title": "Newer Entry",
+    "permalink": "/newer-entry"
   }
 }
 ```
 
-## Post list
+## Entry list
 
 `/archives/page/:n.json`, `/archives/:year/:month/:n.json`, `/archives/:taxonomy/:term/:n.json`:
 
 ```json
 {
-  "posts": [
+  "entries": [
     {
-      "id": "post-123",
+      "id": "entry-123",
       "title": "string",
       "date": "2026-01-01T00:00:00+09:00",
-      "permalink": "/sample-post",
+      "permalink": "/sample-entry",
       "taxonomies": {
         "categories": [
           {

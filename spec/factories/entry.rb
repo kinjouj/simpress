@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+FactoryBot.define do
+  factory :entry, class: "Simpress::Entry" do
+    skip_create
+
+    sequence(:id) {|id| "id-#{id}" }
+    sequence(:permalink) {|n| "/test#{n}.html" }
+
+    title { "title" }
+    description { "content description" }
+    date { Time.new(2025, 1, 1) }
+    categories { [] }
+    cover { "/images/no_image.webp" }
+    index { true }
+    draft { false }
+    markdown { "# Test\n\ncontent\n123" }
+
+    initialize_with { new(attributes) }
+    after(:build, &:load!)
+  end
+end

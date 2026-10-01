@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require "simpress/generator/pipeline/archive/taxonomy"
-require "simpress/post"
+require "simpress/entry"
 
 describe Simpress::Generator::Pipeline::Archive::Taxonomy do
-  let!(:post) do
-    build(:post, categories: ["Ruby"]).tap {|post| Simpress::Taxonomy.register(post.taxonomies, post) }
+  let!(:entry) do
+    build(:entry, categories: ["Ruby"]).tap {|e| Simpress::Taxonomy.register(e.taxonomies, e) }
   end
 
   let!(:taxonomies) { Simpress::Taxonomy.taxonomies }
@@ -30,7 +30,7 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
   end
 
   describe ".generate_json" do
-    let(:expected_index_json) { Simpress::JSON.dump({ posts: [post.to_h(keys: described_class::DATA_JSON_KEYS)], total_pages: 1 }) }
+    let(:expected_index_json) { Simpress::JSON.dump({ entries: [entry.to_h(keys: described_class::DATA_JSON_KEYS)], total_pages: 1 }) }
 
     before do
       allow(Simpress::Writer).to receive(:write).with("/archives/categories/ruby/1.json", anything).and_yield("public/archives/categories/ruby/1.json")

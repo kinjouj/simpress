@@ -2,16 +2,16 @@
 
 ### index.erb
 
-| variable   | Description |
-|:----------:|:-------------|
-| @posts     | Array[Simpress::Post] |
+| variable   | Description   |
+| ---------- | ------------- |
+| @entries   | Array[Simpress::Entry] |
 | @paginator | Simpress::Paginator |
 | @key       | String optional |
 
 ### page.erb
 
-| variable | Description |
-|:--------:|:-------------|
-| @post    | Simpress::Post |
+| variable | Description  |
+| -------- | -------------|
+| @entry   | Simpress::Entry |
 
-See [post.md](./post.md) for the properties available on `Simpress::Post`.
+See [entry.md](./entry.md) for the properties available on `Simpress::Entry`.

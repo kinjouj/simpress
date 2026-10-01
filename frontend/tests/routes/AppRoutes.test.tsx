@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import AppRoutes from '../../src/routes/AppRoutes';
-import { testPostData } from '../fixtures/testPostData';
+import { testEntryData } from '../fixtures/testEntryData';
 
 describe('AppRoutes', () => {
   beforeEach(() => {
@@ -11,18 +11,18 @@ describe('AppRoutes', () => {
       let res: Response;
 
       switch (true) {
-        case path.endsWith('/recent_posts.json'):
-          res = new Response(JSON.stringify([testPostData]), { status: 200 });
+        case path.endsWith('/recent_entries.json'):
+          res = new Response(JSON.stringify([testEntryData]), { status: 200 });
           break;
 
         case path.endsWith('/archives/page/1.json'):
         case path.endsWith('/archives/1234/01/1.json'):
         case path.endsWith('/archives/categories/test/1.json'):
-          res = new Response(JSON.stringify({ posts: [testPostData], total_pages: 1 }), { status: 200 });
+          res = new Response(JSON.stringify({ entries: [testEntryData], total_pages: 1 }), { status: 200 });
           break;
 
         case path.endsWith('/test.json'):
-          res = new Response(JSON.stringify(testPostData), { status: 200 });
+          res = new Response(JSON.stringify(testEntryData), { status: 200 });
           break;
 
         default:
@@ -44,8 +44,8 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
 
-    const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });
-    expect(posts).toHaveLength(1);
+    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
+    expect(entries).toHaveLength(1);
   });
 
   test('<AppRoutes> initialEntries=/archives/categories/test', async () => {
@@ -55,8 +55,8 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
 
-    const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });
-    expect(posts).toHaveLength(1);
+    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
+    expect(entries).toHaveLength(1);
   });
 
   test('<AppRoutes> initialEntries=/archives/1234/01', async () => {
@@ -66,8 +66,8 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
 
-    const posts = await screen.findAllByRole('listitem', { name: 'post' }, { timeout: 10000 });
-    expect(posts).toHaveLength(1);
+    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
+    expect(entries).toHaveLength(1);
   });
 
   test('<AppRoutes> initialEntries=/test.html', async () => {
@@ -77,7 +77,7 @@ describe('AppRoutes', () => {
       </MemoryRouter>
     );
 
-    const post = await screen.findByRole('main', {}, { timeout: 10000 });
-    expect(post).toBeInTheDocument();
+    const entry = await screen.findByRole('main', {}, { timeout: 10000 });
+    expect(entry).toBeInTheDocument();
   });
 });

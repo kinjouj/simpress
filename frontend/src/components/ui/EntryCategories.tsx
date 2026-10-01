@@ -1,0 +1,29 @@
+import { Link } from 'react-router';
+import { Stack, type StackProps } from 'react-bootstrap';
+import type { TaxonomiesType } from '../../types';
+
+interface EntryCategoriesProps extends StackProps {
+  taxonomies: TaxonomiesType
+}
+
+const EntryCategories = ({ taxonomies, ...rest }: EntryCategoriesProps): React.JSX.Element => {
+  const props: StackProps = {
+    direction: 'horizontal',
+    gap: 3,
+    ...rest,
+  };
+
+  return (
+    <Stack {...props}>
+      {Object.entries(taxonomies).map(([taxonomy, terms]) => {
+        return terms.map((term) => (
+          <div key={term.key}>
+            <Link to={`/archives/${taxonomy}/${term.key}`} className="entry-category">{term.name}</Link>
+          </div>
+        ));
+      })}
+    </Stack>
+  );
+};
+
+export default EntryCategories;

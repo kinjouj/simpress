@@ -39,7 +39,7 @@ describe Simpress::Generator::Pipeline::Base do
       expect { described_class.each_page([]) }.to raise_error("block is required")
     end
 
-    it "slices posts and yields paginator" do
+    it "slices entries and yields paginator" do
       expect {|b| described_class.each_page([1, 2, 3], "blog", &b) }.to yield_successive_args(
         [[1, 2], have_attributes(page: 1)],
         [[3], have_attributes(page: 2)]
@@ -57,7 +57,7 @@ describe Simpress::Generator::Pipeline::Base do
 
   describe ".write_html" do
     it "renders template and writes with html extension" do
-      context = { posts: [] }
+      context = { entries: [] }
       described_class.write_html("index", template: "layout", **context)
       expect(Simpress::Theme).to have_received(:render).with("layout", **context)
       expect(Simpress::Writer).to have_received(:write).with("index.html", "<html></html>")

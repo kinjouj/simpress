@@ -26,7 +26,7 @@ describe Simpress::Theme::Helper do
     end
 
     it "returns an absolute URL with the hostname and html extension" do
-      expect(helper.canonical("/post-1")).to eq "https://example.com/post-1.html"
+      expect(helper.canonical("/entry-1")).to eq "https://example.com/entry-1.html"
     end
   end
 

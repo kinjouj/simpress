@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # @plugins/similarity/lib/simpress/plugin/similarity.rb
 
-require "simpress/post"
+require "simpress/entry"
 require "simpress/plugin/similarity"
 
 describe Simpress::Plugin::Similarity do
@@ -16,13 +16,13 @@ describe Simpress::Plugin::Similarity do
     Simpress::Plugin.clear
   end
 
-  let(:post1) do
+  let(:entry1) do
     build(
-      :post,
-      id: "post_001",
+      :entry,
+      id: "entry_001",
       title: "東京観光案内",
       date: Time.new(2026, 1, 23, 10, 0, 0),
-      permalink: "/posts/tokyo_travel_intro",
+      permalink: "/entries/tokyo_travel_intro",
       categories: ["旅行"],
       description: "東京観光のおすすめスポット",
       cover: "/images/no_image.png",
@@ -31,13 +31,13 @@ describe Simpress::Plugin::Similarity do
     )
   end
 
-  let(:post2) do
+  let(:entry2) do
     build(
-      :post,
-      id: "post_002",
+      :entry,
+      id: "entry_002",
       title: "家庭料理簡単レシピ",
       date: Time.new(2026, 1, 22, 9, 30, 0),
-      permalink: "/posts/home_cooking",
+      permalink: "/entries/home_cooking",
       categories: ["料理"],
       description: "家庭料理の基本レシピ",
       cover: "/images/no_image.png",
@@ -46,13 +46,13 @@ describe Simpress::Plugin::Similarity do
     )
   end
 
-  let(:post3) do
+  let(:entry3) do
     build(
-      :post,
-      id: "post_003",
+      :entry,
+      id: "entry_003",
       title: "東京観光ガイド",
       date: Time.new(2026, 1, 20, 15, 0, 0),
-      permalink: "/posts/tokyo_travel_guide",
+      permalink: "/entries/tokyo_travel_guide",
       categories: ["旅行"],
       description: "東京旅行の定番スポット紹介",
       cover: "/images/no_image.png",
@@ -61,13 +61,13 @@ describe Simpress::Plugin::Similarity do
     )
   end
 
-  let(:post4) do
+  let(:entry4) do
     build(
-      :post,
-      id: "post_004",
+      :entry,
+      id: "entry_004",
       title: "料理レシピ: カレー",
       date: Time.new(2026, 1, 21, 12, 0, 0),
-      permalink: "/posts/curry_recipe",
+      permalink: "/entries/curry_recipe",
       categories: ["料理"],
       description: "家庭で作れるカレー",
       cover: "/images/no_image.png",
@@ -76,13 +76,13 @@ describe Simpress::Plugin::Similarity do
     )
   end
 
-  let(:post5) do
+  let(:entry5) do
     build(
-      :post,
-      id: "post_005",
+      :entry,
+      id: "entry_005",
       title: "料理レシピ: かんたんパスタ",
       date: Time.new(2026, 1, 21, 12, 0, 0),
-      permalink: "/posts/pasta_recipe",
+      permalink: "/entries/pasta_recipe",
       categories: ["料理"],
       description: "時短かんたんパスタ",
       cover: "/images/no_image.png",
@@ -91,43 +91,43 @@ describe Simpress::Plugin::Similarity do
     )
   end
 
-  let(:posts) { [post1, post2, post3, post4, post5] }
+  let(:entries) { [entry1, entry2, entry3, entry4, entry5] }
 
-  it "assigns correct similarity data to each post" do
-    described_class.run(posts)
+  it "assigns correct similarity data to each entry" do
+    described_class.run(entries)
 
-    expect(posts[0]).to respond_to(:similarities)
-    expect(posts[0].similarities.size).to eq(1)
-    expect(posts[0].similarities.first.id).to eq("post_003")
+    expect(entries[0]).to respond_to(:similarities)
+    expect(entries[0].similarities.size).to eq(1)
+    expect(entries[0].similarities.first.id).to eq("entry_003")
 
-    expect(posts[1]).to respond_to(:similarities)
-    expect(posts[1].similarities.size).to eq(2)
-    expect(posts[1].similarities.map(&:id)).to contain_exactly("post_004", "post_005")
+    expect(entries[1]).to respond_to(:similarities)
+    expect(entries[1].similarities.size).to eq(2)
+    expect(entries[1].similarities.map(&:id)).to contain_exactly("entry_004", "entry_005")
 
-    expect(posts[2]).to respond_to(:similarities)
-    expect(posts[2].similarities.size).to eq(1)
-    expect(posts[2].similarities.first.id).to eq("post_001")
+    expect(entries[2]).to respond_to(:similarities)
+    expect(entries[2].similarities.size).to eq(1)
+    expect(entries[2].similarities.first.id).to eq("entry_001")
 
-    expect(posts[3]).to respond_to(:similarities)
-    expect(posts[3].similarities.size).to eq(2)
-    expect(posts[3].similarities.map(&:id)).to contain_exactly("post_002", "post_005")
+    expect(entries[3]).to respond_to(:similarities)
+    expect(entries[3].similarities.size).to eq(2)
+    expect(entries[3].similarities.map(&:id)).to contain_exactly("entry_002", "entry_005")
 
-    expect(posts[4]).to respond_to(:similarities)
-    expect(posts[4].similarities.size).to eq(2)
-    expect(posts[4].similarities.map(&:id)).to contain_exactly("post_004", "post_002")
+    expect(entries[4]).to respond_to(:similarities)
+    expect(entries[4].similarities.size).to eq(2)
+    expect(entries[4].similarities.map(&:id)).to contain_exactly("entry_004", "entry_002")
   end
 
   context "when returns no scores" do
-    let(:indexer) { Simpress::Plugin::Similarity::Indexer.new(posts) }
+    let(:indexer) { Simpress::Plugin::Similarity::Indexer.new(entries) }
 
     before do
-      allow(indexer).to receive(:each_similarity) {|&block| posts.size.times {|i| block.call([], i) } }
+      allow(indexer).to receive(:each_similarity) {|&block| entries.size.times {|i| block.call([], i) } }
       allow(Simpress::Plugin::Similarity::Indexer).to receive(:new).and_return(indexer)
     end
 
-    it "sets similarities to empty for all posts" do
-      described_class.run(posts)
-      posts.each {|post| expect(post.similarities).to be_empty }
+    it "sets similarities to empty for all entries" do
+      described_class.run(entries)
+      entries.each {|entry| expect(entry.similarities).to be_empty }
     end
   end
 
@@ -137,13 +137,13 @@ describe Simpress::Plugin::Similarity do
     end
 
     it "includes similarities in to_h when content key is present" do
-      described_class.run(posts)
-      expect(posts[0].to_h(keys: [:title, :content])).to include(:similarities)
+      described_class.run(entries)
+      expect(entries[0].to_h(keys: [:title, :content])).to include(:similarities)
     end
 
     it "excludes similarities from to_h when content key is absent" do
-      described_class.run(posts)
-      expect(posts[0].to_h(keys: [:title])).not_to include(:similarities)
+      described_class.run(entries)
+      expect(entries[0].to_h(keys: [:title])).not_to include(:similarities)
     end
   end
 end

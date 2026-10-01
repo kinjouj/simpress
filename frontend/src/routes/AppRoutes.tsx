@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router';
-import { ArchivesPage, CategoryPage, PostListPage, PostPage } from '../pages';
+import { ArchivesPage, CategoryPage, EntryListPage, EntryPage } from '../pages';
 import { Layout, NotFound } from '../components';
 import { useCategory, useYearOfMonth } from '../hooks';
 
@@ -33,8 +33,8 @@ const AppRoutes = (): React.JSX.Element => {
         <Route path="/archives/categories/:category/:page" element={<CategoryPage />} />
         <Route path="/archives/:year/:month" element={<ArchivePageRedirectRoute />} />
         <Route path="/archives/:year/:month/:page" element={<ArchivesPage />} />
-        <Route path="/page/:page" element={<PostListPage />} />
-        <Route path="/*" element={<PostPage />} />
+        <Route path="/page/:page" element={<EntryListPage />} />
+        <Route path="/*" element={<EntryPage />} />
       </Route>
     </Routes>
   );

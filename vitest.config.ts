@@ -12,8 +12,9 @@ export default defineConfig({
     environment: 'jsdom',
     css: false,
     setupFiles: ['tests/setupTests.ts'],
-    clearMocks: true,
+    mockReset: true,
     restoreMocks: true,
+    unstubGlobals: true,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

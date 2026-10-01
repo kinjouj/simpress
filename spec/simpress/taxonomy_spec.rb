@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "simpress/post"
+require "simpress/entry"
 require "simpress/taxonomy"
 
 describe Simpress::Taxonomy do
@@ -56,10 +56,10 @@ describe Simpress::Taxonomy do
   end
 
   describe ".register" do
-    it "registers the post to each term in the given taxonomies" do
-      post = build(:post, categories: ["Ruby"])
-      described_class.register(post.taxonomies, post)
-      expect(post.taxonomies["categories"].first.posts).to include(post)
+    it "registers the entry to each term in the given taxonomies" do
+      entry = build(:entry, categories: ["Ruby"])
+      described_class.register(entry.taxonomies, entry)
+      expect(entry.taxonomies["categories"].first.entries).to include(entry)
     end
   end
 

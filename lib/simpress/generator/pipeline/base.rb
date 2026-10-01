@@ -33,14 +33,14 @@ module Simpress
           end
           # simplecov:enable
 
-          def each_page(posts, prefix = nil)
+          def each_page(entries, prefix = nil)
             raise "block is required" unless block_given?
 
             per_page = Simpress::Config.instance.paginate || 10
-            page_size = (posts.size / per_page.to_f).ceil
-            posts.each_slice(per_page).with_index(1) do |slice_posts, page|
+            page_size = (entries.size / per_page.to_f).ceil
+            entries.each_slice(per_page).with_index(1) do |slice, page|
               paginator = Simpress::Paginator.new(page: page, maxpage: page_size, prefix: prefix)
-              yield slice_posts, paginator
+              yield slice, paginator
             end
           end
 

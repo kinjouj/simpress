@@ -29,7 +29,7 @@ const TableOfContents = ({ toc }: { toc: TocType[] }): React.JSX.Element | null 
   }
 
   return (
-    <div className="post-toc rounded-3 p-2">
+    <div className="entry-toc rounded-3 p-2">
       <h6 className="text-center">Table of Contents</h6>
       {flattenToc(toc).map((item) => (
         <a key={item.id} href={`#${item.id}`} className={`d-block p-1 overflow-hidden ms-${Math.min(item.depth, 5)}`} onClick={scrollToSection}>

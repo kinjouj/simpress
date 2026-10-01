@@ -29,8 +29,8 @@ describe Simpress::Parser::Markdown::Renderer do
 
   describe "#link" do
     it "collects internal links starting with /" do
-      renderer.link("/2026/01/post.html", nil, "post")
-      expect(renderer.links).to eq ["/2026/01/post.html"]
+      renderer.link("/2026/01/entry.html", nil, "entry")
+      expect(renderer.links).to eq ["/2026/01/entry.html"]
     end
 
     it "ignores external links" do
@@ -44,8 +44,8 @@ describe Simpress::Parser::Markdown::Renderer do
     end
 
     it "returns an anchor tag" do
-      result = renderer.link("/2026/01/post.html", nil, "post")
-      expect(result).to eq '<a href="/2026/01/post.html" target="_blank" rel="noopener">post</a>'
+      result = renderer.link("/2026/01/entry.html", nil, "entry")
+      expect(result).to eq '<a href="/2026/01/entry.html" target="_blank" rel="noopener">entry</a>'
     end
   end
 

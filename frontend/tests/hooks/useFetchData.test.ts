@@ -1,41 +1,41 @@
 import { useCallback } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useFetchData } from '../../src/hooks';
-import { testPostData } from '../fixtures/testPostData';
-import type { PostType } from '../../src/types';
+import { testEntryData } from '../fixtures/testEntryData';
+import type { EntryType } from '../../src/types';
 
 describe('useFetchData', () => {
   describe('useFetchData test', () => {
     test('isLoading is true on initial render, before the fetcher resolves', () => {
       const { result } = renderHook(() => {
-        const fetcher = useCallback(() => new Promise<PostType>(() => {}), []);
-        return useFetchData<PostType>(fetcher);
+        const fetcher = useCallback(() => new Promise<EntryType>(() => {}), []);
+        return useFetchData(fetcher);
       });
 
       const { data, isLoading, isError } = result.current;
-      expect(isLoading).toBeTruthy();
-      expect(isError).toBeFalsy();
+      expect(isLoading).toBe(true);
+      expect(isError).toBe(false);
       expect(data).toBeNull();
     });
 
     test('successful', async () => {
       const { result } = renderHook(() => {
-        const fetcher = useCallback(() => Promise.resolve(testPostData), []);
-        return useFetchData<PostType>(fetcher);
+        const fetcher = useCallback(() => Promise.resolve(testEntryData), []);
+        return useFetchData(fetcher);
       });
 
       await waitFor(() => {
         const { data, isLoading, isError } = result.current;
-        expect(isLoading).toBeFalsy();
-        expect(isError).toBeFalsy();
+        expect(isLoading).toBe(false);
+        expect(isError).toBe(false);
         expect(data?.title).toBe('test1');
       });
     });
 
     test('unmount test', async () => {
       const { result, unmount } = renderHook(() => {
-        const fetcher = useCallback(() => Promise.resolve(testPostData), []);
-        return useFetchData<PostType>(fetcher);
+        const fetcher = useCallback(() => Promise.resolve(testEntryData), []);
+        return useFetchData(fetcher);
       });
 
       unmount();
@@ -43,7 +43,7 @@ describe('useFetchData', () => {
       await waitFor(() => {
         const { data, isError } = result.current;
         expect(data).toBeNull();
-        expect(isError).toBeFalsy();
+        expect(isError).toBe(false);
       });
     });
   });
@@ -52,13 +52,13 @@ describe('useFetchData', () => {
     test('successful', async () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => Promise.reject(new Error('error')), []);
-        return useFetchData<PostType>(fetcher);
+        return useFetchData(fetcher);
       });
 
       await waitFor(() => {
         const { data, isLoading, isError } = result.current;
-        expect(isLoading).toBeFalsy();
-        expect(isError).toBeTruthy();
+        expect(isLoading).toBe(false);
+        expect(isError).toBe(true);
         expect(data).toBeNull();
       });
     });
@@ -66,14 +66,14 @@ describe('useFetchData', () => {
     test('unmount test', async () => {
       const { result, unmount } = renderHook(() => {
         const fetcher = useCallback(() => Promise.reject(new Error('error')), []);
-        return useFetchData<PostType>(fetcher);
+        return useFetchData(fetcher);
       });
 
       unmount();
 
       await waitFor(() => {
         const { data, isError } = result.current;
-        expect(isError).toBeFalsy();
+        expect(isError).toBe(false);
         expect(data).toBeNull();
       });
     });

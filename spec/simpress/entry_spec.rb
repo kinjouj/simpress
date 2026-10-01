@@ -1,0 +1,221 @@
+# frozen_string_literal: true
+
+require "simpress/entry"
+require "simpress/taxonomy"
+
+describe Simpress::Entry do
+  let(:date) { Time.new(2026, 1, 1) }
+
+  let(:params) do
+    {
+      id: "entry-123",
+      title: "Sample Entry",
+      date: date,
+      permalink: "/sample-entry",
+      description: "Short description",
+      cover: "cover.png",
+      layout: "default",
+      index: true,
+      draft: false,
+      markdown: "Main content here",
+      categories: ["Ruby"]
+    }
+  end
+
+  let(:rendered_content) { "<p>Main content here</p>" }
+  let(:render_result) do
+    Simpress::Parser::Markdown::Processor::Result.new(
+      content: rendered_content,
+      toc: [{ id: "section-1", text: "Heading", children: [] }],
+      links: ["/2026/01/other.html"],
+      cover: "/images/extracted.png"
+    )
+  end
+
+  before do
+    allow(Simpress::Config.instance).to receive(:taxonomies).and_return({ "categories" => { "Ruby" => "ruby" } })
+    allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(render_result)
+  end
+
+  after do
+    Simpress::Taxonomy.clear
+  end
+
+  describe "#initialize" do
+    it "assigns properties" do
+      entry = described_class.new(params)
+      expect(entry.id).to eq "entry-123"
+      expect(entry.title).to eq "Sample Entry"
+      expect(entry.date).to eq date
+      expect(entry.permalink).to eq "/sample-entry"
+    end
+
+    it "integrates with real taxonomy terms without registering itself yet" do
+      entry = described_class.new(params)
+      category_terms = entry.taxonomies["categories"]
+      expect(category_terms.size).to eq 1
+      expect(category_terms.first.name).to eq "Ruby"
+      expect(category_terms.first.entries).not_to include(entry)
+    end
+
+    it "does not render the markdown body until #load! is called" do
+      entry = described_class.new(params)
+      expect(Simpress::Parser::Markdown::Processor).not_to have_received(:render)
+      expect(entry.content).to be_nil
+      expect(entry.toc).to be_nil
+      expect(entry.links).to be_nil
+    end
+
+    it "defaults prev and next to nil" do
+      entry = described_class.new(params)
+      expect(entry.prev).to be_nil
+      expect(entry.next).to be_nil
+    end
+  end
+
+  describe "#load!" do
+    it "renders the markdown body and fills in content/toc/links/cover" do
+      entry = described_class.new(params)
+      entry.load!
+      expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with("Main content here")
+      expect(entry.content).to eq rendered_content
+      expect(entry.toc).to eq [{ id: "section-1", text: "Heading", children: [] }]
+      expect(entry.links).to eq ["/2026/01/other.html"]
+    end
+
+    it "does not re-render on subsequent calls" do
+      entry = described_class.new(params)
+      entry.load!
+      entry.load!
+      expect(Simpress::Parser::Markdown::Processor).to have_received(:render).once
+    end
+
+    it "prefers the cover given in params over the one extracted from the body" do
+      entry = described_class.new(params)
+      entry.load!
+      expect(entry.cover).to eq "cover.png"
+    end
+
+    it "prefers the description given in params over the one extracted from the body" do
+      entry = described_class.new(params)
+      entry.load!
+      expect(entry.description).to eq "Short description"
+    end
+
+    context "when description is not given in params" do
+      let(:params) { super().except(:description) }
+      let(:rendered_content) { "<p>First paragraph.</p>\n<p>Second paragraph.</p>" }
+
+      it "falls back to the text of the first paragraph in the rendered body" do
+        entry = described_class.new(params)
+        entry.load!
+        expect(entry.description).to eq "First paragraph."
+      end
+    end
+
+    context "when description is not given in params and the first paragraph contains inline tags" do
+      let(:params) { super().except(:description) }
+      let(:rendered_content) { "<p>Hello <strong>world</strong>!</p>" }
+
+      it "strips inline tags from the extracted description" do
+        entry = described_class.new(params)
+        entry.load!
+        expect(entry.description).to eq "Hello world!"
+      end
+    end
+
+    context "when cover is not given in params" do
+      let(:params) { super().except(:cover) }
+
+      it "falls back to the image extracted from the body" do
+        entry = described_class.new(params)
+        entry.load!
+        expect(entry.cover).to eq "/images/extracted.png"
+      end
+    end
+
+    context "when cover is not given in params and no image was extracted from the body" do
+      let(:params) { super().except(:cover) }
+      let(:render_result) do
+        Simpress::Parser::Markdown::Processor::Result.new(content: rendered_content, toc: [], links: [], cover: nil)
+      end
+
+      it "falls back to the default cover" do
+        entry = described_class.new(params)
+        entry.load!
+        expect(entry.cover).to eq described_class::DEFAULT_COVER
+      end
+    end
+  end
+
+  describe "#prev and #next" do
+    it "is nil by default and can be assigned" do
+      entry = described_class.new(params)
+      expect(entry.prev).to be_nil
+      expect(entry.next).to be_nil
+
+      link = Simpress::Entry::Link.new(entry)
+      entry.prev = link
+      entry.next = link
+      expect(entry.prev).to eq link
+      expect(entry.next).to eq link
+    end
+  end
+
+  describe "#to_h" do
+    it "returns a hash containing only permitted json keys" do
+      entry = described_class.new(params)
+      entry.load!
+      result = entry.to_h
+      expect(result.keys).to match_array(described_class::PERMITTED_JSON_KEYS)
+      expect(result[:id]).to eq "entry-123"
+    end
+
+    it "filters keys when specific keys are requested" do
+      entry = described_class.new(params)
+      result = entry.to_h(keys: [:title, :permalink])
+      expect(result.keys).to contain_exactly(:title, :permalink)
+    end
+
+    it "includes the assigned prev and next" do
+      newer = described_class.new(id: "entry-456", title: "Newer Entry", permalink: "/newer-entry")
+      older = described_class.new(id: "entry-789", title: "Older Entry", permalink: "/older-entry")
+      entry = described_class.new(params)
+      entry.load!
+      entry.prev = Simpress::Entry::Link.new(older)
+      entry.next = Simpress::Entry::Link.new(newer)
+      result = entry.to_h
+      expect(result[:prev]).to eq entry.prev
+      expect(result[:next]).to eq entry.next
+    end
+
+    it "includes nil prev and next by default" do
+      entry = described_class.new(params)
+      entry.load!
+      result = entry.to_h
+      expect(result[:prev]).to be_nil
+      expect(result[:next]).to be_nil
+    end
+  end
+
+  describe "#as_json" do
+    it "returns the same hash as #to_h" do
+      entry = described_class.new(params)
+      entry.load!
+      expect(entry.as_json).to eq entry.to_h
+    end
+  end
+
+  describe "#to_json" do
+    let(:json_output) { '{"id":"entry-123"}' }
+
+    it "dumps the hash using Simpress::JSON" do
+      entry = described_class.new(params)
+      entry.load!
+      allow(Simpress::JSON).to receive(:dump).and_return(json_output)
+      result = entry.to_json
+      expect(Simpress::JSON).to have_received(:dump).with(entry.as_json)
+      expect(result).to eq json_output
+    end
+  end
+end

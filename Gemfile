@@ -30,5 +30,5 @@ end
 group :test do
   gem "factory_bot", "~> 6.6"
   gem "rspec", "~> 3.13"
-  gem "simplecov", "~> 1.3.0", require: false
+  gem "simplecov", "~> 1.3.1", require: false
 end

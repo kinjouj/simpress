@@ -1,11 +1,10 @@
 import React, { Suspense, useCallback, useLayoutEffect } from 'react';
 import Simpress from '../api/Simpress';
-import { NotFound, Paginator, PostList } from '../components';
+import { NotFound, Paginator, EntryList } from '../components';
 import { PaginateProvider } from '../contexts/PaginateContext';
 import { useFetchData, usePage, useYearOfMonth } from '../hooks';
-import type { PagedPostsType } from '../types';
 
-const LazyPostListSkeleton = React.lazy(() => import('../components/PostListSkeleton'));
+const LazyEntryListSkeleton = React.lazy(() => import('../components/EntryListSkeleton'));
 
 const ArchivesPage = (): React.JSX.Element => {
   const { year, month } = useYearOfMonth();
@@ -16,10 +15,10 @@ const ArchivesPage = (): React.JSX.Element => {
     }
 
     await new Promise((r) => setTimeout(r, 3000));
-    return Simpress.getPostsByArchive(year, month, page);
+    return Simpress.getEntriesByArchive(year, month, page);
   }, [year, month, page]);
 
-  const { data, isError, isLoading } = useFetchData<PagedPostsType | null>(fetcher);
+  const { data, isError, isLoading } = useFetchData(fetcher);
 
   useLayoutEffect(() => {
     if (data === null) {
@@ -38,14 +37,14 @@ const ArchivesPage = (): React.JSX.Element => {
   if (isLoading || data === null) {
     return (
       <Suspense fallback={<div>loading...</div>}>
-        <LazyPostListSkeleton />
+        <LazyEntryListSkeleton />
       </Suspense>
     );
   }
 
   return (
     <PaginateProvider value={{ page, totalPages: data.total_pages }}>
-      <PostList posts={data.posts} />
+      <EntryList entries={data.entries} />
       <Paginator basePath={`/archives/${year}/${month}`} />
     </PaginateProvider>
   );

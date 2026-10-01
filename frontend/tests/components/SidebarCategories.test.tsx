@@ -7,7 +7,7 @@ vi.mock('../../src/api/Simpress');
 const SimpressMock = vi.mocked(Simpress);
 
 describe('SidebarCategories', () => {
-  test('renders categories sorted by post count, most posts first', async () => {
+  test('renders categories sorted by entry count, most entries first', async () => {
     SimpressMock.getCategories.mockResolvedValue([
       { key: 'ruby', name: 'Ruby', count: 1 },
       { key: 'js', name: 'JavaScript', count: 3 },

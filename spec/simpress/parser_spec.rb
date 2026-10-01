@@ -3,12 +3,12 @@
 require "simpress/parser"
 
 describe Simpress::Parser do
-  let(:file) { "2026-01-01-test-post.md" }
+  let(:file) { "2026-01-01-test-entry.md" }
   let(:markdown) do
     <<~MD
       ---
       title: Test Title
-      permalink: /2026/01/test-post
+      permalink: /2026/01/test-entry
       ---
       This is the description.
 
@@ -20,7 +20,7 @@ describe Simpress::Parser do
     Simpress::Parser::Markdown::Processor::Result.new(
       content: "<p>This is the description.</p>\n<p>This is the content.</p>",
       toc: [],
-      links: ["/2026/01/other-post.html"],
+      links: ["/2026/01/other-entry.html"],
       cover: "cover.jpg"
     )
   end
@@ -32,33 +32,31 @@ describe Simpress::Parser do
   end
 
   describe ".parse" do
-    it "returns a post" do
-      post = described_class.parse(file)
-      post.load!
+    it "returns a entry" do
+      entry = described_class.parse(file)
+      entry.load!
 
-      expect(post.id).to eq "999"
-      expect(post.title).to eq "Test Title"
-      expect(post.date).to eq Time.new(2026, 1, 1)
-      expect(post.permalink).to eq "/2026/01/test-post"
-      expect(post.content).to eq "<p>This is the description.</p>\n<p>This is the content.</p>"
-      expect(post.description).to eq "This is the description."
-      expect(post.cover).to eq "cover.jpg"
-      expect(post.links).to eq ["/2026/01/other-post.html"]
+      expect(entry.id).to eq "999"
+      expect(entry.title).to eq "Test Title"
+      expect(entry.date).to eq Time.new(2026, 1, 1)
+      expect(entry.permalink).to eq "/2026/01/test-entry"
+      expect(entry.content).to eq "<p>This is the description.</p>\n<p>This is the content.</p>"
+      expect(entry.description).to eq "This is the description."
+      expect(entry.cover).to eq "cover.jpg"
+      expect(entry.links).to eq ["/2026/01/other-entry.html"]
     end
 
     context "when date cannot be derived from front matter or file name" do
       before do
-        allow(File).to receive(:read).with("no-date.md").and_return(
-          "---\ntitle: No Date\npermalink: /no-date\n---\nbody"
-        )
+        allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\npermalink: /no-date\n---\nbody")
       end
 
       it "falls back to current time and forces index to false" do
-        post = described_class.parse("no-date.md")
+        entry = described_class.parse("no-date.md")
 
-        expect(post.date).to be_a(Time)
-        expect(post.date).to be_within(5).of(Time.now)
-        expect(post.index).to be_falsy
+        expect(entry.date).to be_a(Time)
+        expect(entry.date).to be_within(5).of(Time.now)
+        expect(entry.index).to be_falsy
       end
     end
 
@@ -72,7 +70,7 @@ describe Simpress::Parser do
       end
 
       it "generates permalink from date and basename" do
-        expect(described_class.parse(file).permalink).to eq "/2026/01/2026-01-01-test-post"
+        expect(described_class.parse(file).permalink).to eq "/2026/01/2026-01-01-test-entry"
       end
     end
 
@@ -96,7 +94,7 @@ describe Simpress::Parser do
         time_string_md = <<~MD
           ---
           title: Test Title
-          permalink: /2026/01/test-post
+          permalink: /2026/01/test-entry
           date: 2025-01-01 00:00:00 +0900
           ---
         MD
@@ -106,7 +104,7 @@ describe Simpress::Parser do
         date_md = <<~MD
           ---
           title: Test Title
-          permalink: /2026/01/test-post
+          permalink: /2026/01/test-entry
           date: 2025-01-01
           ---
         MD
@@ -116,7 +114,7 @@ describe Simpress::Parser do
         string_md = <<~MD
           ---
           title: Test Title
-          permalink: /2026/01/test-post
+          permalink: /2026/01/test-entry
           date: "2025-01-01"
           ---
         MD

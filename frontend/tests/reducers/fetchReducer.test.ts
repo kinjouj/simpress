@@ -1,6 +1,6 @@
 import { fetchReducer } from '../../src/reducers/fetchReducer';
-import { testPostData } from '../fixtures/testPostData';
-import type { PostType } from '../../src/types';
+import { testEntryData } from '../fixtures/testEntryData';
+import type { EntryType } from '../../src/types';
 
 describe('fetchReducer', () => {
   test('fetchReducer test', () => {
@@ -9,31 +9,31 @@ describe('fetchReducer', () => {
       { type: 'FETCH_DEFAULT' } as any // eslint-disable-line
     );
     expect(stateDefault.data).toBeNull();
-    expect(stateDefault.isLoading).toBeFalsy();
-    expect(stateDefault.isError).toBeTruthy();
+    expect(stateDefault.isLoading).toBe(false);
+    expect(stateDefault.isError).toBe(true);
 
-    const stateStart = fetchReducer<PostType>(
+    const stateStart = fetchReducer<EntryType>(
       { data: null, isLoading: false, isError: true },
       { type: 'FETCH_START' }
     );
-    expect(stateStart.isLoading).toBeTruthy();
-    expect(stateStart.isError).toBeFalsy();
+    expect(stateStart.isLoading).toBe(true);
+    expect(stateStart.isError).toBe(false);
     expect(stateStart.data).toBeNull();
 
-    const stateComplete = fetchReducer<PostType>(
+    const stateComplete = fetchReducer<EntryType>(
       { data: null, isLoading: true, isError: true },
-      { type: 'FETCH_COMPLETE', payload: testPostData }
+      { type: 'FETCH_COMPLETE', payload: testEntryData }
     );
     expect(stateComplete.data).not.toBeNull();
-    expect(stateComplete.isLoading).toBeFalsy();
-    expect(stateComplete.isError).toBeFalsy();
+    expect(stateComplete.isLoading).toBe(false);
+    expect(stateComplete.isError).toBe(false);
 
     const stateError = fetchReducer(
       { data: null, isLoading: true, isError: false },
       { type: 'FETCH_ERROR' }
     );
     expect(stateError.data).toBeNull();
-    expect(stateError.isLoading).toBeFalsy();
-    expect(stateError.isError).toBeTruthy();
+    expect(stateError.isLoading).toBe(false);
+    expect(stateError.isError).toBe(true);
   });
 });

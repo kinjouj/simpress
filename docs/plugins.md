@@ -23,7 +23,7 @@ module Simpress
     class Sample
       extend Simpress::Plugin
 
-      def self.run(posts)
+      def self.run(entries)
         # TODO
       end
     end

@@ -15,7 +15,7 @@ describe Simpress::Taxonomy::Term do
     it "assigns properties" do
       expect(term.key).to eq "ruby-on-rails"
       expect(term.name).to eq term_name
-      expect(term.posts).to eq []
+      expect(term.entries).to eq []
       expect(term.children).to eq []
     end
   end
@@ -32,10 +32,10 @@ describe Simpress::Taxonomy::Term do
 
   describe "#count" do
     before do
-      allow(term.posts).to receive(:size).and_return(5)
+      allow(term.entries).to receive(:size).and_return(5)
     end
 
-    it "returns the number of associated posts" do
+    it "returns the number of associated entries" do
       expect(term.count).to eq 5
     end
   end

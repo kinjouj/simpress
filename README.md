@@ -41,7 +41,7 @@ default:
   host: https://example.com
   paginate: 10
   plugins:
-    - recent_posts
+    - recent_entries
 ```
 
 
@@ -67,7 +67,7 @@ TEST BODY
 ### SEE ALSO
 
 
-- [Simpress::Post Object Specification](docs/post.md)
+- [Simpress::Entry Object Specification](docs/entry.md)
 - [Parameters](docs/parameters.md)
 - [taxonomies.yaml](docs/taxonomies.md)
 - [Theme Variables](docs/theme.md)

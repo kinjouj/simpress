@@ -27,7 +27,7 @@ describe Simpress::Plugin do
           class #{class_name}
             extend Simpress::Plugin
 
-            def self.run(posts); end
+            def self.run(entries); end
           end
         end
       end
@@ -121,7 +121,7 @@ describe Simpress::Plugin do
       test_plugin = Class.new do
         extend Simpress::Plugin
 
-        def self.run(posts)
+        def self.run(entries)
           # TEST
         end
       end
@@ -141,7 +141,7 @@ describe Simpress::Plugin do
           10
         end
 
-        def self.run(posts)
+        def self.run(entries)
           # TEST
         end
       end
@@ -153,7 +153,7 @@ describe Simpress::Plugin do
           1
         end
 
-        def self.run(posts)
+        def self.run(entries)
           # TEST
         end
       end

@@ -9,7 +9,7 @@ require "simpress/parser/markdown/filter"
 
 module Simpress
   module Plugin
-    def run(posts = [])
+    def run(entries = [])
       raise NotImplementedError
     end
 
@@ -48,8 +48,8 @@ module Simpress
         @loader.eager_load
       end
 
-      def process(posts = [])
-        register_plugins.sort_by {|klass| -klass.priority }.each {|klass| klass.run(posts) }
+      def process(entries = [])
+        register_plugins.sort_by {|klass| -klass.priority }.each {|klass| klass.run(entries) }
       end
 
       def clear

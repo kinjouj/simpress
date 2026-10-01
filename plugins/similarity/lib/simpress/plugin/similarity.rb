@@ -8,18 +8,18 @@ require "natto"
 require "xxhash"
 require "simpress/json"
 require "simpress/plugin"
-require "simpress/post"
+require "simpress/entry"
 
 module Simpress
   module Plugin
     class Similarity
       extend Simpress::Plugin
 
-      def self.run(posts)
-        indexer = Indexer.new(posts)
+      def self.run(entries)
+        indexer = Indexer.new(entries)
         indexer.each_similarity do |scores, i|
-          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Post::Link.new(posts[index]) }
-          posts[i] = PostWithSimilarities.new(posts[i], similarities)
+          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Entry::Link.new(entries[index]) }
+          entries[i] = EntryWithSimilarities.new(entries[i], similarities)
         end
 
         Indexer::Cache.flush
@@ -35,19 +35,19 @@ module Simpress
 
         attr_reader :keywords
 
-        def initialize(posts)
-          @size = posts.size
+        def initialize(entries)
+          @size = entries.size
           @accumulator = Array.new(@size, 0.0)
           @touched = Array.new(@size)
           @keywords = {}
           @backlink_pairs = []
-          permalink_index = posts.each_with_index.to_h {|post, i| [post.permalink, i] }
+          permalink_index = entries.each_with_index.to_h {|entry, i| [entry.permalink, i] }
           doc_lens = []
-          @vectors = posts.map do |post|
-            @backlink_pairs << (post.backlinks || []).filter_map {|entry| permalink_index[entry.permalink] }
-            keywords = extract_keywords(post)
+          @vectors = entries.map do |entry|
+            @backlink_pairs << (entry.backlinks || []).filter_map {|e| permalink_index[e.permalink] }
+            keywords = extract_keywords(entry)
             vector = keywords.tally
-            post.taxonomies.each_value do |terms|
+            entry.taxonomies.each_value do |terms|
               terms.each do |term|
                 n = term.name
                 v = vector[n] || 0
@@ -56,7 +56,7 @@ module Simpress
             end
 
             vector.select! {|_, v| v >= 2 }
-            # @keywords[post.id] = keywords
+            # @keywords[entry.id] = keywords
             doc_lens << vector.each_value.sum.to_f
             vector
           end
@@ -91,9 +91,9 @@ module Simpress
           [idf, index]
         end
 
-        def extract_keywords(post)
-          key = (XXhash.xxh32(post.title) ^ XXhash.xxh32(post.markdown, 1)).to_s
-          Cache.fetch(key) { NATTO.parse("#{post.title} #{post.markdown}").scan(NATTO_REGEX).map!(&:first) }
+        def extract_keywords(entry)
+          key = (XXhash.xxh32(entry.title) ^ XXhash.xxh32(entry.markdown, 1)).to_s
+          Cache.fetch(key) { NATTO.parse("#{entry.title} #{entry.markdown}").scan(NATTO_REGEX).map!(&:first) }
         end
 
         def scores_for(i)
@@ -161,13 +161,13 @@ module Simpress
         end
       end
 
-      class PostWithSimilarities < SimpleDelegator
+      class EntryWithSimilarities < SimpleDelegator
         include Simpress::JSON::Serializable
 
         attr_reader :similarities
 
-        def initialize(post, similarities)
-          super(post)
+        def initialize(entry, similarities)
+          super(entry)
           @similarities = similarities
         end
 

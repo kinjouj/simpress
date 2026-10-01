@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "simpress/generator/pipeline/permalink"
-require "simpress/post"
+require "simpress/entry"
 
 describe Simpress::Generator::Pipeline::Permalink do
-  let(:post) { build(:post, title: "My Post", permalink: "my-post", layout: "page", date: Time.new(2026, 1, 1)) }
+  let(:entry) { build(:entry, title: "My Entry", permalink: "my-entry", layout: "page", date: Time.new(2026, 1, 1)) }
 
   before do
     allow(Simpress::Logger).to receive(:verbose)
@@ -13,30 +13,30 @@ describe Simpress::Generator::Pipeline::Permalink do
   describe ".generate_html" do
     before do
       allow(Simpress::Theme).to receive(:render).and_return("<html>content</html>")
-      allow(Simpress::Writer).to receive(:write).and_yield("public/my-post.html")
+      allow(Simpress::Writer).to receive(:write).and_yield("public/my-entry.html")
       allow(File).to receive(:utime)
     end
 
-    it "writes html and sets mtime for the post" do
-      described_class.generate_html(post)
-      expect(Simpress::Theme).to have_received(:render).with("page", post: post)
-      expect(Simpress::Writer).to have_received(:write).with("my-post.html", "<html>content</html>")
-      expect(File).to have_received(:utime).with(post.date, post.date, "public/my-post.html")
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: My Post public/my-post.html")
+    it "writes html and sets mtime for the entry" do
+      described_class.generate_html(entry)
+      expect(Simpress::Theme).to have_received(:render).with("page", entry: entry)
+      expect(Simpress::Writer).to have_received(:write).with("my-entry.html", "<html>content</html>")
+      expect(File).to have_received(:utime).with(entry.date, entry.date, "public/my-entry.html")
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: My Entry public/my-entry.html")
     end
   end
 
   describe ".generate_json" do
-    let(:expected_post_json) { Simpress::JSON.dump(post, keys: described_class::DATA_JSON_KEYS) }
+    let(:expected_entry_json) { Simpress::JSON.dump(entry, keys: described_class::DATA_JSON_KEYS) }
 
     before do
-      allow(Simpress::Writer).to receive(:write).with(anything, expected_post_json).and_yield("public/my-post.json")
+      allow(Simpress::Writer).to receive(:write).with(anything, expected_entry_json).and_yield("public/my-entry.json")
     end
 
     it "writes json with permitted keys" do
-      described_class.generate_json(post)
-      expect(Simpress::Writer).to have_received(:write).with(anything, expected_post_json)
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: My Post public/my-post.json")
+      described_class.generate_json(entry)
+      expect(Simpress::Writer).to have_received(:write).with(anything, expected_entry_json)
+      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: My Entry public/my-entry.json")
     end
   end
 end

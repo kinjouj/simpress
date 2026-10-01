@@ -8,6 +8,7 @@ import globals from "globals";
 import checkFile from "eslint-plugin-check-file";
 import importPlugin from "eslint-plugin-import";
 import perfectionist from "eslint-plugin-perfectionist";
+import vitest from "@vitest/eslint-plugin";
 
 export default defineConfig(
   { ignores: ["**/*.js", "**/*.mjs"] },
@@ -175,6 +176,20 @@ export default defineConfig(
       react: {
         version: "detect",
       },
+    },
+  },
+  {
+    files: ["frontend/tests/**/*.{ts,tsx}"],
+    plugins: { vitest },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      "vitest/consistent-test-filename": "error",
+      "vitest/consistent-test-it": ["error", { fn: "test" }],
+      "vitest/no-alias-methods": "error",
+      "vitest/prefer-to-be": "error",
+      "vitest/prefer-to-have-length": "error",
+      "vitest/prefer-to-contain": "error",
+      "vitest/prefer-strict-boolean-matchers": "error",
     },
   },
 );

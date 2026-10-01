@@ -5,4 +5,4 @@ default:
   paginate: 10
   plugins:
     - inline_note_filter
-    - recent_posts
+    - recent_entries
