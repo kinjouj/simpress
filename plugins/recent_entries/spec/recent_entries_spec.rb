@@ -23,34 +23,34 @@ describe Simpress::Plugin::RecentEntries do
   end
 
   describe ".run" do
-    context "when mode is html" do
+    context "modeがhtmlの場合" do
       before do
         allow(Simpress::Config.instance).to receive(:mode).and_return("html")
       end
 
-      it "binds only the first 5 entries to the context" do
+      it "最初の5件のエントリのみをコンテキストにバインドする" do
         described_class.run(entries)
         expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
       end
 
-      it "handles fewer than 5 entries" do
+      it "エントリが5件未満の場合も扱える" do
         small_entries = entries.take(2)
         described_class.run(small_entries)
         expect(described_class).to have_received(:bind_context).with(recent_entries: small_entries)
       end
 
-      it "handles nil entries input" do
+      it "entriesの入力がnilの場合も扱える" do
         described_class.run(nil)
         expect(described_class).to have_received(:bind_context).with(recent_entries: [])
       end
     end
 
-    context "when mode is json" do
+    context "modeがjsonの場合" do
       before do
         allow(Simpress::Config.instance).to receive(:mode).and_return("json")
       end
 
-      it "writes the first 5 entries to recent_entries.json" do
+      it "最初の5件のエントリをrecent_entries.jsonに書き出す" do
         described_class.run(entries)
 
         expect(Simpress::JSON).to have_received(:dump).with(entries.take(5), keys: [:id, :title, :permalink])
@@ -58,12 +58,12 @@ describe Simpress::Plugin::RecentEntries do
       end
     end
 
-    context "when mode is unknown" do
+    context "modeが不明な場合" do
       before do
         allow(Simpress::Config.instance).to receive(:mode).and_return("xml")
       end
 
-      it "raises an error" do
+      it "エラーを発生させる" do
         expect { described_class.run(entries) }.to raise_error("Unknown mode: xml")
       end
     end

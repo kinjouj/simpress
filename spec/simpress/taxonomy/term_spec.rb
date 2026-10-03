@@ -3,16 +3,14 @@
 require "simpress/taxonomy/term"
 
 describe Simpress::Taxonomy::Term do
-  let(:term_name) do
-    "Ruby on Rails"
-  end
+  let(:term_name) { "Ruby on Rails" }
 
   let(:term) do
     described_class.new(term_name)
   end
 
   describe "#initialize" do
-    it "assigns properties" do
+    it "プロパティを設定する" do
       expect(term.key).to eq "ruby-on-rails"
       expect(term.name).to eq term_name
       expect(term.entries).to eq []
@@ -21,7 +19,7 @@ describe Simpress::Taxonomy::Term do
   end
 
   describe "#initialize_copy" do
-    it "performs a deep copy of the children array" do
+    it "children配列をディープコピーする" do
       child_term = described_class.new("Child")
       term.children << child_term
       copy = term.dup
@@ -35,23 +33,23 @@ describe Simpress::Taxonomy::Term do
       allow(term.entries).to receive(:size).and_return(5)
     end
 
-    it "returns the number of associated entries" do
+    it "関連付けられたエントリの数を返す" do
       expect(term.count).to eq 5
     end
   end
 
   describe "#as_json" do
-    it "returns default keys when no options are provided" do
+    it "オプションが指定されない場合はデフォルトのキーを返す" do
       result = term.as_json
       expect(result.keys).to contain_exactly(:key, :name)
     end
 
-    it "returns requested permitted keys" do
+    it "要求された許可済みキーを返す" do
       result = term.as_json(keys: [:key, :count])
       expect(result.keys).to contain_exactly(:key, :count)
     end
 
-    it "recursively calls as_json on children with the same options" do
+    it "同じオプションでchildrenに対して再帰的にas_jsonを呼び出す" do
       child_term = described_class.new("Child")
       term.children << child_term
       result = term.as_json(keys: [:children])
@@ -60,24 +58,24 @@ describe Simpress::Taxonomy::Term do
   end
 
   describe "#to_json" do
-    it "delegates to Simpress::JSON.dump" do
+    it "Simpress::JSON.dumpに委譲する" do
       result = term.to_json
       expect(result).to eq '{"key":"ruby-on-rails","name":"Ruby on Rails"}'
     end
   end
 
   describe "#eql?" do
-    it "returns true if the other object has the same key and name" do
+    it "相手のオブジェクトが同じkeyとnameを持つ場合はtrueを返す" do
       other = described_class.new(term_name)
       expect(term.eql?(other)).to be true
     end
 
-    it "returns false if the key or name differs" do
+    it "keyまたはnameが異なる場合はfalseを返す" do
       other = described_class.new("Other")
       expect(term.eql?(other)).to be false
     end
 
-    it "returns false if the other object is not a Term" do
+    it "相手のオブジェクトがTermでない場合はfalseを返す" do
       expect(term.eql?("string")).to be false
     end
   end

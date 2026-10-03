@@ -19,10 +19,12 @@ describe Simpress::Generator do
     allow(Simpress::Theme).to receive(:clear)
   end
 
-  after { described_class.clear }
+  after do
+    described_class.clear
+  end
 
   describe ".clear" do
-    it "resets link_index to nil" do
+    it "link_indexをnilにリセットする" do
       described_class.send(:build_entry_relations!, [build(:entry)])
       expect(described_class.link_index).not_to be_nil
       described_class.clear
@@ -31,11 +33,11 @@ describe Simpress::Generator do
   end
 
   describe ".each_file" do
-    it "raises when called without a block" do
+    it "ブロックなしで呼び出された場合は例外を発生させる" do
       expect { described_class.each_file }.to raise_error("block is required")
     end
 
-    it "yields each markdown file path found under source_dir" do
+    it "source_dir配下で見つかった各Markdownファイルのパスをyieldする" do
       allow(Dir).to receive(:glob).and_yield("entry1.markdown").and_yield("entry2.markdown")
       yielded = []
       described_class.each_file {|file| yielded << file }
@@ -45,12 +47,12 @@ describe Simpress::Generator do
   end
 
   describe ".generate" do
-    it "globs markdown files under source_dir" do
+    it "source_dir配下のMarkdownファイルをglobで探索する" do
       described_class.generate
       expect(Dir).to have_received(:glob).with("source/**/*.markdown")
     end
 
-    it "skips drafts and passes remaining entries sorted by timestamp descending" do
+    it "下書きをスキップし、残りのエントリをタイムスタンプの降順で渡す" do
       described_class.generate
       expect(Simpress::Plugin).to have_received(:process) do |entries|
         expect(entries).not_to include(draft_entry)
@@ -58,7 +60,7 @@ describe Simpress::Generator do
       end
     end
 
-    it "executes the generation pipeline in the correct order" do
+    it "生成パイプラインを正しい順序で実行する" do
       described_class.generate
       expect(Simpress::Plugin).to have_received(:process).ordered
       expect(Simpress::Generator::Pipeline).to have_received(:generate).ordered
@@ -71,21 +73,23 @@ describe Simpress::Generator do
     let(:entry_b) { build(:entry, permalink: "/entry-b.html", title: "Entry B", markdown: "[a](/entry-a.html)") }
     let(:entry_c) { build(:entry, permalink: "/entry-c.html", title: "Entry C", markdown: "no links here") }
 
-    before { described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c]) }
+    before do
+      described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c])
+    end
 
-    it "sets inbound links correctly" do
+    it "被リンクを正しく設定する" do
       expect(entry_a.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-b.html", "Entry B"])
       expect(entry_b.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-a.html", "Entry A"])
       expect(entry_c.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-a.html", "Entry A"])
     end
 
-    it "ignores links not matching any entry permalink" do
+    it "どのエントリのpermalinkにも一致しないリンクは無視する" do
       entry = build(:entry, permalink: "/entry-x.html", markdown: "[external](https://example.com)")
       described_class.send(:build_entry_relations!, [entry])
       expect(entry.backlinks).to be_empty
     end
 
-    it "assigns next to the newer entry and prev to the older entry" do
+    it "新しいエントリにnext、古いエントリにprevを割り当てる" do
       expect(entry_a.prev.permalink).to eq "/entry-b.html"
       expect(entry_a.next).to be_nil
       expect(entry_b.prev.permalink).to eq "/entry-c.html"
@@ -94,7 +98,7 @@ describe Simpress::Generator do
       expect(entry_c.next.permalink).to eq "/entry-b.html"
     end
 
-    it "freezes each entry" do
+    it "各エントリをfreezeする" do
       expect(entry_a).to be_frozen
       expect(entry_b).to be_frozen
       expect(entry_c).to be_frozen

@@ -35,16 +35,15 @@ describe Simpress::Plugin do
   end
 
   describe ".load" do
-    it "registers a plugin class whose underscored name is listed in config" do
+    it "アンダースコア名が設定に列挙されているプラグインクラスを登録する" do
       write_plugin_file("test1", "test1", "Test1")
       allow(Simpress::Config.instance).to receive(:plugins).and_return(["test1"])
 
       described_class.load
-
       expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test1"]
     end
 
-    it "does not register a plugin class that is not listed in config" do
+    it "設定に列挙されていないプラグインクラスは登録しない" do
       write_plugin_file("test2", "test2", "Test2")
       allow(Simpress::Config.instance).to receive(:plugins).and_return([])
 
@@ -52,18 +51,17 @@ describe Simpress::Plugin do
       expect(described_class.register_plugins).to be_empty
     end
 
-    it "loads plugins from multiple plugin directories" do
+    it "複数のプラグインディレクトリからプラグインを読み込む" do
       write_plugin_file("test3", "test3", "Test3")
       write_plugin_file("test4", "test4", "Test4")
       allow(Simpress::Config.instance).to receive(:plugins).and_return(["test3", "test4"])
 
       described_class.load
-
       names = described_class.register_plugins.map(&:name)
       expect(names).to include("Simpress::Plugin::Test3", "Simpress::Plugin::Test4")
     end
 
-    it "registers a Markdown filter class whose underscored name is listed in config" do
+    it "アンダースコア名が設定に列挙されているMarkdownフィルタークラスを登録する" do
       write_plugin_file("test5", "test5", "Test5", <<~RUBY)
         module Simpress
           module Plugin
@@ -83,7 +81,7 @@ describe Simpress::Plugin do
       expect(names).to eq ["Simpress::Plugin::Test5"]
     end
 
-    it "does not register a Markdown filter class that is not listed in config" do
+    it "設定に列挙されていないMarkdownフィルタークラスは登録しない" do
       write_plugin_file("test6", "test6", "Test6", <<~RUBY)
         module Simpress
           module Plugin
@@ -104,7 +102,7 @@ describe Simpress::Plugin do
   end
 
   describe ".clear" do
-    it "also clears the registered Markdown filters" do
+    it "登録されたMarkdownフィルターもクリアする" do
       filter_class = Class.new { extend Simpress::Parser::Markdown::Filter }
       Simpress::Parser::Markdown::Filter.register_filters << filter_class
       described_class.clear
@@ -117,7 +115,7 @@ describe Simpress::Plugin do
       allow(Simpress::Config.instance).to receive(:plugins).and_return(["Test"])
     end
 
-    it "executes the run method for plugins listed in config" do
+    it "設定に列挙されているプラグインのrunメソッドを実行する" do
       test_plugin = Class.new do
         extend Simpress::Plugin
 
@@ -133,7 +131,7 @@ describe Simpress::Plugin do
       expect(Simpress::Plugin::Test).to have_received(:run)
     end
 
-    it "executes plugins in descending order of priority" do
+    it "priorityの降順でプラグインを実行する" do
       high_plugin = Class.new do
         extend Simpress::Plugin
 
@@ -170,14 +168,14 @@ describe Simpress::Plugin do
   end
 
   describe "#config" do
-    it "returns the singleton config instance" do
+    it "シングルトンのconfigインスタンスを返す" do
       test_klass = Class.new { extend Simpress::Plugin }
       expect(test_klass.config).to eq Simpress::Config.instance
     end
   end
 
   describe "#bind_context" do
-    it "updates the Simpress::Context data" do
+    it "Simpress::Contextのデータを更新する" do
       test_klass = Class.new { extend Simpress::Plugin }
       test_klass.bind_context(plugin_key: "value")
       expect(Simpress::Context[:plugin_key]).to eq "value"
@@ -185,14 +183,14 @@ describe Simpress::Plugin do
   end
 
   describe "#priority" do
-    it "returns the default value of 1" do
+    it "デフォルト値の1を返す" do
       test_klass = Class.new { extend Simpress::Plugin }
       expect(test_klass.priority).to eq 1
     end
   end
 
   describe "#run" do
-    it "raises NotImplementedError" do
+    it "NotImplementedErrorを発生させる" do
       test_klass = Class.new { extend Simpress::Plugin }
       expect { test_klass.run }.to raise_error(NotImplementedError)
     end

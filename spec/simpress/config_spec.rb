@@ -27,22 +27,19 @@ describe Simpress::Config do
   end
 
   describe ".instance" do
-    it "loads the config file" do
+    it "設定ファイルを読み込む" do
       config = described_class.instance
       expect(config.mode).to eq "html"
       expect(config.host).to eq "https://example.com"
       expect(config.logging).to be true
       expect(config.paginate).to eq 10
       expect(config.plugins).to eq ["test_plugin"]
-    end
-
-    it "loads taxonomies from taxonomies.yaml" do
-      expect(described_class.instance.taxonomies).to eq taxonomies
+      expect(config.taxonomies).to eq taxonomies
     end
   end
 
   describe ".clear" do
-    it "resets the singleton so the next call returns a new instance" do
+    it "新しいインスタンスを返す" do
       obj = described_class.instance
       described_class.clear
       expect(obj).not_to be described_class.instance
@@ -50,22 +47,22 @@ describe Simpress::Config do
   end
 
   describe "#taxonomies" do
-    context "when taxonomies.yaml does not exist" do
+    context "taxonomies.yamlが存在しない場合" do
       before do
         allow(File).to receive(:exist?).with(Simpress::Config::TAXONOMIES_FILE).and_return(false)
       end
 
-      it "returns empty hash" do
+      it "空のハッシュを返す" do
         expect(described_class.instance.taxonomies).to eq({})
       end
     end
 
-    context "when taxonomies.yaml is empty" do
+    context "taxonomies.yamlが空の場合" do
       before do
         allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE).and_return(nil)
       end
 
-      it "returns empty hash" do
+      it "空のハッシュを返す" do
         expect(described_class.instance.taxonomies).to eq({})
       end
     end

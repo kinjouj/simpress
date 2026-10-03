@@ -7,8 +7,8 @@ describe Simpress::Parser::Markdown::Filter do
     described_class.clear
   end
 
-  describe ".run" do
-    it "executes preprocessors in order and updates data if a string is returned" do
+  describe ".preprocess" do
+    it "preprocessを順番に実行し、文字列が返された場合はデータを更新する" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
@@ -27,27 +27,50 @@ describe Simpress::Parser::Markdown::Filter do
 
       described_class.register_filters << filter1 << filter2
 
-      result = described_class.run("Base")
+      result = described_class.preprocess("Base")
       expect(result).to eq "Base + Filter1 + Filter2"
     end
 
-    it "ignores non-string return values from preprocessors" do
+    it "preprocessが返した文字列以外の値は無視する" do
       filter = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
         def self.preprocess(_data)
-          nil
+          {}
         end
       end
 
       described_class.register_filters << filter
-      result = described_class.run("Original")
+      result = described_class.preprocess("Original")
       expect(result).to eq "Original"
     end
   end
 
+  describe ".postprocess" do
+    it "postprocessを順番に実行し、文字列以外の返り値は無視する" do
+      filter1 = Class.new do
+        extend Simpress::Parser::Markdown::Filter
+
+        def self.postprocess(data)
+          "#{data} + Filter1"
+        end
+      end
+
+      filter2 = Class.new do
+        extend Simpress::Parser::Markdown::Filter
+
+        def self.postprocess(_data)
+          nil
+        end
+      end
+
+      described_class.register_filters << filter1 << filter2
+      expect(described_class.postprocess("Base")).to eq "Base + Filter1"
+    end
+  end
+
   describe ".clear" do
-    it "resets the registered classes" do
+    it "登録されたクラスをリセットする" do
       filter = Class.new do
         extend Simpress::Parser::Markdown::Filter
       end
@@ -55,17 +78,6 @@ describe Simpress::Parser::Markdown::Filter do
       described_class.register_filters << filter
       described_class.clear
       expect(described_class.register_filters).to be_empty
-    end
-  end
-
-  describe "#preprocess" do
-    it "raises NotImplementedError when called on an instance" do
-      filter = Class.new do
-        extend Simpress::Parser::Markdown::Filter
-      end
-
-      described_class.register_filters << filter
-      expect { described_class.run("data") }.to raise_error(NotImplementedError)
     end
   end
 end

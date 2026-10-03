@@ -11,22 +11,37 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".generate" do
-    it "calls generate_html when mode is html" do
-      allow(described_class).to receive(:generate_html)
-      described_class.generate(:arg)
-      expect(described_class).to have_received(:generate_html).with(:arg)
+    context "modeがhtmlの場合" do
+      before do
+        allow(described_class).to receive(:generate_html)
+      end
+
+      it "generate_htmlを呼び出す" do
+        described_class.generate(:arg)
+        expect(described_class).to have_received(:generate_html).with(:arg)
+      end
     end
 
-    it "calls generate_json when mode is json" do
-      allow(Simpress::Config.instance).to receive(:mode).and_return("json")
-      allow(described_class).to receive(:generate_json)
-      described_class.generate(:arg)
-      expect(described_class).to have_received(:generate_json).with(:arg)
+    context "modeがjsonの場合" do
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+      end
+
+      it "generate_jsonを呼び出す" do
+        allow(described_class).to receive(:generate_json)
+        described_class.generate(:arg)
+        expect(described_class).to have_received(:generate_json).with(:arg)
+      end
     end
 
-    it "raises error for unknown mode" do
-      allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
-      expect { described_class.generate }.to raise_error("Unknown mode: unknown")
+    context "modeがhtml or jsonではない場合" do
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
+      end
+
+      it "エラーを発生させる" do
+        expect { described_class.generate }.to raise_error("Unknown mode: unknown")
+      end
     end
   end
 
@@ -35,20 +50,22 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Config.instance).to receive(:paginate).and_return(2)
     end
 
-    it "raises error if block is not given" do
-      expect { described_class.each_page([]) }.to raise_error("block is required")
-    end
-
-    it "slices entries and yields paginator" do
+    it "エントリを分割してpaginatorをyieldする" do
       expect {|b| described_class.each_page([1, 2, 3], "blog", &b) }.to yield_successive_args(
         [[1, 2], have_attributes(page: 1)],
         [[3], have_attributes(page: 2)]
       )
     end
+
+    context "ブロックが渡されない場合" do
+      it "エラーを発生させる" do
+        expect { described_class.each_page([]) }.to raise_error("block is required")
+      end
+    end
   end
 
   describe ".path" do
-    it "returns a Simpress::Path object" do
+    it "Simpress::Pathオブジェクトを返す" do
       result = described_class.path("test")
       expect(result).to be_a(Simpress::Path)
       expect(result.to_s).to eq "test"
@@ -56,7 +73,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".write_html" do
-    it "renders template and writes with html extension" do
+    it "テンプレートをレンダリングしてhtml拡張子で書き出す" do
       context = { entries: [] }
       described_class.write_html("index", template: "layout", **context)
       expect(Simpress::Theme).to have_received(:render).with("layout", **context)
@@ -65,7 +82,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".write_json" do
-    it "dumps data and writes with json extension" do
+    it "データをダンプしてjson拡張子で書き出す" do
       data = { key: "value" }
       described_class.write_json("api/data", data)
       expect(Simpress::JSON).to have_received(:dump).with(data)
@@ -78,12 +95,12 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Writer).to receive(:write) {|path, _data, &block| block&.call(path) }
     end
 
-    it "builds the path with extension and calls Simpress::Writer" do
+    it "拡張子付きのパスを構築してSimpress::Writerを呼び出す" do
       expect { described_class.write("file", "content", "txt") }.not_to raise_error
       expect(Simpress::Writer).to have_received(:write).with("file.txt", "content")
     end
 
-    it "yields the file path to the block" do
+    it "ブロックにファイルパスをyieldする" do
       expect {|b| described_class.write("file", "content", "txt", &b) }.to yield_with_args("file.txt")
     end
   end

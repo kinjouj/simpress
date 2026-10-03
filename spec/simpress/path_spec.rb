@@ -4,53 +4,53 @@ require "simpress/path"
 
 describe Simpress::Path do
   describe ".wrap" do
-    it "returns the same instance if already a Simpress::Path" do
+    it "既にSimpress::Pathならそのインスタンスを返す" do
       path = described_class.new("/base")
       expect(described_class.wrap(path)).to equal(path)
     end
 
-    it "creates a new instance if a string is provided" do
+    it "文字列が渡された場合は新しいインスタンスを生成する" do
       expect(described_class.wrap("/base")).to be_a(described_class)
     end
 
-    it "preserves the string value when wrapping" do
+    it "ラップしても文字列の値を保持する" do
       expect(described_class.wrap("/base").to_s).to eq "/base"
     end
   end
 
   describe "#path" do
-    it "joins base path with additional parts" do
+    it "ベースパスと追加の要素を結合する" do
       path = described_class.new("base").path("sub", "dir")
       expect(path.to_s).to eq "base/sub/dir"
     end
 
-    it "removes leading slashes from parts before joining" do
+    it "結合前に要素の先頭のスラッシュを取り除く" do
       path = described_class.new("base").path("/sub", "/dir/")
       expect(path.to_s).to eq "base/sub/dir/"
     end
   end
 
   describe "#with_ext" do
-    it "sets the extension for the built path" do
+    it "ビルドされるパスの拡張子を設定する" do
       path = described_class.new("image.png").with_ext("webp")
       expect(path.to_s).to eq "image.webp"
     end
   end
 
   describe "#build" do
-    it "joins parts using slashes" do
+    it "要素をスラッシュで結合する" do
       path = described_class.new("root").path("a", "b")
       expect(path.build).to eq "root/a/b"
     end
 
-    it "replaces the existing extension if with_ext is used" do
+    it "with_extが使われた場合は既存の拡張子を置き換える" do
       path = described_class.new("archive.tar.gz").with_ext("zip")
       expect(path.build).to eq "archive.tar.zip"
     end
   end
 
   describe "#to_s" do
-    it "delegates to build" do
+    it "buildに委譲する" do
       expect(described_class.new("file.html").to_s).to eq("file.html")
     end
   end

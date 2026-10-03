@@ -93,7 +93,7 @@ describe Simpress::Plugin::Similarity do
 
   let(:entries) { [entry1, entry2, entry3, entry4, entry5] }
 
-  it "assigns correct similarity data to each entry" do
+  it "各エントリに正しい類似度データを割り当てる" do
     described_class.run(entries)
 
     expect(entries[0]).to respond_to(:similarities)
@@ -117,7 +117,7 @@ describe Simpress::Plugin::Similarity do
     expect(entries[4].similarities.map(&:id)).to contain_exactly("entry_004", "entry_002")
   end
 
-  context "when returns no scores" do
+  context "スコアが返されない場合" do
     let(:indexer) { Simpress::Plugin::Similarity::Indexer.new(entries) }
 
     before do
@@ -125,23 +125,23 @@ describe Simpress::Plugin::Similarity do
       allow(Simpress::Plugin::Similarity::Indexer).to receive(:new).and_return(indexer)
     end
 
-    it "sets similarities to empty for all entries" do
+    it "全てのエントリでsimilaritiesを空にする" do
       described_class.run(entries)
       entries.each {|entry| expect(entry.similarities).to be_empty }
     end
   end
 
-  context "when mode is json" do
+  context "modeがjsonの場合" do
     before do
       allow(Simpress::Config.instance).to receive(:mode).and_return("json")
     end
 
-    it "includes similarities in to_h when content key is present" do
+    it "contentキーがある場合はto_hにsimilaritiesを含める" do
       described_class.run(entries)
       expect(entries[0].to_h(keys: [:title, :content])).to include(:similarities)
     end
 
-    it "excludes similarities from to_h when content key is absent" do
+    it "contentキーがない場合はto_hからsimilaritiesを除外する" do
       described_class.run(entries)
       expect(entries[0].to_h(keys: [:title])).not_to include(:similarities)
     end

@@ -4,7 +4,7 @@ require "simpress/parser/markdown"
 
 describe Simpress::Parser::Markdown do
   describe ".parse" do
-    it "successfully parses header with Time and returns the body" do
+    it "Time付きのヘッダーを正常にパースして本文を返す" do
       txt = <<~MARKDOWN
         ---
         title: Hello World
@@ -19,7 +19,7 @@ describe Simpress::Parser::Markdown do
       expect(body).to eq "# Content\n"
     end
 
-    it "raises an error when the markdown does not have front matter" do
+    it "Markdownにフロントマターがない場合はエラーを発生させる" do
       txt = "No front matter here"
       expect { described_class.parse(txt) }.to raise_error("Markdown parse failed")
     end

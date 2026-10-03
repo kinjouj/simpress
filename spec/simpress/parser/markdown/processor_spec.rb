@@ -26,7 +26,7 @@ describe Simpress::Parser::Markdown::Processor do
   end
 
   describe ".render" do
-    it "returns a Result with content, toc, links, and cover" do
+    it "content、toc、links、coverを持つResultを返す" do
       result = described_class.render(markdown1)
       expect(result.content).to include("Hello")
       expect(result.cover).to eq "cover.png"
@@ -36,7 +36,7 @@ describe Simpress::Parser::Markdown::Processor do
       expect(result.links).to eq []
     end
 
-    it "does not carry over state from a previous render" do
+    it "前回のレンダリングの状態を引き継がない" do
       described_class.render(markdown1)
       result = described_class.render(markdown2)
       expect(result.content).to include("World")
@@ -47,7 +47,7 @@ describe Simpress::Parser::Markdown::Processor do
       expect(result.links).to eq []
     end
 
-    it "builds a nested toc from real markdown headings parsed through Redcarpet" do
+    it "Redcarpetでパースした実際のMarkdown見出しからネストされたtocを構築する" do
       markdown = <<~MD
         ## Introduction
 
@@ -77,7 +77,7 @@ describe Simpress::Parser::Markdown::Processor do
       expect(result.toc[1][:id]).to eq "section-4"
     end
 
-    it "treats a real h1 as a plain heading excluded from the toc" do
+    it "実際のh1はtocに含めない通常の見出しとして扱う" do
       markdown = <<~MD
         # Title
 

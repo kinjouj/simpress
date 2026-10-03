@@ -24,7 +24,7 @@ class SimpressCLI < Thor
   private
 
   def build_html
-    invoke :scss
+    compile_scss
     files = Dir.chdir(Simpress::Config.output_dir) do
       files = Dir.glob("**/*.html")
       files.reject! {|f| f.match?(/^(archives|page)/) || f.match?(/index\.html$/) }
@@ -35,6 +35,13 @@ class SimpressCLI < Thor
     Simpress::Sitemap.build(Simpress::Config.instance.host) do
       files.each {|file, mtime| url(file: file, lastmod: mtime.iso8601) }
     end
+  end
+
+  def compile_scss
+    css = Sass.compile("scss/style.scss", quiet_deps: true, silence_deprecations: ["if-function"], load_paths: ["node_modules"])
+    Simpress::Writer.write("css/style.css", css.css)
+  rescue Sass::CompileError => e
+    raise e.full_message, cause: nil
   end
 
   def build_json

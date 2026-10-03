@@ -16,7 +16,7 @@ describe Simpress::Taxonomy do
   end
 
   describe ".fetch" do
-    it "returns a taxonomy instance" do
+    it "インスタンスを返す" do
       tags = described_class.fetch("tags")
       expect(tags).to be_a(described_class)
       expect(tags.name).to eq "tags"
@@ -25,14 +25,14 @@ describe Simpress::Taxonomy do
   end
 
   describe ".taxonomies" do
-    it "includes default and yaml-defined taxonomies" do
+    it "デフォルトとyamlで定義されたタクソノミーを含む" do
       names = described_class.taxonomies.map(&:name)
       expect(names).to include("categories", "tags")
     end
   end
 
   describe ".resolve" do
-    it "resolves terms for each taxonomy present in params" do
+    it "paramsに存在する各タクソノミーのtermを解決する" do
       params = { categories: ["Ruby"], tags: ["oss", "gem"] }
       result = described_class.resolve(params)
 
@@ -41,14 +41,14 @@ describe Simpress::Taxonomy do
       expect(result["tags"].map(&:name)).to eq ["oss", "gem"]
     end
 
-    it "returns an empty array for taxonomies missing from params" do
+    it "paramsにないタクソノミーに対しては空配列を返す" do
       params = { categories: ["Ruby"] }
       result = described_class.resolve(params)
 
       expect(result["tags"]).to eq []
     end
 
-    it "returns empty arrays for all taxonomies when params has none" do
+    it "paramsに何もない場合は全てのタクソノミーに対して空配列を返す" do
       result = described_class.resolve({})
 
       expect(result.values).to all(eq [])
@@ -56,7 +56,7 @@ describe Simpress::Taxonomy do
   end
 
   describe ".register" do
-    it "registers the entry to each term in the given taxonomies" do
+    it "指定されたタクソノミーの各termにエントリを登録する" do
       entry = build(:entry, categories: ["Ruby"])
       described_class.register(entry.taxonomies, entry)
       expect(entry.taxonomies["categories"].first.entries).to include(entry)
@@ -64,21 +64,21 @@ describe Simpress::Taxonomy do
   end
 
   describe ".slug_for" do
-    it "returns the slug for a known taxonomy and term" do
+    it "既知のタクソノミーとtermに対してslugを返す" do
       expect(described_class.slug_for("categories", "Ruby")).to eq "ruby"
     end
 
-    it "returns nil for an unknown term" do
+    it "未知のtermに対してはnilを返す" do
       expect(described_class.slug_for("categories", "Unknown")).to be_nil
     end
 
-    it "returns nil for an unknown taxonomy" do
+    it "未知のタクソノミーに対してはnilを返す" do
       expect(described_class.slug_for("unknown", "Ruby")).to be_nil
     end
   end
 
   describe ".clear" do
-    it "resets the internal cache and memoized taxonomies" do
+    it "内部キャッシュとメモ化されたタクソノミーをリセットする" do
       obj = described_class.fetch("categories")
       described_class.clear
       expect(obj).not_to be(described_class.fetch("categories"))
@@ -86,23 +86,23 @@ describe Simpress::Taxonomy do
   end
 
   describe "#term" do
-    it "returns a Term instance for a given name" do
+    it "指定された名前に対してTermインスタンスを返す" do
       term = described_class.fetch("categories").term("Ruby")
       expect(term).to be_a(Simpress::Taxonomy::Term)
       expect(term.name).to eq "Ruby"
     end
 
-    it "uses the slug override from taxonomies" do
+    it "taxonomiesのslug上書きを使用する" do
       term = described_class.fetch("categories").term("Ruby")
       expect(term.key).to eq "ruby"
     end
 
-    it "falls back to to_url when no slug override exists" do
+    it "slugの上書きがない場合はto_urlにフォールバックする" do
       term = described_class.fetch("categories").term("Unknown")
       expect(term.key).to eq "unknown"
     end
 
-    it "memoizes the term instance within the taxonomy" do
+    it "タクソノミー内でtermインスタンスをメモ化する" do
       taxonomy = described_class.fetch("categories")
       expect(taxonomy.term("Ruby")).to equal(taxonomy.term("Ruby"))
     end

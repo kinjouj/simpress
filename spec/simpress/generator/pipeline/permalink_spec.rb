@@ -17,7 +17,7 @@ describe Simpress::Generator::Pipeline::Permalink do
       allow(File).to receive(:utime)
     end
 
-    it "writes html and sets mtime for the entry" do
+    it "HTMLを書き出してエントリのmtimeを設定する" do
       described_class.generate_html(entry)
       expect(Simpress::Theme).to have_received(:render).with("page", entry: entry)
       expect(Simpress::Writer).to have_received(:write).with("my-entry.html", "<html>content</html>")
@@ -33,7 +33,7 @@ describe Simpress::Generator::Pipeline::Permalink do
       allow(Simpress::Writer).to receive(:write).with(anything, expected_entry_json).and_yield("public/my-entry.json")
     end
 
-    it "writes json with permitted keys" do
+    it "許可されたキーでJSONを書き出す" do
       described_class.generate_json(entry)
       expect(Simpress::Writer).to have_received(:write).with(anything, expected_entry_json)
       expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: My Entry public/my-entry.json")

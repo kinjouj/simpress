@@ -32,7 +32,7 @@ describe Simpress::Parser do
   end
 
   describe ".parse" do
-    it "returns a entry" do
+    it "エントリを返す" do
       entry = described_class.parse(file)
       entry.load!
 
@@ -46,12 +46,12 @@ describe Simpress::Parser do
       expect(entry.links).to eq ["/2026/01/other-entry.html"]
     end
 
-    context "when date cannot be derived from front matter or file name" do
+    context "フロントマターにもファイル名にも日付を導出できない場合" do
       before do
         allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\npermalink: /no-date\n---\nbody")
       end
 
-      it "falls back to current time and forces index to false" do
+      it "現在時刻にフォールバックしindexを強制的にfalseにする" do
         entry = described_class.parse("no-date.md")
 
         expect(entry.date).to be_a(Time)
@@ -60,7 +60,7 @@ describe Simpress::Parser do
       end
     end
 
-    context "when permalink is not given in front matter" do
+    context "フロントマターでpermalinkが指定されていない場合" do
       let(:markdown) do
         <<~MD
           ---
@@ -69,12 +69,12 @@ describe Simpress::Parser do
         MD
       end
 
-      it "generates permalink from date and basename" do
+      it "日付とbasenameからpermalinkを生成する" do
         expect(described_class.parse(file).permalink).to eq "/2026/01/2026-01-01-test-entry"
       end
     end
 
-    context "when permalink is given in front matter" do
+    context "フロントマターでpermalinkが指定されている場合" do
       let(:markdown) do
         <<~MD
           ---
@@ -84,13 +84,13 @@ describe Simpress::Parser do
         MD
       end
 
-      it "uses the permalink from front matter as-is" do
+      it "フロントマターのpermalinkをそのまま使用する" do
         expect(described_class.parse(file).permalink).to eq "/existing/path"
       end
     end
 
-    context "when date in front matter is given" do
-      it "parses a Time string, a Date, and a String date, all into Time" do
+    context "フロントマターで日付が指定されている場合" do
+      it "Time文字列、Date、String形式の日付を全てTimeにパースする" do
         time_string_md = <<~MD
           ---
           title: Test Title

@@ -17,17 +17,17 @@ module Simpress
 
         def initialize(options = nil)
           super(options || RENDERER_OPTIONS)
-          reset!
-        end
-
-        def reset!
           @primary_image = nil
           @headings = []
           @links = []
         end
 
         def preprocess(markdown)
-          Simpress::Parser::Markdown::Filter.run(markdown)
+          Simpress::Parser::Markdown::Filter.preprocess(markdown)
+        end
+
+        def postprocess(document)
+          Simpress::Parser::Markdown::Filter.postprocess(document)
         end
 
         def link(url, _title, content)

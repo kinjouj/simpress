@@ -42,15 +42,17 @@ describe Simpress::Entry do
   end
 
   describe "#initialize" do
-    it "assigns properties" do
+    it "プロパティを設定する" do
       entry = described_class.new(params)
       expect(entry.id).to eq "entry-123"
       expect(entry.title).to eq "Sample Entry"
       expect(entry.date).to eq date
       expect(entry.permalink).to eq "/sample-entry"
+      expect(entry.prev).to be_nil
+      expect(entry.next).to be_nil
     end
 
-    it "integrates with real taxonomy terms without registering itself yet" do
+    it "実際のタクソノミーのtermと連携するが、まだ自身は登録しない" do
       entry = described_class.new(params)
       category_terms = entry.taxonomies["categories"]
       expect(category_terms.size).to eq 1
@@ -58,23 +60,17 @@ describe Simpress::Entry do
       expect(category_terms.first.entries).not_to include(entry)
     end
 
-    it "does not render the markdown body until #load! is called" do
+    it "#load!が呼ばれるまでMarkdown本文をレンダリングしない" do
       entry = described_class.new(params)
       expect(Simpress::Parser::Markdown::Processor).not_to have_received(:render)
       expect(entry.content).to be_nil
       expect(entry.toc).to be_nil
       expect(entry.links).to be_nil
     end
-
-    it "defaults prev and next to nil" do
-      entry = described_class.new(params)
-      expect(entry.prev).to be_nil
-      expect(entry.next).to be_nil
-    end
   end
 
   describe "#load!" do
-    it "renders the markdown body and fills in content/toc/links/cover" do
+    it "Markdown本文をレンダリングしてcontent/toc/links/coverを設定する" do
       entry = described_class.new(params)
       entry.load!
       expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with("Main content here")
@@ -83,64 +79,64 @@ describe Simpress::Entry do
       expect(entry.links).to eq ["/2026/01/other.html"]
     end
 
-    it "does not re-render on subsequent calls" do
+    it "2回目以降の呼び出しでは再レンダリングしない" do
       entry = described_class.new(params)
       entry.load!
       entry.load!
       expect(Simpress::Parser::Markdown::Processor).to have_received(:render).once
     end
 
-    it "prefers the cover given in params over the one extracted from the body" do
+    it "本文から抽出したcoverよりparamsで指定されたcoverを優先する" do
       entry = described_class.new(params)
       entry.load!
       expect(entry.cover).to eq "cover.png"
     end
 
-    it "prefers the description given in params over the one extracted from the body" do
+    it "本文から抽出したdescriptionよりparamsで指定されたdescriptionを優先する" do
       entry = described_class.new(params)
       entry.load!
       expect(entry.description).to eq "Short description"
     end
 
-    context "when description is not given in params" do
+    context "paramsでdescriptionが指定されていない場合" do
       let(:params) { super().except(:description) }
       let(:rendered_content) { "<p>First paragraph.</p>\n<p>Second paragraph.</p>" }
 
-      it "falls back to the text of the first paragraph in the rendered body" do
+      it "レンダリングされた本文の最初の段落のテキストにフォールバックする" do
         entry = described_class.new(params)
         entry.load!
         expect(entry.description).to eq "First paragraph."
       end
     end
 
-    context "when description is not given in params and the first paragraph contains inline tags" do
+    context "paramsでdescriptionが指定されておらず、最初の段落にインラインタグが含まれる場合" do
       let(:params) { super().except(:description) }
       let(:rendered_content) { "<p>Hello <strong>world</strong>!</p>" }
 
-      it "strips inline tags from the extracted description" do
+      it "抽出したdescriptionからインラインタグを取り除く" do
         entry = described_class.new(params)
         entry.load!
         expect(entry.description).to eq "Hello strongworld/strong!"
       end
     end
 
-    context "when cover is not given in params" do
+    context "paramsでcoverが指定されていない場合" do
       let(:params) { super().except(:cover) }
 
-      it "falls back to the image extracted from the body" do
+      it "本文から抽出した画像にフォールバックする" do
         entry = described_class.new(params)
         entry.load!
         expect(entry.cover).to eq "/images/extracted.png"
       end
     end
 
-    context "when cover is not given in params and no image was extracted from the body" do
+    context "paramsでcoverが指定されておらず、本文から画像も抽出されなかった場合" do
       let(:params) { super().except(:cover) }
       let(:render_result) do
         Simpress::Parser::Markdown::Processor::Result.new(content: rendered_content, toc: [], links: [], cover: nil)
       end
 
-      it "falls back to the default cover" do
+      it "デフォルトのcoverにフォールバックする" do
         entry = described_class.new(params)
         entry.load!
         expect(entry.cover).to eq described_class::DEFAULT_COVER
@@ -149,7 +145,7 @@ describe Simpress::Entry do
   end
 
   describe "#prev and #next" do
-    it "is nil by default and can be assigned" do
+    it "デフォルトはnilで、代入できる" do
       entry = described_class.new(params)
       expect(entry.prev).to be_nil
       expect(entry.next).to be_nil
@@ -163,7 +159,7 @@ describe Simpress::Entry do
   end
 
   describe "#to_h" do
-    it "returns a hash containing only permitted json keys" do
+    it "許可されたjsonキーのみを含むハッシュを返す" do
       entry = described_class.new(params)
       entry.load!
       result = entry.to_h
@@ -171,13 +167,13 @@ describe Simpress::Entry do
       expect(result[:id]).to eq "entry-123"
     end
 
-    it "filters keys when specific keys are requested" do
+    it "特定のキーが要求された場合はキーを絞り込む" do
       entry = described_class.new(params)
       result = entry.to_h(keys: [:title, :permalink])
       expect(result.keys).to contain_exactly(:title, :permalink)
     end
 
-    it "includes the assigned prev and next" do
+    it "代入されたprevとnextを含む" do
       newer = described_class.new(id: "entry-456", title: "Newer Entry", permalink: "/newer-entry")
       older = described_class.new(id: "entry-789", title: "Older Entry", permalink: "/older-entry")
       entry = described_class.new(params)
@@ -189,7 +185,7 @@ describe Simpress::Entry do
       expect(result[:next]).to eq entry.next
     end
 
-    it "includes nil prev and next by default" do
+    it "デフォルトではnilのprevとnextを含む" do
       entry = described_class.new(params)
       entry.load!
       result = entry.to_h
@@ -199,7 +195,7 @@ describe Simpress::Entry do
   end
 
   describe "#as_json" do
-    it "returns the same hash as #to_h" do
+    it "#to_hと同じハッシュを返す" do
       entry = described_class.new(params)
       entry.load!
       expect(entry.as_json).to eq entry.to_h
@@ -209,7 +205,7 @@ describe Simpress::Entry do
   describe "#to_json" do
     let(:json_output) { '{"id":"entry-123"}' }
 
-    it "dumps the hash using Simpress::JSON" do
+    it "Simpress::JSONを使ってハッシュをダンプする" do
       entry = described_class.new(params)
       entry.load!
       allow(Simpress::JSON).to receive(:dump).and_return(json_output)

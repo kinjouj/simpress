@@ -23,13 +23,12 @@ module Simpress
           private
 
           def parser
-            @parser ||= Markdown.new(Simpress::Parser::Markdown::Renderer.new, REDCARPET_OPTIONS)
+            Markdown.new(Simpress::Parser::Markdown::Renderer.new, REDCARPET_OPTIONS)
           end
         end
 
         class Markdown < ::Redcarpet::Markdown
           def render(data)
-            renderer.reset!
             content = super
             Result.new(content: content, toc: renderer.toc, links: renderer.links, cover: renderer.primary_image)
           end

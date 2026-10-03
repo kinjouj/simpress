@@ -17,7 +17,7 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
       allow(Simpress::Writer).to receive(:write).and_yield("public/index.html")
     end
 
-    it "renders and writes paginated index html" do
+    it "HTMLをレンダリングして書き出す" do
       described_class.generate_html(entries)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/index.html", "<html>content</html>")
@@ -32,7 +32,7 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
       allow(Simpress::Writer).to receive(:write).with("/archives/page/1.json", anything).and_yield("public/archives/page/1.json")
     end
 
-    it "writes paginated json" do
+    it "JSONを書き出す" do
       described_class.generate_json(entries)
       expect(Simpress::Writer).to have_received(:write).with("/archives/page/1.json", expected_page_json)
       expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/page/1.json")

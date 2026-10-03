@@ -21,7 +21,7 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
       allow(Simpress::Writer).to receive(:write).and_yield("public/archives/categories/ruby/index.html")
     end
 
-    it "renders and writes paginated html for each term" do
+    it "各termについてHTMLをレンダリングして書き出す" do
       described_class.generate_html(taxonomies)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/index.html", "<html>content</html>")
@@ -36,7 +36,7 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
       allow(Simpress::Writer).to receive(:write).with("/archives/categories/ruby/1.json", anything).and_yield("public/archives/categories/ruby/1.json")
     end
 
-    it "writes paginated json for each term" do
+    it "各termについてJSONを書き出す" do
       described_class.generate_json(taxonomies)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/1.json", expected_index_json)
       expect(Simpress::Logger).to have_received(:verbose).with("[BUILD CATEGORY]: public/archives/categories/ruby/1.json")

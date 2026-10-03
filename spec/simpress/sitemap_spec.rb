@@ -11,11 +11,11 @@ describe Simpress::Sitemap do
   end
 
   describe ".build" do
-    it "raises error when block is not given" do
+    it "ブロックが渡されない場合はエラーを発生させる" do
       expect { described_class.build(hostname) }.to raise_error("block is required")
     end
 
-    it "initializes, yields block, and writes sitemap" do
+    it "初期化してブロックをyieldし、サイトマップを書き出す" do
       described_class.build(hostname) { url(file: "index.html", lastmod: "2026-01-01") }
       expect(Simpress::Writer).to have_received(:write).with("sitemap.xml", anything)
     end
@@ -27,21 +27,21 @@ describe Simpress::Sitemap do
       Ox.dump(sitemap.instance_variable_get(:@doc))
     end
 
-    it "includes loc element with full url" do
+    it "完全なURLを持つloc要素を含む" do
       expect(xml).to include("<loc>https://example.com/test.html</loc>")
     end
 
-    it "includes lastmod element" do
+    it "lastmod要素を含む" do
       expect(xml).to include("<lastmod>2026-01-01</lastmod>")
     end
 
-    it "includes changefreq attribute" do
+    it "changefreq属性を含む" do
       expect(xml).to include('changefreq="daily"')
     end
   end
 
   describe "#write" do
-    it "calls Simpress::Writer and logs debug message" do
+    it "Simpress::Writerを呼び出してデバッグメッセージを出力する" do
       sitemap = described_class.send(:new, hostname) do
         url(file: "page1.html", lastmod: "2026-01-01")
         url(file: "page2.html", lastmod: "2026-01-01")
