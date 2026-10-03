@@ -5,7 +5,7 @@ import { testEntryData } from '../fixtures/testEntryData';
 import type { EntryType } from '../../src/types';
 
 describe('EntryList', () => {
-  it('<EntryList> test', async () => {
+  it('エントリ一覧を表示する', async () => {
     const entries: EntryType[] = [testEntryData];
     render(
       <MemoryRouter>

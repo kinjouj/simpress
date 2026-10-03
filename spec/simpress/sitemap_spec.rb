@@ -27,15 +27,9 @@ describe Simpress::Sitemap do
       Ox.dump(sitemap.instance_variable_get(:@doc))
     end
 
-    it "完全なURLを持つloc要素を含む" do
+    it "完全なURLを持つloc要素、lastmod要素、changefreq属性を含む" do
       expect(xml).to include("<loc>https://example.com/test.html</loc>")
-    end
-
-    it "lastmod要素を含む" do
       expect(xml).to include("<lastmod>2026-01-01</lastmod>")
-    end
-
-    it "changefreq属性を含む" do
       expect(xml).to include('changefreq="daily"')
     end
   end

@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { PaginateProvider, usePaginateContext } from '../../src/contexts/PaginateContext';
 
 describe('PaginateContext', () => {
-  it('returns the value passed to the nearest PaginateProvider', () => {
+  it('最も近いPaginateProviderの値を返す', () => {
     const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
       <PaginateProvider value={{ page: 2, totalPages: 5 }}>
         {children}
@@ -13,7 +13,7 @@ describe('PaginateContext', () => {
     expect(result.current).toEqual({ page: 2, totalPages: 5 });
   });
 
-  it('throws when used outside of a PaginateProvider', () => {
+  it('PaginateProvider外で使うと例外を投げる', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
 
     expect(() => renderHook(() => usePaginateContext())).toThrow(

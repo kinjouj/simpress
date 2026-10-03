@@ -24,14 +24,14 @@ describe('AdjacentEntries', () => {
     permalink: '/older-entry',
   };
 
-  it('renders both links when next and prev are present', () => {
+  it('nextとprevがある場合は両方のリンクを表示する', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     expect(screen.getByRole('link', { name: new RegExp(nextSummary.title) })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: new RegExp(prevSummary.title) })).toBeInTheDocument();
   });
 
-  it('links to the correct permalink with rel="prev" for next', () => {
+  it('nextはpermalinkへrel="prev"でリンクする', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     const link = screen.getByRole('link', { name: new RegExp(nextSummary.title) });
@@ -39,7 +39,7 @@ describe('AdjacentEntries', () => {
     expect(link).toHaveAttribute('rel', 'prev');
   });
 
-  it('links to the correct permalink with rel="next" for prev', () => {
+  it('prevはpermalinkへrel="next"でリンクする', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     const link = screen.getByRole('link', { name: new RegExp(prevSummary.title) });
@@ -47,21 +47,21 @@ describe('AdjacentEntries', () => {
     expect(link).toHaveAttribute('rel', 'next');
   });
 
-  it('does not render the next link when next is null', () => {
+  it('nextがnullの場合はnextリンクを表示しない', () => {
     renderWithRouter({ next: null, prev: prevSummary });
 
     expect(screen.queryByRole('link', { name: new RegExp(nextSummary.title) })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: new RegExp(prevSummary.title) })).toBeInTheDocument();
   });
 
-  it('does not render the prev link when prev is null', () => {
+  it('prevがnullの場合はprevリンクを表示しない', () => {
     renderWithRouter({ next: nextSummary, prev: null });
 
     expect(screen.getByRole('link', { name: new RegExp(nextSummary.title) })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: new RegExp(prevSummary.title) })).not.toBeInTheDocument();
   });
 
-  it('renders an empty container when both next and prev are null', () => {
+  it('nextとprevが両方nullの場合は空のコンテナを表示する', () => {
     renderWithRouter({ next: null, prev: null });
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument();

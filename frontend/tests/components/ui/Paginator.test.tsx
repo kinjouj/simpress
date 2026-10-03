@@ -14,21 +14,21 @@ const renderWithContext = (value: { page: number, totalPages: number }): RenderR
 };
 
 describe('Paginator', () => {
-  it('shows both Prev and Next links in the middle of the range', () => {
+  it('途中のページではPrevとNextのリンクを表示する', () => {
     renderWithContext({ page: 2, totalPages: 5 });
 
     expect(screen.getByRole('link', { name: 'Prev' })).toHaveAttribute('href', '/page/1');
     expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute('href', '/page/3');
   });
 
-  it('hides the Prev link on the first page', () => {
+  it('最初のページではPrevリンクを非表示にする', () => {
     renderWithContext({ page: 1, totalPages: 5 });
 
     expect(screen.queryByRole('link', { name: 'Prev' })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute('href', '/page/2');
   });
 
-  it('hides the Next link on the last page', () => {
+  it('最後のページではNextリンクを非表示にする', () => {
     renderWithContext({ page: 5, totalPages: 5 });
 
     expect(screen.getByRole('link', { name: 'Prev' })).toHaveAttribute('href', '/page/4');

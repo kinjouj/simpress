@@ -16,9 +16,10 @@ describe Simpress::Parser::Markdown::Renderer do
   end
 
   describe "#link" do
-    it "/で始まる内部リンクを収集する" do
-      renderer.link("/2026/01/entry.html", nil, "entry")
+    it "/で始まる内部リンクを収集してaタグを返す" do
+      result = renderer.link("/2026/01/entry.html", nil, "entry")
       expect(renderer.links).to eq ["/2026/01/entry.html"]
+      expect(result).to eq '<a href="/2026/01/entry.html" target="_blank" rel="noopener">entry</a>'
     end
 
     it "外部リンクは無視する" do
@@ -29,11 +30,6 @@ describe Simpress::Parser::Markdown::Renderer do
     it "nilのURLは無視する" do
       renderer.link(nil, nil, "empty")
       expect(renderer.links).to be_empty
-    end
-
-    it "aタグを返す" do
-      result = renderer.link("/2026/01/entry.html", nil, "entry")
-      expect(result).to eq '<a href="/2026/01/entry.html" target="_blank" rel="noopener">entry</a>'
     end
   end
 
@@ -80,12 +76,6 @@ describe Simpress::Parser::Markdown::Renderer do
       expect(heading[:children]).to eq []
     end
 
-    it "セクションidをインクリメントする" do
-      renderer.header("First", 2)
-      result = renderer.header("Second", 3)
-      expect(result).to include('id="section-2"')
-    end
-
     it "レベル2の見出しをtocのトップレベルの項目として扱う" do
       renderer.header("First", 2)
       renderer.header("Second", 2)
@@ -93,22 +83,15 @@ describe Simpress::Parser::Markdown::Renderer do
       expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Second"]
     end
 
-    it "レベル3以上の見出しを直前のレベル2の見出しの子としてネストする" do
+    it "レベル3以上の見出しを直前のレベル2の見出しの子としてネストし、子にはchildrenキーを付与せずセクションidをインクリメントする" do
       renderer.header("First", 2)
-      renderer.header("Second", 3)
+      result = renderer.header("Second", 3)
 
+      expect(result).to include('id="section-2"')
       expect(renderer.toc.size).to eq 1
       first = renderer.toc.first
       expect(first[:text]).to eq "First"
-      expect(first[:children].map {|heading| heading[:text] }).to eq ["Second"]
-    end
-
-    it "子レベルのノードにはchildrenキーを付与しない" do
-      renderer.header("First", 2)
-      renderer.header("Second", 3)
-
-      child = renderer.toc.first[:children].first
-      expect(child).to eq({ id: "section-2", text: "Second" })
+      expect(first[:children]).to eq [{ id: "section-2", text: "Second" }]
     end
 
     it "連続する深い見出しはレベルに関係なく同じ子リストにフラット化する" do

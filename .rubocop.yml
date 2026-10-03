@@ -135,6 +135,9 @@ RSpec/MultipleExpectations:
 RSpec/MultipleMemoizedHelpers:
   Max: 8
 
+RSpec/NestedGroups:
+  Enabled: false
+
 RSpec/ReceiveMessages:
   Enabled: false
 

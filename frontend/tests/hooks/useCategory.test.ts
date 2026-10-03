@@ -12,7 +12,7 @@ vi.mock('react-router', async () => {
 const mockedUseParams = vi.mocked(Router.useParams);
 
 describe('useCategor', () => {
-  it('useCategory test', () => {
+  it('categoryパラメーターを返す', () => {
     mockedUseParams.mockReturnValue({ category: 'test' });
     expect(useCategory()).toBe('test');
   });

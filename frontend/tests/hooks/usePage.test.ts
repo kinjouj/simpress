@@ -12,13 +12,13 @@ vi.mock('react-router', async () => {
 const mockedUseParams = vi.mocked(Router.useParams);
 
 describe('usePage', () => {
-  it('usePage test', () => {
+  it('pageパラメーターを数値で返す', () => {
     mockedUseParams.mockReturnValue({ page: '10' });
     const page = usePage();
     expect(page).toBe(10);
   });
 
-  it('if useParams return null', () => {
+  it('pageパラメーターがない場合は1を返す', () => {
     mockedUseParams.mockReturnValue({});
     expect(usePage()).toBe(1);
   });

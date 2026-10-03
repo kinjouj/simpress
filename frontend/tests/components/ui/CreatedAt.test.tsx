@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router';
 import CreatedAt from '../../../src/components/ui/CreatedAt';
 
 describe('CreatedAt Component', () => {
-  it('<CreatedAt> test', () => {
+  it('日付をYYYY-MM-DD形式で表示する', () => {
     render(
       <MemoryRouter>
         <CreatedAt dateString="2000-01-01T00:00:00" />

@@ -86,25 +86,18 @@ describe Simpress::Taxonomy do
   end
 
   describe "#term" do
-    it "指定された名前に対してTermインスタンスを返す" do
-      term = described_class.fetch("categories").term("Ruby")
+    it "指定された名前に対してslug上書きを使用したTermインスタンスを返し、タクソノミー内でメモ化する" do
+      taxonomy = described_class.fetch("categories")
+      term = taxonomy.term("Ruby")
       expect(term).to be_a(Simpress::Taxonomy::Term)
       expect(term.name).to eq "Ruby"
-    end
-
-    it "taxonomiesのslug上書きを使用する" do
-      term = described_class.fetch("categories").term("Ruby")
       expect(term.key).to eq "ruby"
+      expect(taxonomy.term("Ruby")).to equal(term)
     end
 
     it "slugの上書きがない場合はto_urlにフォールバックする" do
       term = described_class.fetch("categories").term("Unknown")
       expect(term.key).to eq "unknown"
-    end
-
-    it "タクソノミー内でtermインスタンスをメモ化する" do
-      taxonomy = described_class.fetch("categories")
-      expect(taxonomy.term("Ruby")).to equal(taxonomy.term("Ruby"))
     end
   end
 end

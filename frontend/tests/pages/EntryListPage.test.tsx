@@ -23,7 +23,7 @@ describe('EntryListPage', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
-  it('shows a loading indicator (not a blank screen) while entries are being fetched', () => {
+  it('取得中はloadingを表示する', () => {
     SimpressMock.getEntriesByPage.mockReturnValue(new Promise(() => {}));
     const { container } = renderEntryListPage();
 
@@ -31,7 +31,7 @@ describe('EntryListPage', () => {
     expect(container).not.toBeEmptyDOMElement();
   });
 
-  it('<EntryListPage> test', async () => {
+  it('エントリ一覧を表示する', async () => {
     SimpressMock.getEntriesByPage.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     renderEntryListPage();

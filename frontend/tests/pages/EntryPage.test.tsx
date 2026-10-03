@@ -28,7 +28,7 @@ describe('EntryPage', () => {
     vi.useRealTimers();
   });
 
-  it('<EntryPage> test', async () => {
+  it('エントリを表示する', async () => {
     SimpressMock.getEntry.mockResolvedValue(testEntryData);
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     renderEntryPage();

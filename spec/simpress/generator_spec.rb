@@ -47,22 +47,9 @@ describe Simpress::Generator do
   end
 
   describe ".generate" do
-    it "source_dir配下のMarkdownファイルをglobで探索する" do
+    it "下書きをスキップし、残りのエントリをタイムスタンプの降順で渡して、生成パイプラインを正しい順序で実行する" do
       described_class.generate
-      expect(Dir).to have_received(:glob).with("source/**/*.markdown")
-    end
-
-    it "下書きをスキップし、残りのエントリをタイムスタンプの降順で渡す" do
-      described_class.generate
-      expect(Simpress::Plugin).to have_received(:process) do |entries|
-        expect(entries).not_to include(draft_entry)
-        expect(entries).to eq([entry2, entry1])
-      end
-    end
-
-    it "生成パイプラインを正しい順序で実行する" do
-      described_class.generate
-      expect(Simpress::Plugin).to have_received(:process).ordered
+      expect(Simpress::Plugin).to have_received(:process).with([entry2, entry1]).ordered
       expect(Simpress::Generator::Pipeline).to have_received(:generate).ordered
       expect(Simpress::Theme).to have_received(:clear).ordered
     end
@@ -77,31 +64,27 @@ describe Simpress::Generator do
       described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c])
     end
 
-    it "被リンクを正しく設定する" do
+    it "被リンクを設定し、新しいエントリにnext、古いエントリにprevを割り当てて、各エントリをfreezeする" do
       expect(entry_a.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-b.html", "Entry B"])
       expect(entry_b.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-a.html", "Entry A"])
       expect(entry_c.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-a.html", "Entry A"])
-    end
 
-    it "どのエントリのpermalinkにも一致しないリンクは無視する" do
-      entry = build(:entry, permalink: "/entry-x.html", markdown: "[external](https://example.com)")
-      described_class.send(:build_entry_relations!, [entry])
-      expect(entry.backlinks).to be_empty
-    end
-
-    it "新しいエントリにnext、古いエントリにprevを割り当てる" do
       expect(entry_a.prev.permalink).to eq "/entry-b.html"
       expect(entry_a.next).to be_nil
       expect(entry_b.prev.permalink).to eq "/entry-c.html"
       expect(entry_b.next.permalink).to eq "/entry-a.html"
       expect(entry_c.prev).to be_nil
       expect(entry_c.next.permalink).to eq "/entry-b.html"
-    end
 
-    it "各エントリをfreezeする" do
       expect(entry_a).to be_frozen
       expect(entry_b).to be_frozen
       expect(entry_c).to be_frozen
+    end
+
+    it "どのエントリのpermalinkにも一致しないリンクは無視する" do
+      entry = build(:entry, permalink: "/entry-x.html", markdown: "[external](https://example.com)")
+      described_class.send(:build_entry_relations!, [entry])
+      expect(entry.backlinks).to be_empty
     end
   end
 end

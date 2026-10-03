@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import EntryListSkeleton from '../../src/components/EntryListSkeleton';
 
 describe('EntryListSkeleton', () => {
-  it('renders five skeleton placeholders', () => {
+  it('スケルトンを5つ表示する', () => {
     render(<EntryListSkeleton />);
 
     const items = screen.getAllByRole('listitem', { name: 'entry-skeleton' });

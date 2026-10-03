@@ -12,18 +12,10 @@ describe Simpress::Writer do
         allow(File).to receive(:write).with("public/test/index.html", "content")
       end
 
-      it "ディレクトリを作成する" do
-        described_class.write("test/index.html", "content")
-        expect(FileUtils).to have_received(:mkdir_p).with("public/test")
-      end
-
-      it "ファイルパスにデータを書き込む" do
-        described_class.write("test/index.html", "content")
-        expect(File).to have_received(:write).with("public/test/index.html", "content")
-      end
-
-      it "ブロックが渡された場合はファイルパスをyieldする" do
+      it "ディレクトリを作成してファイルパスにデータを書き込み、ブロックが渡された場合はファイルパスをyieldする" do
         expect {|b| described_class.write("test/index.html", "content", &b) }.to yield_with_args("public/test/index.html")
+        expect(FileUtils).to have_received(:mkdir_p).with("public/test")
+        expect(File).to have_received(:write).with("public/test/index.html", "content")
       end
     end
 

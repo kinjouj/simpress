@@ -70,54 +70,21 @@ describe Simpress::Entry do
   end
 
   describe "#load!" do
-    it "Markdown本文をレンダリングしてcontent/toc/links/coverを設定する" do
+    it "Markdown本文をレンダリングしてcontent/toc/linksを設定し、2回目以降は再レンダリングしない" do
       entry = described_class.new(params)
       entry.load!
-      expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with("Main content here")
+      entry.load!
+      expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with("Main content here").once
       expect(entry.content).to eq rendered_content
       expect(entry.toc).to eq [{ id: "section-1", text: "Heading", children: [] }]
       expect(entry.links).to eq ["/2026/01/other.html"]
     end
 
-    it "2回目以降の呼び出しでは再レンダリングしない" do
-      entry = described_class.new(params)
-      entry.load!
-      entry.load!
-      expect(Simpress::Parser::Markdown::Processor).to have_received(:render).once
-    end
-
-    it "本文から抽出したcoverよりparamsで指定されたcoverを優先する" do
+    it "本文から抽出したcoverとdescriptionよりparamsで指定された値を優先する" do
       entry = described_class.new(params)
       entry.load!
       expect(entry.cover).to eq "cover.png"
-    end
-
-    it "本文から抽出したdescriptionよりparamsで指定されたdescriptionを優先する" do
-      entry = described_class.new(params)
-      entry.load!
       expect(entry.description).to eq "Short description"
-    end
-
-    context "paramsでdescriptionが指定されていない場合" do
-      let(:params) { super().except(:description) }
-      let(:rendered_content) { "<p>First paragraph.</p>\n<p>Second paragraph.</p>" }
-
-      it "レンダリングされた本文の最初の段落のテキストにフォールバックする" do
-        entry = described_class.new(params)
-        entry.load!
-        expect(entry.description).to eq "First paragraph."
-      end
-    end
-
-    context "paramsでdescriptionが指定されておらず、最初の段落にインラインタグが含まれる場合" do
-      let(:params) { super().except(:description) }
-      let(:rendered_content) { "<p>Hello <strong>world</strong>!</p>" }
-
-      it "抽出したdescriptionからインラインタグを取り除く" do
-        entry = described_class.new(params)
-        entry.load!
-        expect(entry.description).to eq "Hello strongworld/strong!"
-      end
     end
 
     context "paramsでcoverが指定されていない場合" do
@@ -142,6 +109,28 @@ describe Simpress::Entry do
         expect(entry.cover).to eq described_class::DEFAULT_COVER
       end
     end
+
+    context "paramsでdescriptionが指定されていない場合" do
+      let(:params) { super().except(:description) }
+      let(:rendered_content) { "<p>First paragraph.</p>\n<p>Second paragraph.</p>" }
+
+      it "レンダリングされた本文の最初の段落のテキストにフォールバックする" do
+        entry = described_class.new(params)
+        entry.load!
+        expect(entry.description).to eq "First paragraph."
+      end
+    end
+
+    context "paramsでdescriptionが指定されておらず、最初の段落にインラインタグが含まれる場合" do
+      let(:params) { super().except(:description) }
+      let(:rendered_content) { "<p>Hello <strong>world</strong>!</p>" }
+
+      it "抽出したdescriptionからインラインタグを取り除く" do
+        entry = described_class.new(params)
+        entry.load!
+        expect(entry.description).to eq "Hello strongworld/strong!"
+      end
+    end
   end
 
   describe "#prev and #next" do
@@ -159,12 +148,14 @@ describe Simpress::Entry do
   end
 
   describe "#to_h" do
-    it "許可されたjsonキーのみを含むハッシュを返す" do
+    it "許可されたjsonキーのみを含み、デフォルトではprevとnextがnilのハッシュを返す" do
       entry = described_class.new(params)
       entry.load!
       result = entry.to_h
       expect(result.keys).to match_array(described_class::PERMITTED_JSON_KEYS)
       expect(result[:id]).to eq "entry-123"
+      expect(result[:prev]).to be_nil
+      expect(result[:next]).to be_nil
     end
 
     it "特定のキーが要求された場合はキーを絞り込む" do
@@ -183,14 +174,6 @@ describe Simpress::Entry do
       result = entry.to_h
       expect(result[:prev]).to eq entry.prev
       expect(result[:next]).to eq entry.next
-    end
-
-    it "デフォルトではnilのprevとnextを含む" do
-      entry = described_class.new(params)
-      entry.load!
-      result = entry.to_h
-      expect(result[:prev]).to be_nil
-      expect(result[:next]).to be_nil
     end
   end
 

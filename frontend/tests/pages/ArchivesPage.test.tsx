@@ -23,7 +23,7 @@ describe('ArchivesPage', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
-  it('<ArchivesPage> test', async () => {
+  it('アーカイブのエントリ一覧を表示する', async () => {
     SimpressMock.getEntriesByArchive.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     renderArchives();
 

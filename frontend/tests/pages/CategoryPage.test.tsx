@@ -23,7 +23,7 @@ describe('CategoryPage', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
   });
 
-  it('<CategoryPage> test', async () => {
+  it('カテゴリのエントリ一覧を表示する', async () => {
     SimpressMock.getEntriesByCategory.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     renderCategoryEntryListPage();

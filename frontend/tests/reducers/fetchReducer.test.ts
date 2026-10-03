@@ -3,7 +3,7 @@ import { testEntryData } from '../fixtures/testEntryData';
 import type { EntryType } from '../../src/types';
 
 describe('fetchReducer', () => {
-  it('fetchReducer test', () => {
+  it('各アクションに応じて状態を更新する', () => {
     const stateDefault = fetchReducer<null>(
       { data: null, isLoading: false, isError: false },
       { type: 'FETCH_DEFAULT' } as any // eslint-disable-line

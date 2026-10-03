@@ -33,7 +33,7 @@ describe('AppRoutes', () => {
     });
   });
 
-  it('<AppRoutes> initialEntries=/page/1 test', async () => {
+  it('/page/1でエントリ一覧を表示する', async () => {
     render(
       <MemoryRouter initialEntries={['/page/1']}>
         <AppRoutes />
@@ -44,7 +44,7 @@ describe('AppRoutes', () => {
     expect(entries).toHaveLength(1);
   });
 
-  it('<AppRoutes> initialEntries=/archives/categories/test', async () => {
+  it('/archives/categories/test/1でカテゴリのエントリ一覧を表示する', async () => {
     render(
       <MemoryRouter initialEntries={['/archives/categories/test/1']}>
         <AppRoutes />
@@ -55,7 +55,7 @@ describe('AppRoutes', () => {
     expect(entries).toHaveLength(1);
   });
 
-  it('<AppRoutes> initialEntries=/archives/1234/01', async () => {
+  it('/archives/1234/01/1でアーカイブのエントリ一覧を表示する', async () => {
     render(
       <MemoryRouter initialEntries={['/archives/1234/01/1']}>
         <AppRoutes />
@@ -66,7 +66,7 @@ describe('AppRoutes', () => {
     expect(entries).toHaveLength(1);
   });
 
-  it('<AppRoutes> initialEntries=/test.html', async () => {
+  it('/test.htmlでエントリを表示する', async () => {
     render(
       <MemoryRouter initialEntries={['/test.html']}>
         <AppRoutes />

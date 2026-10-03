@@ -5,14 +5,14 @@ import { testEntryData } from '../../fixtures/testEntryData';
 import type { TocType } from '../../../src/types';
 
 describe('TableOfContents', () => {
-  it('renders nothing when toc has only 1 item', () => {
+  it('tocが1件のみの場合は何も表示しない', () => {
     const toc: TocType[] = [testEntryData.toc[0]];
     const { container } = render(<TableOfContents toc={toc} />);
 
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders the heading and links when toc has more than 1 item', () => {
+  it('tocが2件以上の場合は見出しとリンクを表示する', () => {
     render(<TableOfContents toc={testEntryData.toc} />);
 
     expect(screen.getByText('Table of Contents')).toBeInTheDocument();
@@ -20,14 +20,14 @@ describe('TableOfContents', () => {
     expect(screen.getByRole('link', { name: testEntryData.toc[1].text })).toBeInTheDocument();
   });
 
-  it('links to the anchor built from the section id', () => {
+  it('セクションidのアンカーにリンクする', () => {
     render(<TableOfContents toc={testEntryData.toc} />);
 
     expect(screen.getByRole('link', { name: testEntryData.toc[0].text })).toHaveAttribute('href', `#${testEntryData.toc[0].id}`);
     expect(screen.getByRole('link', { name: testEntryData.toc[1].text })).toHaveAttribute('href', `#${testEntryData.toc[1].id}`);
   });
 
-  it('flattens, indents, and links children relative to their parent', () => {
+  it('子要素を平坦化してインデントし、リンクする', () => {
     const toc: TocType[] = [
       { id: 'section-1', text: 'Intro', children: [{ id: 'section-1-1', text: 'Intro Detail' }] },
       { id: 'section-2', text: 'Summary', children: [] },
@@ -44,7 +44,7 @@ describe('TableOfContents', () => {
   });
 
   describe('when a link is clicked', () => {
-    it('prevents the default navigation', () => {
+    it('デフォルトの遷移を防ぐ', () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const link = screen.getByRole('link', { name: testEntryData.toc[0].text });
@@ -54,7 +54,7 @@ describe('TableOfContents', () => {
       expect(clickEvent.defaultPrevented).toBe(true);
     });
 
-    it('scrolls the target section into view', async () => {
+    it('対象セクションまでスクロールする', async () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const target = document.createElement('div');
@@ -71,7 +71,7 @@ describe('TableOfContents', () => {
       document.body.removeChild(target);
     });
 
-    it('does not throw when the target section does not exist', async () => {
+    it('対象セクションがなくても例外を投げない', async () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const user = userEvent.setup();

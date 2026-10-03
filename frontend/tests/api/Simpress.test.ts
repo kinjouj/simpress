@@ -5,7 +5,7 @@ const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
 
 describe('Simpress', () => {
-  it('getEntriesByPage test', async () => {
+  it('ページ別のエントリを取得する', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ entries: [testEntryData, testEntryData], total_pages: 1 }),
@@ -15,7 +15,7 @@ describe('Simpress', () => {
     expect(totalPages).toBe(1);
   });
 
-  it('getEntriesByArchive test', async () => {
+  it('アーカイブ別のエントリを取得する', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ entries: [testEntryData], total_pages: 1 }),
@@ -25,7 +25,7 @@ describe('Simpress', () => {
     expect(totalPages).toBe(1);
   });
 
-  it('getEntriesByCategory test', async () => {
+  it('カテゴリ別のエントリを取得する', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ entries: [testEntryData], total_pages: 1 }),
@@ -35,7 +35,7 @@ describe('Simpress', () => {
     expect(totalPages).toBe(1);
   });
 
-  it('getEntry test', async () => {
+  it('エントリを取得する', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(testEntryData),
@@ -45,7 +45,7 @@ describe('Simpress', () => {
     expect(mockFetch).toHaveBeenCalled();
   });
 
-  it('getData test', async () => {
+  it('レスポンスを返し、失敗時は例外を投げる', async () => {
     const getData: <T>(url: string) => Promise<T> = (Simpress as any).getData.bind(Simpress); // eslint-disable-line
     mockFetch.mockResolvedValue({
       ok: true,

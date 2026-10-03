@@ -6,7 +6,7 @@ const mockScrollTo = vi.fn();
 window.scrollTo = mockScrollTo;
 
 describe('PageToTopFloatingButton', () => {
-  it('<PageToTopFloatingButton> test', async () => {
+  it('クリックでページ最上部へスムーズにスクロールする', async () => {
     render(<PageToTopFloatingButton />);
     const user = userEvent.setup();
     const button = screen.getByRole('button', { name: 'page to top' });

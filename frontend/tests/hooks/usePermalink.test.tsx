@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { usePermalink } from '../../src/hooks/usePermalink';
 
 describe('usePermalink', () => {
-  it('usePermalink', () => {
+  it('パスからjsonのpermalinkを返す', () => {
     const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
       <MemoryRouter initialEntries={[`/test.html`]}>
         <Routes>

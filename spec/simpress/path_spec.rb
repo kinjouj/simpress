@@ -9,12 +9,10 @@ describe Simpress::Path do
       expect(described_class.wrap(path)).to equal(path)
     end
 
-    it "文字列が渡された場合は新しいインスタンスを生成する" do
-      expect(described_class.wrap("/base")).to be_a(described_class)
-    end
-
-    it "ラップしても文字列の値を保持する" do
-      expect(described_class.wrap("/base").to_s).to eq "/base"
+    it "文字列が渡された場合は文字列の値を保持した新しいインスタンスを生成する" do
+      wrapped = described_class.wrap("/base")
+      expect(wrapped).to be_a(described_class)
+      expect(wrapped.to_s).to eq "/base"
     end
   end
 

@@ -21,13 +21,10 @@ describe Simpress::Theme do
       allow(tilt_template).to receive(:render).and_return("<html>My Blog</html>")
     end
 
-    it "正しいパスでテンプレートを初期化する" do
-      described_class.render("layout", { page_title: "Entry" })
+    it "正しいパスでテンプレートを初期化してレンダリング結果を返す" do
+      result = described_class.render("layout", { page_title: "Entry" })
       expect(Tilt::ErubiTemplate).to have_received(:new).with("spec/fixtures/theme/layout.erb", escape: true)
-    end
-
-    it "レンダリング結果を返す" do
-      expect(described_class.render("layout", { page_title: "Entry" })).to eq "<html>My Blog</html>"
+      expect(result).to eq "<html>My Blog</html>"
     end
   end
 

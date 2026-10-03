@@ -22,7 +22,7 @@ describe('EntryCategories', () => {
     ],
   };
 
-  it('renders a link for every term across all taxonomies', () => {
+  it('全タクソノミーの各termのリンクを表示する', () => {
     renderWithRouter(taxonomies);
 
     expect(screen.getByRole('link', { name: 'Ruby' })).toBeInTheDocument();
@@ -30,26 +30,26 @@ describe('EntryCategories', () => {
     expect(screen.getByRole('link', { name: 'Tips' })).toBeInTheDocument();
   });
 
-  it('links to the correct taxonomy/term path', () => {
+  it('タクソノミーとtermのパスにリンクする', () => {
     renderWithRouter(taxonomies);
 
     expect(screen.getByRole('link', { name: 'Ruby' })).toHaveAttribute('href', '/archives/categories/ruby');
     expect(screen.getByRole('link', { name: 'Tips' })).toHaveAttribute('href', '/archives/tags/tips');
   });
 
-  it('applies the entry-category class to each link', () => {
+  it('各リンクにentry-categoryクラスを付与する', () => {
     renderWithRouter(taxonomies);
 
     expect(screen.getByRole('link', { name: 'Ruby' })).toHaveClass('entry-category');
   });
 
-  it('renders no links when taxonomies is empty', () => {
+  it('taxonomiesが空の場合はリンクを表示しない', () => {
     renderWithRouter({});
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 
-  it('renders no links when a taxonomy has no terms', () => {
+  it('termがないタクソノミーはリンクを表示しない', () => {
     renderWithRouter({ categories: [] });
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument();

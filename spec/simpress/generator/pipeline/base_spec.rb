@@ -95,13 +95,9 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Writer).to receive(:write) {|path, _data, &block| block&.call(path) }
     end
 
-    it "拡張子付きのパスを構築してSimpress::Writerを呼び出す" do
-      expect { described_class.write("file", "content", "txt") }.not_to raise_error
-      expect(Simpress::Writer).to have_received(:write).with("file.txt", "content")
-    end
-
-    it "ブロックにファイルパスをyieldする" do
+    it "拡張子付きのパスを構築してSimpress::Writerを呼び出し、ブロックにファイルパスをyieldする" do
       expect {|b| described_class.write("file", "content", "txt", &b) }.to yield_with_args("file.txt")
+      expect(Simpress::Writer).to have_received(:write).with("file.txt", "content")
     end
   end
 end
