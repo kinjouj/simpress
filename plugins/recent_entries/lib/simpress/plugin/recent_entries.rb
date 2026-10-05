@@ -12,7 +12,7 @@ module Simpress
       KEYS = [:id, :title, :permalink].freeze
 
       def self.run(entries)
-        recent_entries = Array(entries).take(5)
+        recent_entries = entries.select(&:index).take(5)
 
         case config.mode
         when "html"

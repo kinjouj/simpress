@@ -13,13 +13,12 @@ module Simpress
           escape_html: true
         }.freeze
 
-        attr_reader :primary_image, :links
+        attr_reader :primary_image
 
         def initialize(options = nil)
           super(options || RENDERER_OPTIONS)
           @primary_image = nil
           @headings = []
-          @links = []
         end
 
         def preprocess(markdown)
@@ -31,7 +30,6 @@ module Simpress
         end
 
         def link(url, _title, content)
-          @links << url if url&.start_with?("/")
           %(<a href="#{url}" target="_blank" rel="noopener">#{content}</a>)
         end
 

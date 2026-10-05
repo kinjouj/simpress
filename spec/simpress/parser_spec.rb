@@ -20,7 +20,6 @@ describe Simpress::Parser do
     Simpress::Parser::Markdown::Processor::Result.new(
       content: "<p>This is the description.</p>\n<p>This is the content.</p>",
       toc: [],
-      links: ["/2026/01/other-entry.html"],
       cover: "cover.jpg"
     )
   end
@@ -43,7 +42,6 @@ describe Simpress::Parser do
       expect(entry.content).to eq "<p>This is the description.</p>\n<p>This is the content.</p>"
       expect(entry.description).to eq "This is the description."
       expect(entry.cover).to eq "cover.jpg"
-      expect(entry.links).to eq ["/2026/01/other-entry.html"]
     end
 
     context "フロントマターにもファイル名にも日付を導出できない場合" do

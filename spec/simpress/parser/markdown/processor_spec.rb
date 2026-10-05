@@ -26,14 +26,13 @@ describe Simpress::Parser::Markdown::Processor do
   end
 
   describe ".render" do
-    it "content、toc、links、coverを持つResultを返す" do
+    it "content、toc、coverを持つResultを返す" do
       result = described_class.render(markdown1)
       expect(result.content).to include("Hello")
       expect(result.cover).to eq "cover.png"
       expect(result.toc.size).to eq 1
       expect(result.toc.first[:id]).to eq "section-1"
       expect(result.toc.first[:text]).to eq "Hello"
-      expect(result.links).to eq []
     end
 
     it "前回のレンダリングの状態を引き継がない" do
@@ -44,7 +43,6 @@ describe Simpress::Parser::Markdown::Processor do
       expect(result.toc.size).to eq 1
       expect(result.toc.first[:id]).to eq "section-1"
       expect(result.toc.first[:text]).to eq "World"
-      expect(result.links).to eq []
     end
 
     it "Redcarpetでパースした実際のMarkdown見出しからネストされたtocを構築する" do

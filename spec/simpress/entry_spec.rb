@@ -27,7 +27,6 @@ describe Simpress::Entry do
     Simpress::Parser::Markdown::Processor::Result.new(
       content: rendered_content,
       toc: [{ id: "section-1", text: "Heading", children: [] }],
-      links: ["/2026/01/other.html"],
       cover: "/images/extracted.png"
     )
   end
@@ -60,24 +59,27 @@ describe Simpress::Entry do
       expect(category_terms.first.entries).not_to include(entry)
     end
 
+    it "indexがfalseの場合はparamsにカテゴリがあってもtaxonomiesのtermを持たない" do
+      entry = described_class.new(params.merge(index: false))
+      expect(entry.taxonomies.values).to all(eq [])
+    end
+
     it "#load!が呼ばれるまでMarkdown本文をレンダリングしない" do
       entry = described_class.new(params)
       expect(Simpress::Parser::Markdown::Processor).not_to have_received(:render)
       expect(entry.content).to be_nil
       expect(entry.toc).to be_nil
-      expect(entry.links).to be_nil
     end
   end
 
   describe "#load!" do
-    it "Markdown本文をレンダリングしてcontent/toc/linksを設定し、2回目以降は再レンダリングしない" do
+    it "Markdown本文をレンダリングしてcontent/tocを設定し、2回目以降は再レンダリングしない" do
       entry = described_class.new(params)
       entry.load!
       entry.load!
       expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with("Main content here").once
       expect(entry.content).to eq rendered_content
       expect(entry.toc).to eq [{ id: "section-1", text: "Heading", children: [] }]
-      expect(entry.links).to eq ["/2026/01/other.html"]
     end
 
     it "本文から抽出したcoverとdescriptionよりparamsで指定された値を優先する" do
@@ -100,7 +102,7 @@ describe Simpress::Entry do
     context "paramsでcoverが指定されておらず、本文から画像も抽出されなかった場合" do
       let(:params) { super().except(:cover) }
       let(:render_result) do
-        Simpress::Parser::Markdown::Processor::Result.new(content: rendered_content, toc: [], links: [], cover: nil)
+        Simpress::Parser::Markdown::Processor::Result.new(content: rendered_content, toc: [], cover: nil)
       end
 
       it "デフォルトのcoverにフォールバックする" do

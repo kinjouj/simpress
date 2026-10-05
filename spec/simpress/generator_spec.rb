@@ -56,19 +56,15 @@ describe Simpress::Generator do
   end
 
   describe ".build_entry_relations!" do
-    let(:entry_a) { build(:entry, permalink: "/entry-a.html", title: "Entry A", markdown: "[b](/entry-b.html) [c](/entry-c.html)") }
-    let(:entry_b) { build(:entry, permalink: "/entry-b.html", title: "Entry B", markdown: "[a](/entry-a.html)") }
-    let(:entry_c) { build(:entry, permalink: "/entry-c.html", title: "Entry C", markdown: "no links here") }
+    let(:entry_a) { build(:entry, permalink: "/entry-a.html") }
+    let(:entry_b) { build(:entry, permalink: "/entry-b.html") }
+    let(:entry_c) { build(:entry, permalink: "/entry-c.html") }
 
     before do
       described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c])
     end
 
-    it "被リンクを設定し、新しいエントリにnext、古いエントリにprevを割り当てて、各エントリをfreezeする" do
-      expect(entry_a.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-b.html", "Entry B"])
-      expect(entry_b.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-a.html", "Entry A"])
-      expect(entry_c.backlinks.map {|l| [l.permalink, l.title] }).to contain_exactly(["/entry-a.html", "Entry A"])
-
+    it "新しいエントリにnext、古いエントリにprevを割り当てて、各エントリをfreezeする" do
       expect(entry_a.prev.permalink).to eq "/entry-b.html"
       expect(entry_a.next).to be_nil
       expect(entry_b.prev.permalink).to eq "/entry-c.html"
@@ -81,10 +77,17 @@ describe Simpress::Generator do
       expect(entry_c).to be_frozen
     end
 
-    it "どのエントリのpermalinkにも一致しないリンクは無視する" do
-      entry = build(:entry, permalink: "/entry-x.html", markdown: "[external](https://example.com)")
-      described_class.send(:build_entry_relations!, [entry])
-      expect(entry.backlinks).to be_empty
+    it "indexがfalseのエントリを飛ばして隣接関係を設定し、そのエントリ自体にはprevとnextを設定しない" do
+      newer = build(:entry, permalink: "/newer.html")
+      hidden = build(:entry, permalink: "/hidden.html", index: false)
+      older = build(:entry, permalink: "/older.html")
+      described_class.send(:build_entry_relations!, [newer, hidden, older])
+
+      expect(newer.prev.permalink).to eq "/older.html"
+      expect(older.next.permalink).to eq "/newer.html"
+      expect(hidden.prev).to be_nil
+      expect(hidden.next).to be_nil
+      expect(hidden).to be_frozen
     end
   end
 end

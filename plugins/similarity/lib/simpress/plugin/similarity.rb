@@ -2,10 +2,10 @@
 # @plugins/similarity/spec/similarity_spec.rb
 
 require "delegate"
-require "fileutils"
 require "msgpack"
 require "natto"
 require "xxhash"
+
 require "simpress/json"
 require "simpress/plugin"
 require "simpress/entry"
@@ -16,10 +16,12 @@ module Simpress
       extend Simpress::Plugin
 
       def self.run(entries)
-        indexer = Indexer.new(entries)
+        indexes = entries.each_index.select {|i| entries[i].index }
+        targets = entries.values_at(*indexes)
+        indexer = Indexer.new(targets)
         indexer.each_similarity do |scores, i|
-          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Entry::Link.new(entries[index]) }
-          entries[i] = EntryWithSimilarities.new(entries[i], similarities)
+          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Entry::Link.new(targets[index]) }
+          entries[indexes[i]] = EntryWithSimilarities.new(targets[i], similarities)
         end
 
         Indexer::Cache.flush
@@ -31,7 +33,6 @@ module Simpress
         K1 = 1.2
         B = 0.75
         TF_SCALE = K1 + 1.0
-        LINK_WEIGHT = 10.0
 
         attr_reader :keywords
 
@@ -40,11 +41,8 @@ module Simpress
           @accumulator = Array.new(@size, 0.0)
           @touched = Array.new(@size)
           @keywords = {}
-          @backlink_pairs = []
-          permalink_index = entries.each_with_index.to_h {|entry, i| [entry.permalink, i] }
           doc_lens = []
           @vectors = entries.map do |entry|
-            @backlink_pairs << (entry.backlinks || []).filter_map {|e| permalink_index[e.permalink] }
             keywords = extract_keywords(entry)
             vector = keywords.tally
             entry.taxonomies.each_value do |terms|
@@ -113,17 +111,6 @@ module Simpress
 
               @accumulator[j] += idf * term_score
             end
-          end
-
-          @backlink_pairs[i].each do |j|
-            next if j == i
-
-            if @accumulator[j] == 0.0
-              @touched[touched_count] = j
-              touched_count += 1
-            end
-
-            @accumulator[j] += LINK_WEIGHT
           end
 
           result = Array.new(touched_count)

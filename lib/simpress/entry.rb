@@ -13,8 +13,8 @@ module Simpress
     DEFAULT_COVER = "/images/no_image.webp"
     DESC_REGEX = %r{<p[^>]*>(.*?)</p>}m
 
-    attr_reader :id, :title, :date, :permalink, :taxonomies, :description, :layout, :index, :draft, :markdown, :params, :content, :toc, :links, :cover
-    attr_accessor :prev, :next, :backlinks
+    attr_reader :id, :title, :date, :permalink, :taxonomies, :description, :layout, :index, :draft, :markdown, :params, :content, :toc, :cover
+    attr_accessor :prev, :next
 
     def initialize(params)
       @params = params
@@ -28,7 +28,7 @@ module Simpress
       @index = params[:index]
       @draft = params[:draft]
       @markdown = params[:markdown]
-      @taxonomies = Simpress::Taxonomy.resolve(params)
+      @taxonomies = Simpress::Taxonomy.resolve(@index ? params : {})
     end
 
     def load!
@@ -37,7 +37,6 @@ module Simpress
       result = Simpress::Parser::Markdown::Processor.render(@markdown)
       @content = result.content
       @toc = result.toc
-      @links = result.links
       @cover ||= result.cover || DEFAULT_COVER
       @description ||= @content[DESC_REGEX, 1].to_s.gsub(/[<>]/, "").strip
     end

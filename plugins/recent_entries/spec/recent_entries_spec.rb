@@ -5,9 +5,7 @@ require "simpress/entry"
 
 describe Simpress::Plugin::RecentEntries do
   let(:entries) do
-    Array.new(10) do |i|
-      Simpress::Entry.new(id: "entry-#{i}", title: "Title #{i}", permalink: "/entry-#{i}")
-    end
+    Array.new(10) {|i| Simpress::Entry.new(id: "entry-#{i}", title: "Title #{i}", permalink: "/entry-#{i}", index: true) }
   end
 
   before do
@@ -33,15 +31,16 @@ describe Simpress::Plugin::RecentEntries do
         expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
       end
 
+      it "indexがfalseのエントリを除外した最初の5件をコンテキストにバインドする" do
+        hidden = Simpress::Entry.new(id: "hidden", title: "Hidden", permalink: "/hidden", index: false)
+        described_class.run([hidden, *entries])
+        expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
+      end
+
       it "エントリが5件未満の場合も扱える" do
         small_entries = entries.take(2)
         described_class.run(small_entries)
         expect(described_class).to have_received(:bind_context).with(recent_entries: small_entries)
-      end
-
-      it "entriesの入力がnilの場合も扱える" do
-        described_class.run(nil)
-        expect(described_class).to have_received(:bind_context).with(recent_entries: [])
       end
     end
 

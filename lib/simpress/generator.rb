@@ -49,15 +49,14 @@ module Simpress
 
       def build_entry_relations!(entries)
         @link_index = entries.to_h {|e| [e.permalink, e] }
-        refs = Hash.new {|h, k| h[k] = [] }
 
-        [nil, *entries, nil].each_cons(3) do |newer, entry, older|
-          entry.load!
+        [nil, *entries.select(&:index), nil].each_cons(3) do |newer, entry, older|
           entry.prev = Simpress::Entry::Link.build(older)
           entry.next = Simpress::Entry::Link.build(newer)
+        end
 
-          entry.links.each {|link| refs[link] << Simpress::Entry::Link.new(entry) if @link_index.key?(link) }
-          entry.backlinks = (refs[entry.permalink] ||= [])
+        entries.each do |entry|
+          entry.load!
           entry.freeze
         end
       end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 # @plugins/similarity/lib/simpress/plugin/similarity.rb
 
-require "simpress/entry"
 require "simpress/plugin/similarity"
 
 describe Simpress::Plugin::Similarity do
@@ -115,6 +114,19 @@ describe Simpress::Plugin::Similarity do
     expect(entries[4]).to respond_to(:similarities)
     expect(entries[4].similarities.size).to eq(2)
     expect(entries[4].similarities.map(&:id)).to contain_exactly("entry_004", "entry_002")
+  end
+
+  context "indexがfalseのエントリが含まれる場合" do
+    let(:hidden) { build(:entry, id: "hidden", title: entry1.title, markdown: entry1.markdown, permalink: "/hidden.html", index: false) }
+
+    it "indexがfalseのエントリは差し替えず、他のエントリの関連記事にも含めない" do
+      all = [hidden, *entries]
+      described_class.run(all)
+
+      expect(all[0]).to equal(hidden)
+      expect(all[0]).not_to respond_to(:similarities)
+      expect(all.drop(1).flat_map {|entry| entry.similarities.map(&:id) }).not_to include("hidden")
+    end
   end
 
   context "スコアが返されない場合" do

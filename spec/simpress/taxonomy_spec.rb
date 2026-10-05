@@ -63,25 +63,22 @@ describe Simpress::Taxonomy do
     end
   end
 
-  describe ".slug_for" do
-    it "既知のタクソノミーとtermに対してslugを返す" do
-      expect(described_class.slug_for("categories", "Ruby")).to eq "ruby"
-    end
-
-    it "未知のtermに対してはnilを返す" do
-      expect(described_class.slug_for("categories", "Unknown")).to be_nil
-    end
-
-    it "未知のタクソノミーに対してはnilを返す" do
-      expect(described_class.slug_for("unknown", "Ruby")).to be_nil
-    end
-  end
-
   describe ".clear" do
     it "内部キャッシュとメモ化されたタクソノミーをリセットする" do
       obj = described_class.fetch("categories")
       described_class.clear
       expect(obj).not_to be(described_class.fetch("categories"))
+    end
+  end
+
+  describe "#terms" do
+    it "エントリが登録されているtermのみを返す" do
+      taxonomy = described_class.fetch("categories")
+      used = taxonomy.term("Ruby")
+      taxonomy.term("Unused")
+      used.entries << build(:entry)
+
+      expect(taxonomy.terms).to eq({ "Ruby" => used })
     end
   end
 

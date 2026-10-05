@@ -8,28 +8,16 @@ describe Simpress::Parser::Markdown::Renderer do
   end
 
   describe "#initialize" do
-    it "primary_image、toc、linksが空の状態で初期化される" do
+    it "primary_image、tocが空の状態で初期化される" do
       expect(renderer.primary_image).to be_nil
       expect(renderer.toc).to eq []
-      expect(renderer.links).to eq []
     end
   end
 
   describe "#link" do
-    it "/で始まる内部リンクを収集してaタグを返す" do
-      result = renderer.link("/2026/01/entry.html", nil, "entry")
-      expect(renderer.links).to eq ["/2026/01/entry.html"]
-      expect(result).to eq '<a href="/2026/01/entry.html" target="_blank" rel="noopener">entry</a>'
-    end
-
-    it "外部リンクは無視する" do
-      renderer.link("https://example.com", nil, "example")
-      expect(renderer.links).to be_empty
-    end
-
-    it "nilのURLは無視する" do
-      renderer.link(nil, nil, "empty")
-      expect(renderer.links).to be_empty
+    it "内部リンクと外部リンクのどちらもtarget、relを付けたaタグを返す" do
+      expect(renderer.link("/2026/01/entry.html", nil, "entry")).to eq '<a href="/2026/01/entry.html" target="_blank" rel="noopener">entry</a>'
+      expect(renderer.link("https://example.com", nil, "example")).to eq '<a href="https://example.com" target="_blank" rel="noopener">example</a>'
     end
   end
 

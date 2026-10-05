@@ -24,7 +24,7 @@ class SimpressCLI < Thor
     Simpress::Generator.each_file do |file|
       front_matter, = begin
         Simpress::Parser::Markdown.parse(File.read(file))
-      rescue Simpress::Errors::ParseError, Psych::SyntaxError => e
+      rescue StandardError => e
         puts "#{file}: #{e.message}"
         next
       end

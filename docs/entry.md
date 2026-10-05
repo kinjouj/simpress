@@ -18,10 +18,8 @@ Represents a single entry
 | description | Description. Falls back to the text of the first paragraph in the rendered body |
 | content     | Rendered HTML |
 | toc         | Table of contents structure |
-| links       | Array of internal links (starting with /) found in the body |
 | prev        | Entry::Link to the next older entry (nil if none) |
 | next        | Entry::Link to the next newer entry (nil if none) |
-| backlinks   | Array of Entry::Link referencing entries that link to this one |
 
 ## Entry::Link
 
