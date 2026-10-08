@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "simpress/generator/pipeline/archive/monthly"
 require "simpress/entry"
+require "simpress/generator/pipeline/archive/monthly"
 
 describe Simpress::Generator::Pipeline::Archive::Monthly do
   let(:date) { Time.new(2026, 1, 1) }

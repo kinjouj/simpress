@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/plugin/recent_entries"
 require "simpress/entry"
+require "simpress/taxonomy"
+require "simpress/plugin/recent_entries"
 
 describe Simpress::Plugin::RecentEntries do
   let(:entries) do

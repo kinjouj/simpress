@@ -1,14 +1,13 @@
 # frozen_string_literal: true
-# @plugins/similarity/spec/similarity_spec.rb
 
 require "delegate"
 require "msgpack"
 require "natto"
 require "xxhash"
 
+require "simpress/entry"
 require "simpress/json"
 require "simpress/plugin"
-require "simpress/entry"
 
 module Simpress
   module Plugin

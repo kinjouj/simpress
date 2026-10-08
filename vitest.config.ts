@@ -9,6 +9,7 @@ export default defineConfig({
     root: './frontend',
     include: ['tests/**/*.test.{ts,tsx}'],
     globals: true,
+    fsModuleCache: true,
     pool: 'vmThreads',
     environment: 'happy-dom',
     css: false,

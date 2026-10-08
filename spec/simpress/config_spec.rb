@@ -16,7 +16,7 @@ describe Simpress::Config do
   end
 
   let(:taxonomies) do
-    { "categories" => { "Ruby" => "ruby" }, "tags" => {} }
+    { "categories" => { "Ruby" => "ruby" } }
   end
 
   before do

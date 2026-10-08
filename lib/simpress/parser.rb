@@ -4,13 +4,16 @@ require "time"
 require "xxhash"
 
 require "simpress/config"
-require "simpress/parser/markdown"
 require "simpress/entry"
-require "simpress/taxonomy"
+require "simpress/parser/markdown"
+require "simpress/parser/markdown/processor"
 require "simpress/path"
+require "simpress/taxonomy"
 
 module Simpress
   module Parser
+    DEFAULT_COVER = "/images/no_image.webp"
+
     class << self
       def parse(file)
         params, markdown = Simpress::Parser::Markdown.parse(File.read(file))
@@ -21,9 +24,9 @@ module Simpress
 
     class MetadataBuilder
       TIME_REGEX = /\A(\d{4})-(\d{1,2})-(\d{1,2})/
+      DESC_REGEX = /^\s*(\S.*)$/
 
       def initialize(file, params, markdown)
-        @file = file
         @basename = File.basename(file, ".*")
         @params = params
         @markdown = markdown
@@ -40,14 +43,17 @@ module Simpress
         assign_id!
         assign_date!
         assign_index!
+        assign_taxonomies!
         assign_draft!
         assign_markdown!
+        assign_description!
+        assign_content!
         assign_layout!
         assign_permalink!
       end
 
       def assign_id!
-        @params[:id] = XXhash.xxh64(@file).to_s
+        @params[:id] = XXhash.xxh64(@basename).to_s
       end
 
       def assign_date!
@@ -58,12 +64,27 @@ module Simpress
         @params[:index] = @params.fetch(:index, true)
       end
 
+      def assign_taxonomies!
+        @params[:taxonomies] = Simpress::Taxonomy.resolve(@params[:index] ? @params : {})
+      end
+
       def assign_draft!
         @params[:draft] = @params.fetch(:draft, false)
       end
 
       def assign_markdown!
         @params[:markdown] = @markdown
+      end
+
+      def assign_description!
+        @params[:description] ||= @markdown[DESC_REGEX, 1].to_s.strip
+      end
+
+      def assign_content!
+        result = Simpress::Parser::Markdown::Processor.render(@markdown)
+        @params[:content] = result.content
+        @params[:toc] = result.toc
+        @params[:cover] ||= result.cover || DEFAULT_COVER
       end
 
       def assign_layout!

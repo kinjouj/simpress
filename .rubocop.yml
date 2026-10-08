@@ -105,6 +105,9 @@ Style/WordArray:
 Performance/ChainArrayAllocation:
   Enabled: true
 
+Performance/ConstantRegexp:
+  Enabled: true
+
 Performance/Count:
   Enabled: true
 
@@ -143,7 +146,3 @@ RSpec/ReceiveMessages:
 
 RSpec/ReturnFromStub:
   Enabled: false
-
-RSpec/SpecFilePathFormat:
-  Exclude:
-    - "plugins/*/spec/**/*_spec.rb"

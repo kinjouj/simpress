@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/generator/pipeline/permalink"
 require "simpress/entry"
+require "simpress/taxonomy"
+require "simpress/generator/pipeline/permalink"
 
 describe Simpress::Generator::Pipeline::Permalink do
   let(:entry) { build(:entry, title: "My Entry", permalink: "my-entry", layout: "page", date: Time.new(2026, 1, 1)) }

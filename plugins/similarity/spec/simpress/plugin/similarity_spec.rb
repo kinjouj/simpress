@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-# @plugins/similarity/lib/simpress/plugin/similarity.rb
 
+require "simpress/taxonomy"
 require "simpress/plugin/similarity"
 
 describe Simpress::Plugin::Similarity do

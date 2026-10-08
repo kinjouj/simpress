@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "simpress/entry"
-require "simpress/taxonomy"
 
 describe Simpress::Entry do
   let(:date) { Time.new(2026, 1, 1) }
@@ -18,26 +17,10 @@ describe Simpress::Entry do
       index: true,
       draft: false,
       markdown: "Main content here",
-      categories: ["Ruby"]
-    }
-  end
-
-  let(:rendered_content) { "<p>Main content here</p>" }
-  let(:render_result) do
-    Simpress::Parser::Markdown::Processor::Result.new(
-      content: rendered_content,
+      content: "<p>Main content here</p>",
       toc: [{ id: "section-1", text: "Heading", children: [] }],
-      cover: "/images/extracted.png"
-    )
-  end
-
-  before do
-    allow(Simpress::Config.instance).to receive(:taxonomies).and_return({ "categories" => { "Ruby" => "ruby" } })
-    allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(render_result)
-  end
-
-  after do
-    Simpress::Taxonomy.clear
+      taxonomies: { "categories" => [] }
+    }
   end
 
   describe "#initialize" do
@@ -47,91 +30,14 @@ describe Simpress::Entry do
       expect(entry.title).to eq "Sample Entry"
       expect(entry.date).to eq date
       expect(entry.permalink).to eq "/sample-entry"
+      expect(entry.description).to eq "Short description"
+      expect(entry.cover).to eq "cover.png"
+      expect(entry.markdown).to eq "Main content here"
+      expect(entry.content).to eq "<p>Main content here</p>"
+      expect(entry.toc).to eq [{ id: "section-1", text: "Heading", children: [] }]
+      expect(entry.taxonomies).to eq({ "categories" => [] })
       expect(entry.prev).to be_nil
       expect(entry.next).to be_nil
-    end
-
-    it "実際のタクソノミーのtermと連携するが、まだ自身は登録しない" do
-      entry = described_class.new(params)
-      category_terms = entry.taxonomies["categories"]
-      expect(category_terms.size).to eq 1
-      expect(category_terms.first.name).to eq "Ruby"
-      expect(category_terms.first.entries).not_to include(entry)
-    end
-
-    it "indexがfalseの場合はparamsにカテゴリがあってもtaxonomiesのtermを持たない" do
-      entry = described_class.new(params.merge(index: false))
-      expect(entry.taxonomies.values).to all(eq [])
-    end
-
-    it "#load!が呼ばれるまでMarkdown本文をレンダリングしない" do
-      entry = described_class.new(params)
-      expect(Simpress::Parser::Markdown::Processor).not_to have_received(:render)
-      expect(entry.content).to be_nil
-      expect(entry.toc).to be_nil
-    end
-  end
-
-  describe "#load!" do
-    it "Markdown本文をレンダリングしてcontent/tocを設定し、2回目以降は再レンダリングしない" do
-      entry = described_class.new(params)
-      entry.load!
-      entry.load!
-      expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with("Main content here").once
-      expect(entry.content).to eq rendered_content
-      expect(entry.toc).to eq [{ id: "section-1", text: "Heading", children: [] }]
-    end
-
-    it "本文から抽出したcoverとdescriptionよりparamsで指定された値を優先する" do
-      entry = described_class.new(params)
-      entry.load!
-      expect(entry.cover).to eq "cover.png"
-      expect(entry.description).to eq "Short description"
-    end
-
-    context "paramsでcoverが指定されていない場合" do
-      let(:params) { super().except(:cover) }
-
-      it "本文から抽出した画像にフォールバックする" do
-        entry = described_class.new(params)
-        entry.load!
-        expect(entry.cover).to eq "/images/extracted.png"
-      end
-    end
-
-    context "paramsでcoverが指定されておらず、本文から画像も抽出されなかった場合" do
-      let(:params) { super().except(:cover) }
-      let(:render_result) do
-        Simpress::Parser::Markdown::Processor::Result.new(content: rendered_content, toc: [], cover: nil)
-      end
-
-      it "デフォルトのcoverにフォールバックする" do
-        entry = described_class.new(params)
-        entry.load!
-        expect(entry.cover).to eq described_class::DEFAULT_COVER
-      end
-    end
-
-    context "paramsでdescriptionが指定されていない場合" do
-      let(:params) { super().except(:description) }
-      let(:rendered_content) { "<p>First paragraph.</p>\n<p>Second paragraph.</p>" }
-
-      it "レンダリングされた本文の最初の段落のテキストにフォールバックする" do
-        entry = described_class.new(params)
-        entry.load!
-        expect(entry.description).to eq "First paragraph."
-      end
-    end
-
-    context "paramsでdescriptionが指定されておらず、最初の段落にインラインタグが含まれる場合" do
-      let(:params) { super().except(:description) }
-      let(:rendered_content) { "<p>Hello <strong>world</strong>!</p>" }
-
-      it "抽出したdescriptionからインラインタグを取り除く" do
-        entry = described_class.new(params)
-        entry.load!
-        expect(entry.description).to eq "Hello strongworld/strong!"
-      end
     end
   end
 
@@ -152,7 +58,6 @@ describe Simpress::Entry do
   describe "#to_h" do
     it "許可されたjsonキーのみを含み、デフォルトではprevとnextがnilのハッシュを返す" do
       entry = described_class.new(params)
-      entry.load!
       result = entry.to_h
       expect(result.keys).to match_array(described_class::PERMITTED_JSON_KEYS)
       expect(result[:id]).to eq "entry-123"
@@ -170,7 +75,6 @@ describe Simpress::Entry do
       newer = described_class.new(id: "entry-456", title: "Newer Entry", permalink: "/newer-entry")
       older = described_class.new(id: "entry-789", title: "Older Entry", permalink: "/older-entry")
       entry = described_class.new(params)
-      entry.load!
       entry.prev = Simpress::Entry::Link.new(older)
       entry.next = Simpress::Entry::Link.new(newer)
       result = entry.to_h
@@ -182,7 +86,6 @@ describe Simpress::Entry do
   describe "#as_json" do
     it "#to_hと同じハッシュを返す" do
       entry = described_class.new(params)
-      entry.load!
       expect(entry.as_json).to eq entry.to_h
     end
   end
@@ -192,11 +95,46 @@ describe Simpress::Entry do
 
     it "Simpress::JSONを使ってハッシュをダンプする" do
       entry = described_class.new(params)
-      entry.load!
       allow(Simpress::JSON).to receive(:dump).and_return(json_output)
       result = entry.to_json
       expect(Simpress::JSON).to have_received(:dump).with(entry.as_json)
       expect(result).to eq json_output
+    end
+  end
+
+  describe Simpress::Entry::Link do
+    let(:entry) { Simpress::Entry.new(params) }
+    let(:expected) { { id: "entry-123", title: "Sample Entry", permalink: "/sample-entry" } }
+
+    describe ".build" do
+      it "指定されたエントリをラップしたLinkを返し、entryがnilの場合はnilを返す" do
+        link = described_class.build(entry)
+        expect(link).to be_a(described_class)
+        expect(link.id).to eq entry.id
+        expect(link.title).to eq entry.title
+        expect(link.permalink).to eq entry.permalink
+        expect(described_class.build(nil)).to be_nil
+      end
+    end
+
+    describe "#to_h" do
+      it "id、title、permalinkのみを持つハッシュを返す" do
+        expect(described_class.new(entry).to_h).to eq expected
+      end
+    end
+
+    describe "#as_json" do
+      it "#to_hと同じハッシュを返す" do
+        link = described_class.new(entry)
+        expect(link.as_json).to eq link.to_h
+      end
+    end
+
+    describe "#to_json" do
+      it "JSON文字列にシリアライズする" do
+        link = described_class.new(entry)
+        expect(Simpress::JSON.load(link.to_json, symbolize_names: true)).to eq expected
+      end
     end
   end
 end

@@ -11,8 +11,6 @@ require "simpress/theme"
 module Simpress
   module Generator
     class << self
-      attr_reader :link_index
-
       def each_file(&block)
         raise "block is required" unless block
 
@@ -33,10 +31,6 @@ module Simpress
         process_and_generate(entries)
       end
 
-      def clear
-        @link_index = nil
-      end
-
       private
 
       def process_and_generate(entries)
@@ -44,20 +38,12 @@ module Simpress
         Simpress::Plugin.process(entries)
         Simpress::Generator::Pipeline.generate(entries)
         Simpress::Theme.clear
-        clear
       end
 
       def build_entry_relations!(entries)
-        @link_index = entries.to_h {|e| [e.permalink, e] }
-
         [nil, *entries.select(&:index), nil].each_cons(3) do |newer, entry, older|
           entry.prev = Simpress::Entry::Link.build(older)
           entry.next = Simpress::Entry::Link.build(newer)
-        end
-
-        entries.each do |entry|
-          entry.load!
-          entry.freeze
         end
       end
     end

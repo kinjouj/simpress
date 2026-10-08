@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "simpress/generator/pipeline/archive/entry_index"
 require "simpress/entry"
+require "simpress/generator/pipeline/archive/entry_index"
 
 describe Simpress::Generator::Pipeline::Archive::EntryIndex do
   let(:entry) { build(:entry) }

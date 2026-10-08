@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "tmpdir"
-
 require "simpress/plugin"
 
 describe Simpress::Plugin do
@@ -98,6 +97,32 @@ describe Simpress::Plugin do
       described_class.load
 
       expect(Simpress::Parser::Markdown::Filter.register_filters).to be_empty
+    end
+
+    it "プラグインクラスにネストしたMarkdownフィルタークラスも、該当する側に登録する" do
+      write_plugin_file("test8", "test8", "Test8", <<~RUBY)
+        module Simpress
+          module Plugin
+            class Test8
+              extend Simpress::Plugin
+
+              def self.run(entries); end
+
+              class Filter
+                extend Simpress::Parser::Markdown::Filter
+
+                def self.preprocess(data); data; end
+              end
+            end
+          end
+        end
+      RUBY
+
+      allow(Simpress::Config.instance).to receive(:plugins).and_return(["test8"])
+      described_class.load
+
+      expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test8"]
+      expect(Simpress::Parser::Markdown::Filter.register_filters.map(&:name)).to eq ["Simpress::Plugin::Test8::Filter"]
     end
   end
 

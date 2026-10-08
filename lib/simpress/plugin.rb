@@ -33,13 +33,18 @@ module Simpress
       def load
         @loader = Zeitwerk::Loader.new
         @loader.on_load do |_cpath, value, _abspath|
-          case value
-          when Simpress::Plugin
-            Simpress::Logger.debug("REGISTER PLUGIN: #{value}")
-            register_plugins << value
-          when Simpress::Parser::Markdown::Filter
-            Simpress::Logger.debug("REGISTER FILTER: #{value}")
-            Simpress::Parser::Markdown::Filter.register_filters << value
+          values = [value]
+          value.constants(false).each {|name| values << value.const_get(name) unless value.autoload?(name) } if value.is_a?(Module)
+
+          values.each do |klass|
+            case klass
+            when Simpress::Plugin
+              Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
+              register_plugins << klass
+            when Simpress::Parser::Markdown::Filter
+              Simpress::Logger.debug("REGISTER FILTER: #{klass}")
+              Simpress::Parser::Markdown::Filter.register_filters << klass
+            end
           end
         end
 

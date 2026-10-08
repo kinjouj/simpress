@@ -19,19 +19,6 @@ describe Simpress::Generator do
     allow(Simpress::Theme).to receive(:clear)
   end
 
-  after do
-    described_class.clear
-  end
-
-  describe ".clear" do
-    it "link_indexをnilにリセットする" do
-      described_class.send(:build_entry_relations!, [build(:entry)])
-      expect(described_class.link_index).not_to be_nil
-      described_class.clear
-      expect(described_class.link_index).to be_nil
-    end
-  end
-
   describe ".each_file" do
     it "ブロックなしで呼び出された場合は例外を発生させる" do
       expect { described_class.each_file }.to raise_error("block is required")
@@ -64,17 +51,13 @@ describe Simpress::Generator do
       described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c])
     end
 
-    it "新しいエントリにnext、古いエントリにprevを割り当てて、各エントリをfreezeする" do
+    it "新しいエントリにnext、古いエントリにprevを割り当てる" do
       expect(entry_a.prev.permalink).to eq "/entry-b.html"
       expect(entry_a.next).to be_nil
       expect(entry_b.prev.permalink).to eq "/entry-c.html"
       expect(entry_b.next.permalink).to eq "/entry-a.html"
       expect(entry_c.prev).to be_nil
       expect(entry_c.next.permalink).to eq "/entry-b.html"
-
-      expect(entry_a).to be_frozen
-      expect(entry_b).to be_frozen
-      expect(entry_c).to be_frozen
     end
 
     it "indexがfalseのエントリを飛ばして隣接関係を設定し、そのエントリ自体にはprevとnextを設定しない" do
@@ -87,7 +70,6 @@ describe Simpress::Generator do
       expect(older.next.permalink).to eq "/newer.html"
       expect(hidden.prev).to be_nil
       expect(hidden.next).to be_nil
-      expect(hidden).to be_frozen
     end
   end
 end

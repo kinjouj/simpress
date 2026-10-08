@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/generator/pipeline/archive/taxonomy"
 require "simpress/entry"
+require "simpress/taxonomy"
+require "simpress/generator/pipeline/archive/taxonomy"
 
 describe Simpress::Generator::Pipeline::Archive::Taxonomy do
   let!(:entry) do

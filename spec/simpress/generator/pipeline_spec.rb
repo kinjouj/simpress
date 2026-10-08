@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "simpress/generator/pipeline"
 require "simpress/entry"
+require "simpress/taxonomy"
+require "simpress/generator/pipeline"
 
 describe Simpress::Generator::Pipeline do
   let(:entry1) { build(:entry, date: Time.new(2026, 1, 15)) }
