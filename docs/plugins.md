@@ -10,9 +10,9 @@ class SampleFilter
 end
 ```
 
-into plugins directory ruby project structures(plugins/sample_filter/lib/sample_filter.rb)
+pluginsディレクトリ内にRubyプロジェクトの構成で配置する(plugins/sample_filter/lib/sample_filter.rb)
 
-Like a Custom Plugin, it must also be listed under plugins in config.yaml to be enabled.
+カスタムプラグインと同様に,有効にするにはconfig.yamlのpluginsに列挙する必要がある.
 
 
 ### Custom Plugin

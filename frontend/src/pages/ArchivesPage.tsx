@@ -18,7 +18,7 @@ const ArchivesPage = (): React.JSX.Element => {
     return Simpress.getEntriesByArchive(year, month, page);
   }, [year, month, page]);
 
-  const { data, isError, isLoading } = useFetchData(fetcher);
+  const { data, isError } = useFetchData(fetcher);
 
   useLayoutEffect(() => {
     if (data === null) {
@@ -34,7 +34,7 @@ const ArchivesPage = (): React.JSX.Element => {
     return <NotFound />;
   }
 
-  if (isLoading || data === null) {
+  if (data === null) {
     return (
       <Suspense fallback={<div>loading...</div>}>
         <LazyEntryListSkeleton />

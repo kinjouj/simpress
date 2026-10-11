@@ -1,39 +1,38 @@
-# Parameters
+# Parameter
 
-A list of the constant parameters defined throughout the codebase that tune runtime behavior.
 
 ## Parser `lib/simpress/parser.rb`
 
-| Constant | Description |
-| -------- | ----------- |
-| DEFAULT_COVER | Default cover image path when none is specified and none could be auto-extracted from the body |
+| 定数 | 説明 |
+| ---- | ---- |
+| DEFAULT_COVER | カバー画像が未指定で,本文からも自動抽出できなかった場合のデフォルトのカバー画像パス |
 
 ## Markdown Renderer `lib/simpress/parser/markdown/renderer.rb`
 
-| Constant | Description |
-| -------- | ----------- |
-| RENDERER_OPTIONS | Default options passed to Redcarpet::Render::HTML |
+| 定数 | 説明 |
+| ---- | ---- |
+| RENDERER_OPTIONS | Redcarpet::Render::HTMLに渡されるデフォルトのオプション |
 
 ## Markdown Processor `lib/simpress/parser/markdown/processor.rb`
 
-| Constant | Description |
-| -------- | ----------- |
-| REDCARPET_OPTIONS | Parse options passed to Redcarpet::Markdown |
+| 定数 | 説明 |
+| ---- | ---- |
+| REDCARPET_OPTIONS | Redcarpet::Markdownに渡されるパースオプション |
 
 ## Markdown Parser `lib/simpress/parser/markdown.rb`
 
-| Constant | Description |
-| -------- | ----------- |
-| PERMITTED_CLASSES | Classes allowed when loading the front matter YAML |
+| 定数 | 説明 |
+| ---- | ---- |
+| PERMITTED_CLASSES | front matterのYAMLを読み込むときに許可されるクラス |
 
 ## Paginator `lib/simpress/paginator.rb`
 
-| Constant | Description |
-| -------- | ----------- |
-| DEFAULT_PREFIX | Default prefix for paginated URLs |
+| 定数 | 説明 |
+| ---- | ---- |
+| DEFAULT_PREFIX | ページネーションのURLのデフォルトのプレフィックス |
 
 ## Taxonomy `lib/simpress/taxonomy.rb`
 
-| Constant | Description |
-| -------- | ----------- |
-| DEFAULT_TAXONOMIES | Default taxonomy types used when not specified in config |
+| 定数 | 説明 |
+| ---- | ---- |
+| DEFAULT_TAXONOMIES | 設定で指定されていない場合に使われるデフォルトのタクソノミーの種類 |

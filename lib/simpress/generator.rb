@@ -27,7 +27,7 @@ module Simpress
           entries << entry
         end
 
-        entries.sort_by! {|entry| -entry.date.to_i }
+        entries.sort_by!.with_index {|entry, i| [-entry.date.to_i, i] }
         process_and_generate(entries)
       end
 

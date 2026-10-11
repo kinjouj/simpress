@@ -1,7 +1,7 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { Outlet } from 'react-router';
 import { PageToTopFloatingButton } from '../ui';
-import { RecentEntries } from '../';
+import RecentEntries from '../RecentEntries';
 import Footer from './Footer';
 import Header from './Header';
 

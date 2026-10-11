@@ -18,7 +18,7 @@ const CategoryPage = (): React.JSX.Element => {
     return Simpress.getEntriesByCategory(category, page);
   }, [category, page]);
 
-  const { data, isError, isLoading } = useFetchData(fetcher);
+  const { data, isError } = useFetchData(fetcher);
 
   useLayoutEffect(() => {
     if (category === null) {
@@ -32,7 +32,7 @@ const CategoryPage = (): React.JSX.Element => {
     return <NotFound />;
   }
 
-  if (isLoading || data === null) {
+  if (data === null) {
     return (
       <Suspense fallback={<div>loading...</div>}>
         <LazyEntryListSkeleton />
