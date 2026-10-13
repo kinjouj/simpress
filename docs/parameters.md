@@ -1,6 +1,5 @@
 # Parameter
 
-
 ## Parser `lib/simpress/parser.rb`
 
 | 定数 | 説明 |
@@ -18,12 +17,6 @@
 | 定数 | 説明 |
 | ---- | ---- |
 | REDCARPET_OPTIONS | Redcarpet::Markdownに渡されるパースオプション |
-
-## Markdown Parser `lib/simpress/parser/markdown.rb`
-
-| 定数 | 説明 |
-| ---- | ---- |
-| PERMITTED_CLASSES | front matterのYAMLを読み込むときに許可されるクラス |
 
 ## Paginator `lib/simpress/paginator.rb`
 

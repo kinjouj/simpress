@@ -22,7 +22,7 @@ describe Simpress::Theme::Helper do
 
   describe "#canonical" do
     before do
-      allow(Simpress::Config.instance).to receive(:host).and_return("https://example.com/")
+      allow(Simpress::Config.instance).to receive(:host).and_return("https://example.com")
     end
 
     it "ホスト名とhtml拡張子を持つ絶対URLを返す" do

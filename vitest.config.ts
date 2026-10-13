@@ -9,7 +9,6 @@ export default defineConfig({
     root: './frontend',
     include: ['tests/**/*.test.{ts,tsx}'],
     globals: true,
-    fsModuleCache: true,
     pool: 'vmThreads',
     environment: 'happy-dom',
     css: false,
@@ -19,7 +18,7 @@ export default defineConfig({
     unstubGlobals: true,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'html', 'lcov'],
+      reporter: ['text', 'html'],
       reportsDirectory: path.resolve(__dirname, 'frontend/coverage'),
     },
   },
