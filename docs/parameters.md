@@ -4,7 +4,7 @@
 
 | 定数 | 説明 |
 | ---- | ---- |
-| DEFAULT_COVER | カバー画像が未指定で,本文からも自動抽出できなかった場合のデフォルトのカバー画像パス |
+| DEFAULT_COVER | カバー画像が未指定で本文からも自動抽出できなかった場合のデフォルトのカバー画像パス |
 
 ## Markdown Renderer `lib/simpress/parser/markdown/renderer.rb`
 
@@ -28,4 +28,4 @@
 
 | 定数 | 説明 |
 | ---- | ---- |
-| DEFAULT_TAXONOMIES | 設定で指定されていない場合に使われるデフォルトのタクソノミーの種類 |
+| DEFAULT_TAXONOMIES | 設定で指定されていない場合に使われるデフォルトのTaxonomyの種類 |

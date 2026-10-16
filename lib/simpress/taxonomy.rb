@@ -19,7 +19,7 @@ module Simpress
     end
 
     def self.taxonomies
-      @taxonomies ||= DEFAULT_TAXONOMIES.union(Simpress::Config.instance.taxonomies["types"] || []).map {|name| fetch(name) }
+      @taxonomies ||= DEFAULT_TAXONOMIES.union(Simpress::Config.instance.taxonomies[:types] || []).map {|name| fetch(name) }
     end
 
     def self.resolve(params)
@@ -40,7 +40,7 @@ module Simpress
     end
 
     def term(name)
-      @terms[name] ||= Simpress::Taxonomy::Term.new(name, key: Simpress::Config.instance.taxonomies.dig("aliases", @name, name))
+      @terms[name] ||= Simpress::Taxonomy::Term.new(name, key: Simpress::Config.instance.taxonomies.dig(:aliases, @name.to_sym, name.to_s.to_sym))
     end
 
     private_class_method :new

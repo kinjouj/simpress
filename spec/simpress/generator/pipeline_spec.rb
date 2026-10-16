@@ -27,7 +27,7 @@ describe Simpress::Generator::Pipeline do
       described_class.generate(entries)
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry1)
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry2)
-      expect(Simpress::Generator::Pipeline::Archive::Monthly).to have_received(:generate).with({ Time.new(2026, 1, 1) => [entry1, entry2] })
+      expect(Simpress::Generator::Pipeline::Archive::Monthly).to have_received(:generate).with({ [2026, 1] => [entry1, entry2] })
       expect(Simpress::Generator::Pipeline::Archive::EntryIndex).to have_received(:generate).with(entries)
       expect(Simpress::Generator::Pipeline::Archive::Taxonomy).to have_received(:generate).with([taxonomy])
     end

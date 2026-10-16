@@ -6,9 +6,10 @@ require "simpress/generator/pipeline/permalink"
 
 describe Simpress::Generator::Pipeline::Permalink do
   let(:entry) { build(:entry, title: "My Entry", permalink: "my-entry", layout: "page", date: Time.new(2026, 1, 1)) }
+  let(:verbose_messages) { [] }
 
   before do
-    allow(Simpress::Logger).to receive(:verbose)
+    allow(Simpress::Logger).to receive(:verbose) {|&block| verbose_messages << block.call }
   end
 
   describe ".generate_html" do
@@ -23,7 +24,7 @@ describe Simpress::Generator::Pipeline::Permalink do
       expect(Simpress::Theme).to have_received(:render).with("page", entry: entry)
       expect(Simpress::Writer).to have_received(:write).with("my-entry.html", "<html>content</html>")
       expect(File).to have_received(:utime).with(entry.date, entry.date, "public/my-entry.html")
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: My Entry public/my-entry.html")
+      expect(verbose_messages).to include("[BUILD PAGE]: My Entry public/my-entry.html")
     end
   end
 
@@ -37,7 +38,7 @@ describe Simpress::Generator::Pipeline::Permalink do
     it "許可されたキーでJSONを書き出す" do
       described_class.generate_json(entry)
       expect(Simpress::Writer).to have_received(:write).with(anything, expected_entry_json)
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD PAGE]: My Entry public/my-entry.json")
+      expect(verbose_messages).to include("[BUILD PAGE]: My Entry public/my-entry.json")
     end
   end
 end

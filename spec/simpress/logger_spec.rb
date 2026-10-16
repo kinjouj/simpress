@@ -13,8 +13,11 @@ describe Simpress::Logger do
         allow(Simpress::Config.instance).to receive(:logging).and_return(true)
       end
 
-      it "メッセージを標準出力に出力する" do
+      it "文字列またはブロックの結果を標準出力に出力する" do
         expect { described_class.verbose("test info message") }.to output(/INFO -- : test info message/).to_stdout
+
+        described_class.clear
+        expect { described_class.verbose { "test info block" } }.to output(/INFO -- : test info block/).to_stdout
       end
     end
 
@@ -23,8 +26,11 @@ describe Simpress::Logger do
         allow(Simpress::Config.instance).to receive(:logging).and_return(false)
       end
 
-      it "メッセージを出力しない" do
-        expect { described_class.verbose("test info message") }.not_to output.to_stdout
+      it "メッセージを出力せず、ブロックも評価しない" do
+        evaluated = false
+
+        expect { described_class.verbose { evaluated = true } }.not_to output.to_stdout
+        expect(evaluated).to be false
       end
     end
   end

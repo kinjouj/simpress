@@ -47,7 +47,7 @@ describe Simpress::Entry do
       expect(entry.prev).to be_nil
       expect(entry.next).to be_nil
 
-      link = Simpress::Entry::Link.new(entry)
+      link = Simpress::Entry::Link.build(entry)
       entry.prev = link
       entry.next = link
       expect(entry.prev).to eq link
@@ -75,8 +75,8 @@ describe Simpress::Entry do
       newer = described_class.new(id: "entry-456", title: "Newer Entry", permalink: "/newer-entry")
       older = described_class.new(id: "entry-789", title: "Older Entry", permalink: "/older-entry")
       entry = described_class.new(params)
-      entry.prev = Simpress::Entry::Link.new(older)
-      entry.next = Simpress::Entry::Link.new(newer)
+      entry.prev = Simpress::Entry::Link.build(older)
+      entry.next = Simpress::Entry::Link.build(newer)
       result = entry.to_h
       expect(result[:prev]).to eq entry.prev
       expect(result[:next]).to eq entry.next
@@ -107,32 +107,33 @@ describe Simpress::Entry do
     let(:expected) { { id: "entry-123", title: "Sample Entry", permalink: "/sample-entry" } }
 
     describe ".build" do
-      it "指定されたエントリをラップしたLinkを返し、entryがnilの場合はnilを返す" do
+      it "指定されたエントリからLinkを作り、entryがnilの場合はnilを返し、newは公開しない" do
         link = described_class.build(entry)
         expect(link).to be_a(described_class)
         expect(link.id).to eq entry.id
         expect(link.title).to eq entry.title
         expect(link.permalink).to eq entry.permalink
         expect(described_class.build(nil)).to be_nil
+        expect { described_class.new(entry) }.to raise_error(NoMethodError)
       end
     end
 
     describe "#to_h" do
       it "id、title、permalinkのみを持つハッシュを返す" do
-        expect(described_class.new(entry).to_h).to eq expected
+        expect(described_class.build(entry).to_h).to eq expected
       end
     end
 
     describe "#as_json" do
       it "#to_hと同じハッシュを返す" do
-        link = described_class.new(entry)
+        link = described_class.build(entry)
         expect(link.as_json).to eq link.to_h
       end
     end
 
     describe "#to_json" do
       it "JSON文字列にシリアライズする" do
-        link = described_class.new(entry)
+        link = described_class.build(entry)
         expect(Simpress::JSON.load(link.to_json, symbolize_names: true)).to eq expected
       end
     end

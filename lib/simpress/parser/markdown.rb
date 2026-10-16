@@ -12,7 +12,7 @@ module Simpress
         match = txt.match(FRONT_MATTER_MARKDOWN_REGEX)
         raise "Markdown parse failed" unless match
 
-        header = Psych.load(match[:header], symbolize_names: true, permitted_classes: PERMITTED_CLASSES, aliases: false)
+        header = Psych.load(match[:header], symbolize_names: true, permitted_classes: PERMITTED_CLASSES)
         body = match.post_match
         [header, body]
       end

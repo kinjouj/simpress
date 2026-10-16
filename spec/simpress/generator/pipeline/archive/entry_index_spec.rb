@@ -6,9 +6,10 @@ require "simpress/generator/pipeline/archive/entry_index"
 describe Simpress::Generator::Pipeline::Archive::EntryIndex do
   let(:entry) { build(:entry) }
   let(:entries) { [entry] }
+  let(:verbose_messages) { [] }
 
   before do
-    allow(Simpress::Logger).to receive(:verbose)
+    allow(Simpress::Logger).to receive(:verbose) {|&block| verbose_messages << block.call }
   end
 
   describe ".generate_html" do
@@ -21,7 +22,7 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
       described_class.generate_html(entries)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/index.html", "<html>content</html>")
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/index.html")
+      expect(verbose_messages).to include("[BUILD ARCHIVE]: public/index.html")
     end
   end
 
@@ -35,7 +36,7 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
     it "JSONを書き出す" do
       described_class.generate_json(entries)
       expect(Simpress::Writer).to have_received(:write).with("/archives/page/1.json", expected_page_json)
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/page/1.json")
+      expect(verbose_messages).to include("[BUILD ARCHIVE]: public/archives/page/1.json")
     end
   end
 end

@@ -2,9 +2,9 @@
 
 TaxonomyとそのURLスラッグのエイリアスを定義する
 
-`categories`と`tags`はデフォルトで有効なので,`types`に列挙する必要はない
+`categories`と`tags`はデフォルトで有効なので`types`に列挙する必要はない
 
-`types`と`aliases`はどちらも省略可能.
+`types`と`aliases`はどちらも省略可能
 
 ```yaml
 types:

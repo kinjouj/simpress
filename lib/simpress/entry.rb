@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "delegate"
 require "simpress/json"
 
 module Simpress
@@ -34,8 +33,10 @@ module Simpress
       (keys ? PERMITTED_JSON_KEYS & keys : PERMITTED_JSON_KEYS).to_h {|key| [key, public_send(key)] }
     end
 
-    class Link < SimpleDelegator
+    class Link
       include Simpress::JSON::Serializable
+
+      attr_reader :id, :title, :permalink
 
       def self.build(entry)
         return if entry.nil?
@@ -43,9 +44,17 @@ module Simpress
         new(entry)
       end
 
+      def initialize(entry)
+        @id = entry.id
+        @title = entry.title
+        @permalink = entry.permalink
+      end
+
       def to_h(_options = {})
         { id: id, title: title, permalink: permalink }
       end
+
+      private_class_method :new
     end
   end
 end

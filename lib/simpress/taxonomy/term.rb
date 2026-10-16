@@ -6,6 +6,8 @@ require "simpress/json"
 module Simpress
   class Taxonomy
     class Term
+      include Simpress::JSON::Serializable
+
       PERMITTED_JSON_KEYS = [:key, :name, :count, :children].freeze
       DEFAULT_JSON_KEYS = [:key, :name].freeze
 
@@ -27,17 +29,13 @@ module Simpress
         @entries.size
       end
 
-      def as_json(options = {})
+      def to_h(options = {})
         keys = options[:keys] ? PERMITTED_JSON_KEYS & options[:keys] : DEFAULT_JSON_KEYS
         keys.to_h do |key|
           value = public_send(key)
-          value = value.map {|v| v.as_json(options) } if key == :children
+          value = value.map {|v| v.to_h(options) } if key == :children
           [key, value]
         end
-      end
-
-      def to_json(options = {})
-        Simpress::JSON.dump(as_json(options))
       end
 
       def eql?(other)

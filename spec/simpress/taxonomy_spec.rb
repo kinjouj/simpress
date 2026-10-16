@@ -5,9 +5,7 @@ require "simpress/taxonomy"
 
 describe Simpress::Taxonomy do
   before do
-    allow(Simpress::Config.instance).to receive(:taxonomies).and_return(
-      { "types" => ["tags"], "aliases" => { "categories" => { "Ruby" => "ruby" } } }
-    )
+    allow(Simpress::Config.instance).to receive(:taxonomies).and_return({ types: ["tags"], aliases: { categories: { Ruby: "ruby" } } })
   end
 
   after do
@@ -24,14 +22,14 @@ describe Simpress::Taxonomy do
   end
 
   describe ".taxonomies" do
-    it "デフォルトとyamlで定義されたタクソノミーを含む" do
+    it "デフォルトとyamlで定義されたTaxonomyを含む" do
       names = described_class.taxonomies.map(&:name)
       expect(names).to include("categories", "tags")
     end
   end
 
   describe ".resolve" do
-    it "paramsに存在する各タクソノミーのtermを解決する" do
+    it "paramsに存在する各Taxonomyのtermを解決する" do
       params = { categories: ["Ruby"], tags: ["oss", "gem"] }
       result = described_class.resolve(params)
 
@@ -40,14 +38,14 @@ describe Simpress::Taxonomy do
       expect(result["tags"].map(&:name)).to eq ["oss", "gem"]
     end
 
-    it "paramsにないタクソノミーに対しては空配列を返す" do
+    it "paramsにないTaxonomyに対しては空配列を返す" do
       params = { categories: ["Ruby"] }
       result = described_class.resolve(params)
 
       expect(result["tags"]).to eq []
     end
 
-    it "paramsに何もない場合は全てのタクソノミーに対して空配列を返す" do
+    it "paramsに何もない場合は全てのTaxonomyに対して空配列を返す" do
       result = described_class.resolve({})
 
       expect(result.values).to all(eq [])
@@ -55,7 +53,7 @@ describe Simpress::Taxonomy do
   end
 
   describe ".register" do
-    it "指定されたタクソノミーの各termにエントリを登録する" do
+    it "指定されたTaxonomyの各termにエントリを登録する" do
       entry = build(:entry, categories: ["Ruby"])
       described_class.register(entry.taxonomies, entry)
       expect(entry.taxonomies["categories"].first.entries).to include(entry)
@@ -63,7 +61,7 @@ describe Simpress::Taxonomy do
   end
 
   describe ".clear" do
-    it "内部キャッシュとメモ化されたタクソノミーをリセットする" do
+    it "内部キャッシュとメモ化されたTaxonomyをリセットする" do
       obj = described_class.fetch("categories")
       described_class.clear
       expect(obj).not_to be(described_class.fetch("categories"))
@@ -82,7 +80,7 @@ describe Simpress::Taxonomy do
   end
 
   describe "#term" do
-    it "指定された名前に対してslug上書きを使用したTermインスタンスを返し、タクソノミー内でメモ化する" do
+    it "指定された名前に対してslug上書きを使用したTermインスタンスを返し、Taxonomy内でメモ化する" do
       taxonomy = described_class.fetch("categories")
       term = taxonomy.term("Ruby")
       expect(term).to be_a(Simpress::Taxonomy::Term)

@@ -38,22 +38,22 @@ describe Simpress::Taxonomy::Term do
     end
   end
 
-  describe "#as_json" do
+  describe "#to_h" do
     it "オプションが指定されない場合はデフォルトのキーを返す" do
-      result = term.as_json
+      result = term.to_h
       expect(result.keys).to contain_exactly(:key, :name)
     end
 
     it "要求された許可済みキーを返す" do
-      result = term.as_json(keys: [:key, :count])
+      result = term.to_h(keys: [:key, :count])
       expect(result.keys).to contain_exactly(:key, :count)
     end
 
-    it "同じオプションでchildrenに対して再帰的にas_jsonを呼び出す" do
+    it "同じオプションでchildrenに対して再帰的にto_hを呼び出す" do
       child_term = described_class.new("Child")
       term.children << child_term
-      result = term.as_json(keys: [:children])
-      expect(result[:children]).to eq [{ children: [] }]
+      result = term.to_h(keys: [:name, :children])
+      expect(result[:children]).to eq [{ name: "Child", children: [] }]
     end
   end
 

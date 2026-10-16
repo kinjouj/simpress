@@ -4,12 +4,12 @@ require "simpress/entry"
 require "simpress/generator/pipeline/archive/monthly"
 
 describe Simpress::Generator::Pipeline::Archive::Monthly do
-  let(:date) { Time.new(2026, 1, 1) }
   let(:entry) { build(:entry) }
-  let(:monthly_archives) { { date => [entry] } }
+  let(:monthly_archives) { { [2026, 1] => [entry] } }
+  let(:verbose_messages) { [] }
 
   before do
-    allow(Simpress::Logger).to receive(:verbose)
+    allow(Simpress::Logger).to receive(:verbose) {|&block| verbose_messages << block.call }
   end
 
   describe ".generate_html" do
@@ -22,7 +22,7 @@ describe Simpress::Generator::Pipeline::Archive::Monthly do
       described_class.generate_html(monthly_archives)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/index.html", "<html>content</html>")
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/2026/01/index.html")
+      expect(verbose_messages).to include("[BUILD ARCHIVE]: public/archives/2026/01/index.html")
     end
   end
 
@@ -36,7 +36,7 @@ describe Simpress::Generator::Pipeline::Archive::Monthly do
     it "各月についてJSONを書き出す" do
       described_class.generate_json(monthly_archives)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/1.json", expected_index_json)
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD ARCHIVE]: public/archives/2026/01/1.json")
+      expect(verbose_messages).to include("[BUILD ARCHIVE]: public/archives/2026/01/1.json")
     end
   end
 end

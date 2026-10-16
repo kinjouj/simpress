@@ -13,13 +13,13 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^14.6.7",
+    "@testing-library/user-event": "^14.6.8",
     "@types/node": "^26.6.5",
     "@types/prismjs": "^1.26.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
-    "@vitest/coverage-v8": "^5.0.4",
+    "@vitest/coverage-v8": "^5.0.5",
     "@vitest/eslint-plugin": "^1.6.27",
     "eslint": "^9.39.5",
     "eslint-plugin-check-file": "^3.3.2",
@@ -33,7 +33,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2",
     "vite": "^8.3.4",
-    "vitest": "^5.0.4"
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
@@ -42,9 +42,9 @@
     "@fortawesome/react-fontawesome": "^3.5.0",
     "bootstrap": "^5.3.8",
     "prismjs": "^1.30.0",
-    "react": "^19.3.0",
+    "react": "^19.3.1",
     "react-bootstrap": "^2.10.10",
-    "react-dom": "^19.3.0",
+    "react-dom": "^19.3.1",
     "react-loading-skeleton": "^3.5.0",
     "react-router": "^8.4.0"
   }

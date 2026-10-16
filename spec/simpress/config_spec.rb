@@ -16,13 +16,13 @@ describe Simpress::Config do
   end
 
   let(:taxonomies) do
-    { "categories" => { "Ruby" => "ruby" } }
+    { aliases: { categories: { Ruby: "ruby" } } }
   end
 
   before do
     allow(Psych).to receive(:load_file).with(Simpress::Config::CONFIG_FILE, any_args).and_return(config_data)
     allow(File).to receive(:exist?).with(Simpress::Config::TAXONOMIES_FILE).and_return(true)
-    allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE).and_return(taxonomies)
+    allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE, any_args).and_return(taxonomies)
     described_class.clear
   end
 
@@ -59,7 +59,7 @@ describe Simpress::Config do
 
     context "taxonomies.yamlが空の場合" do
       before do
-        allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE).and_return(nil)
+        allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE, any_args).and_return(nil)
       end
 
       it "空のハッシュを返す" do

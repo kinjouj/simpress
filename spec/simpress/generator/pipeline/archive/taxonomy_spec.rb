@@ -10,10 +10,11 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
   end
 
   let!(:taxonomies) { Simpress::Taxonomy.taxonomies }
+  let(:verbose_messages) { [] }
 
   before do
     Simpress::Taxonomy.clear
-    allow(Simpress::Logger).to receive(:verbose)
+    allow(Simpress::Logger).to receive(:verbose) {|&block| verbose_messages << block.call }
   end
 
   describe ".generate_html" do
@@ -26,7 +27,7 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
       described_class.generate_html(taxonomies)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/index.html", "<html>content</html>")
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD CATEGORY]: public/archives/categories/ruby/index.html")
+      expect(verbose_messages).to include("[BUILD CATEGORY]: public/archives/categories/ruby/index.html")
     end
   end
 
@@ -40,7 +41,7 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
     it "各termについてJSONを書き出す" do
       described_class.generate_json(taxonomies)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/1.json", expected_index_json)
-      expect(Simpress::Logger).to have_received(:verbose).with("[BUILD CATEGORY]: public/archives/categories/ruby/1.json")
+      expect(verbose_messages).to include("[BUILD CATEGORY]: public/archives/categories/ruby/1.json")
     end
   end
 end

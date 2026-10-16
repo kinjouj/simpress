@@ -54,7 +54,7 @@ module Simpress
       end
 
       def process(entries = [])
-        register_plugins.sort_by {|klass| -klass.priority }.each {|klass| klass.run(entries) }
+        register_plugins.sort_by.with_index {|klass, i| [-klass.priority, i] }.each {|klass| klass.run(entries) }
       end
 
       def clear

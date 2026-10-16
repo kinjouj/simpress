@@ -13,8 +13,8 @@ module Simpress
       @logger = ::Logger.new($stdout)
     end
 
-    def verbose(message)
-      @logger.info(message) if logging?
+    def verbose(message = nil, &)
+      @logger.info(message, &) if logging?
     end
 
     def debug(message)

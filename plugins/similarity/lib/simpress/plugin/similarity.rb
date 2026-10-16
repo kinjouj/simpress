@@ -19,7 +19,7 @@ module Simpress
         targets = entries.values_at(*indexes)
         indexer = Indexer.new(targets)
         indexer.each_similarity do |scores, i|
-          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Entry::Link.new(targets[index]) }
+          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Entry::Link.build(targets[index]) }
           entries[indexes[i]] = EntryWithSimilarities.new(targets[i], similarities)
         end
 
@@ -89,7 +89,7 @@ module Simpress
         end
 
         def extract_keywords(entry)
-          key = (XXhash.xxh32(entry.title) ^ XXhash.xxh32(entry.markdown, 1)).to_s
+          key = XXhash.xxh64("#{entry.title}\0#{entry.markdown}").to_s
           Cache.fetch(key) { NATTO.parse("#{entry.title} #{entry.markdown}").scan(NATTO_REGEX).map!(&:first) }
         end
 

@@ -8,4 +8,5 @@ static/images/*
 !static/.gitkeep
 !static/images
 !static/images/.gitkeep
+config.yaml
 similarity.cache

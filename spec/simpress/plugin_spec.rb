@@ -190,6 +190,21 @@ describe Simpress::Plugin do
       expect(Simpress::Plugin::High).to have_received(:run).ordered
       expect(Simpress::Plugin::Low).to have_received(:run).ordered
     end
+
+    it "priorityが同じプラグインは登録順に実行する" do
+      calls = []
+      plugins = Array.new(10) do |i|
+        Class.new do
+          extend Simpress::Plugin
+
+          define_singleton_method(:run) {|_entries| calls << i }
+        end
+      end
+
+      plugins.each {|plugin| described_class.register_plugins << plugin }
+      described_class.process([])
+      expect(calls).to eq((0...10).to_a)
+    end
   end
 
   describe "#config" do
