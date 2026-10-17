@@ -13,6 +13,7 @@ class SimpressCLI < Thor
       FileUtils.cp_r("static/.", Simpress::Config.output_dir, preserve: true, verbose: false)
       Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
       GC.disable
+      build_plugin_scss
       Simpress.build { send(:"build_#{Simpress::Config.instance.mode}") }
     end
 
@@ -26,6 +27,16 @@ class SimpressCLI < Thor
   def build_html
     build_scss
     build_sitemap
+  end
+
+  def build_plugin_scss
+    lines = Simpress::Config.instance.plugins.flat_map do |name|
+      Dir.glob("#{Simpress::Config.plugin_dir}/#{name}/scss/_*.scss").map do |file|
+        %(@forward "../#{File.dirname(file)}/#{File.basename(file, '.scss').delete_prefix('_')}";)
+      end
+    end
+
+    File.write("scss/_plugins.scss", lines.map {|line| "#{line}\n" }.join)
   end
 
   def build_scss
