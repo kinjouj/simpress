@@ -122,7 +122,6 @@ describe Simpress::Parser do
 
         expect(listed.taxonomies["categories"].map(&:name)).to eq ["Ruby"]
         expect(listed.taxonomies["categories"].first.entries).not_to include(listed)
-        expect(listed.params[:categories]).to eq "Ruby"
         expect(hidden.taxonomies.values).to all(eq [])
         expect(undated.taxonomies.values).to all(eq [])
       end

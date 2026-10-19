@@ -17,18 +17,11 @@ module Simpress
 
         class << self
           def render(data)
-            Markdown.new(Simpress::Parser::Markdown::Renderer.new, REDCARPET_OPTIONS).render(data)
-          end
-        end
-
-        class Markdown < ::Redcarpet::Markdown
-          def render(data)
-            content = super
+            renderer = Simpress::Parser::Markdown::Renderer.new
+            content = ::Redcarpet::Markdown.new(renderer, REDCARPET_OPTIONS).render(data)
             Result.new(content: content, toc: renderer.toc, cover: renderer.primary_image)
           end
         end
-
-        private_constant :Markdown
       end
     end
   end

@@ -25,13 +25,9 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::Context).to receive(:update)
       end
 
-      it "ネストされたカテゴリでsidebar_categoriesテンプレートをレンダリングする" do
+      it "sidebar_categoriesテンプレートをレンダリングし、結果をコンテキストにバインドする" do
         described_class.run
         expect(Simpress::Theme).to have_received(:render).with("sidebar_categories", categories: anything)
-      end
-
-      it "レンダリング結果をコンテキストにバインドする" do
-        described_class.run
         expect(Simpress::Context).to have_received(:update).with(sidebar_categories_content: "<ul>categories</ul>")
       end
     end
@@ -43,14 +39,10 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::Writer).to receive(:write)
       end
 
-      it "categories.jsonを書き出す" do
-        described_class.run
-        expect(Simpress::Writer).to have_received(:write).with("categories.json", "{}")
-      end
-
-      it "許可されたキーでネストされたカテゴリをダンプする" do
+      it "許可されたキーでダンプしたカテゴリをcategories.jsonに書き出す" do
         described_class.run
         expect(Simpress::JSON).to have_received(:dump).with(anything, keys: described_class::KEYS)
+        expect(Simpress::Writer).to have_received(:write).with("categories.json", "{}")
       end
     end
 
@@ -99,17 +91,13 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "orders" => ["tech", "life"] })
       end
 
-      it "ordersリストに従ってルートカテゴリを並べ替える" do
+      it "ordersリストに従ってルートカテゴリを並べ替え、ordersキーを親子関係として扱わない" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
           "sidebar_categories",
           categories: satisfy {|cats| cats.map(&:key) == ["tech", "life"] }
         )
-      end
-
-      it "ordersキーを親子関係として扱わない" do
-        described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
           "sidebar_categories",
@@ -139,7 +127,7 @@ describe Simpress::Plugin::CategoryTree do
         )
       end
 
-      it "ordersリストに従ってネストされた子を並べ替える" do
+      it "ordersリストに従ってネストされた子を並べ替え、ordersリストにないルートカテゴリを末尾に並べる" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
@@ -149,10 +137,6 @@ describe Simpress::Plugin::CategoryTree do
             ruby_category.children.map(&:key) == ["rails", "sinatra"]
           end
         )
-      end
-
-      it "ordersリストにないルートカテゴリを末尾に並べる" do
-        described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
           "sidebar_categories",

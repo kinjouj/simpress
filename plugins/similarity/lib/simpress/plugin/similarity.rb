@@ -147,7 +147,7 @@ module Simpress
         end
       end
 
-      class EntryWithSimilarities < SimpleDelegator
+      class EntryWithSimilarities < DelegateClass(Simpress::Entry)
         include Simpress::JSON::Serializable
 
         attr_reader :similarities
@@ -157,9 +157,9 @@ module Simpress
           @similarities = similarities
         end
 
-        def to_h(state = {})
-          hash = __getobj__.to_h(state)
-          hash[:similarities] = @similarities if hash.key?(:content)
+        def to_h(options = {})
+          hash = super
+          hash[:similarities] = similarities if hash.key?(:content)
           hash
         end
       end

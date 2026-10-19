@@ -7,6 +7,8 @@ require "bundler/setup"
 Bundler.require
 
 class Thor
+  remove_command :tree
+
   class << self
     def find_command_possibilities(meth)
       commands.key?(meth) ? [meth] : []
@@ -20,5 +22,6 @@ end
 
 require "simpress"
 
-Dir.glob("{tasks,plugins/*/tasks}/**/*.rb").each {|f| require_relative f }
+dirs = ["tasks", *Simpress::Config.instance.plugins.map {|name| "#{Simpress::Config.plugin_dir}/#{name}/tasks" }]
+dirs.each {|dir| Dir.glob("#{dir}/**/*.rb").each {|f| require_relative f } }
 SimpressCLI.start(ARGV)

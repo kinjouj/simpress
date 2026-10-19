@@ -21,10 +21,6 @@ describe Simpress::Parser::Markdown::Processor do
     MD
   end
 
-  before do
-    described_class.instance_variable_set(:@parser, nil)
-  end
-
   describe ".render" do
     it "content、toc、coverを持つResultを返す" do
       result = described_class.render(markdown1)

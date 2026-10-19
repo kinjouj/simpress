@@ -23,7 +23,10 @@ module Simpress
     end
 
     def self.resolve(params)
-      taxonomies.to_h {|taxonomy| [taxonomy.name, Array(params[taxonomy.name.to_sym]).map {|name| taxonomy.term(name) }] }
+      taxonomies.to_h do |taxonomy|
+        names = Array(params[taxonomy.name.to_sym]).uniq
+        [taxonomy.name, names.map {|name| taxonomy.term(name) }]
+      end
     end
 
     def self.register(taxonomies, entry)

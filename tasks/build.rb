@@ -6,11 +6,14 @@ require "simpress/sitemap"
 require "simpress/writer"
 
 class SimpressCLI < Thor
+  OUTPUT_DIR = Simpress::Config.output_dir
+  PLUGIN_DIR = Simpress::Config.plugin_dir
+
   desc "build", "Build the site"
   def build
     invoke :clean
     result = Benchmark.realtime do
-      FileUtils.cp_r("static/.", Simpress::Config.output_dir, preserve: true, verbose: false)
+      copy_static
       Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
       GC.disable
       build_plugin_scss
@@ -24,6 +27,11 @@ class SimpressCLI < Thor
 
   private
 
+  def copy_static
+    plugin_dirs = Simpress::Config.instance.plugins.map {|name| "#{PLUGIN_DIR}/#{name}/static" }
+    ["static", *plugin_dirs].each {|dir| FileUtils.cp_r("#{dir}/.", OUTPUT_DIR, preserve: true, verbose: false) if Dir.exist?(dir) }
+  end
+
   def build_html
     build_scss
     build_sitemap
@@ -31,9 +39,7 @@ class SimpressCLI < Thor
 
   def build_plugin_scss
     lines = Simpress::Config.instance.plugins.flat_map do |name|
-      Dir.glob("#{Simpress::Config.plugin_dir}/#{name}/scss/_*.scss").map do |file|
-        %(@forward "../#{File.dirname(file)}/#{File.basename(file, '.scss').delete_prefix('_')}";)
-      end
+      Dir.glob("#{PLUGIN_DIR}/#{name}/scss/_*.scss").map {|file| %(@forward "../#{File.dirname(file)}/#{File.basename(file, '.scss').delete_prefix('_')}";) }
     end
 
     File.write("scss/_plugins.scss", lines.map {|line| "#{line}\n" }.join)
@@ -47,7 +53,7 @@ class SimpressCLI < Thor
   end
 
   def build_sitemap
-    files = Dir.chdir(Simpress::Config.output_dir) do
+    files = Dir.chdir(OUTPUT_DIR) do
       files = Dir.glob("**/*.html")
       files.reject! {|f| f == "index.html" || f.start_with?("archives/") }
       files.map! {|f| [f, File.mtime(f)] }

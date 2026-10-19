@@ -8,11 +8,10 @@ module Simpress
 
     PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next].freeze
 
-    attr_reader :id, :title, :date, :permalink, :taxonomies, :description, :layout, :index, :draft, :markdown, :params, :content, :toc, :cover
+    attr_reader :id, :title, :date, :permalink, :taxonomies, :description, :layout, :index, :draft, :markdown, :content, :toc, :cover
     attr_accessor :prev, :next
 
     def initialize(params)
-      @params = params
       @id = params[:id]
       @title = params[:title]
       @date = params[:date]

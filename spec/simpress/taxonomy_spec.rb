@@ -38,6 +38,14 @@ describe Simpress::Taxonomy do
       expect(result["tags"].map(&:name)).to eq ["oss", "gem"]
     end
 
+    it "同名の重複指定は1つにまとめる" do
+      params = { categories: ["Ruby", "Ruby"], tags: ["oss", "gem", "oss"] }
+      result = described_class.resolve(params)
+
+      expect(result["categories"].map(&:name)).to eq ["Ruby"]
+      expect(result["tags"].map(&:name)).to eq ["oss", "gem"]
+    end
+
     it "paramsにないTaxonomyに対しては空配列を返す" do
       params = { categories: ["Ruby"] }
       result = described_class.resolve(params)
@@ -80,7 +88,7 @@ describe Simpress::Taxonomy do
   end
 
   describe "#term" do
-    it "指定された名前に対してslug上書きを使用したTermインスタンスを返し、Taxonomy内でメモ化する" do
+    it "指定された名前に対してslug上書きを使用したTermインスタンスを返しTaxonomy内でメモ化する" do
       taxonomy = described_class.fetch("categories")
       term = taxonomy.term("Ruby")
       expect(term).to be_a(Simpress::Taxonomy::Term)

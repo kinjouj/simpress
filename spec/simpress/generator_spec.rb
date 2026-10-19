@@ -19,23 +19,10 @@ describe Simpress::Generator do
     allow(Simpress::Theme).to receive(:clear)
   end
 
-  describe ".each_file" do
-    it "ブロックなしで呼び出された場合は例外を発生させる" do
-      expect { described_class.each_file }.to raise_error("block is required")
-    end
-
-    it "source_dir配下で見つかった各Markdownファイルのパスをyieldする" do
-      allow(Dir).to receive(:glob).and_yield("entry1.markdown").and_yield("entry2.markdown")
-      yielded = []
-      described_class.each_file {|file| yielded << file }
-      expect(Dir).to have_received(:glob).with("source/**/*.markdown")
-      expect(yielded).to eq ["entry1.markdown", "entry2.markdown"]
-    end
-  end
-
   describe ".generate" do
-    it "下書きをスキップし、残りのエントリをタイムスタンプの降順で渡して、生成パイプラインを正しい順序で実行する" do
+    it "draftをスキップし残りのエントリをタイムスタンプの降順で渡して生成パイプラインを正しい順序で実行する" do
       described_class.generate
+      expect(Dir).to have_received(:glob).with("source/**/*.markdown")
       expect(Simpress::Plugin).to have_received(:process).with([entry2, entry1]).ordered
       expect(Simpress::Generator::Pipeline).to have_received(:generate).ordered
       expect(Simpress::Theme).to have_received(:clear).ordered

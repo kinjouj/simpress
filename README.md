@@ -53,5 +53,4 @@ TEST BODY
 - [Parameters](docs/parameters.md)
 - [taxonomies.yaml](docs/taxonomies.md)
 - [Theme Variables](docs/theme.md)
-- [JSON data format](docs/json.md)
 - [Plugin](docs/plugins.md)

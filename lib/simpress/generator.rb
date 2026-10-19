@@ -11,15 +11,9 @@ require "simpress/theme"
 module Simpress
   module Generator
     class << self
-      def each_file(&block)
-        raise "block is required" unless block
-
-        Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown", &block)
-      end
-
       def generate
         entries = []
-        each_file do |file|
+        Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown") do |file|
           entry = Simpress::Parser.parse(file)
           next if entry.nil? || entry.draft
 
