@@ -18,7 +18,7 @@ describe Simpress::Generator::Pipeline::Archive::Monthly do
       allow(Simpress::Writer).to receive(:write).and_yield("public/archives/2026/01/index.html")
     end
 
-    it "各月についてHTMLをレンダリングして書き出す" do
+    it "/archives/2026/01/index.htmlとして出力する" do
       described_class.generate_html(monthly_archives)
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/index.html", "<html>content</html>")
@@ -33,7 +33,7 @@ describe Simpress::Generator::Pipeline::Archive::Monthly do
       allow(Simpress::Writer).to receive(:write).with("/archives/2026/01/1.json", anything).and_yield("public/archives/2026/01/1.json")
     end
 
-    it "各月についてJSONを書き出す" do
+    it "/archives/2026/01/1.jsonとして出力する" do
       described_class.generate_json(monthly_archives)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/1.json", expected_index_json)
       expect(verbose_messages).to include("[BUILD ARCHIVE]: public/archives/2026/01/1.json")

@@ -6,25 +6,26 @@ module Simpress
   class Entry
     include Simpress::JSON::Serializable
 
-    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :toc, :cover, :prev, :next].freeze
+    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :cover, :toc, :prev, :next].freeze
 
-    attr_reader :id, :title, :date, :permalink, :taxonomies, :description, :layout, :index, :draft, :markdown, :content, :toc, :cover
+    attr_reader :id, :title, :date, :permalink, :taxonomies, :content, :description, :cover, :toc, :layout, :index, :draft, :markdown, :params
     attr_accessor :prev, :next
 
     def initialize(params)
+      @params = params
       @id = params[:id]
       @title = params[:title]
       @date = params[:date]
       @permalink = params[:permalink]
       @taxonomies = params[:taxonomies]
+      @content = params[:content]
       @description = params[:description]
       @cover = params[:cover]
+      @toc = params[:toc]
       @layout = params[:layout]
       @index = params[:index]
       @draft = params[:draft]
       @markdown = params[:markdown]
-      @content = params[:content]
-      @toc = params[:toc]
     end
 
     def to_h(options = {})

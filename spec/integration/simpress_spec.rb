@@ -25,7 +25,7 @@ describe Simpress do
     Simpress::Taxonomy.clear
   end
 
-  it "ビルドして期待される出力ファイルを全て生成する" do
+  it "期待どおりの出力ファイルを生成する" do
     described_class.build
     expect(Simpress::Logger).to have_received(:verbose).at_least(1).times
     expect(Simpress::Logger).to have_received(:debug).exactly(1).times

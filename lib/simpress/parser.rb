@@ -7,7 +7,6 @@ require "simpress/config"
 require "simpress/entry"
 require "simpress/parser/markdown"
 require "simpress/parser/markdown/processor"
-require "simpress/path"
 require "simpress/taxonomy"
 
 module Simpress
@@ -23,11 +22,11 @@ module Simpress
     end
 
     class MetadataBuilder
-      TIME_REGEX = /\A(\d{4})-(\d{1,2})-(\d{1,2})/
       DESC_REGEX = /^\s*(\S.*)$/
 
       def initialize(file, params, markdown)
         @basename = File.basename(file, ".*")
+        @dir = File.dirname(file.delete_prefix("#{Simpress::Config.source_dir}/")).then {|dir| dir == "." ? "" : dir }
         @params = params
         @markdown = markdown
       end
@@ -61,7 +60,7 @@ module Simpress
       end
 
       def assign_index!
-        @params[:index] = @params.fetch(:index, true)
+        @params[:index] = !@params[:date].nil? && @params.fetch(:index, true)
       end
 
       def assign_taxonomies!
@@ -92,26 +91,15 @@ module Simpress
       end
 
       def assign_permalink!
-        @params[:permalink] ||= parse_permalink
+        @params[:permalink] = File.join("/", @dir, (@params[:permalink] || @basename).to_s.delete_prefix("/"))
       end
 
       def parse_datetime
         date = @params[:date]
         return date.to_time if date.respond_to?(:to_time)
+        return unless date
 
-        parsed = if date
-                   Time.parse(date.to_s) rescue nil # rubocop:disable Style/RescueModifier
-                 else
-                   TIME_REGEX.match(@basename)&.then {|m| Time.new(*m.captures) }
-                 end
-
-        @params[:index] = false unless parsed
-        parsed || Time.now
-      end
-
-      def parse_permalink
-        date = @params[:date]
-        Simpress::Path.new.path(date.year, date.month.to_s.rjust(2, "0"), @basename).build
+        Time.parse(date.to_s) rescue nil # rubocop:disable Style/RescueModifier
       end
     end
   end

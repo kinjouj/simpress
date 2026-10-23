@@ -8,6 +8,7 @@ describe Simpress::Parser do
     <<~MD
       ---
       title: Test Title
+      date: 2026-01-01
       permalink: /2026/01/test-entry
       ---
       This is the description.
@@ -18,9 +19,9 @@ describe Simpress::Parser do
 
   let(:render_result) do
     Simpress::Parser::Markdown::Processor::Result.new(
-      content: "<p>This is the description.</p>\n<p>This is the content.</p>",
-      toc: [],
-      cover: "cover.jpg"
+      "<p>This is the description.</p>\n<p>This is the content.</p>",
+      "cover.jpg",
+      []
     )
   end
 
@@ -43,6 +44,26 @@ describe Simpress::Parser do
       expect(entry.description).to eq "This is the description."
       expect(entry.cover).to eq "cover.jpg"
       expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with("This is the description.\n\nThis is the content.\n")
+    end
+
+    context "フロントマターに独自キーが指定されている場合" do
+      let(:markdown) do
+        <<~MD
+          ---
+          title: Test Title
+          permalink: /2026/01/test-entry
+          og_image: /images/og.png
+          ---
+          body
+        MD
+      end
+
+      it "paramsから独自キーを参照できる" do
+        entry = described_class.parse(file)
+
+        expect(entry.params[:og_image]).to eq "/images/og.png"
+        expect(entry.params[:title]).to eq "Test Title"
+      end
     end
 
     context "フロントマターでcoverとdescriptionが指定されている場合" do
@@ -68,7 +89,7 @@ describe Simpress::Parser do
 
     context "フロントマターでcoverとdescriptionが指定されておらず、本文から画像も抽出されなかった場合" do
       let(:render_result) do
-        Simpress::Parser::Markdown::Processor::Result.new(content: "<p>Hello <strong>world</strong>!</p>", toc: [], cover: nil)
+        Simpress::Parser::Markdown::Processor::Result.new("<p>Hello <strong>world</strong>!</p>", nil, [])
       end
 
       it "coverはデフォルト、descriptionは最初の段落のテキスト(インラインタグ除去)にフォールバックする" do
@@ -79,17 +100,20 @@ describe Simpress::Parser do
       end
     end
 
-    context "フロントマターにもファイル名にも日付を導出できない場合" do
+    context "フロントマターにdateが指定されていない場合" do
       before do
         allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\npermalink: /no-date\n---\nbody")
+        allow(File).to receive(:read).with("2026-01-01-from-filename.md").and_return("---\ntitle: From Filename\n---\nbody")
       end
 
-      it "現在時刻にフォールバックしindexを強制的にfalseにする" do
+      it "ファイル名の日付は使わず、dateはnilでindexを強制的にfalseにする" do
         entry = described_class.parse("no-date.md")
+        from_filename = described_class.parse("2026-01-01-from-filename.md")
 
-        expect(entry.date).to be_a(Time)
-        expect(entry.date).to be_within(5).of(Time.now)
-        expect(entry.index).to be_falsy
+        expect(entry.date).to be_nil
+        expect(entry.index).to be false
+        expect(from_filename.date).to be_nil
+        expect(from_filename.index).to be false
       end
     end
 
@@ -98,6 +122,7 @@ describe Simpress::Parser do
         <<~MD
           ---
           title: Test Title
+          date: 2026-01-01
           permalink: /2026/01/test-entry
           categories: Ruby
           ---
@@ -107,7 +132,7 @@ describe Simpress::Parser do
 
       before do
         allow(Simpress::Config.instance).to receive(:taxonomies).and_return({ aliases: { categories: { Ruby: "ruby" } } })
-        allow(File).to receive(:read).with("2026-01-02-hidden.md").and_return("---\ntitle: Hidden\nindex: false\ncategories: Ruby\n---\nbody")
+        allow(File).to receive(:read).with("2026-01-02-hidden.md").and_return("---\ntitle: Hidden\ndate: 2026-01-02\nindex: false\ncategories: Ruby\n---\nbody")
         allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\npermalink: /no-date\ncategories: Ruby\n---\nbody")
       end
 
@@ -128,16 +153,14 @@ describe Simpress::Parser do
     end
 
     context "フロントマターでpermalinkが指定されていない場合" do
-      let(:markdown) do
-        <<~MD
-          ---
-          title: Test Title
-          ---
-        MD
+      before do
+        allow(File).to receive(:read).with("source/company/about.markdown").and_return("---\ntitle: About\ndate: 2026-01-01\n---\nbody")
+        allow(File).to receive(:read).with("source/contact.markdown").and_return("---\ntitle: Contact\n---\nbody")
       end
 
-      it "日付とbasenameからpermalinkを生成する" do
-        expect(described_class.parse(file).permalink).to eq "/2026/01/2026-01-01-test-entry"
+      it "dateを使わず、sourceからのディレクトリとbasenameからpermalinkを生成する" do
+        expect(described_class.parse("source/company/about.markdown").permalink).to eq "/company/about"
+        expect(described_class.parse("source/contact.markdown").permalink).to eq "/contact"
       end
     end
 
@@ -151,8 +174,15 @@ describe Simpress::Parser do
         MD
       end
 
-      it "フロントマターのpermalinkをそのまま使用する" do
+      before do
+        allow(File).to receive(:read).with("source/company/about.markdown").and_return("---\ntitle: About\npermalink: /team\n---\nbody")
+        allow(File).to receive(:read).with("source/company/staff.markdown").and_return("---\ntitle: Staff\npermalink: staff/list\n---\nbody")
+      end
+
+      it "ファイルのディレクトリ配下に配置する(先頭スラッシュの有無は問わない)" do
         expect(described_class.parse(file).permalink).to eq "/existing/path"
+        expect(described_class.parse("source/company/about.markdown").permalink).to eq "/company/team"
+        expect(described_class.parse("source/company/staff.markdown").permalink).to eq "/company/staff/list"
       end
     end
 
@@ -162,9 +192,10 @@ describe Simpress::Parser do
           ---
           title: Test Title
           permalink: /2026/01/test-entry
-          date: 2025-01-01 00:00:00 +0900
+          date: 2025-01-01 00:00:00
           ---
         MD
+
         allow(File).to receive(:read).with(file).and_return(time_string_md)
         expect(described_class.parse(file).date).to be_a(Time)
 
@@ -175,6 +206,7 @@ describe Simpress::Parser do
           date: 2025-01-01
           ---
         MD
+
         allow(File).to receive(:read).with(file).and_return(date_md)
         expect(described_class.parse(file).date).to be_a(Time)
 
@@ -185,6 +217,7 @@ describe Simpress::Parser do
           date: "2025-01-01"
           ---
         MD
+
         allow(File).to receive(:read).with(file).and_return(string_md)
         expect(described_class.parse(file).date).to be_a(Time)
       end

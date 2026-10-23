@@ -16,7 +16,7 @@ describe Simpress::Generator::Pipeline::Base do
         allow(described_class).to receive(:generate_html)
       end
 
-      it "generate_htmlを呼び出す" do
+      it "HTMLを生成する" do
         described_class.generate(:arg)
         expect(described_class).to have_received(:generate_html).with(:arg)
       end
@@ -27,7 +27,7 @@ describe Simpress::Generator::Pipeline::Base do
         allow(Simpress::Config.instance).to receive(:mode).and_return("json")
       end
 
-      it "generate_jsonを呼び出す" do
+      it "JSONを生成する" do
         allow(described_class).to receive(:generate_json)
         described_class.generate(:arg)
         expect(described_class).to have_received(:generate_json).with(:arg)
@@ -50,7 +50,7 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Config.instance).to receive(:paginate).and_return(2)
     end
 
-    it "エントリを分割してpaginatorをyieldする" do
+    it "ページごとに分けて渡す" do
       expect {|b| described_class.each_page([1, 2, 3], "blog", &b) }.to yield_successive_args(
         [[1, 2], have_attributes(page: 1)],
         [[3], have_attributes(page: 2)]
@@ -65,7 +65,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".path" do
-    it "Simpress::Pathオブジェクトを返す" do
+    it "Pathを返す" do
       result = described_class.path("test")
       expect(result).to be_a(Simpress::Path)
       expect(result.to_s).to eq "test"
@@ -73,7 +73,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".write_html" do
-    it "テンプレートをレンダリングしてhtml拡張子で書き出す" do
+    it "index.htmlとして出力する" do
       context = { entries: [] }
       described_class.write_html("index", template: "layout", **context)
       expect(Simpress::Theme).to have_received(:render).with("layout", **context)
@@ -82,7 +82,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".write_json" do
-    it "データをダンプしてjson拡張子で書き出す" do
+    it "api/data.jsonとして出力する" do
       data = { key: "value" }
       described_class.write_json("api/data", data)
       expect(Simpress::JSON).to have_received(:dump).with(data)
@@ -95,7 +95,7 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Writer).to receive(:write) {|path, _data, &block| block&.call(path) }
     end
 
-    it "拡張子付きのパスを構築してSimpress::Writerを呼び出し、ブロックにファイルパスをyieldする" do
+    it "file.txtとして出力する" do
       expect {|b| described_class.write("file", "content", "txt", &b) }.to yield_with_args("file.txt")
       expect(Simpress::Writer).to have_received(:write).with("file.txt", "content")
     end

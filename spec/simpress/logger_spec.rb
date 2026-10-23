@@ -13,7 +13,7 @@ describe Simpress::Logger do
         allow(Simpress::Config.instance).to receive(:logging).and_return(true)
       end
 
-      it "文字列またはブロックの結果を標準出力に出力する" do
+      it "標準出力に出力されること" do
         expect { described_class.verbose("test info message") }.to output(/INFO -- : test info message/).to_stdout
 
         described_class.clear
@@ -26,7 +26,7 @@ describe Simpress::Logger do
         allow(Simpress::Config.instance).to receive(:logging).and_return(false)
       end
 
-      it "メッセージを出力せず、ブロックも評価しない" do
+      it "標準出力に出力されないこと" do
         evaluated = false
 
         expect { described_class.verbose { evaluated = true } }.not_to output.to_stdout
@@ -36,7 +36,7 @@ describe Simpress::Logger do
   end
 
   describe ".debug" do
-    it "デバッグメッセージを標準出力に出力する" do
+    it "標準出力に出力されること" do
       expect { described_class.debug("test debug message") }.to output(/DEBUG -- : test debug message/).to_stdout
     end
   end
@@ -64,7 +64,7 @@ describe Simpress::Logger do
   end
 
   describe ".clear" do
-    it "シングルトンインスタンスをリセットする" do
+    it "設定をリセットする" do
       obj = described_class.instance
       described_class.clear
       expect(obj).not_to be described_class.instance

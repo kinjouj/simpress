@@ -19,7 +19,8 @@ describe Simpress::Entry do
       markdown: "Main content here",
       content: "<p>Main content here</p>",
       toc: [{ id: "section-1", text: "Heading", children: [] }],
-      taxonomies: { "categories" => [] }
+      taxonomies: { "categories" => [] },
+      og_image: "/images/og.png"
     }
   end
 
@@ -36,6 +37,8 @@ describe Simpress::Entry do
       expect(entry.content).to eq "<p>Main content here</p>"
       expect(entry.toc).to eq [{ id: "section-1", text: "Heading", children: [] }]
       expect(entry.taxonomies).to eq({ "categories" => [] })
+      expect(entry.params).to eq params
+      expect(entry.params[:og_image]).to eq "/images/og.png"
       expect(entry.prev).to be_nil
       expect(entry.next).to be_nil
     end

@@ -92,7 +92,7 @@ describe Simpress::Plugin::Similarity do
 
   let(:entries) { [entry1, entry2, entry3, entry4, entry5] }
 
-  it "各エントリに正しい類似度データを割り当てる" do
+  it "類似エントリを設定する" do
     described_class.run(entries)
 
     expect(entries[0]).to respond_to(:similarities)
@@ -119,7 +119,7 @@ describe Simpress::Plugin::Similarity do
   context "indexがfalseのエントリが含まれる場合" do
     let(:hidden) { build(:entry, id: "hidden", title: entry1.title, markdown: entry1.markdown, permalink: "/hidden.html", index: false) }
 
-    it "indexがfalseのエントリは差し替えず、他のエントリの関連記事にも含めない" do
+    it "対象にしない" do
       all = [hidden, *entries]
       described_class.run(all)
 
@@ -129,7 +129,7 @@ describe Simpress::Plugin::Similarity do
     end
   end
 
-  context "スコアが返されない場合" do
+  context "類似するエントリがない場合" do
     let(:indexer) { Simpress::Plugin::Similarity::Indexer.new(entries) }
 
     before do
@@ -137,7 +137,7 @@ describe Simpress::Plugin::Similarity do
       allow(Simpress::Plugin::Similarity::Indexer).to receive(:new).and_return(indexer)
     end
 
-    it "全てのエントリでsimilaritiesを空にする" do
+    it "similaritiesが空になる" do
       described_class.run(entries)
       entries.each {|entry| expect(entry.similarities).to be_empty }
     end
@@ -148,12 +148,12 @@ describe Simpress::Plugin::Similarity do
       allow(Simpress::Config.instance).to receive(:mode).and_return("json")
     end
 
-    it "contentキーがある場合はto_hにsimilaritiesを含める" do
+    it "contentがあればsimilaritiesを含む" do
       described_class.run(entries)
       expect(entries[0].to_h(keys: [:title, :content])).to include(:similarities)
     end
 
-    it "contentキーがない場合はto_hからsimilaritiesを除外する" do
+    it "contentがなければsimilaritiesを含まない" do
       described_class.run(entries)
       expect(entries[0].to_h(keys: [:title])).not_to include(:similarities)
     end

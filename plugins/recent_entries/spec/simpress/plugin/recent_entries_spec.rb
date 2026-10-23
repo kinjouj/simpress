@@ -27,18 +27,18 @@ describe Simpress::Plugin::RecentEntries do
         allow(Simpress::Config.instance).to receive(:mode).and_return("html")
       end
 
-      it "最初の5件のエントリのみをコンテキストにバインドする" do
+      it "最初の5件をbindする" do
         described_class.run(entries)
         expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
       end
 
-      it "indexがfalseのエントリを除外した最初の5件をコンテキストにバインドする" do
+      it "indexがfalseのエントリを除外する" do
         hidden = Simpress::Entry.new(id: "hidden", title: "Hidden", permalink: "/hidden", index: false)
         described_class.run([hidden, *entries])
         expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
       end
 
-      it "エントリが5件未満の場合も扱える" do
+      it "5件未満でもバインドする" do
         small_entries = entries.take(2)
         described_class.run(small_entries)
         expect(described_class).to have_received(:bind_context).with(recent_entries: small_entries)
@@ -50,7 +50,7 @@ describe Simpress::Plugin::RecentEntries do
         allow(Simpress::Config.instance).to receive(:mode).and_return("json")
       end
 
-      it "最初の5件のエントリをrecent_entries.jsonに書き出す" do
+      it "recent_entries.jsonとして出力する" do
         described_class.run(entries)
 
         expect(Simpress::JSON).to have_received(:dump).with(entries.take(5), keys: [:id, :title, :permalink])

@@ -23,7 +23,7 @@ describe Simpress::Generator::Pipeline do
   end
 
   describe ".generate" do
-    it "正しい引数で各パイプラインに委譲する" do
+    it "各パイプラインを実行する" do
       described_class.generate(entries)
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry1)
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry2)

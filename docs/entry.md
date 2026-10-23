@@ -4,7 +4,7 @@
 | ---- | ---- |
 | id | 一意なID |
 | title | タイトル |
-| date | 日付。省略した場合はファイル名(yyyy-mm-dd)から取得、どちらからも得られない場合は現在時刻 |
+| date | 日付。省略した場合はindexが強制的にfalseになる |
 | permalink | パーマリンク |
 | taxonomies | categoriesやtagsなどのTaxonomy |
 | layout | レイアウト名。デフォルトは"page" |
@@ -14,9 +14,10 @@
 | description | 説明。未指定の場合はMarkdown本文の最初の空でない行になる |
 | content | レンダリング済みのHTML |
 | toc | 目次の構造 |
-| prev | 次に古いエントリへのEntry::Link(なければnil) |
-| next | 次に新しいエントリへのEntry::Link(なければnil) |
-| markdown | レンダリング前のMarkdown本文 |
+| prev | 次に古いEntryへのEntry::Link(なければnil) |
+| next | 次に新しいEntryへのEntry::Link(なければnil) |
+| markdown | レンダリング前のMarkdown |
+| params | FrontMatterと上記の補完値をまとめたハッシュ |
 
 ## Entry::Link
 

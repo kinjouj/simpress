@@ -8,14 +8,14 @@ describe Simpress::Parser::Markdown::Renderer do
   end
 
   describe "#initialize" do
-    it "primary_image、tocが空の状態で初期化される" do
+    it "空で初期化する" do
       expect(renderer.primary_image).to be_nil
       expect(renderer.toc).to eq []
     end
   end
 
   describe "#link" do
-    it "内部リンクと外部リンクのどちらもtarget、relを付けたaタグを返す" do
+    it "aタグを返す" do
       expect(renderer.link("/2026/01/entry.html", nil, "entry")).to eq '<a href="/2026/01/entry.html" target="_blank" rel="noopener">entry</a>'
       expect(renderer.link("https://example.com", nil, "example")).to eq '<a href="https://example.com" target="_blank" rel="noopener">example</a>'
     end
@@ -26,7 +26,7 @@ describe Simpress::Parser::Markdown::Renderer do
       allow(Simpress::Parser::Markdown::Filter).to receive(:preprocess).and_return("enhanced")
     end
 
-    it "Simpress::Parser::Markdown::Filter.preprocessに委譲する" do
+    it "前処理した結果を返す" do
       markdown = "# Hello"
       result = renderer.preprocess(markdown)
       expect(Simpress::Parser::Markdown::Filter).to have_received(:preprocess).with(markdown)
@@ -39,7 +39,7 @@ describe Simpress::Parser::Markdown::Renderer do
       allow(Simpress::Parser::Markdown::Filter).to receive(:postprocess).and_return("processed")
     end
 
-    it "Simpress::Parser::Markdown::Filter.postprocessに委譲する" do
+    it "後処理した結果を返す" do
       result = renderer.postprocess("<p>Hello</p>")
       expect(Simpress::Parser::Markdown::Filter).to have_received(:postprocess).with("<p>Hello</p>")
       expect(result).to eq "processed"
@@ -47,13 +47,13 @@ describe Simpress::Parser::Markdown::Renderer do
   end
 
   describe "#header" do
-    it "レベル1ではシンプルなh1タグを返す" do
+    it "レベル1ではh1タグを返す" do
       result = renderer.header("Title", 1)
       expect(result).to eq "<h1>Title</h1>"
       expect(renderer.toc).to be_empty
     end
 
-    it "レベル2以上ではid付きの見出しを返しtocに登録する" do
+    it "レベル2以上ではid付きの見出しを返す" do
       result = renderer.header("SubTitle", 2)
       expect(result).to eq '<h2 id="section-1">SubTitle</h2>'
       expect(renderer.toc.size).to eq 1
@@ -64,14 +64,14 @@ describe Simpress::Parser::Markdown::Renderer do
       expect(heading[:children]).to eq []
     end
 
-    it "レベル2の見出しをtocのトップレベルの項目として扱う" do
+    it "レベル2をtocの最上位に入れる" do
       renderer.header("First", 2)
       renderer.header("Second", 2)
 
       expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Second"]
     end
 
-    it "レベル3以上の見出しを直前のレベル2の見出しの子としてネストし、子にはchildrenキーを付与せずセクションidをインクリメントする" do
+    it "レベル3以上をレベル2の子にする" do
       renderer.header("First", 2)
       result = renderer.header("Second", 3)
 
@@ -82,7 +82,7 @@ describe Simpress::Parser::Markdown::Renderer do
       expect(first[:children]).to eq [{ id: "section-2", text: "Second" }]
     end
 
-    it "連続する深い見出しはレベルに関係なく同じ子リストにフラット化する" do
+    it "連続する深い見出しを同じ子に並べる" do
       renderer.header("First", 2)
       renderer.header("Second", 3)
       renderer.header("Third", 4)
@@ -90,7 +90,7 @@ describe Simpress::Parser::Markdown::Renderer do
       expect(renderer.toc.first[:children].map {|heading| heading[:text] }).to eq ["Second", "Third"]
     end
 
-    it "次のレベル2の見出しで子をリセットして新しいトップレベルのセクションを開始する" do
+    it "次のレベル2を新しい最上位にする" do
       renderer.header("First", 2)
       renderer.header("Second", 3)
       renderer.header("Third", 2)
@@ -101,13 +101,13 @@ describe Simpress::Parser::Markdown::Renderer do
       expect(renderer.toc[1][:children].map {|heading| heading[:text] }).to eq ["Fourth"]
     end
 
-    it "レベル2の見出しがまだ現れていない場合は深い見出しをトップレベルとして扱う" do
+    it "レベル2より前の深い見出しは最上位に入れる" do
       renderer.header("First", 3)
 
       expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First"]
     end
 
-    it "最初の見出しが2より深い場合はそれを基準にトップレベルを動的に決定する" do
+    it "最初の見出しの深さを最上位にする" do
       renderer.header("First", 3)
       renderer.header("Second", 4)
       renderer.header("Third", 4)
@@ -118,7 +118,7 @@ describe Simpress::Parser::Markdown::Renderer do
       expect(renderer.toc[1][:children]).to eq []
     end
 
-    it "深い見出しの後に浅い見出しが現れた場合はネストの基準を浅い方に切り替える" do
+    it "浅い見出しを最上位にする" do
       renderer.header("A", 3)
       renderer.header("B", 2)
       renderer.header("C", 3)
@@ -130,13 +130,13 @@ describe Simpress::Parser::Markdown::Renderer do
   end
 
   describe "#image" do
-    it "最初の画像ならimgタグを返しprimary_imageを設定する" do
+    it "imgタグを返す" do
       result = renderer.image("first.png", nil, nil)
       expect(result).to eq '<img src="first.png" alt="image" />'
       expect(renderer.primary_image).to eq "first.png"
     end
 
-    it "後続の画像でprimary_imageを上書きしない" do
+    it "primary_imageを上書きしない" do
       renderer.image("first.png", nil, nil)
       renderer.image("second.png", nil, nil)
       expect(renderer.primary_image).to eq "first.png"
@@ -144,14 +144,14 @@ describe Simpress::Parser::Markdown::Renderer do
   end
 
   describe "#block_code" do
-    it "HTMLをエスケープしたpre/codeブロックを返す" do
+    it "エスケープしたcodeブロックを返す" do
       code = 'puts "Hello" < & >'
       result = renderer.block_code(code, "ruby")
       expect(result).to include('class="language-ruby"')
       expect(result).to include("puts &quot;Hello&quot; &lt; &amp; &gt;")
     end
 
-    it "langがnilの場合は言語をtextにする" do
+    it "langがnilならtextにする" do
       result = renderer.block_code("code", nil)
       expect(result).to include('class="language-text"')
     end

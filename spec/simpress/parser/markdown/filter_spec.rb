@@ -8,7 +8,7 @@ describe Simpress::Parser::Markdown::Filter do
   end
 
   describe ".preprocess" do
-    it "preprocessを順番に実行し、文字列が返された場合はデータを更新する" do
+    it "順に適用する" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
@@ -31,7 +31,7 @@ describe Simpress::Parser::Markdown::Filter do
       expect(result).to eq "Base + Filter1 + Filter2"
     end
 
-    it "preprocessが返した文字列以外の値は無視する" do
+    it "文字列以外は無視する" do
       filter = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
@@ -47,7 +47,7 @@ describe Simpress::Parser::Markdown::Filter do
   end
 
   describe ".postprocess" do
-    it "postprocessを順番に実行し、文字列以外の返り値は無視する" do
+    it "順に適用する" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
@@ -70,7 +70,7 @@ describe Simpress::Parser::Markdown::Filter do
   end
 
   describe ".clear" do
-    it "登録されたクラスをリセットする" do
+    it "登録を消す" do
       filter = Class.new do
         extend Simpress::Parser::Markdown::Filter
       end

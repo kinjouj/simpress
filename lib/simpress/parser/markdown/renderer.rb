@@ -9,8 +9,7 @@ module Simpress
     module Markdown
       class Renderer < ::Redcarpet::Render::HTML
         RENDERER_OPTIONS = {
-          hard_wrap: true,
-          escape_html: true
+          hard_wrap: true
         }.freeze
 
         attr_reader :primary_image
@@ -68,12 +67,6 @@ module Simpress
           lang ||= "text"
           %(<pre class="line-numbers"><code class="language-#{lang}">#{CGI.escapeHTML(code)}</code></pre>)
         end
-
-        # simplecov:disable
-        def block_html(html)
-          html
-        end
-        # simplecov:enable
       end
     end
   end

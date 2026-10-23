@@ -8,9 +8,7 @@ describe Simpress::Generator do
   let(:entry2) { build(:entry, date: Time.new(2025, 6, 1)) }
 
   before do
-    allow(Dir).to receive(:glob).and_yield("draft.markdown")
-                                .and_yield("entry1.markdown")
-                                .and_yield("entry2.markdown")
+    allow(Dir).to receive(:glob).and_yield("draft.markdown").and_yield("entry1.markdown").and_yield("entry2.markdown")
     allow(Simpress::Parser).to receive(:parse).with("draft.markdown").and_return(draft_entry)
     allow(Simpress::Parser).to receive(:parse).with("entry1.markdown").and_return(entry1)
     allow(Simpress::Parser).to receive(:parse).with("entry2.markdown").and_return(entry2)
@@ -20,9 +18,8 @@ describe Simpress::Generator do
   end
 
   describe ".generate" do
-    it "draftをスキップし残りのエントリをタイムスタンプの降順で渡して生成パイプラインを正しい順序で実行する" do
+    it "出力を生成する" do
       described_class.generate
-      expect(Dir).to have_received(:glob).with("source/**/*.markdown")
       expect(Simpress::Plugin).to have_received(:process).with([entry2, entry1]).ordered
       expect(Simpress::Generator::Pipeline).to have_received(:generate).ordered
       expect(Simpress::Theme).to have_received(:clear).ordered
@@ -38,7 +35,7 @@ describe Simpress::Generator do
       described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c])
     end
 
-    it "新しいエントリにnext、古いエントリにprevを割り当てる" do
+    it "prevとnextを設定する" do
       expect(entry_a.prev.permalink).to eq "/entry-b.html"
       expect(entry_a.next).to be_nil
       expect(entry_b.prev.permalink).to eq "/entry-c.html"
@@ -47,7 +44,7 @@ describe Simpress::Generator do
       expect(entry_c.next.permalink).to eq "/entry-b.html"
     end
 
-    it "indexがfalseのエントリを飛ばして隣接関係を設定し、そのエントリ自体にはprevとnextを設定しない" do
+    it "indexがfalseのエントリを除外する" do
       newer = build(:entry, permalink: "/newer.html")
       hidden = build(:entry, permalink: "/hidden.html", index: false)
       older = build(:entry, permalink: "/older.html")

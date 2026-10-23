@@ -8,18 +8,27 @@ module Simpress
     module Markdown
       module Processor
         REDCARPET_OPTIONS = {
-          no_intra_emphasis: true,
+          autolink: true,
           fenced_code_blocks: true,
-          autolink: true
+          no_intra_emphasis: true,
+          tables: true
         }.freeze
-
-        Result = Data.define(:content, :toc, :cover)
 
         class << self
           def render(data)
             renderer = Simpress::Parser::Markdown::Renderer.new
             content = ::Redcarpet::Markdown.new(renderer, REDCARPET_OPTIONS).render(data)
-            Result.new(content: content, toc: renderer.toc, cover: renderer.primary_image)
+            Result.new(content, renderer.primary_image, renderer.toc)
+          end
+        end
+
+        class Result
+          attr_reader :content, :cover, :toc
+
+          def initialize(content, cover, toc)
+            @content = content
+            @cover = cover
+            @toc = toc
           end
         end
       end

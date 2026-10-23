@@ -25,7 +25,7 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::Context).to receive(:update)
       end
 
-      it "sidebar_categoriesテンプレートをレンダリングし、結果をコンテキストにバインドする" do
+      it "コンテキストにデータをbindする" do
         described_class.run
         expect(Simpress::Theme).to have_received(:render).with("sidebar_categories", categories: anything)
         expect(Simpress::Context).to have_received(:update).with(sidebar_categories_content: "<ul>categories</ul>")
@@ -39,7 +39,7 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::Writer).to receive(:write)
       end
 
-      it "許可されたキーでダンプしたカテゴリをcategories.jsonに書き出す" do
+      it "categories.jsonとして出力する" do
         described_class.run
         expect(Simpress::JSON).to have_received(:dump).with(anything, keys: described_class::KEYS)
         expect(Simpress::Writer).to have_received(:write).with("categories.json", "{}")
@@ -68,7 +68,7 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "ruby" => ["rails"] })
       end
 
-      it "子カテゴリを親の下にネストし、ルートから取り除く" do
+      it "子カテゴリを親にネストする" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
@@ -91,7 +91,7 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "orders" => ["tech", "life"] })
       end
 
-      it "ordersリストに従ってルートカテゴリを並べ替え、ordersキーを親子関係として扱わない" do
+      it "ルートカテゴリを並べ替える" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
@@ -127,7 +127,7 @@ describe Simpress::Plugin::CategoryTree do
         )
       end
 
-      it "ordersリストに従ってネストされた子を並べ替え、ordersリストにないルートカテゴリを末尾に並べる" do
+      it "ネストした子も並べ替える" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(

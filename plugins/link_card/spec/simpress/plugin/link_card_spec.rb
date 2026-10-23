@@ -24,7 +24,7 @@ describe Simpress::Plugin::LinkCard do
         )
       end
 
-      it "目印をリンク、カバー画像、タイトル、説明文を持つカードに置き換える" do
+      it "カードに置き換える" do
         described_class.run([source, target])
 
         expect(source.content).to include(
@@ -58,7 +58,7 @@ describe Simpress::Plugin::LinkCard do
         )
       end
 
-      it "それぞれの目印をカードに置き換える" do
+      it "それぞれカードに置き換える" do
         described_class.run([source1, source2, target, other])
 
         expect(source1.content).to include("<span>対象タイトル</span>", "<span>別タイトル</span>")
@@ -71,7 +71,7 @@ describe Simpress::Plugin::LinkCard do
       let(:content) { "<p>前</p>\n<!--link-card:/missing.html-->\n<p>後</p>" }
       let(:source) { build(:entry, permalink: "/source.html", content: content.dup) }
 
-      it "目印を置き換えずにそのまま残す" do
+      it "置き換えない" do
         described_class.run([source, target])
 
         expect(source.content).to eq content
@@ -92,7 +92,7 @@ describe Simpress::Plugin::LinkCard do
       let(:hyphen) { build(:entry, permalink: "/hyphen-", title: "ハイフンタイトル", content: +"<p>本文</p>") }
       let(:source) { build(:entry, permalink: "/source.html", content: +"<!--link-card:/hyphen--->") }
 
-      it "目印をカードに置き換える" do
+      it "カードに置き換える" do
         described_class.run([source, hyphen])
 
         expect(source.content).to include('<a href="/hyphen-">', "<span>ハイフンタイトル</span>")
@@ -127,13 +127,13 @@ describe Simpress::Plugin::LinkCard do
         MARKDOWN
       end
 
-      it "リンクのパスを持つ目印のコメントに変換する" do
+      it "目印のコメントに変換する" do
         expect(filter.preprocess(markdown)).to eq expected
       end
     end
 
     context "変換対象ではない場合" do
-      it "ラベル付きのリンク、外部URL、行の途中のリンク、空白を含むパスは変換しない" do
+      it "変換しない" do
         expect(filter.preprocess("[ラベル](/label.html)")).to eq "[ラベル](/label.html)"
         expect(filter.preprocess("[](https://example.com/page.html)")).to eq "[](https://example.com/page.html)"
         expect(filter.preprocess("abc[](/inline.html)")).to eq "abc[](/inline.html)"

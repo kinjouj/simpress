@@ -21,7 +21,7 @@ describe Simpress::Context do
   end
 
   describe ".update" do
-    it "ハッシュのデータをコンテキストにマージする" do
+    it "マージする" do
       described_class.update(a: 1, b: 2)
       expect(described_class[:a]).to eq 1
       expect(described_class[:b]).to eq 2
@@ -29,14 +29,14 @@ describe Simpress::Context do
   end
 
   describe ".to_h" do
-    it "データを含むハッシュを返す" do
+    it "ハッシュを返す" do
       described_class[:key] = "val"
       expect(described_class.to_h).to eq({ key: "val" })
     end
   end
 
   describe ".clear" do
-    it "全てのデータを削除する" do
+    it "データを削除する" do
       described_class[:key] = "val"
       described_class.clear
       expect { described_class[:key] }.to raise_error(KeyError)
