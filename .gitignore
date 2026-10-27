@@ -2,7 +2,7 @@
 coverage
 node_modules
 scss/*
-!scss/.gitignore
+!scss/style.scss
 source/*
 !source/.gitkeep
 theme/*
