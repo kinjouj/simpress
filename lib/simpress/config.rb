@@ -29,21 +29,10 @@ module Simpress
 
     # simplecov:disable
     class << self
-      def source_dir
-        "source"
-      end
-
-      def theme_dir
-        "theme"
-      end
-
-      def output_dir
-        "public"
-      end
-
-      def plugin_dir
-        "plugins"
-      end
+      def source_dir = "source"
+      def theme_dir = "theme"
+      def output_dir = "public"
+      def plugin_dir = "plugins"
 
       def clear
         Singleton.__init__(Simpress::Config)
