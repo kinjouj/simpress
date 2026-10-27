@@ -1,0 +1,16 @@
+/public
+coverage
+node_modules
+scss/*
+source/*
+!source/.gitkeep
+theme/*
+static/*
+static/images/*
+!static/.gitkeep
+!static/images
+!static/images/.gitkeep
+config.yaml
+category_indexes.json
+similarity.cache
+stackprof.dump

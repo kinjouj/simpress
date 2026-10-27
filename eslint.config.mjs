@@ -1,0 +1,195 @@
+import { defineConfig } from "eslint/config";
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import stylistic from "@stylistic/eslint-plugin";
+import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
+import globals from "globals";
+import checkFile from "eslint-plugin-check-file";
+import importPlugin from "eslint-plugin-import";
+import perfectionist from "eslint-plugin-perfectionist";
+import vitest from "@vitest/eslint-plugin";
+
+export default defineConfig(
+  { ignores: ["**/*.js", "**/*.mjs"] },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  ...(stylistic.configs.recommended ? [stylistic.configs.recommended] : []),
+  react.configs.flat.recommended,
+  react.configs.flat["jsx-runtime"],
+  reactHooks.configs.flat.recommended,
+  {
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        ...globals.browser,
+      },
+    },
+    plugins: {
+      react,
+      perfectionist,
+      "react-hooks": reactHooks,
+      "@stylistic": stylistic,
+      "check-file": checkFile,
+      "import": importPlugin,
+    },
+    rules: {
+      "curly": ["error", "all"],
+      "eqeqeq": ["error", "always", { "null": "always" }],
+      "no-empty": ["error", { allowEmptyCatch: false }],
+      "no-constant-condition": "error",
+      "no-restricted-imports": ["error", { "paths": ["./"] }],
+      "no-unused-expressions": "error", // bug
+      "@stylistic/arrow-parens": ["error", "always"],
+      "@stylistic/array-bracket-spacing": ["error", "never"],
+      "@stylistic/brace-style": ["error", "1tbs", { allowSingleLine: true }],
+      "@stylistic/comma-dangle": [
+        "error",
+        {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "functions": "ignore",
+        },
+      ],
+      "@stylistic/jsx-closing-bracket-location": "off",
+      "@stylistic/jsx-one-expression-per-line": "off",
+      "@stylistic/jsx-quotes": ["error", "prefer-double"],
+      "@stylistic/max-statements-per-line": ["error", { max: 2 }],
+      "@stylistic/no-multi-spaces": [
+        "error",
+        {
+          "exceptions": {
+            "VariableDeclarator": true
+          }
+        }
+      ],
+      "@stylistic/semi": ["error", "always"],
+      "@stylistic/spaced-comment": "off",
+      "@typescript-eslint/array-type": "error",
+      "@typescript-eslint/consistent-type-definitions": "off",
+      "@typescript-eslint/consistent-type-imports": "error",
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          selector: ["variable", "function"],
+          format: ["camelCase", "PascalCase", "UPPER_CASE"],
+          leadingUnderscore: "allow",
+        },
+        {
+          selector: ["typeAlias", "interface", "class", "enum"],
+          format: ["PascalCase"],
+        },
+      ],
+      "@typescript-eslint/no-floating-promises": "error",
+      "@typescript-eslint/no-non-null-assertion": "error",
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/strict-boolean-expressions": "error",
+      "react/button-has-type": "error",
+      "react/function-component-definition": ["error", {
+        namedComponents: "arrow-function",
+        unnamedComponents: [],
+      }],
+      "react/jsx-handler-names": "error",
+      "react/jsx-no-bind": "error",
+      "react/jsx-no-leaked-render": "error",
+      "react/jsx-no-useless-fragment": "error",
+      "react/no-array-index-key": "error",
+      "check-file/filename-naming-convention": [
+        "error",
+        {
+          "**/components/!(index).{jsx,tsx}": "PASCAL_CASE",
+          "**/hooks/!(index).ts": "use[A-Z][a-zA-Z0-9]*",
+          "**/pages/!(index).tsx": "PASCAL_CASE",
+          "**/reducers/*.ts": "CAMEL_CASE",
+          "**/types/!(index).ts": "KEBAB_CASE",
+        },
+        {
+          ignoreMiddleExtensions: true,
+        },
+      ],
+      "import/order": [
+        "error",
+        {
+          "groups": [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+            "type",
+          ],
+          "newlines-between": "never",
+        },
+      ],
+      "perfectionist/sort-jsx-props": [
+        "error",
+        {
+          "type": "unsorted",
+          "groups": [
+            "almost-props",
+            "unknown",
+            "standard",
+            "callback",
+            "shorthand-prop",
+          ],
+          "customGroups": [
+            {
+              "groupName": "almost-props",
+              "elementNamePattern": ["^ref$", "^key$", "^type$", "^id$", "^href$", "^src$", "^name$"]
+            },
+            {
+              "groupName": "standard",
+              "elementNamePattern": [
+                "^role$",
+                "^aria-.+$",
+                "^data-.+$",
+                "^className$",
+                "^style$",
+              ]
+            },
+            {
+              "groupName": "callback",
+              "elementNamePattern": "^on.+"
+            }
+          ]
+        }
+      ],
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+  },
+  {
+    files: ["frontend/tests/**/*.{ts,tsx}"],
+    plugins: { vitest },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      "vitest/consistent-test-filename": "error",
+      "vitest/consistent-test-it": ["error", { fn: "it" }],
+      "vitest/no-alias-methods": "error",
+      "vitest/prefer-to-be": "error",
+      "vitest/prefer-to-have-length": "error",
+      "vitest/prefer-to-contain": "error",
+      "vitest/prefer-strict-boolean-matchers": "error",
+    },
+  },
+);

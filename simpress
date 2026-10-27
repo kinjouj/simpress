@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift "./lib"
+
+require "bundler/setup"
+Bundler.require
+
+class Thor
+  remove_command :tree
+
+  class << self
+    def find_command_possibilities(meth)
+      commands.key?(meth) ? [meth] : []
+    end
+
+    def exit_on_failure?
+      true
+    end
+  end
+end
+
+require "simpress"
+
+dirs = ["tasks", *Simpress::Config.instance.plugins.map {|name| "#{Simpress::Config.plugin_dir}/#{name}/tasks" }]
+dirs.each {|dir| Dir.glob("#{dir}/**/*.rb").each {|f| require_relative f } }
+SimpressCLI.start(ARGV)

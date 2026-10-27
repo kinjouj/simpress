@@ -1,0 +1,106 @@
+# frozen_string_literal: true
+
+require "time"
+require "xxhash"
+
+require "simpress/config"
+require "simpress/entry"
+require "simpress/parser/markdown"
+require "simpress/parser/markdown/processor"
+require "simpress/taxonomy"
+
+module Simpress
+  module Parser
+    DEFAULT_COVER = "/images/no_image.webp"
+
+    class << self
+      def parse(file)
+        params, markdown = Simpress::Parser::Markdown.parse(File.read(file))
+        metadata = MetadataBuilder.new(file, params, markdown).build
+        Simpress::Entry.new(metadata)
+      end
+    end
+
+    class MetadataBuilder
+      DESC_REGEX = /^\s*(\S.*)$/
+
+      def initialize(file, params, markdown)
+        @basename = File.basename(file, ".*")
+        @dir = File.dirname(file.delete_prefix("#{Simpress::Config.source_dir}/")).then {|dir| dir == "." ? "" : dir }
+        @params = params
+        @markdown = markdown
+      end
+
+      def build
+        assign_metadata!
+        @params
+      end
+
+      private
+
+      def assign_metadata!
+        assign_id!
+        assign_date!
+        assign_index!
+        assign_taxonomies!
+        assign_draft!
+        assign_markdown!
+        assign_description!
+        assign_content!
+        assign_layout!
+        assign_permalink!
+      end
+
+      def assign_id!
+        @params[:id] = XXhash.xxh64(@basename).to_s
+      end
+
+      def assign_date!
+        @params[:date] = parse_datetime
+      end
+
+      def assign_index!
+        @params[:index] = !@params[:date].nil? && @params.fetch(:index, true)
+      end
+
+      def assign_taxonomies!
+        @params[:taxonomies] = Simpress::Taxonomy.resolve(@params[:index] ? @params : {})
+      end
+
+      def assign_draft!
+        @params[:draft] = @params.fetch(:draft, false)
+      end
+
+      def assign_markdown!
+        @params[:markdown] = @markdown
+      end
+
+      def assign_description!
+        @params[:description] ||= @markdown[DESC_REGEX, 1].to_s.strip
+      end
+
+      def assign_content!
+        result = Simpress::Parser::Markdown::Processor.render(@markdown)
+        @params[:content] = result.content
+        @params[:toc] = result.toc
+        @params[:cover] ||= result.cover || DEFAULT_COVER
+      end
+
+      def assign_layout!
+        @params[:layout] ||= "page"
+      end
+
+      def assign_permalink!
+        @params[:permalink] = File.join("/", @dir, (@params[:permalink] || @basename).to_s.delete_prefix("/"))
+      end
+
+      def parse_datetime
+        date = @params[:date]
+        return date.to_time if date.respond_to?(:to_time)
+        return unless date
+
+        Time.parse(date.to_s) rescue nil # rubocop:disable Style/RescueModifier
+      end
+    end
+  end
+end

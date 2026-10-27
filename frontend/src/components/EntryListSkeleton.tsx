@@ -1,0 +1,21 @@
+import { Card } from 'react-bootstrap';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
+const EntryListSkeleton = (): React.JSX.Element => {
+  return (
+    <SkeletonTheme baseColor="#e0e0e0" highlightColor="#f5f5f5">
+      {Array.from({ length: 5 }).map((_, index) => {
+        const key = `skeleton-${index}`;
+
+        return (
+          <Card key={key} className="mx-4 mb-5 rounded-4" role="listitem" aria-label="entry-skeleton">
+            <Skeleton height={300} />
+          </Card>
+        );
+      })}
+    </SkeletonTheme>
+  );
+};
+
+export default EntryListSkeleton;

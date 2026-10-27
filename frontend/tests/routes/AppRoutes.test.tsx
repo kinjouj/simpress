@@ -1,0 +1,79 @@
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
+import AppRoutes from '../../src/routes/AppRoutes';
+import { testEntryData } from '../fixtures/testEntryData';
+
+describe('AppRoutes', () => {
+  beforeEach(() => {
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
+      const path = input instanceof Request ? input.url : input.toString();
+      let res: Response;
+
+      switch (true) {
+        case path.endsWith('/recent_entries.json'):
+          res = new Response(JSON.stringify([testEntryData]), { status: 200 });
+          break;
+
+        case path.endsWith('/archives/page/1.json'):
+        case path.endsWith('/archives/1234/01/1.json'):
+        case path.endsWith('/archives/categories/test/1.json'):
+          res = new Response(JSON.stringify({ entries: [testEntryData], total_pages: 1 }), { status: 200 });
+          break;
+
+        case path.endsWith('/test.json'):
+          res = new Response(JSON.stringify(testEntryData), { status: 200 });
+          break;
+
+        default:
+          res = new Response(null, { status: 404, statusText: 'Not Found' });
+      }
+
+      return Promise.resolve(res);
+    });
+  });
+
+  it('/page/1でエントリ一覧を表示する', async () => {
+    render(
+      <MemoryRouter initialEntries={['/page/1']}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+
+    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
+    expect(entries).toHaveLength(1);
+  });
+
+  it('/archives/categories/test/1でカテゴリのエントリ一覧を表示する', async () => {
+    render(
+      <MemoryRouter initialEntries={['/archives/categories/test/1']}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+
+    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
+    expect(entries).toHaveLength(1);
+  });
+
+  it('/archives/1234/01/1でアーカイブのエントリ一覧を表示する', async () => {
+    render(
+      <MemoryRouter initialEntries={['/archives/1234/01/1']}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+
+    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
+    expect(entries).toHaveLength(1);
+  });
+
+  it('/test.htmlでエントリを表示する', async () => {
+    render(
+      <MemoryRouter initialEntries={['/test.html']}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+
+    const entry = await screen.findByRole('main', {}, { timeout: 10000 });
+    expect(entry).toBeInTheDocument();
+  });
+});

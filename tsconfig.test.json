@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tsbuildinfo.test",
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["frontend/tests/**/*", "frontend/src/**/*.d.ts"]
+}

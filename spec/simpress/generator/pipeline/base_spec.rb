@@ -1,0 +1,103 @@
+# frozen_string_literal: true
+
+require "simpress/generator/pipeline/base"
+
+describe Simpress::Generator::Pipeline::Base do
+  before do
+    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+    allow(Simpress::Writer).to receive(:write)
+    allow(Simpress::Theme).to receive(:render).and_return("<html></html>")
+    allow(Simpress::JSON).to receive(:dump).and_return('{"json":true}')
+  end
+
+  describe ".generate" do
+    context "modeがhtmlの場合" do
+      before do
+        allow(described_class).to receive(:generate_html)
+      end
+
+      it "HTMLを生成する" do
+        described_class.generate(:arg)
+        expect(described_class).to have_received(:generate_html).with(:arg)
+      end
+    end
+
+    context "modeがjsonの場合" do
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+      end
+
+      it "JSONを生成する" do
+        allow(described_class).to receive(:generate_json)
+        described_class.generate(:arg)
+        expect(described_class).to have_received(:generate_json).with(:arg)
+      end
+    end
+
+    context "modeがhtml or jsonではない場合" do
+      before do
+        allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
+      end
+
+      it "エラーを発生させる" do
+        expect { described_class.generate }.to raise_error("Unknown mode: unknown")
+      end
+    end
+  end
+
+  describe ".each_page" do
+    before do
+      allow(Simpress::Config.instance).to receive(:paginate).and_return(2)
+    end
+
+    it "ページごとに分けて渡す" do
+      expect {|b| described_class.each_page([1, 2, 3], "blog", &b) }.to yield_successive_args(
+        [[1, 2], have_attributes(page: 1)],
+        [[3], have_attributes(page: 2)]
+      )
+    end
+
+    context "ブロックが渡されない場合" do
+      it "エラーを発生させる" do
+        expect { described_class.each_page([]) }.to raise_error("block is required")
+      end
+    end
+  end
+
+  describe ".path" do
+    it "Pathを返す" do
+      result = described_class.path("test")
+      expect(result).to be_a(Simpress::Path)
+      expect(result.to_s).to eq "test"
+    end
+  end
+
+  describe ".write_html" do
+    it "index.htmlとして出力する" do
+      context = { entries: [] }
+      described_class.write_html("index", template: "layout", **context)
+      expect(Simpress::Theme).to have_received(:render).with("layout", **context)
+      expect(Simpress::Writer).to have_received(:write).with("index.html", "<html></html>")
+    end
+  end
+
+  describe ".write_json" do
+    it "api/data.jsonとして出力する" do
+      data = { key: "value" }
+      described_class.write_json("api/data", data)
+      expect(Simpress::JSON).to have_received(:dump).with(data)
+      expect(Simpress::Writer).to have_received(:write).with("api/data.json", '{"json":true}')
+    end
+  end
+
+  describe ".write" do
+    before do
+      allow(Simpress::Writer).to receive(:write) {|path, _data, &block| block&.call(path) }
+    end
+
+    it "file.txtとして出力する" do
+      expect {|b| described_class.write("file", "content", "txt", &b) }.to yield_with_args("file.txt")
+      expect(Simpress::Writer).to have_received(:write).with("file.txt", "content")
+    end
+  end
+end
