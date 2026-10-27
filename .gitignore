@@ -5,6 +5,8 @@ scss/*
 source/*
 !source/.gitkeep
 theme/*
+!theme/.gitkeep
+!source/.gitkeep
 static/*
 static/images/*
 !static/.gitkeep
