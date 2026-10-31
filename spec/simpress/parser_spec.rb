@@ -131,7 +131,7 @@ describe Simpress::Parser do
       end
 
       before do
-        allow(Simpress::Config.instance).to receive(:taxonomies).and_return({ aliases: { categories: { Ruby: "ruby" } } })
+        allow(Simpress::Config).to receive(:taxonomies).and_return({ aliases: { categories: { Ruby: "ruby" } } })
         allow(File).to receive(:read).with("2026-01-02-hidden.md").and_return("---\ntitle: Hidden\ndate: 2026-01-02\nindex: false\ncategories: Ruby\n---\nbody")
         allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\npermalink: /no-date\ncategories: Ruby\n---\nbody")
       end

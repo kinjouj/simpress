@@ -22,7 +22,7 @@ module Simpress
     end
 
     def logging?
-      Simpress::Config.instance.logging
+      Simpress::Config.logging
     end
 
     class << self

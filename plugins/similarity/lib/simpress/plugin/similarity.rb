@@ -14,12 +14,14 @@ module Simpress
     class Similarity
       extend Simpress::Plugin
 
+      LIMIT = 5
+
       def self.run(entries)
         indexes = entries.each_index.select {|i| entries[i].index }
         targets = entries.values_at(*indexes)
         indexer = Indexer.new(targets)
         indexer.each_similarity do |scores, i|
-          similarities = scores.max_by(5) {|score, _| score }.map {|_score, index| Simpress::Entry::Link.build(targets[index]) }
+          similarities = scores.max_by(LIMIT) {|score, _| score }.map {|_score, index| Simpress::Entry::Link.build(targets[index]) }
           entries[indexes[i]] = EntryWithSimilarities.new(targets[i], similarities)
         end
 

@@ -27,8 +27,5 @@ export const fetchReducer = <T>(state: FetchState<T>, action: FetchAction<T>): F
         isLoading: false,
         isError: true,
       };
-
-    default:
-      return fetchReducer(state, { type: 'FETCH_ERROR' });
   }
 };

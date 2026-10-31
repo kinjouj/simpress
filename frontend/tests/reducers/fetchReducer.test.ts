@@ -4,14 +4,6 @@ import type { EntryType } from '../../src/types';
 
 describe('fetchReducer', () => {
   it('各アクションに応じて状態を更新する', () => {
-    const stateDefault = fetchReducer<null>(
-      { data: null, isLoading: false, isError: false },
-      { type: 'FETCH_DEFAULT' } as any // eslint-disable-line
-    );
-    expect(stateDefault.data).toBeNull();
-    expect(stateDefault.isLoading).toBe(false);
-    expect(stateDefault.isError).toBe(true);
-
     const stateStart = fetchReducer<EntryType>(
       { data: null, isLoading: false, isError: true },
       { type: 'FETCH_START' }

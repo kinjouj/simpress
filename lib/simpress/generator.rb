@@ -15,7 +15,7 @@ module Simpress
         entries = []
         Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown") do |file|
           entry = Simpress::Parser.parse(file)
-          next if entry.nil? || entry.draft
+          next if entry.draft
 
           Simpress::Taxonomy.register(entry.taxonomies, entry)
           entries << entry

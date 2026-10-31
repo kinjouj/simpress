@@ -5,7 +5,7 @@ require "simpress/taxonomy"
 
 describe Simpress::Taxonomy do
   before do
-    allow(Simpress::Config.instance).to receive(:taxonomies).and_return({ types: ["tags"], aliases: { categories: { Ruby: "ruby" } } })
+    allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["tags"], aliases: { categories: { Ruby: "ruby" } } })
   end
 
   after do

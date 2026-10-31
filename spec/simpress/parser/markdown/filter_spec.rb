@@ -7,7 +7,7 @@ describe Simpress::Parser::Markdown::Filter do
     described_class.clear
   end
 
-  describe ".preprocess" do
+  describe ".apply_preprocess" do
     it "順に適用する" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
@@ -27,7 +27,7 @@ describe Simpress::Parser::Markdown::Filter do
 
       described_class.register_filters << filter1 << filter2
 
-      result = described_class.preprocess("Base")
+      result = described_class.apply_preprocess("Base")
       expect(result).to eq "Base + Filter1 + Filter2"
     end
 
@@ -41,12 +41,12 @@ describe Simpress::Parser::Markdown::Filter do
       end
 
       described_class.register_filters << filter
-      result = described_class.preprocess("Original")
+      result = described_class.apply_preprocess("Original")
       expect(result).to eq "Original"
     end
   end
 
-  describe ".postprocess" do
+  describe ".apply_postprocess" do
     it "順に適用する" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
@@ -65,7 +65,7 @@ describe Simpress::Parser::Markdown::Filter do
       end
 
       described_class.register_filters << filter1 << filter2
-      expect(described_class.postprocess("Base")).to eq "Base + Filter1"
+      expect(described_class.apply_postprocess("Base")).to eq "Base + Filter1"
     end
   end
 

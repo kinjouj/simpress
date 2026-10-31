@@ -4,7 +4,7 @@ require "simpress/generator/pipeline/base"
 
 describe Simpress::Generator::Pipeline::Base do
   before do
-    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+    allow(Simpress::Config).to receive(:mode).and_return("html")
     allow(Simpress::Writer).to receive(:write)
     allow(Simpress::Theme).to receive(:render).and_return("<html></html>")
     allow(Simpress::JSON).to receive(:dump).and_return('{"json":true}')
@@ -24,7 +24,7 @@ describe Simpress::Generator::Pipeline::Base do
 
     context "modeがjsonの場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+        allow(Simpress::Config).to receive(:mode).and_return("json")
       end
 
       it "JSONを生成する" do
@@ -36,7 +36,7 @@ describe Simpress::Generator::Pipeline::Base do
 
     context "modeがhtml or jsonではない場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
+        allow(Simpress::Config).to receive(:mode).and_return("unknown")
       end
 
       it "エラーを発生させる" do
@@ -47,7 +47,7 @@ describe Simpress::Generator::Pipeline::Base do
 
   describe ".each_page" do
     before do
-      allow(Simpress::Config.instance).to receive(:paginate).and_return(2)
+      allow(Simpress::Config).to receive(:paginate).and_return(2)
     end
 
     it "ページごとに分けて渡す" do

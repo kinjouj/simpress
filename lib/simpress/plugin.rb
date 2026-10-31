@@ -48,7 +48,7 @@ module Simpress
           end
         end
 
-        Simpress::Config.instance.plugins.each {|name| @loader.push_dir("#{Simpress::Config.plugin_dir}/#{name}/lib") }
+        Simpress::Config.plugins.each {|name| @loader.push_dir("#{Simpress::Config.plugin_dir}/#{name}/lib") }
         @loader.setup
         @loader.eager_load
       end

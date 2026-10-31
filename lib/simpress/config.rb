@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "forwardable"
 require "psych"
 require "singleton"
 
@@ -27,17 +28,21 @@ module Simpress
       @taxonomies ||= File.exist?(TAXONOMIES_FILE) ? Psych.load_file(TAXONOMIES_FILE, **LOAD_OPTIONS) || {} : {}
     end
 
-    # simplecov:disable
     class << self
+      extend Forwardable
+
+      def_delegators :instance, :logging, :host, :mode, :paginate, :plugins, :taxonomies
+
       def source_dir = "source"
       def theme_dir = "theme"
       def output_dir = "public"
       def plugin_dir = "plugins"
 
+      # simplecov:disable
       def clear
         Singleton.__init__(Simpress::Config)
       end
+      # simplecov:enable
     end
-    # simplecov:enable
   end
 end
