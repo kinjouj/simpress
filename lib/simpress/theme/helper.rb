@@ -12,7 +12,7 @@ module Simpress
       end
 
       def canonical(path)
-        "#{Simpress::Config.instance.host.chomp('/')}#{uri(path)}"
+        "#{Simpress::Config.host.chomp('/')}#{uri(path)}"
       end
 
       def uri(path)

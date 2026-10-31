@@ -17,11 +17,11 @@ module Simpress
             @register_filters ||= []
           end
 
-          def preprocess(body)
+          def apply_preprocess(body)
             apply(body) {|klass, data| klass.preprocess(data) }
           end
 
-          def postprocess(body)
+          def apply_postprocess(body)
             apply(body) {|klass, data| klass.postprocess(data) }
           end
 

@@ -10,7 +10,7 @@ describe Simpress::Logger do
   describe ".verbose" do
     context "ログ出力が有効な場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:logging).and_return(true)
+        allow(Simpress::Config).to receive(:logging).and_return(true)
       end
 
       it "標準出力に出力されること" do
@@ -23,7 +23,7 @@ describe Simpress::Logger do
 
     context "ログ出力が無効な場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:logging).and_return(false)
+        allow(Simpress::Config).to receive(:logging).and_return(false)
       end
 
       it "標準出力に出力されないこと" do
@@ -44,7 +44,7 @@ describe Simpress::Logger do
   describe ".logging?" do
     context "ログ出力が有効な場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:logging).and_return(true)
+        allow(Simpress::Config).to receive(:logging).and_return(true)
       end
 
       it "trueを返す" do
@@ -54,7 +54,7 @@ describe Simpress::Logger do
 
     context "ログ出力が無効な場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:logging).and_return(false)
+        allow(Simpress::Config).to receive(:logging).and_return(false)
       end
 
       it "falseを返す" do

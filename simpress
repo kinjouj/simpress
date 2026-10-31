@@ -6,7 +6,7 @@ $LOAD_PATH.unshift "./lib"
 require "bundler/setup"
 Bundler.require
 
-class Thor
+class SimpressCLI < Thor
   remove_command :tree
 
   class << self

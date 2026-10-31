@@ -21,11 +21,11 @@ module Simpress
         end
 
         def preprocess(markdown)
-          Simpress::Parser::Markdown::Filter.preprocess(markdown)
+          Simpress::Parser::Markdown::Filter.apply_preprocess(markdown)
         end
 
         def postprocess(document)
-          Simpress::Parser::Markdown::Filter.postprocess(document)
+          Simpress::Parser::Markdown::Filter.apply_postprocess(document)
         end
 
         def header(text, header_level)

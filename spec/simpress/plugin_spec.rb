@@ -8,7 +8,7 @@ describe Simpress::Plugin do
 
   before do
     allow(Simpress::Config).to receive(:plugin_dir).and_return(plugin_dir)
-    allow(Simpress::Config.instance).to receive(:plugins).and_return([])
+    allow(Simpress::Config).to receive(:plugins).and_return([])
     allow(Simpress::Logger).to receive(:debug)
   end
 
@@ -36,7 +36,7 @@ describe Simpress::Plugin do
   describe ".load" do
     it "プラグインを登録する" do
       write_plugin_file("test1", "test1", "Test1")
-      allow(Simpress::Config.instance).to receive(:plugins).and_return(["test1"])
+      allow(Simpress::Config).to receive(:plugins).and_return(["test1"])
 
       described_class.load
       expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test1"]
@@ -44,7 +44,7 @@ describe Simpress::Plugin do
 
     it "設定にないプラグインは登録しない" do
       write_plugin_file("test2", "test2", "Test2")
-      allow(Simpress::Config.instance).to receive(:plugins).and_return([])
+      allow(Simpress::Config).to receive(:plugins).and_return([])
 
       described_class.load
       expect(described_class.register_plugins).to be_empty
@@ -53,7 +53,7 @@ describe Simpress::Plugin do
     it "複数のプラグインを読み込む" do
       write_plugin_file("test3", "test3", "Test3")
       write_plugin_file("test4", "test4", "Test4")
-      allow(Simpress::Config.instance).to receive(:plugins).and_return(["test3", "test4"])
+      allow(Simpress::Config).to receive(:plugins).and_return(["test3", "test4"])
 
       described_class.load
       names = described_class.register_plugins.map(&:name)
@@ -73,7 +73,7 @@ describe Simpress::Plugin do
         end
       RUBY
 
-      allow(Simpress::Config.instance).to receive(:plugins).and_return(["test5"])
+      allow(Simpress::Config).to receive(:plugins).and_return(["test5"])
       described_class.load
 
       names = Simpress::Parser::Markdown::Filter.register_filters.map(&:name)
@@ -93,7 +93,7 @@ describe Simpress::Plugin do
         end
       RUBY
 
-      allow(Simpress::Config.instance).to receive(:plugins).and_return([])
+      allow(Simpress::Config).to receive(:plugins).and_return([])
       described_class.load
 
       expect(Simpress::Parser::Markdown::Filter.register_filters).to be_empty
@@ -118,7 +118,7 @@ describe Simpress::Plugin do
         end
       RUBY
 
-      allow(Simpress::Config.instance).to receive(:plugins).and_return(["test8"])
+      allow(Simpress::Config).to receive(:plugins).and_return(["test8"])
       described_class.load
 
       expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test8"]
@@ -137,7 +137,7 @@ describe Simpress::Plugin do
 
   describe ".process" do
     before do
-      allow(Simpress::Config.instance).to receive(:plugins).and_return(["Test"])
+      allow(Simpress::Config).to receive(:plugins).and_return(["Test"])
     end
 
     it "プラグインを実行する" do

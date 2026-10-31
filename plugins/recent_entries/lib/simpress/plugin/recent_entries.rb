@@ -10,9 +10,10 @@ module Simpress
       extend Simpress::Plugin
 
       KEYS = [:id, :title, :permalink].freeze
+      LIMIT = 5
 
       def self.run(entries)
-        recent_entries = entries.select(&:index).take(5)
+        recent_entries = entries.select(&:index).take(LIMIT)
 
         case config.mode
         when "html"

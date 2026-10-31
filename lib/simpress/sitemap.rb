@@ -9,8 +9,16 @@ module Simpress
     def self.build(hostname, &)
       raise "block is required" unless block_given?
 
-      sitemap = new(hostname, &)
+      sitemap = new(hostname)
+      sitemap.instance_eval(&)
       sitemap.write
+    end
+
+    def initialize(hostname)
+      @hostname = hostname
+      @doc = Ox::Document.new(version: "1.0", encoding: "UTF-8")
+      @root = create_element("urlset", attributes: { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" })
+      @doc << @root
     end
 
     def url(file:, lastmod:, **attributes)
@@ -27,20 +35,13 @@ module Simpress
 
     private
 
-    def initialize(hostname, &) # rubocop:disable Layout/ClassStructure
-      @hostname = hostname
-      @doc = Ox::Document.new(version: "1.0", encoding: "UTF-8")
-      @root = create_element("urlset", attributes: { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" })
-      @doc << @root
-
-      instance_eval(&)
-    end
-
     def create_element(name, attributes: nil, text: nil)
       el = Ox::Element.new(name)
       attributes&.each {|k, v| el[k] = v }
       el << text if text
       el
     end
+
+    private_class_method :new
   end
 end

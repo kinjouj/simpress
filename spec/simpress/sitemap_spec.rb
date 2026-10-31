@@ -23,7 +23,8 @@ describe Simpress::Sitemap do
 
   describe "#url" do
     let(:xml) do
-      sitemap = described_class.send(:new, hostname) { url(file: "test.html", lastmod: "2026-01-01", changefreq: "daily") }
+      sitemap = described_class.send(:new, hostname)
+      sitemap.url(file: "test.html", lastmod: "2026-01-01", changefreq: "daily")
       Ox.dump(sitemap.instance_variable_get(:@doc))
     end
 
@@ -36,10 +37,9 @@ describe Simpress::Sitemap do
 
   describe "#write" do
     it "Simpress::Writerを呼び出してデバッグメッセージを出力する" do
-      sitemap = described_class.send(:new, hostname) do
-        url(file: "page1.html", lastmod: "2026-01-01")
-        url(file: "page2.html", lastmod: "2026-01-01")
-      end
+      sitemap = described_class.send(:new, hostname)
+      sitemap.url(file: "page1.html", lastmod: "2026-01-01")
+      sitemap.url(file: "page2.html", lastmod: "2026-01-01")
 
       sitemap.write
       expect(Simpress::Writer).to have_received(:write).with("sitemap.xml", instance_of(String))

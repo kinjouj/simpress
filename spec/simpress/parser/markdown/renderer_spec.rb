@@ -23,25 +23,25 @@ describe Simpress::Parser::Markdown::Renderer do
 
   describe "#preprocess" do
     before do
-      allow(Simpress::Parser::Markdown::Filter).to receive(:preprocess).and_return("enhanced")
+      allow(Simpress::Parser::Markdown::Filter).to receive(:apply_preprocess).and_return("enhanced")
     end
 
     it "前処理した結果を返す" do
       markdown = "# Hello"
       result = renderer.preprocess(markdown)
-      expect(Simpress::Parser::Markdown::Filter).to have_received(:preprocess).with(markdown)
+      expect(Simpress::Parser::Markdown::Filter).to have_received(:apply_preprocess).with(markdown)
       expect(result).to eq "enhanced"
     end
   end
 
   describe "#postprocess" do
     before do
-      allow(Simpress::Parser::Markdown::Filter).to receive(:postprocess).and_return("processed")
+      allow(Simpress::Parser::Markdown::Filter).to receive(:apply_postprocess).and_return("processed")
     end
 
     it "後処理した結果を返す" do
       result = renderer.postprocess("<p>Hello</p>")
-      expect(Simpress::Parser::Markdown::Filter).to have_received(:postprocess).with("<p>Hello</p>")
+      expect(Simpress::Parser::Markdown::Filter).to have_received(:apply_postprocess).with("<p>Hello</p>")
       expect(result).to eq "processed"
     end
   end

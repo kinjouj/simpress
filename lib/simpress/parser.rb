@@ -15,7 +15,7 @@ module Simpress
 
     class << self
       def parse(file)
-        params, markdown = Simpress::Parser::Markdown.parse(File.read(file))
+        params, markdown = Simpress::Parser::Markdown.parse(file)
         metadata = MetadataBuilder.new(file, params, markdown).build
         Simpress::Entry.new(metadata)
       end
@@ -80,6 +80,8 @@ module Simpress
       end
 
       def assign_content!
+        return if @params[:draft]
+
         result = Simpress::Parser::Markdown::Processor.render(@markdown)
         @params[:content] = result.content
         @params[:toc] = result.toc
