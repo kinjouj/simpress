@@ -11,7 +11,7 @@ describe Simpress::Plugin::RecentEntries do
 
   before do
     allow(described_class).to receive(:bind_context)
-    allow(Simpress::Config.instance).to receive(:mode)
+    allow(Simpress::Config).to receive(:mode)
     allow(Simpress::Writer).to receive(:write)
     allow(Simpress::JSON).to receive(:dump).and_return('{"json": true}')
   end
@@ -24,7 +24,7 @@ describe Simpress::Plugin::RecentEntries do
   describe ".run" do
     context "modeがhtmlの場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Config).to receive(:mode).and_return("html")
       end
 
       it "最初の5件をbindする" do
@@ -47,7 +47,7 @@ describe Simpress::Plugin::RecentEntries do
 
     context "modeがjsonの場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+        allow(Simpress::Config).to receive(:mode).and_return("json")
       end
 
       it "recent_entries.jsonとして出力する" do
@@ -60,7 +60,7 @@ describe Simpress::Plugin::RecentEntries do
 
     context "modeが不明な場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("xml")
+        allow(Simpress::Config).to receive(:mode).and_return("xml")
       end
 
       it "エラーを発生させる" do

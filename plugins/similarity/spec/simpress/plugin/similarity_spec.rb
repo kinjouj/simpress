@@ -7,7 +7,7 @@ describe Simpress::Plugin::Similarity do
   before do
     allow(File).to receive(:exist?).and_return(false)
     allow(File).to receive(:binwrite)
-    allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+    allow(Simpress::Config).to receive(:mode).and_return("html")
   end
 
   after do
@@ -145,7 +145,7 @@ describe Simpress::Plugin::Similarity do
 
   context "modeがjsonの場合" do
     before do
-      allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+      allow(Simpress::Config).to receive(:mode).and_return("json")
     end
 
     it "contentがあればsimilaritiesを含む" do

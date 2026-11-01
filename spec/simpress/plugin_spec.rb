@@ -207,13 +207,6 @@ describe Simpress::Plugin do
     end
   end
 
-  describe "#config" do
-    it "Configのインスタンスを返す" do
-      test_klass = Class.new { extend Simpress::Plugin }
-      expect(test_klass.config).to eq Simpress::Config.instance
-    end
-  end
-
   describe "#bind_context" do
     it "コンテキストを更新する" do
       test_klass = Class.new { extend Simpress::Plugin }

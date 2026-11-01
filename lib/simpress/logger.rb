@@ -14,21 +14,17 @@ module Simpress
     end
 
     def verbose(message = nil, &)
-      @logger.info(message, &) if logging?
+      @logger.info(message, &) if Simpress::Config.logging
     end
 
     def debug(message)
       @logger.debug(message)
     end
 
-    def logging?
-      Simpress::Config.logging
-    end
-
     class << self
       extend Forwardable
 
-      def_delegators :instance, :verbose, :debug, :logging?
+      def_delegators :instance, :verbose, :debug
 
       # simplecov:disable
       def clear

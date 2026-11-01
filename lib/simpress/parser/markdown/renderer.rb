@@ -56,16 +56,15 @@ module Simpress
         end
 
         def toc
-          state = @headings.each_with_object({ result: [], current_level: nil }) do |heading, s|
-            if s[:current_level].nil? || heading[:level] <= s[:current_level]
-              s[:result] << { id: heading[:id], text: heading[:text], children: [] }
-              s[:current_level] = heading[:level]
+          current_level = nil
+          @headings.each_with_object([]) do |heading, result|
+            if current_level.nil? || heading[:level] <= current_level
+              result << { id: heading[:id], text: heading[:text], children: [] }
+              current_level = heading[:level]
             else
-              s[:result].last[:children] << { id: heading[:id], text: heading[:text] }
+              result.last[:children] << { id: heading[:id], text: heading[:text] }
             end
           end
-
-          state[:result]
         end
       end
     end

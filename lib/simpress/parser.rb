@@ -13,12 +13,10 @@ module Simpress
   module Parser
     DEFAULT_COVER = "/images/no_image.webp"
 
-    class << self
-      def parse(file)
-        params, markdown = Simpress::Parser::Markdown.parse(file)
-        metadata = MetadataBuilder.new(file, params, markdown).build
-        Simpress::Entry.new(metadata)
-      end
+    def self.parse(file)
+      params, markdown = Simpress::Parser::Markdown.parse(file)
+      metadata = MetadataBuilder.new(file, params, markdown).build
+      Simpress::Entry.new(metadata)
     end
 
     class MetadataBuilder
@@ -32,13 +30,6 @@ module Simpress
       end
 
       def build
-        assign_metadata!
-        @params
-      end
-
-      private
-
-      def assign_metadata!
         assign_id!
         assign_date!
         assign_index!
@@ -49,7 +40,10 @@ module Simpress
         assign_content!
         assign_layout!
         assign_permalink!
+        @params
       end
+
+      private
 
       def assign_id!
         @params[:id] = XXhash.xxh64(@basename).to_s

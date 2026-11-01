@@ -100,6 +100,27 @@ describe Simpress::Parser do
       end
     end
 
+    context "フロントマターでdraftが指定されている場合" do
+      let(:markdown) do
+        <<~MD
+          ---
+          title: Draft Title
+          date: 2026-01-01
+          draft: true
+          ---
+          body
+        MD
+      end
+
+      it "Markdownをレンダリングしない" do
+        entry = described_class.parse(file)
+
+        expect(entry.draft).to be true
+        expect(entry.content).to be_nil
+        expect(Simpress::Parser::Markdown::Processor).not_to have_received(:render)
+      end
+    end
+
     context "フロントマターにdateが指定されていない場合" do
       before do
         allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\npermalink: /no-date\n---\nbody")

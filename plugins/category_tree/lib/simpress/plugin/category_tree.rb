@@ -15,54 +15,57 @@ module Simpress
       INDEX_FILE = "category_indexes.json"
       ORDER_KEY = "orders"
 
-      def self.run(*)
-        nested_categories = build_nested_categories
+      class << self
+        def run(*)
+          nested_categories = build_nested_categories
 
-        case config.mode
-        when "html"
-          process_html(nested_categories)
-        when "json"
-          process_json(nested_categories)
-        else
-          raise "Unknown mode: #{config.mode}"
-        end
-      end
-
-      def self.build_nested_categories
-        nested = Simpress::Taxonomy.fetch("categories").terms.each_with_object({}) {|(_, term), hash| hash[term.key] = term.dup }
-        return nested.values unless File.exist?(INDEX_FILE)
-
-        category_indexes = Simpress::JSON.load_file(INDEX_FILE)
-        order = category_indexes.delete(ORDER_KEY)
-
-        moved_keys = category_indexes.each_with_object(Set.new) do |(key, values), acc|
-          root = nested[key] or next
-          values.each do |value|
-            child = nested[value] or next
-            root.children << child
-            acc << value
+          case Simpress::Config.mode
+          when "html"
+            process_html(nested_categories)
+          when "json"
+            process_json(nested_categories)
+          else
+            raise "Unknown mode: #{Simpress::Config.mode}"
           end
         end
 
-        categories = nested.except(*moved_keys).values
-        order ? sort_categories(categories, order) : categories
-      end
+        private
 
-      def self.sort_categories(categories, order)
-        priority = order.each_with_index.to_h
-        sorted = categories.sort_by.with_index {|term, i| [priority[term.key] || order.size, i] }
-        sorted.each {|term| term.children.replace(sort_categories(term.children, order)) }
-      end
+        def process_html(categories)
+          bind_context(sidebar_categories_content: Simpress::Theme.render("sidebar_categories", categories: categories))
+        end
 
-      def self.process_html(categories)
-        bind_context(sidebar_categories_content: Simpress::Theme.render("sidebar_categories", categories: categories))
-      end
+        def process_json(categories)
+          Simpress::Writer.write("categories.json", Simpress::JSON.dump(categories, keys: KEYS))
+        end
 
-      def self.process_json(categories)
-        Simpress::Writer.write("categories.json", Simpress::JSON.dump(categories, keys: KEYS))
-      end
+        def build_nested_categories
+          nested = Simpress::Taxonomy.fetch("categories").terms.each_with_object({}) {|(_, term), hash| hash[term.key] = term.dup }
+          return nested.values unless File.exist?(INDEX_FILE)
 
-      private_class_method :build_nested_categories, :sort_categories, :process_html, :process_json
+          category_indexes = Simpress::JSON.load_file(INDEX_FILE)
+          order = category_indexes.delete(ORDER_KEY)
+          categories = nested.except(*attach_children(nested, category_indexes)).values
+          order ? sort_categories(categories, order) : categories
+        end
+
+        def attach_children(nested, category_indexes)
+          category_indexes.each_with_object(Set.new) do |(key, values), moved_keys|
+            root = nested[key] or next
+            values.each do |value|
+              child = nested[value] or next
+              root.children << child
+              moved_keys << value
+            end
+          end
+        end
+
+        def sort_categories(categories, order)
+          priority = order.each_with_index.to_h
+          sorted = categories.sort_by.with_index {|term, i| [priority[term.key] || order.size, i] }
+          sorted.each {|term| term.children.replace(sort_categories(term.children, order)) }
+        end
+      end
     end
   end
 end

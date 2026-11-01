@@ -15,13 +15,13 @@ module Simpress
       def self.run(entries)
         recent_entries = entries.select(&:index).take(LIMIT)
 
-        case config.mode
+        case Simpress::Config.mode
         when "html"
           bind_context(recent_entries: recent_entries)
         when "json"
           Simpress::Writer.write("recent_entries.json", Simpress::JSON.dump(recent_entries, keys: KEYS))
         else
-          raise "Unknown mode: #{config.mode}"
+          raise "Unknown mode: #{Simpress::Config.mode}"
         end
       end
     end
