@@ -20,21 +20,23 @@ module Simpress
         end
       end
 
-      def self.run(entries)
-        index = entries.to_h {|entry| [entry.permalink, entry] }
-        entries.each do |entry|
-          entry.content.gsub!(MARKER_REGEX) do |marker|
-            target = index[Regexp.last_match(1)]
-            target ? build_card(target) : marker
+      class << self
+        def run(entries)
+          index = entries.to_h {|entry| [entry.permalink, entry] }
+          entries.each do |entry|
+            entry.content.gsub!(MARKER_REGEX) do |marker|
+              target = index[Regexp.last_match(1)]
+              target ? build_card(target) : marker
+            end
           end
         end
-      end
 
-      def self.build_card(entry)
-        %(<div class="link-card"><a href="#{entry.permalink}"><img src="#{entry.cover}" alt="" /><span>#{entry.title}</span></a><span>#{entry.description}</span></div>)
-      end
+        private
 
-      private_class_method :build_card
+        def build_card(entry)
+          %(<div class="link-card"><a href="#{entry.permalink}"><img src="#{entry.cover}" alt="" /><span>#{entry.title}</span></a><span>#{entry.description}</span></div>)
+        end
+      end
     end
   end
 end

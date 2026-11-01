@@ -22,6 +22,6 @@ end
 
 require "simpress"
 
-dirs = ["tasks", *Simpress::Config.instance.plugins.map {|name| "#{Simpress::Config.plugin_dir}/#{name}/tasks" }]
+dirs = ["tasks", *Simpress::Config.plugins.map {|name| "#{Simpress::Config.plugin_dir}/#{name}/tasks" }]
 dirs.each {|dir| Dir.glob("#{dir}/**/*.rb").each {|f| require_relative f } }
 SimpressCLI.start(ARGV)

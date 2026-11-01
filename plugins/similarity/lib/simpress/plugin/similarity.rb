@@ -42,27 +42,10 @@ module Simpress
           @accumulator = Array.new(@size, 0.0)
           @touched = Array.new(@size)
           @keywords = {}
-          doc_lens = []
-          @vectors = entries.map do |entry|
-            keywords = extract_keywords(entry)
-            vector = keywords.tally
-            entry.taxonomies.each_value do |terms|
-              terms.each do |term|
-                n = term.name
-                v = vector[n] || 0
-                vector[n] = v + (Math.log2(v + 2) * 5)
-              end
-            end
-
-            vector.select! {|_, v| v >= 2 }
-            # @keywords[entry.id] = keywords
-            doc_lens << vector.each_value.sum.to_f
-            vector
-          end
-
+          @vectors = entries.map {|entry| build_vector(entry) }
+          doc_lens = @vectors.map {|vector| vector.each_value.sum.to_f }
           avgdl = doc_lens.sum / @size
-          norm = doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / avgdl)) }
-          @idf, @inverted_index = build_idf_and_inverted_index(norm)
+          @idf, @inverted_index = build_idf_and_inverted_index(doc_lens.map {|dl| K1 * (1.0 - B + (B * dl / avgdl)) })
         end
 
         def each_similarity
@@ -70,6 +53,20 @@ module Simpress
         end
 
         private
+
+        def build_vector(entry)
+          vector = extract_keywords(entry).tally
+          entry.taxonomies.each_value do |terms|
+            terms.each do |term|
+              n = term.name
+              v = vector[n] || 0
+              vector[n] = v + (Math.log2(v + 2) * 5)
+            end
+          end
+
+          vector.select! {|_, v| v >= 2 }
+          vector
+        end
 
         def build_idf_and_inverted_index(norm)
           df = Hash.new(0)

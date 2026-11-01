@@ -20,7 +20,7 @@ describe Simpress::Plugin::CategoryTree do
   describe ".run" do
     context "modeがhtmlの場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("<ul>categories</ul>")
         allow(Simpress::Context).to receive(:update)
       end
@@ -34,7 +34,7 @@ describe Simpress::Plugin::CategoryTree do
 
     context "modeがjsonの場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("json")
+        allow(Simpress::Config).to receive(:mode).and_return("json")
         allow(Simpress::JSON).to receive(:dump).and_return("{}")
         allow(Simpress::Writer).to receive(:write)
       end
@@ -48,7 +48,7 @@ describe Simpress::Plugin::CategoryTree do
 
     context "modeが不明な場合" do
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("unknown")
+        allow(Simpress::Config).to receive(:mode).and_return("unknown")
       end
 
       it "エラーを発生させる" do
@@ -61,7 +61,7 @@ describe Simpress::Plugin::CategoryTree do
       let(:taxonomy) { instance_double(Simpress::Taxonomy, terms: { "ruby" => term, "rails" => rails_term }) }
 
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("")
         allow(Simpress::Context).to receive(:update)
         allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)
@@ -84,7 +84,7 @@ describe Simpress::Plugin::CategoryTree do
       let(:taxonomy) { instance_double(Simpress::Taxonomy, terms: { "life" => life_term, "tech" => tech_term }) }
 
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("")
         allow(Simpress::Context).to receive(:update)
         allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)
@@ -118,7 +118,7 @@ describe Simpress::Plugin::CategoryTree do
       end
 
       before do
-        allow(Simpress::Config.instance).to receive(:mode).and_return("html")
+        allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("")
         allow(Simpress::Context).to receive(:update)
         allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)

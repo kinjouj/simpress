@@ -40,7 +40,6 @@ end
 | ---- | ---- |
 | run(entries) | 必須。パース後、出力の生成前に呼ばれる |
 | priority | 大きいほど先に実行される。デフォルトは1。同じ値は登録順 |
-| config | Simpress::Config.instance |
 | bind_context(hash) | テンプレートに値を渡す。テンプレートではインスタンス変数(@sample)で参照する |
 
 - entriesは日付の新しい順のEntryの配列で`index: false`も含む

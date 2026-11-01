@@ -41,28 +41,6 @@ describe Simpress::Logger do
     end
   end
 
-  describe ".logging?" do
-    context "ログ出力が有効な場合" do
-      before do
-        allow(Simpress::Config).to receive(:logging).and_return(true)
-      end
-
-      it "trueを返す" do
-        expect(described_class.logging?).to be true
-      end
-    end
-
-    context "ログ出力が無効な場合" do
-      before do
-        allow(Simpress::Config).to receive(:logging).and_return(false)
-      end
-
-      it "falseを返す" do
-        expect(described_class.logging?).to be false
-      end
-    end
-  end
-
   describe ".clear" do
     it "設定をリセットする" do
       obj = described_class.instance

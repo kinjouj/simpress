@@ -14,10 +14,10 @@ class SimpressCLI < Thor
     invoke :clean
     result = Benchmark.realtime do
       copy_static
-      Simpress::Logger.debug("MODE: #{Simpress::Config.instance.mode}")
+      Simpress::Logger.debug("MODE: #{Simpress::Config.mode}")
       GC.disable
       build_plugin_scss
-      Simpress.build { send(:"build_#{Simpress::Config.instance.mode}") }
+      Simpress.build { send(:"build_#{Simpress::Config.mode}") }
     end
 
     Simpress::Logger.debug("build time: #{result}")
@@ -28,7 +28,7 @@ class SimpressCLI < Thor
   private
 
   def copy_static
-    plugin_dirs = Simpress::Config.instance.plugins.map {|name| "#{PLUGIN_DIR}/#{name}/static" }
+    plugin_dirs = Simpress::Config.plugins.map {|name| "#{PLUGIN_DIR}/#{name}/static" }
     ["static", *plugin_dirs].each {|dir| FileUtils.cp_r("#{dir}/.", OUTPUT_DIR, preserve: true, verbose: false) if Dir.exist?(dir) }
   end
 
@@ -38,7 +38,7 @@ class SimpressCLI < Thor
   end
 
   def build_plugin_scss
-    lines = Simpress::Config.instance.plugins.flat_map do |name|
+    lines = Simpress::Config.plugins.flat_map do |name|
       Dir.glob("#{PLUGIN_DIR}/#{name}/scss/_*.scss").map {|file| %(@forward "../#{File.dirname(file)}/#{File.basename(file, '.scss').delete_prefix('_')}";) }
     end
 
@@ -60,7 +60,7 @@ class SimpressCLI < Thor
       files.sort_by(&:last)
     end
 
-    Simpress::Sitemap.build(Simpress::Config.instance.host) do
+    Simpress::Sitemap.build(Simpress::Config.host) do
       files.each {|file, mtime| url(file: file, lastmod: mtime.iso8601) }
     end
   end
