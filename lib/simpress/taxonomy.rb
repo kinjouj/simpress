@@ -9,28 +9,30 @@ module Simpress
 
     attr_reader :name
 
-    def self.fetch(name)
-      (@cache ||= {})[name] ||= new(name)
-    end
-
-    def self.clear
-      @cache&.clear
-      @taxonomies = nil
-    end
-
-    def self.taxonomies
-      @taxonomies ||= DEFAULT_TAXONOMIES.union(Simpress::Config.taxonomies[:types] || []).map {|name| fetch(name) }
-    end
-
-    def self.resolve(params)
-      taxonomies.to_h do |taxonomy|
-        names = Array(params[taxonomy.name.to_sym]).uniq
-        [taxonomy.name, names.map {|name| taxonomy.term(name) }]
+    class << self
+      def fetch(name)
+        (@cache ||= {})[name] ||= new(name)
       end
-    end
 
-    def self.register(taxonomies, entry)
-      taxonomies.each_value {|terms| terms.each {|term| term.entries << entry } }
+      def clear
+        @cache&.clear
+        @taxonomies = nil
+      end
+
+      def taxonomies
+        @taxonomies ||= DEFAULT_TAXONOMIES.union(Simpress::Config.taxonomies[:types] || []).map {|name| fetch(name) }
+      end
+
+      def resolve(params)
+        taxonomies.to_h do |taxonomy|
+          names = Array(params[taxonomy.name.to_sym]).uniq
+          [taxonomy.name, names.map {|name| taxonomy.term(name) }]
+        end
+      end
+
+      def register(taxonomies, entry)
+        taxonomies.each_value {|terms| terms.each {|term| term.entries << entry } }
+      end
     end
 
     def initialize(name)
