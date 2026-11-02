@@ -70,20 +70,19 @@ module Simpress
 
         def build_idf_and_inverted_index(norm)
           df = Hash.new(0)
-          index = Hash.new {|h, k| h[k] = [] }
+          index = Hash.new {|h, k| h[k] = {} }
 
           @vectors.each_with_index do |v, i|
             ni = norm[i]
             v.each do |word, weight|
               df[word] += 1
               term_score = (weight * TF_SCALE) / (weight + ni)
-              index[word] << [i, term_score]
+              index[word][i] = term_score
             end
           end
 
           idf = Hash.new(0.0)
           df.each {|word, count| idf[word] = Math.log(((@size - count + 0.5) / (count + 0.5)) + 1.0) }
-
           [idf, index]
         end
 

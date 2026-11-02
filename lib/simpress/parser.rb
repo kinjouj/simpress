@@ -92,8 +92,8 @@ module Simpress
 
       def parse_datetime
         date = @params[:date]
-        return date.to_time if date.respond_to?(:to_time)
         return unless date
+        return date.to_time if date.respond_to?(:to_time)
 
         Time.parse(date.to_s) rescue nil # rubocop:disable Style/RescueModifier
       end
