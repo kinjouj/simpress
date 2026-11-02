@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja" data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="kinjouj" />
+    <meta name="robots" content="index,follow,noarchive" />
+    <meta name="referrer" content="unsafe-url" />
+    <meta name="google-site-verification" content="AsHuqJn6JTx4Dv28BuiAGoIs12P5qrs4VtBmoBX2kow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><% if @key %><%= @key %> - <% end %>kinjouj.github.io</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
+    <script src="/js/bootstrap.min.js" defer></script>
+    <script type="module" src="/js/webcomponents.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593764998780061" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand p-0 sticky-top">
+      <div class="container-fluid p-0">
+        <div class="navbar-collapse p-3">
+          <ul class="navbar-nav gap-3">
+            <li class="nav-item">
+              <a href="/" class="btn btn-primary">
+                <i class="fa-solid fa-home"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="https://x.com/kinjou_j" class="btn btn-primary">
+                <i class="fa-brands fa-x-twitter"></i>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto mx-2">
+            <li class="nav-item">
+              <search-modal></search-modal>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <header>
+      <div class="logo text-center py-6">
+        <a href="/" class="fw-bold">kinjouj.github.io</a>
+      </div>
+    </header>
+    <div class="container mt-5">
+      <div class="row g-0">
+        <div class="col col-lg-8 ms-auto">
+          <main id="content" role="main">
+            <% @entries.each do |entry| %>
+            <div id="<%== entry.id %>" class="card position-relative rounded-4 mb-5 overflow-hidden">
+              <div class="card-header py-3">
+                <time>
+                  <span class="entry-date-year"><%== entry.date.year %></span>
+                  <span class="hyphen">-</span>
+                  <span class="entry-date-month"><%== entry.date.month %></span>
+                  <span classs="hyphen">-</span>
+                  <span class="entry-date-day"><%== entry.date.day %></span>
+                </time>
+              </div>
+              <img src="<%== entry.cover %>" class="card-img-top object-fit-cover rounded-0" alt="" />
+              <div class="card-body">
+                <h3 class="card-title mb-4">
+                  <a href="<%== uri(entry.permalink) %>" class="stretched-link fs-2 fw-bold"><%= entry.title %></a>
+                </h3>
+                <p class="card-text">
+                  <%= entry.description %>
+                </p>
+              </div>
+              <div class="card-footer position-relative mt-3">
+                <div class="hstack gap-3 m-0 p-2 justify-content-end">
+                  <% entry.taxonomies.each do |taxonomy, terms| %>
+                  <% terms.each do |term| %>
+                  <a href="/archives/<%= taxonomy %>/<%== term.key %>"><%= term.name %></a>
+                  <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <% end %>
+            <div class="paginator d-flex my-5">
+              <% if @paginator.previous_page_exist? %>
+              <a href="<%== @paginator.previous_page %>" rel="prev">Prev</a>
+              <% end %>
+              <% if @paginator.next_page_exist? %>
+              <a href="<%== @paginator.next_page %>" rel="next">Next</a>
+              <% end %>
+            </div>
+          </main>
+        </div>
+        <aside class="sidebar col-12 col-lg-4 ms-auto ps-5">
+          <% if @recent_entries && @recent_entries.size > 0 %>
+          <div id="recent_entries">
+            <h4>Recent Entries</h4>
+            <div class="vstack gap-1 mb-3">
+              <% @recent_entries.each do |recent_entry| %>
+              <a href="<%== uri(recent_entry.permalink) %>"><%= recent_entry.title %></a>
+              <% end %>
+            </div>
+          </div>
+          <% end %>
+          <div id="categories">
+            <h4>Categories</h4>
+            <%== @sidebar_categories_content %>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <footer class="text-center mt-5 py-4">Powered by simpress(octopress like site generator)</footer>
+    <a href="#" class="top-elevator btn btn-primary" aria-label="ページトップ">
+      <i class="fa-solid fa-arrow-up"></i>
+    </a>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+<div class="vstack gap-1">
+  <% @categories.each do |value| %>
+  <div>
+    <a href="/archives/categories/<%== value.key %>"><%= value.name %> (<%== value.count %>)</a>
+    <% if value.children.size > 0 %>
+    <div class="vstack ms-3">
+      <%== render_partial("sidebar_categories", categories: value.children) %>
+    </div>
+    <% end %>
+  </div>
+  <% end %>
+</div>

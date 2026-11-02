@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja" data-bs-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="robots" content="index,follow,noarchive" />
+    <meta name="referrer" content="unsafe-url" />
+    <meta name="google-site-verification" content="AsHuqJn6JTx4Dv28BuiAGoIs12P5qrs4VtBmoBX2kow" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="<%= @entry.description %>" />
+    <meta property="og:title" content="<%= @entry.title %>" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="<%== canonical(@entry.permalink) %>">
+    <title><%= @entry.title %> - kinjouj.github.io</title>
+    <link rel="author" href="https://www.hatena.ne.jp/kinjou__j/" />
+    <link rel="canonical" href="<%== canonical(@entry.permalink) %>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/prism.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
+    <script src="/js/bootstrap.min.js" defer></script>
+    <script src="/js/prism.js" defer></script>
+    <script type="module" src="/js/webcomponents.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3593764998780061" crossorigin="anonymous"></script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "<%== @entry.title %>",
+  "datePublished": "<%== @entry.date.iso8601 %>",
+  "author": {
+    "@type": "Person",
+    "name": "kinjouj"
+  },
+  "description": <%== encode_json(@entry.description) %>
+}
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand p-0 sticky-top">
+      <div class="container-fluid p-0">
+        <div class="navbar-collapse p-3">
+          <ul class="navbar-nav gap-3">
+            <li class="nav-item">
+              <a href="/" class="btn btn-primary">
+                <i class="fa-solid fa-home"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="https://x.com/kinjou_j" class="btn btn-primary">
+                <i class="fa-brands fa-x-twitter"></i>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto mx-2">
+            <li class="nav-item">
+              <search-modal></search-modal>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <header>
+      <div class="logo text-center py-6">
+        <a href="/" class="fw-bold">kinjouj.github.io</a>
+      </div>
+    </header>
+    <div class="container mt-5">
+      <div class="row g-0">
+        <div class="col col-lg-8 ms-auto">
+          <main id="content" role="main">
+            <div class="entry">
+              <div class="entry-date fs-4 fw-bold mb-2">
+                <time>
+                  <a href="/archives/<%== @entry.date.year %>/<%== format('%02d', @entry.date.month) %>">
+                  <span class="entry-date-year"><%== @entry.date.year %></span>
+                  <span class="hyphen">-</span>
+                  <span class="entry-date-month"><%== @entry.date.month %></span>
+                  <span class="hyphen">-</span>
+                  <span class="entry-date-day"><%== @entry.date.day %></span>
+                  </a>
+                </time>
+              </div>
+              <h1 class="entry-title fs-3 fw-bold my-3"><%= @entry.title %></h1>
+              <hr />
+              <p class="entry-categories d-flex position-relative gap-3 m-0">
+                <% @entry.taxonomies.each do |taxonomy, terms| %>
+                <% terms.each do |term| %>
+                <a href="/archives/<%= taxonomy %>/<%== term.key %>" class="fs-5"><%= term.name %></a>
+                <% end %>
+                <% end %>
+              </p>
+              <div class="entry-content fs-6 text-break my-4">
+                <%== @entry.content %>
+              </div>
+              <% if @entry.toc.size > 1 %>
+              <div class="entry-toc rounded-3 p-2">
+                <h6 class="text-center">Table of Contents</h6>
+                <% flatten_toc(@entry.toc).each do |toc| %>
+                <a href="#<%= toc[:id] %>" class="d-block p-1 overflow-hidden ms-<%= [toc[:depth], 5].min %>"><%= toc[:text] %></a>
+                <% end %>
+              </div>
+              <% end %>
+              <% if @entry.respond_to?(:similarities) && (@entry.similarities || []).size > 0 %>
+              <div class="entry-similarity">
+                <fieldset class="rounded-1 p-2 pb-0">
+                  <legend>関連記事</legend>
+                  <ul>
+                    <% @entry.similarities.each do |similarity| %>
+                    <li class="my-1">
+                      <a href="<%== uri(similarity.permalink) %>" class="d-block p-2"><%= similarity.title %></a>
+                    </li>
+                    <% end %>
+                  </ul>
+                </fieldset>
+              </div>
+              <% end %>
+            </div>
+            <% if @entry.next || @entry.prev %>
+            <div class="paginator d-flex my-5">
+              <% if @entry.next %>
+              <a href="<%== @entry.next.permalink %>" rel="prev">&lt;&nbsp;<%= @entry.next.title %></a>
+              <% end %>
+              <% if @entry.prev %>
+              <a href="<%== @entry.prev.permalink %>" rel="next"><%= @entry.prev.title %>&nbsp;&gt;</a>
+              <% end %>
+            </div>
+            <% end %>
+          </main>
+        </div>
+        <aside class="sidebar col-12 col-lg-4 ms-auto ps-5">
+          <% if @recent_entries && @recent_entries.size > 0 %>
+          <div id="recent_entries">
+            <h4>Recent Entries</h4>
+            <div class="vstack gap-1 mb-3">
+              <% @recent_entries.each do |recent_entry| %>
+              <a href="<%== uri(recent_entry.permalink) %>"><%= recent_entry.title %></a>
+              <% end %>
+            </div>
+          </div>
+          <% end %>
+          <div id="categories">
+            <h4>Categories</h4>
+            <ul class="my-1">
+              <%== @sidebar_categories_content %>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <footer class="text-center mt-5 py-4">Powered by simpress(octopress like site generator)</footer>
+    <a href="#" class="top-elevator btn btn-primary" aria-label="ページトップ">
+      <i class="fas fa-arrow-up"></i>
+    </a>
+  </body>
+</html>
