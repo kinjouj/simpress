@@ -1,0 +1,126 @@
+@use 'variables' as *;
+
+.entry {
+  &-content {
+    a {
+      color: $accent-color;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.2em;
+      overflow-wrap: anywhere;
+
+      &:visited {
+        color: color-mix(in srgb, $accent-color 65%, $text-main);
+      }
+
+      &:hover {
+        text-decoration-thickness: 2px;
+        filter: brightness(1.2);
+      }
+
+      &:focus-visible {
+        outline: 2px solid $accent-color;
+        outline-offset: 2px;
+      }
+    }
+
+    ul, ol {
+      padding-left: 24px;
+      margin: 16px 0;
+    }
+
+    ul {
+      list-style: disc;
+      ul { list-style: circle; }
+    }
+
+    ol {
+      list-style: decimal;
+    }
+
+    li {
+      margin-bottom: 8px;
+      line-height: 1.8;
+    }
+
+    .note {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background-color: $gray-bg-color;
+      padding: 15px;
+      line-height: 1.5;
+      font-weight: bold;
+      font-size: 16px;
+      border: 2px solid $border-color;
+      border-radius: 8px;
+      margin: 20px 0;
+
+      i {
+        font-size: 1.38em;
+        padding: 2px;
+      }
+    }
+
+    h3 {
+      margin: 30px 0;
+      font-size: 2.02em;
+      font-weight: bold;
+      border-bottom: 3px solid $accent-color;
+      padding: 5px 0;
+    }
+
+    p {
+      margin: 30px 0;
+      line-height: 2;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    pre[class*="language-"], code[class*="language-"] {
+      background: #0a120d;
+      font-family: monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .token.keyword,
+    .token.operator { color: #2dd4bf; }
+    .token.function  { color: #67e8f9; }
+    .token.string    { color: #a3e4b0; }
+    .token.comment   { color: #4b6858; }
+  }
+
+  &-toc {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 200px;
+    background: rgba(44, 40, 32, 0.9);
+    border: 1px solid $border-color;
+    z-index: 1000;
+
+    a {
+      font-size: 12px;
+      color: $text-main;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      &:hover {
+        color: $accent-color;
+      }
+    }
+
+    @container (max-width: 780px) {
+      display: none;
+    }
+  }
+
+  &-similarity {
+    fieldset {
+      border: 1px solid $border-color;
+    }
+  }
+}

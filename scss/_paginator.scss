@@ -1,0 +1,23 @@
+@use 'variables' as *;
+
+.paginator {
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 150px;
+    min-width: 40%;
+    background-color: $gray-bg-color;
+    border-radius: 8px;
+    color: $text-main;
+
+    &:hover {
+      background-color: color-mix(in srgb, $accent-color 15%, $gray-bg-color);
+    }
+
+    &[rel="next"] {
+      margin-left: auto !important;
+    }
+  }
+}

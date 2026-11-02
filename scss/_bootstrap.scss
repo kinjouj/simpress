@@ -1,0 +1,38 @@
+@use 'variables' as *;
+
+.navbar {
+  --bs-navbar-color: #{$accent-color};
+  --bs-navbar-hover-color: #{$accent-color};
+  background-color: $header-footer-bgcolor;
+  border-bottom: 1px solid $border-color;
+}
+
+.sticky-top {
+  z-index: 9999;
+}
+
+.row {
+  container-type: inline-size;
+}
+
+.card {
+  background-color: $gray-bg-color;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  }
+
+  &-img-top {
+    height: 250px;
+  }
+}
+
+.card-footer {
+  z-index: 2;
+  background-color: $gray-bg-color;
+  border-top: 1px solid $border-color;
+}

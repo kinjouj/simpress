@@ -1,0 +1,19 @@
+@use 'variables' as *;
+
+header {
+  background-color: $header-footer-bgcolor;
+  border-bottom: 1px solid $border-color;
+
+  .py-6 {
+    padding-top: $spacer * 5;
+    padding-bottom: $spacer * 5;
+  }
+
+  .logo a {
+    font-size: 4em;
+
+    @media (max-width: 780px) {
+      font-size: 2.5em;
+    }
+  }
+}

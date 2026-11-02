@@ -1,0 +1,41 @@
+@use 'variables' as *;
+
+:root {
+  --bs-body-color: #{$text-main};
+  --bs-heading-color: #{$text-main};
+  --bs-link-color-rgb: 236, 245, 255;
+  --bs-link-hover-color-rgb: 62, 168, 255;
+}
+
+html {
+  scroll-padding-top: 70px;
+}
+
+body {
+  background-color: $body-bg-color;
+  scroll-behavior: smooth;
+}
+
+ul, ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+
+  &:hover {
+    font-weight: bold;
+  }
+}
+
+aside {
+  @container (max-width: 780px) {
+    display: none;
+  }
+}
+
+footer {
+  background-color: $header-footer-bgcolor;
+  border-top: 1px solid $border-color;
+}
