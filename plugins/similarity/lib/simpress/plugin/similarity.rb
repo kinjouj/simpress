@@ -3,7 +3,6 @@
 require "delegate"
 require "msgpack"
 require "natto"
-require "xxhash"
 
 require "simpress/entry"
 require "simpress/json"
@@ -129,11 +128,15 @@ module Simpress
 
               result = yield
               store[key] = result
+              @dirty = true
               result
             end
 
             def flush
+              return unless @dirty
+
               File.binwrite(CACHE_FILE, store.to_msgpack)
+              @dirty = false
             end
 
             private

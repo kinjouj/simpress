@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "redcarpet"
 require "simpress/parser/markdown/renderer"
 
 module Simpress

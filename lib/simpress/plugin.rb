@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "zeitwerk"
-
 require "simpress/config"
 require "simpress/context"
 require "simpress/logger"

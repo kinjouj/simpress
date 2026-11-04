@@ -86,6 +86,9 @@ Style/BlockDelimiters:
 Style/Documentation:
   Enabled: false
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
+
 Style/OptionalBooleanParameter:
   Enabled: false
 

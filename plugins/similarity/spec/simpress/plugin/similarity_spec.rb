@@ -98,6 +98,7 @@ describe Simpress::Plugin::Similarity do
     expect(entries[0]).to respond_to(:similarities)
     expect(entries[0].similarities.size).to eq(1)
     expect(entries[0].similarities.first.id).to eq("entry_003")
+    expect(entries[0].similarities.first.cover).to eq("/images/no_image.png")
 
     expect(entries[1]).to respond_to(:similarities)
     expect(entries[1].similarities.size).to eq(2)

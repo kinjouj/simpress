@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "tilt"
-
 require "simpress/config"
 require "simpress/context"
 require "simpress/theme/helper"

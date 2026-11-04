@@ -16,12 +16,14 @@ describe('AdjacentEntries', () => {
     id: 'entry-456',
     title: 'Newer Entry',
     permalink: '/newer-entry',
+    cover: '/images/no_image.webp',
   };
 
   const prevSummary = {
     id: 'entry-789',
     title: 'Older Entry',
     permalink: '/older-entry',
+    cover: '/images/no_image.webp',
   };
 
   it('nextとprevがある場合は両方のリンクを表示する', () => {

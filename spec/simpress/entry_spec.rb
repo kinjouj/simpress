@@ -107,7 +107,7 @@ describe Simpress::Entry do
 
   describe Simpress::Entry::Link do
     let(:entry) { Simpress::Entry.new(params) }
-    let(:expected) { { id: "entry-123", title: "Sample Entry", permalink: "/sample-entry" } }
+    let(:expected) { { id: "entry-123", title: "Sample Entry", permalink: "/sample-entry", cover: "cover.png" } }
 
     describe ".build" do
       it "指定されたエントリからLinkを作り、entryがnilの場合はnilを返し、newは公開しない" do
@@ -122,7 +122,7 @@ describe Simpress::Entry do
     end
 
     describe "#to_h" do
-      it "id、title、permalinkのみを持つハッシュを返す" do
+      it "id、title、permalink、coverのみを持つハッシュを返す" do
         expect(described_class.build(entry).to_h).to eq expected
       end
     end

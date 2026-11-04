@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "oj"
-
 Oj.default_options = {
   mode: :custom,
   use_to_json: true,
