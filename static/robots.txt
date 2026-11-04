@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /*
+Disallow: /archives/*
+Disallow: /static/*
+Disallow: /images/*
+Sitemap: https://kinjouj.github.io/sitemap.xml
