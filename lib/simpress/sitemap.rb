@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "ox"
 require "simpress/logger"
 require "simpress/writer"
 

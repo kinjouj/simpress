@@ -36,7 +36,7 @@ module Simpress
     class Link
       include Simpress::JSON::Serializable
 
-      attr_reader :id, :title, :permalink
+      attr_reader :id, :title, :permalink, :cover
 
       def self.build(entry)
         return if entry.nil?
@@ -48,10 +48,11 @@ module Simpress
         @id = entry.id
         @title = entry.title
         @permalink = entry.permalink
+        @cover = entry.cover
       end
 
       def to_h(_options = {})
-        { id: id, title: title, permalink: permalink }
+        { id: id, title: title, permalink: permalink, cover: cover }
       end
 
       private_class_method :new

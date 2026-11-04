@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "time"
-require "xxhash"
 
 require "simpress/config"
 require "simpress/entry"

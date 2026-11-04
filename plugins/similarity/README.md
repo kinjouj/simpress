@@ -15,3 +15,4 @@ lib/simpress/plugin/similarity.rbに定義されている、BM25ベースの類�
 |B|0.75|BM25の文書長による正規化の強さを制御するパラメータ|
 |TF_SCALE|K1 + 1.0|項頻度スコアのスケーリング係数(K1から導出)|
 |CACHE_FILE|similarity.cache|類似度計算結果(MessagePack形式)のキャッシュファイル名|
+|LIMIT|5|関連記事として保持する件数の上限|

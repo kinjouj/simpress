@@ -16,7 +16,7 @@ export type DateType = {
 };
 
 export type TaxonomiesType = Record<string, TaxonomyType[]>;
-export type EntryLinkType = Pick<EntryType, 'id' | 'title' | 'permalink'>;
+export type EntryLinkType = Pick<EntryType, 'id' | 'title' | 'permalink' | 'cover'>;
 export type EntryIndexType = Pick<EntryType, 'id' | 'title' | 'permalink' | 'date' | 'taxonomies' | 'cover' | 'description'>;
 
 export type TocType = {
@@ -31,9 +31,9 @@ export type EntryType = {
   permalink: string
   date: DateType | null
   taxonomies: TaxonomiesType
-  content?: string
-  cover?: string
   description?: string
+  cover: string
+  content?: string
   toc: TocType[]
   next: EntryLinkType | null
   prev: EntryLinkType | null

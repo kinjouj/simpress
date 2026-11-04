@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "cgi"
-require "redcarpet"
 require "simpress/parser/markdown/filter"
 
 module Simpress

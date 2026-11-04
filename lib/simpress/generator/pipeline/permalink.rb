@@ -7,7 +7,7 @@ module Simpress
   module Generator
     module Pipeline
       class Permalink < Simpress::Generator::Pipeline::Base
-        DATA_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :toc, :next, :prev].freeze
+        DATA_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :cover, :content, :toc, :next, :prev].freeze
 
         def self.generate_html(entry)
           write_html(entry.permalink, template: entry.layout, entry: entry) do |file|

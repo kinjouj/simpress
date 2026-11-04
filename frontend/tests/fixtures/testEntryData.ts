@@ -14,7 +14,7 @@ export const testEntryData = {
     { id: 'section-2', text: 'toc-2', children: [] },
   ],
   similarities: [
-    { id: '2', title: 'test2', permalink: '/test2.html' },
-    { id: '3', title: 'test3', permalink: '/test3.html' },
+    { id: '2', title: 'test2', permalink: '/test2.html', cover: '/images/no_image.webp' },
+    { id: '3', title: 'test3', permalink: '/test3.html', cover: '/images/no_image.webp' },
   ],
 };

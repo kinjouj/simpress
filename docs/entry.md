@@ -27,6 +27,7 @@
 {
   "id": "entry-789",
   "title": "Older Entry",
-  "permalink": "/older-entry"
+  "permalink": "/older-entry",
+  "cover": "/images/no_image.webp"
 }
 ```
