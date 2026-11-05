@@ -61,6 +61,7 @@ class SimpressCLI < Thor
     end
 
     Simpress::Sitemap.build(Simpress::Config.host) do
+      url(file: "/", lastmod: Time.now.iso8601)
       files.each {|file, mtime| url(file: file, lastmod: mtime.iso8601) }
     end
   end

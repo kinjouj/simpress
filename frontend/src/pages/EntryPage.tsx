@@ -69,7 +69,7 @@ const EntryPage = (): React.JSX.Element => {
       <h1 className="entry-title fs-3 fw-bold my-3">{entry.title}</h1>
       <hr />
       <EntryCategories taxonomies={entry.taxonomies} className="entry-categories position-relative m-0" />
-      <div dangerouslySetInnerHTML={{ __html: entry.content ?? '' }} className="entry-content fs-6 my-4 mw-100" />
+      <div dangerouslySetInnerHTML={{ __html: entry.content }} className="entry-content fs-6 my-4 mw-100" />
       <TableOfContents toc={entry.toc} />
       {(!!entry.prev || !!entry.next) && <AdjacentEntries next={entry.next} prev={entry.prev} />}
       {!!entry.similarities && entry.similarities.length > 0 && <RelatedEntries similarities={entry.similarities} />}

@@ -33,7 +33,7 @@ export type EntryType = {
   taxonomies: TaxonomiesType
   description?: string
   cover: string
-  content?: string
+  content: string
   toc: TocType[]
   next: EntryLinkType | null
   prev: EntryLinkType | null

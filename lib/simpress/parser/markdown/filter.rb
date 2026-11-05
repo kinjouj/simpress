@@ -14,7 +14,7 @@ module Simpress
 
         class << self
           def register_filters
-            @register_filters ||= []
+            @register_filters ||= Set.new
           end
 
           def apply_preprocess(body)

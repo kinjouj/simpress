@@ -10,9 +10,11 @@ module Simpress
 
       def self.parse(file)
         match = File.read(file).match(FRONT_MATTER_MARKDOWN_REGEX)
-        raise "#{file}: Markdown parse failed" unless match
+        raise "Markdown parse failed: #{file}" unless match
 
         header = Psych.load(match[:header], filename: file, symbolize_names: true, permitted_classes: PERMITTED_CLASSES)
+        raise "Front matter must be a mapping: #{file}" unless header.is_a?(Hash)
+
         body = match.post_match
         [header, body]
       end

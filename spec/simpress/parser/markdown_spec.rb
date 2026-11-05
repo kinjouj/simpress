@@ -29,7 +29,15 @@ describe Simpress::Parser::Markdown do
 
     it "Markdownにフロントマターがない場合はファイル名付きのエラーを発生させる" do
       File.write(file, "No front matter here")
-      expect { described_class.parse(file) }.to raise_error("#{file}: Markdown parse failed")
+      expect { described_class.parse(file) }.to raise_error("Markdown parse failed: #{file}")
+    end
+
+    it "フロントマターが空またはHashでない場合はファイル名付きのエラーを発生させる" do
+      File.write(file, "---\n---\nbody")
+      expect { described_class.parse(file) }.to raise_error("Front matter must be a mapping: #{file}")
+
+      File.write(file, "---\n- a\n- b\n---\nbody")
+      expect { described_class.parse(file) }.to raise_error("Front matter must be a mapping: #{file}")
     end
 
     it "フロントマターのYAMLが不正な場合はファイル名付きのエラーを発生させる" do

@@ -41,17 +41,9 @@ module Simpress
           %(<pre class="line-numbers"><code class="language-#{lang}">#{CGI.escapeHTML(code)}</code></pre>)
         end
 
-        def link(url, _title, content)
-          %(<a href="#{url}" target="_blank" rel="noopener">#{content}</a>)
-        end
-
-        def autolink(url, _link_type)
-          link(url, nil, url)
-        end
-
-        def image(path, _title, _alt)
+        def image(path, title, alt)
           @primary_image ||= path
-          %(<img src="#{path}" alt="image" />)
+          %(<img src="#{path}" alt="#{alt}" title="#{title}" />)
         end
 
         def toc
