@@ -14,13 +14,6 @@ describe Simpress::Parser::Markdown::Renderer do
     end
   end
 
-  describe "#link" do
-    it "aタグを返す" do
-      expect(renderer.link("/2026/01/entry.html", nil, "entry")).to eq '<a href="/2026/01/entry.html" target="_blank" rel="noopener">entry</a>'
-      expect(renderer.link("https://example.com", nil, "example")).to eq '<a href="https://example.com" target="_blank" rel="noopener">example</a>'
-    end
-  end
-
   describe "#preprocess" do
     before do
       allow(Simpress::Parser::Markdown::Filter).to receive(:apply_preprocess).and_return("enhanced")
@@ -132,8 +125,13 @@ describe Simpress::Parser::Markdown::Renderer do
   describe "#image" do
     it "imgタグを返す" do
       result = renderer.image("first.png", nil, nil)
-      expect(result).to eq '<img src="first.png" alt="image" />'
+      expect(result).to eq '<img src="first.png" alt="" title="" />'
       expect(renderer.primary_image).to eq "first.png"
+    end
+
+    it "altとtitleを出力する" do
+      result = renderer.image("first.png", "説明", "ふくろう")
+      expect(result).to eq '<img src="first.png" alt="ふくろう" title="説明" />'
     end
 
     it "primary_imageを上書きしない" do

@@ -24,7 +24,7 @@ module Simpress
       end
 
       def self.run(entries)
-        case config.mode
+        case Simpress::Config.mode
         when "html"
           bind_context(sample: entries.select(&:index).take(5))
         when "json"
