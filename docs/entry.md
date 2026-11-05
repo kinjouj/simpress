@@ -21,7 +21,7 @@
 
 ## Entry::Link
 
-他のエントリへの参照を表す軽量なクラス。id、title、permalink、coverのみを保持する
+他のエントリへの参照を表す軽量なクラス
 
 ```json
 {
