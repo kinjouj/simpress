@@ -4,8 +4,6 @@ source "https://rubygems.org"
 
 gem "benchmark", "~> 0.5"
 gem "erubi", "~> 1.13"
-gem "msgpack", "~> 1.7", require: false
-gem "natto", "~> 1.2", require: false
 gem "oj", "~> 3.17"
 gem "ox", "~> 2.14"
 gem "redcarpet", "~> 3.6"
@@ -15,6 +13,11 @@ gem "thor", "~> 1.5"
 gem "tilt", "~> 2.8"
 gem "xxhash", "~> 0.7"
 gem "zeitwerk", "~> 2.8"
+
+group :plugins do
+  gem "msgpack", "~> 1.7", require: false
+  gem "natto", "~> 1.2", require: false
+end
 
 group :development do
   gem "rake"

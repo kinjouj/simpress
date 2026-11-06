@@ -7,6 +7,11 @@
 1. `category_indexes.json`が存在する場合、その定義に従って子カテゴリを親カテゴリに移動し、ルートレベルから除外する
 1. 設定された`mode`に応じてサイドバー用HTMLまたは`categories.json`を出力する
 
+## 出力
+
+- html: テンプレートのインスタンス変数@sidebar_categories_content(sidebar_categories.erbのレンダリング結果のString)
+- json: categories.json(key、name、count、childrenの配列)
+
 ## category_indexes.json
 
 カテゴリの親子関係を定義するオプションファイル。このファイルが存在する場合のみネスト構造への変換
