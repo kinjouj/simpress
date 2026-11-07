@@ -13,7 +13,7 @@ module Simpress
     class << self
       def generate
         entries = []
-        Dir.glob("#{Simpress::Config.source_dir}/**/*.markdown") do |file|
+        Dir.glob("#{Simpress::Config.source_dir}/**/*.{markdown,md}") do |file|
           entry = Simpress::Parser.parse(file)
           next if entry.draft
 
