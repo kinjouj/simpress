@@ -69,6 +69,22 @@ end
 - 戻り値がStringでない場合は無視される
 - 複数のフィルターは登録順に適用される
 
+## Custom Theme Helper
+
+```ruby
+module ThemeHelper
+  include Simpress::Theme::Helper
+
+  def format_date(date)
+    date.strftime("%Y/%m/%d")
+  end
+end
+```
+
+- plugins/theme_helper/lib/theme_helper.rbに書き、config.yamlのpluginsにtheme_helperを追加して使う
+- `include Simpress::Theme::Helper`すると、テンプレートから`format_date(date)`のように呼べる
+- モジュール内から`uri`や`encode_json`などの既存のヘルパーも呼べる
+
 ## Directory
 
 | ディレクトリ | 説明 |

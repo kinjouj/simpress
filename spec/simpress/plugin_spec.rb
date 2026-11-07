@@ -2,6 +2,7 @@
 
 require "tmpdir"
 require "simpress/plugin"
+require "simpress/theme"
 
 describe Simpress::Plugin do
   let(:plugin_dir) { Dir.mktmpdir }
@@ -123,6 +124,28 @@ describe Simpress::Plugin do
 
       expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test8"]
       expect(Simpress::Parser::Markdown::Filter.register_filters.map(&:name)).to eq ["Simpress::Plugin::Test8::Filter"]
+    end
+
+    it "テーマヘルパーを登録する" do
+      write_plugin_file("test9", "test9", "Test9", <<~RUBY)
+        module Simpress
+          module Plugin
+            module Test9
+              include Simpress::Theme::Helper
+
+              def test9_helper
+                "test9"
+              end
+            end
+          end
+        end
+      RUBY
+
+      allow(Simpress::Config).to receive(:plugins).and_return(["test9"])
+      described_class.load
+
+      scope = Simpress::Theme.const_get(:Scope).new
+      expect(scope.test9_helper).to eq "test9"
     end
   end
 

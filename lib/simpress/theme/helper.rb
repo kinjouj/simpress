@@ -7,6 +7,10 @@ require "simpress/path"
 module Simpress
   module Theme
     module Helper
+      def self.included(base)
+        Scope.include(base) if base.instance_of?(Module)
+      end
+
       def encode_json(data)
         Simpress::JSON.encode(data)
       end
