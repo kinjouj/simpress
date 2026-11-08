@@ -20,13 +20,15 @@ describe Simpress::Theme::Helper do
     end
   end
 
-  describe "#canonical" do
+  describe "#absolute_url" do
     before do
       allow(Simpress::Config).to receive(:host).and_return("https://example.com")
     end
 
-    it "ホスト名とhtml拡張子を持つ絶対URLを返す" do
-      expect(helper.canonical("/entry-1")).to eq "https://example.com/entry-1.html"
+    it "ホスト名とパスを結合した絶対URLを返す" do
+      expect(helper.absolute_url("/")).to eq "https://example.com/"
+      expect(helper.absolute_url("/images/cover.webp")).to eq "https://example.com/images/cover.webp"
+      expect(helper.absolute_url(helper.uri("/entry-1"))).to eq "https://example.com/entry-1.html"
     end
   end
 

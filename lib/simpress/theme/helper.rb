@@ -15,8 +15,8 @@ module Simpress
         Simpress::JSON.encode(data)
       end
 
-      def canonical(path)
-        "#{Simpress::Config.host.chomp('/')}#{uri(path)}"
+      def absolute_url(path)
+        "#{Simpress::Config.host.chomp('/')}#{path}"
       end
 
       def uri(path)
