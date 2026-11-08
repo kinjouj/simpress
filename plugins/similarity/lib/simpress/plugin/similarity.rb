@@ -29,12 +29,17 @@ module Simpress
 
       class Indexer
         NATTO_REGEX = /^([[:alnum:]]{3,})\t名詞,(?:固有名詞|一般)/
-        NATTO = Natto::MeCab.new
         K1 = 1.2
         B = 0.75
         TF_SCALE = K1 + 1.0
+        MAX_DF_RATIO = 0.3
+        MIN_DF_LIMIT = 10
 
         attr_reader :keywords
+
+        def self.natto
+          @natto ||= Natto::MeCab.new
+        end
 
         def initialize(entries)
           @size = entries.size
@@ -54,7 +59,7 @@ module Simpress
         private
 
         def build_vector(entry)
-          vector = extract_keywords(entry).tally
+          vector = extract_keywords(entry).dup
           entry.taxonomies.each_value do |terms|
             terms.each do |term|
               n = term.name
@@ -80,6 +85,9 @@ module Simpress
             end
           end
 
+          max_df = [@size * MAX_DF_RATIO, MIN_DF_LIMIT].max
+          index.delete_if {|word, _| df[word] > max_df }
+
           idf = Hash.new(0.0)
           df.each {|word, count| idf[word] = Math.log(((@size - count + 0.5) / (count + 0.5)) + 1.0) }
           [idf, index]
@@ -87,7 +95,7 @@ module Simpress
 
         def extract_keywords(entry)
           key = XXhash.xxh64("#{entry.title}\0#{entry.markdown}").to_s
-          Cache.fetch(key) { NATTO.parse("#{entry.title} #{entry.markdown}").scan(NATTO_REGEX).map!(&:first) }
+          Cache.fetch(key) { self.class.natto.parse("#{entry.title} #{entry.markdown}").scan(NATTO_REGEX).map!(&:first).tally }
         end
 
         def scores_for(i)
