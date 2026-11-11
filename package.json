@@ -49,6 +49,6 @@
     "react-router": "^8.5.1"
   },
   "overrides": {
-    "minimatch": "^11.0.0"
+    "minimatch": "^11.0.1"
   }
 }
