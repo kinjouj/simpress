@@ -5,147 +5,106 @@ require "simpress/plugin"
 require "simpress/theme"
 
 describe Simpress::Plugin do
-  let(:plugin_dir) { Dir.mktmpdir }
-
   before do
-    allow(Simpress::Config).to receive(:plugin_dir).and_return(plugin_dir)
-    allow(Simpress::Config).to receive(:plugins).and_return([])
     allow(Simpress::Logger).to receive(:debug)
   end
 
   after do
     described_class.clear
-    FileUtils.remove_entry(plugin_dir)
-  end
-
-  def write_plugin_file(dir_name, file_name, class_name, content = nil)
-    path = File.join(plugin_dir, dir_name, "lib", "simpress", "plugin", "#{file_name}.rb")
-    FileUtils.mkdir_p(File.dirname(path))
-    File.write(path, content || <<~RUBY)
-      module Simpress
-        module Plugin
-          class #{class_name}
-            extend Simpress::Plugin
-
-            def self.run(entries); end
-          end
-        end
-      end
-    RUBY
   end
 
   describe ".load" do
-    it "プラグインを登録する" do
-      write_plugin_file("test1", "test1", "Test1")
-      allow(Simpress::Config).to receive(:plugins).and_return(["test1"])
-
-      described_class.load
-      expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test1"]
+    let(:plugin_dir) do
+      Dir.mktmpdir
     end
 
-    it "設定にないプラグインは登録しない" do
-      write_plugin_file("test2", "test2", "Test2")
-      allow(Simpress::Config).to receive(:plugins).and_return([])
-
-      described_class.load
-      expect(described_class.register_plugins).to be_empty
-    end
-
-    it "複数のプラグインを読み込む" do
-      write_plugin_file("test3", "test3", "Test3")
-      write_plugin_file("test4", "test4", "Test4")
-      allow(Simpress::Config).to receive(:plugins).and_return(["test3", "test4"])
-
-      described_class.load
-      names = described_class.register_plugins.map(&:name)
-      expect(names).to include("Simpress::Plugin::Test3", "Simpress::Plugin::Test4")
-    end
-
-    it "Markdownフィルターを登録する" do
-      write_plugin_file("test5", "test5", "Test5", <<~RUBY)
+    let(:source) do
+      <<~RUBY
         module Simpress
           module Plugin
-            class Test5
-              extend Simpress::Parser::Markdown::Filter
-
-              def self.preprocess(data); data; end
-            end
-          end
-        end
-      RUBY
-
-      allow(Simpress::Config).to receive(:plugins).and_return(["test5"])
-      described_class.load
-
-      names = Simpress::Parser::Markdown::Filter.register_filters.map(&:name)
-      expect(names).to eq ["Simpress::Plugin::Test5"]
-    end
-
-    it "設定にないMarkdownフィルターは登録しない" do
-      write_plugin_file("test6", "test6", "Test6", <<~RUBY)
-        module Simpress
-          module Plugin
-            class Test6
-              extend Simpress::Parser::Markdown::Filter
-
-              def self.preprocess(data); data; end
-            end
-          end
-        end
-      RUBY
-
-      allow(Simpress::Config).to receive(:plugins).and_return([])
-      described_class.load
-
-      expect(Simpress::Parser::Markdown::Filter.register_filters).to be_empty
-    end
-
-    it "プラグイン内のMarkdownフィルターも登録する" do
-      write_plugin_file("test8", "test8", "Test8", <<~RUBY)
-        module Simpress
-          module Plugin
-            class Test8
+            class Test1
               extend Simpress::Plugin
 
               def self.run(entries); end
-
-              class Filter
-                extend Simpress::Parser::Markdown::Filter
-
-                def self.preprocess(data); data; end
-              end
             end
           end
         end
       RUBY
-
-      allow(Simpress::Config).to receive(:plugins).and_return(["test8"])
-      described_class.load
-
-      expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test8"]
-      expect(Simpress::Parser::Markdown::Filter.register_filters.map(&:name)).to eq ["Simpress::Plugin::Test8::Filter"]
     end
 
-    it "テーマヘルパーを登録する" do
-      write_plugin_file("test9", "test9", "Test9", <<~RUBY)
-        module Simpress
-          module Plugin
-            module Test9
-              include Simpress::Theme::Helper
+    before do
+      plugin_file = File.join(plugin_dir, "test1", "lib", "simpress", "plugin", "test1.rb")
+      allow(Simpress::Config).to receive(:plugin_dir).and_return(plugin_dir)
+      FileUtils.mkdir_p(File.dirname(plugin_file))
+      File.write(plugin_file, source)
+    end
 
-              def test9_helper
-                "test9"
-              end
-            end
-          end
-        end
-      RUBY
+    after do
+      FileUtils.remove_entry(plugin_dir)
+    end
 
-      allow(Simpress::Config).to receive(:plugins).and_return(["test9"])
-      described_class.load
+    context "設定にあるプラグインの場合" do
+      before do
+        allow(Simpress::Config).to receive(:plugins).and_return(["test1"])
+      end
 
-      scope = Simpress::Theme.const_get(:Scope).new
-      expect(scope.test9_helper).to eq "test9"
+      it "プラグインを登録する" do
+        described_class.load
+
+        expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test1"]
+      end
+    end
+
+    context "設定にないプラグインの場合" do
+      before do
+        allow(Simpress::Config).to receive(:plugins).and_return([])
+      end
+
+      it "プラグインを登録しない" do
+        described_class.load
+
+        expect(described_class.register_plugins).to be_empty
+      end
+    end
+  end
+
+  describe ".register" do
+    context "プラグインの場合" do
+      it "プラグインを登録する" do
+        klass = Class.new { extend Simpress::Plugin }
+        described_class.register(klass)
+
+        expect(described_class.register_plugins).to include(klass)
+      end
+    end
+
+    context "Markdownフィルターの場合" do
+      it "Markdownフィルターを登録する" do
+        klass = Class.new { extend Simpress::Parser::Markdown::Filter }
+        described_class.register(klass)
+
+        expect(Simpress::Parser::Markdown::Filter.register_filters).to include(klass)
+      end
+    end
+
+    context "Markdownフィルターを内包するプラグインの場合" do
+      it "プラグインとMarkdownフィルターを登録する" do
+        filter = Class.new { extend Simpress::Parser::Markdown::Filter }
+        klass = Class.new { extend Simpress::Plugin }.tap {|plugin| plugin.const_set(:Filter, filter) }
+        described_class.register(klass)
+
+        expect(described_class.register_plugins).to include(klass)
+        expect(Simpress::Parser::Markdown::Filter.register_filters).to include(filter)
+      end
+    end
+
+    context "プラグインでもMarkdownフィルターでもない場合" do
+      it "何も登録しない" do
+        described_class.register(Class.new)
+
+        expect(described_class.register_plugins).to be_empty
+        expect(Simpress::Parser::Markdown::Filter.register_filters).to be_empty
+      end
     end
   end
 
@@ -154,69 +113,51 @@ describe Simpress::Plugin do
       filter_class = Class.new { extend Simpress::Parser::Markdown::Filter }
       Simpress::Parser::Markdown::Filter.register_filters << filter_class
       described_class.clear
+
       expect(Simpress::Parser::Markdown::Filter.register_filters).to be_empty
     end
   end
 
   describe ".process" do
-    before do
-      allow(Simpress::Config).to receive(:plugins).and_return(["Test"])
+    context "プラグインが1つの場合" do
+      before do
+        test_plugin = Class.new { extend Simpress::Plugin }
+        stub_const("Simpress::Plugin::Test", test_plugin)
+        described_class.register_plugins << test_plugin
+        allow(Simpress::Plugin::Test).to receive(:run)
+      end
+
+      it "プラグインを実行する" do
+        described_class.process([])
+
+        expect(Simpress::Plugin::Test).to have_received(:run)
+      end
     end
 
-    it "プラグインを実行する" do
-      test_plugin = Class.new do
-        extend Simpress::Plugin
-
-        def self.run(entries)
-          # TEST
-        end
+    context "priorityが異なるプラグインの場合" do
+      before do
+        high_plugin = Class.new { extend Simpress::Plugin }
+        high_plugin.define_singleton_method(:priority) { 10 }
+        low_plugin = Class.new { extend Simpress::Plugin }
+        low_plugin.define_singleton_method(:priority) { 1 }
+        stub_const("Simpress::Plugin::High", high_plugin)
+        stub_const("Simpress::Plugin::Low", low_plugin)
+        described_class.register_plugins << low_plugin << high_plugin
+        allow(Simpress::Plugin::High).to receive(:run)
+        allow(Simpress::Plugin::Low).to receive(:run)
       end
 
-      stub_const("Simpress::Plugin::Test", test_plugin)
-      described_class.register_plugins << test_plugin
-      allow(Simpress::Plugin::Test).to receive(:run)
-      described_class.process([])
-      expect(Simpress::Plugin::Test).to have_received(:run)
-    end
+      it "priorityの大きい順に実行する" do
+        described_class.process([])
 
-    it "priorityの大きい順に実行する" do
-      high_plugin = Class.new do
-        extend Simpress::Plugin
-
-        def self.priority
-          10
-        end
-
-        def self.run(entries)
-          # TEST
-        end
+        expect(Simpress::Plugin::High).to have_received(:run).ordered
+        expect(Simpress::Plugin::Low).to have_received(:run).ordered
       end
-
-      low_plugin = Class.new do
-        extend Simpress::Plugin
-
-        def self.priority
-          1
-        end
-
-        def self.run(entries)
-          # TEST
-        end
-      end
-
-      stub_const("Simpress::Plugin::High", high_plugin)
-      stub_const("Simpress::Plugin::Low", low_plugin)
-      described_class.register_plugins << low_plugin << high_plugin
-      allow(Simpress::Plugin::High).to receive(:run)
-      allow(Simpress::Plugin::Low).to receive(:run)
-      described_class.process([])
-      expect(Simpress::Plugin::High).to have_received(:run).ordered
-      expect(Simpress::Plugin::Low).to have_received(:run).ordered
     end
 
     it "priorityが同じプラグインは登録順に実行する" do
       calls = []
-      plugins = Array.new(10) do |i|
+      plugin_classes = Array.new(10) do |i|
         Class.new do
           extend Simpress::Plugin
 
@@ -224,8 +165,9 @@ describe Simpress::Plugin do
         end
       end
 
-      plugins.each {|plugin| described_class.register_plugins << plugin }
+      plugin_classes.each {|plugin| described_class.register_plugins << plugin }
       described_class.process([])
+
       expect(calls).to eq((0...10).to_a)
     end
   end
@@ -234,6 +176,7 @@ describe Simpress::Plugin do
     it "コンテキストを更新する" do
       test_klass = Class.new { extend Simpress::Plugin }
       test_klass.bind_context(plugin_key: "value")
+
       expect(Simpress::Context[:plugin_key]).to eq "value"
     end
   end
@@ -241,6 +184,7 @@ describe Simpress::Plugin do
   describe "#priority" do
     it "1を返す" do
       test_klass = Class.new { extend Simpress::Plugin }
+
       expect(test_klass.priority).to eq 1
     end
   end
@@ -248,6 +192,7 @@ describe Simpress::Plugin do
   describe "#run" do
     it "NotImplementedErrorを発生させる" do
       test_klass = Class.new { extend Simpress::Plugin }
+
       expect { test_klass.run }.to raise_error(NotImplementedError)
     end
   end

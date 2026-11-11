@@ -22,6 +22,7 @@ describe Simpress::Parser::Markdown::Renderer do
     it "前処理した結果を返す" do
       markdown = "# Hello"
       result = renderer.preprocess(markdown)
+
       expect(Simpress::Parser::Markdown::Filter).to have_received(:apply_preprocess).with(markdown)
       expect(result).to eq "enhanced"
     end
@@ -34,6 +35,7 @@ describe Simpress::Parser::Markdown::Renderer do
 
     it "後処理した結果を返す" do
       result = renderer.postprocess("<p>Hello</p>")
+
       expect(Simpress::Parser::Markdown::Filter).to have_received(:apply_postprocess).with("<p>Hello</p>")
       expect(result).to eq "processed"
     end
@@ -42,12 +44,14 @@ describe Simpress::Parser::Markdown::Renderer do
   describe "#header" do
     it "レベル1ではh1タグを返す" do
       result = renderer.header("Title", 1)
+
       expect(result).to eq "<h1>Title</h1>"
       expect(renderer.toc).to be_empty
     end
 
     it "レベル2以上ではid付きの見出しを返す" do
       result = renderer.header("SubTitle", 2)
+
       expect(result).to eq '<h2 id="section-1">SubTitle</h2>'
       expect(renderer.toc.size).to eq 1
 
@@ -125,33 +129,39 @@ describe Simpress::Parser::Markdown::Renderer do
   describe "#image" do
     it "imgタグを返す" do
       result = renderer.image("first.png", nil, nil)
+
       expect(result).to eq '<img src="first.png" alt="" title="" />'
       expect(renderer.primary_image).to eq "first.png"
     end
 
     it "altとtitleを出力する" do
       result = renderer.image("first.png", "説明", "ふくろう")
+
       expect(result).to eq '<img src="first.png" alt="ふくろう" title="説明" />'
     end
 
     it "primary_imageを上書きしない" do
       renderer.image("first.png", nil, nil)
       renderer.image("second.png", nil, nil)
+
       expect(renderer.primary_image).to eq "first.png"
     end
   end
 
   describe "#block_code" do
     it "エスケープしたcodeブロックを返す" do
-      code = 'puts "Hello" < & >'
-      result = renderer.block_code(code, "ruby")
+      result = renderer.block_code('puts "Hello" < & >', "ruby")
+
       expect(result).to include('class="language-ruby"')
       expect(result).to include("puts &quot;Hello&quot; &lt; &amp; &gt;")
     end
 
-    it "langがnilならtextにする" do
-      result = renderer.block_code("code", nil)
-      expect(result).to include('class="language-text"')
+    context "langがnilの場合" do
+      it "textにする" do
+        result = renderer.block_code("code", nil)
+
+        expect(result).to include('class="language-text"')
+      end
     end
   end
 end

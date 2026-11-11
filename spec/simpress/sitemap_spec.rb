@@ -3,32 +3,31 @@
 require "simpress/sitemap"
 
 describe Simpress::Sitemap do
-  let(:hostname) { "https://example.com" }
-
   before do
     allow(Simpress::Writer).to receive(:write)
     allow(Simpress::Logger).to receive(:debug)
   end
 
   describe ".build" do
-    it "ブロックが渡されない場合はエラーを発生させる" do
-      expect { described_class.build(hostname) }.to raise_error("block is required")
+    context "ブロックが渡されない場合" do
+      it "エラーを発生させる" do
+        expect { described_class.build("https://example.com") }.to raise_error("block is required")
+      end
     end
 
-    it "初期化してブロックをyieldし、サイトマップを書き出す" do
-      described_class.build(hostname) { url(file: "index.html", lastmod: "2026-01-01") }
+    it "ブロックの内容でsitemap.xmlを書き出す" do
+      described_class.build("https://example.com") { url(file: "index.html", lastmod: "2026-01-01") }
+
       expect(Simpress::Writer).to have_received(:write).with("sitemap.xml", anything)
     end
   end
 
   describe "#url" do
-    let(:xml) do
-      sitemap = described_class.send(:new, hostname)
+    it "loc要素とlastmod要素とchangefreq属性を含む" do
+      sitemap = described_class.send(:new, "https://example.com")
       sitemap.url(file: "test.html", lastmod: "2026-01-01", changefreq: "daily")
-      Ox.dump(sitemap.instance_variable_get(:@doc))
-    end
+      xml = Ox.dump(sitemap.instance_variable_get(:@doc))
 
-    it "完全なURLを持つloc要素、lastmod要素、changefreq属性を含む" do
       expect(xml).to include("<loc>https://example.com/test.html</loc>")
       expect(xml).to include("<lastmod>2026-01-01</lastmod>")
       expect(xml).to include('changefreq="daily"')
@@ -36,12 +35,13 @@ describe Simpress::Sitemap do
   end
 
   describe "#write" do
-    it "Simpress::Writerを呼び出してデバッグメッセージを出力する" do
-      sitemap = described_class.send(:new, hostname)
+    it "sitemap.xmlを書き出して件数を出力する" do
+      sitemap = described_class.send(:new, "https://example.com")
       sitemap.url(file: "page1.html", lastmod: "2026-01-01")
       sitemap.url(file: "page2.html", lastmod: "2026-01-01")
 
       sitemap.write
+
       expect(Simpress::Writer).to have_received(:write).with("sitemap.xml", instance_of(String))
       expect(Simpress::Logger).to have_received(:debug).with("generated sitemap.xml: 2")
     end

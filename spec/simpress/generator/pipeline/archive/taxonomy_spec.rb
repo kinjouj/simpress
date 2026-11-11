@@ -9,8 +9,13 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
     build(:entry, categories: ["Ruby"]).tap {|e| Simpress::Taxonomy.register(e.taxonomies, e) }
   end
 
-  let!(:taxonomies) { Simpress::Taxonomy.taxonomies }
-  let(:verbose_messages) { [] }
+  let!(:taxonomies) do
+    Simpress::Taxonomy.taxonomies
+  end
+
+  let(:verbose_messages) do
+    []
+  end
 
   before do
     Simpress::Taxonomy.clear
@@ -25,6 +30,7 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
 
     it "各termについてHTMLをレンダリングして書き出す" do
       described_class.generate_html(taxonomies)
+
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/index.html", "<html>content</html>")
       expect(verbose_messages).to include("[BUILD CATEGORY]: public/archives/categories/ruby/index.html")
@@ -32,7 +38,9 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
   end
 
   describe ".generate_json" do
-    let(:expected_index_json) { Simpress::JSON.dump({ entries: [entry.to_h(keys: described_class::DATA_JSON_KEYS)], total_pages: 1 }) }
+    let(:expected_index_json) do
+      Simpress::JSON.dump({ entries: [entry], total_pages: 1 }, keys: described_class::DATA_JSON_KEYS)
+    end
 
     before do
       allow(Simpress::Writer).to receive(:write).with("/archives/categories/ruby/1.json", anything).and_yield("public/archives/categories/ruby/1.json")
@@ -40,6 +48,7 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
 
     it "各termについてJSONを書き出す" do
       described_class.generate_json(taxonomies)
+
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/1.json", expected_index_json)
       expect(verbose_messages).to include("[BUILD CATEGORY]: public/archives/categories/ruby/1.json")
     end

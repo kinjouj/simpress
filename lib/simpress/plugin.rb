@@ -26,25 +26,26 @@ module Simpress
 
       def load
         @loader = Zeitwerk::Loader.new
-        @loader.on_load do |_cpath, value, _abspath|
-          values = [value]
-          value.constants(false).each {|name| values << value.const_get(name) unless value.autoload?(name) } if value.is_a?(Module)
-
-          values.each do |klass|
-            case klass
-            when Simpress::Plugin
-              Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
-              register_plugins << klass
-            when Simpress::Parser::Markdown::Filter
-              Simpress::Logger.debug("REGISTER FILTER: #{klass}")
-              Simpress::Parser::Markdown::Filter.register_filters << klass
-            end
-          end
-        end
-
+        @loader.on_load {|_cpath, value, _abspath| register(value) }
         Simpress::Config.plugins.each {|name| @loader.push_dir("#{Simpress::Config.plugin_dir}/#{name}/lib") }
         @loader.setup
         @loader.eager_load
+      end
+
+      def register(value)
+        values = [value]
+        value.constants(false).each {|name| values << value.const_get(name) unless value.autoload?(name) } if value.is_a?(Module)
+
+        values.each do |klass|
+          case klass
+          when Simpress::Plugin
+            Simpress::Logger.debug("REGISTER PLUGIN: #{klass}")
+            register_plugins << klass
+          when Simpress::Parser::Markdown::Filter
+            Simpress::Logger.debug("REGISTER FILTER: #{klass}")
+            Simpress::Parser::Markdown::Filter.register_filters << klass
+          end
+        end
       end
 
       def process(entries = [])

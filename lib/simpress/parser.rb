@@ -61,7 +61,7 @@ module Simpress
       end
 
       def assign_draft!
-        @params[:draft] = @params.fetch(:draft, false)
+        @params[:draft] ||= false
       end
 
       def assign_markdown!

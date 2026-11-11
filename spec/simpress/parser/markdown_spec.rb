@@ -1,48 +1,87 @@
 # frozen_string_literal: true
 
-require "tmpdir"
 require "simpress/parser/markdown"
 
 describe Simpress::Parser::Markdown do
   describe ".parse" do
-    let(:dir) { Dir.mktmpdir }
-    let(:file) { File.join(dir, "test.markdown") }
-
-    after do
-      FileUtils.remove_entry(dir)
-    end
-
-    it "Time付きのヘッダーを正常にパースして本文を返す" do
-      File.write(file, <<~MARKDOWN)
+    let(:markdown) do
+      <<~MARKDOWN
         ---
-        title: Hello World
-        date: 2026-01-01 10:00:00 +0900
+        title: test
+        date: 2026-01-01 00:00:00
         ---
-        # Content
+
+        TEST MARKDOWN
       MARKDOWN
+    end
 
-      header, body = described_class.parse(file)
-      expect(header[:title]).to eq "Hello World"
+    before do
+      allow(File).to receive(:read).and_return(markdown)
+    end
+
+    it "ヘッダーと本文を返す" do
+      header, result_body = described_class.parse("test.markdown")
+
+      expect(header[:title]).to eq "test"
       expect(header[:date]).to be_a(Time)
-      expect(body).to eq "# Content\n"
+      expect(result_body.strip).to eq "TEST MARKDOWN"
     end
 
-    it "Markdownにフロントマターがない場合はファイル名付きのエラーを発生させる" do
-      File.write(file, "No front matter here")
-      expect { described_class.parse(file) }.to raise_error("Markdown parse failed: #{file}")
+    context "フロントマターがない場合" do
+      let(:markdown) do
+        <<~MARKDOWN
+          No front matter here
+        MARKDOWN
+      end
+
+      it "ファイル名付きのエラーを発生させる" do
+        expect { described_class.parse("test.markdown") }.to raise_error("Markdown parse failed: test.markdown")
+      end
     end
 
-    it "フロントマターが空またはHashでない場合はファイル名付きのエラーを発生させる" do
-      File.write(file, "---\n---\nbody")
-      expect { described_class.parse(file) }.to raise_error("Front matter must be a mapping: #{file}")
+    context "フロントマターが空の場合" do
+      let(:markdown) do
+        <<~MARKDOWN
+          ---
+          ---
+          body
+        MARKDOWN
+      end
 
-      File.write(file, "---\n- a\n- b\n---\nbody")
-      expect { described_class.parse(file) }.to raise_error("Front matter must be a mapping: #{file}")
+      it "ファイル名付きのエラーを発生させる" do
+        expect { described_class.parse("test.markdown") }.to raise_error("Front matter must be a mapping: test.markdown")
+      end
     end
 
-    it "フロントマターのYAMLが不正な場合はファイル名付きのエラーを発生させる" do
-      File.write(file, "---\ntitle: [unclosed\n---\nbody")
-      expect { described_class.parse(file) }.to raise_error(Psych::SyntaxError, /#{Regexp.escape(file)}/)
+    context "フロントマターがHashでない場合" do
+      let(:markdown) do
+        <<~MARKDOWN
+          ---
+          - a
+          - b
+          ---
+          body
+        MARKDOWN
+      end
+
+      it "ファイル名付きのエラーを発生させる" do
+        expect { described_class.parse("test.markdown") }.to raise_error("Front matter must be a mapping: test.markdown")
+      end
+    end
+
+    context "フロントマターのYAMLが不正な場合" do
+      let(:markdown) do
+        <<~MARKDOWN
+          ---
+          title: [unclosed
+          ---
+          body
+        MARKDOWN
+      end
+
+      it "ファイル名付きのエラーを発生させる" do
+        expect { described_class.parse("test.markdown") }.to raise_error(Psych::SyntaxError, /test\.markdown/)
+      end
     end
   end
 end

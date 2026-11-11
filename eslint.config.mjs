@@ -46,7 +46,7 @@ export default defineConfig(
       "no-empty": ["error", { allowEmptyCatch: false }],
       "no-constant-condition": "error",
       "no-restricted-imports": ["error", { "paths": ["./"] }],
-      "no-unused-expressions": "error", // bug
+      "no-unused-expressions": "error",
       "@stylistic/arrow-parens": ["error", "always"],
       "@stylistic/array-bracket-spacing": ["error", "never"],
       "@stylistic/brace-style": ["error", "1tbs", { allowSingleLine: true }],

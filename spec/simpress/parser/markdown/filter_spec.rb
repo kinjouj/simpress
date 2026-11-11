@@ -27,8 +27,7 @@ describe Simpress::Parser::Markdown::Filter do
 
       described_class.register_filters << filter1 << filter2
 
-      result = described_class.apply_preprocess("Base")
-      expect(result).to eq "Base + Filter1 + Filter2"
+      expect(described_class.apply_preprocess("Base")).to eq "Base + Filter1 + Filter2"
     end
 
     it "文字列以外は無視する" do
@@ -41,8 +40,8 @@ describe Simpress::Parser::Markdown::Filter do
       end
 
       described_class.register_filters << filter
-      result = described_class.apply_preprocess("Original")
-      expect(result).to eq "Original"
+
+      expect(described_class.apply_preprocess("Original")).to eq "Original"
     end
   end
 
@@ -65,6 +64,7 @@ describe Simpress::Parser::Markdown::Filter do
       end
 
       described_class.register_filters << filter1 << filter2
+
       expect(described_class.apply_postprocess("Base")).to eq "Base + Filter1"
     end
   end
@@ -77,6 +77,7 @@ describe Simpress::Parser::Markdown::Filter do
 
       described_class.register_filters << filter
       described_class.clear
+
       expect(described_class.register_filters).to be_empty
     end
   end

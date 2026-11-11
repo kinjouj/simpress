@@ -29,18 +29,21 @@ describe Simpress::Plugin::RecentEntries do
 
       it "最初の5件をbindする" do
         described_class.run(entries)
+
         expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
       end
 
       it "indexがfalseのエントリを除外する" do
         hidden = Simpress::Entry.new(id: "hidden", title: "Hidden", permalink: "/hidden", index: false)
         described_class.run([hidden, *entries])
+
         expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
       end
 
       it "5件未満でもバインドする" do
         small_entries = entries.take(2)
         described_class.run(small_entries)
+
         expect(described_class).to have_received(:bind_context).with(recent_entries: small_entries)
       end
     end

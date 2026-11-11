@@ -10,6 +10,7 @@ describe Simpress::JSON do
 
     it "ファイルを読み込む" do
       described_class.load_file("test.json", symbolize_names: true)
+
       expect(Oj).to have_received(:load_file).with("test.json", symbolize_names: true)
     end
   end
@@ -21,6 +22,7 @@ describe Simpress::JSON do
 
     it "文字列を読み込む" do
       described_class.load('{"a":1}', mode: :strict)
+
       expect(Oj).to have_received(:load).with('{"a":1}', mode: :strict)
     end
   end
@@ -32,6 +34,7 @@ describe Simpress::JSON do
 
     it "JSON文字列にする" do
       described_class.dump({ a: 1 }, indent: 2)
+
       expect(Oj).to have_received(:dump).with({ a: 1 }, indent: 2)
     end
   end
@@ -43,6 +46,7 @@ describe Simpress::JSON do
 
     it "エスケープしたJSON文字列にする" do
       described_class.encode({ html: "<script>" })
+
       expect(Oj).to have_received(:dump).with({ html: "<script>" }, mode: :rails, escape_mode: :xss_safe)
     end
   end

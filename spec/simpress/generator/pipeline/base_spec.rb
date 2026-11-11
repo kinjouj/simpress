@@ -18,6 +18,7 @@ describe Simpress::Generator::Pipeline::Base do
 
       it "HTMLを生成する" do
         described_class.generate(:arg)
+
         expect(described_class).to have_received(:generate_html).with(:arg)
       end
     end
@@ -25,11 +26,12 @@ describe Simpress::Generator::Pipeline::Base do
     context "modeがjsonの場合" do
       before do
         allow(Simpress::Config).to receive(:mode).and_return("json")
+        allow(described_class).to receive(:generate_json)
       end
 
       it "JSONを生成する" do
-        allow(described_class).to receive(:generate_json)
         described_class.generate(:arg)
+
         expect(described_class).to have_received(:generate_json).with(:arg)
       end
     end
@@ -67,6 +69,7 @@ describe Simpress::Generator::Pipeline::Base do
   describe ".path" do
     it "Pathを返す" do
       result = described_class.path("test")
+
       expect(result).to be_a(Simpress::Path)
       expect(result.to_s).to eq "test"
     end
@@ -76,6 +79,7 @@ describe Simpress::Generator::Pipeline::Base do
     it "index.htmlとして出力する" do
       context = { entries: [] }
       described_class.write_html("index", template: "layout", **context)
+
       expect(Simpress::Theme).to have_received(:render).with("layout", **context)
       expect(Simpress::Writer).to have_received(:write).with("index.html", "<html></html>")
     end
@@ -85,6 +89,7 @@ describe Simpress::Generator::Pipeline::Base do
     it "api/data.jsonとして出力する" do
       data = { key: "value" }
       described_class.write_json("api/data", data)
+
       expect(Simpress::JSON).to have_received(:dump).with(data)
       expect(Simpress::Writer).to have_received(:write).with("api/data.json", '{"json":true}')
     end
