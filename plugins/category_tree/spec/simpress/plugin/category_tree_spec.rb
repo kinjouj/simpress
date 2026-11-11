@@ -3,13 +3,12 @@
 require "simpress/plugin/category_tree"
 
 describe Simpress::Plugin::CategoryTree do
-  let(:term) { Simpress::Taxonomy::Term.new("Ruby", key: "ruby") }
-  let(:taxonomy) { instance_double(Simpress::Taxonomy, terms: { "ruby" => term }) }
-
   before do
     allow(File).to receive(:exist?).and_return(false)
     allow(File).to receive(:exist?).with("category_indexes.json").and_return(false)
-    allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(taxonomy)
+    allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(
+      instance_double(Simpress::Taxonomy, terms: { "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby") })
+    )
   end
 
   after do
@@ -27,6 +26,7 @@ describe Simpress::Plugin::CategoryTree do
 
       it "コンテキストにデータをbindする" do
         described_class.run
+
         expect(Simpress::Theme).to have_received(:render).with("sidebar_categories", categories: anything)
         expect(Simpress::Context).to have_received(:update).with(sidebar_categories_content: "<ul>categories</ul>")
       end
@@ -41,6 +41,7 @@ describe Simpress::Plugin::CategoryTree do
 
       it "categories.jsonとして出力する" do
         described_class.run
+
         expect(Simpress::JSON).to have_received(:dump).with(anything, keys: described_class::KEYS)
         expect(Simpress::Writer).to have_received(:write).with("categories.json", "{}")
       end
@@ -57,10 +58,13 @@ describe Simpress::Plugin::CategoryTree do
     end
 
     context "category_indexes.jsonが存在する場合" do
-      let(:rails_term) { Simpress::Taxonomy::Term.new("Rails", key: "rails") }
-      let(:taxonomy) { instance_double(Simpress::Taxonomy, terms: { "ruby" => term, "rails" => rails_term }) }
-
       before do
+        allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(
+          instance_double(
+            Simpress::Taxonomy,
+            terms: { "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby"), "rails" => Simpress::Taxonomy::Term.new("Rails", key: "rails") }
+          )
+        )
         allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("")
         allow(Simpress::Context).to receive(:update)
@@ -79,11 +83,13 @@ describe Simpress::Plugin::CategoryTree do
     end
 
     context "category_indexes.jsonにordersキーが含まれる場合" do
-      let(:life_term) { Simpress::Taxonomy::Term.new("Life", key: "life") }
-      let(:tech_term) { Simpress::Taxonomy::Term.new("Tech", key: "tech") }
-      let(:taxonomy) { instance_double(Simpress::Taxonomy, terms: { "life" => life_term, "tech" => tech_term }) }
-
       before do
+        allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(
+          instance_double(
+            Simpress::Taxonomy,
+            terms: { "life" => Simpress::Taxonomy::Term.new("Life", key: "life"), "tech" => Simpress::Taxonomy::Term.new("Tech", key: "tech") }
+          )
+        )
         allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("")
         allow(Simpress::Context).to receive(:update)
@@ -107,17 +113,18 @@ describe Simpress::Plugin::CategoryTree do
     end
 
     context "category_indexes.jsonにネストとordersの両方がある場合" do
-      let(:rails_term) { Simpress::Taxonomy::Term.new("Rails", key: "rails") }
-      let(:sinatra_term) { Simpress::Taxonomy::Term.new("Sinatra", key: "sinatra") }
-      let(:life_term) { Simpress::Taxonomy::Term.new("Life", key: "life") }
-      let(:taxonomy) do
-        instance_double(
-          Simpress::Taxonomy,
-          terms: { "ruby" => term, "rails" => rails_term, "sinatra" => sinatra_term, "life" => life_term }
-        )
-      end
-
       before do
+        allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(
+          instance_double(
+            Simpress::Taxonomy,
+            terms: {
+              "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby"),
+              "rails" => Simpress::Taxonomy::Term.new("Rails", key: "rails"),
+              "sinatra" => Simpress::Taxonomy::Term.new("Sinatra", key: "sinatra"),
+              "life" => Simpress::Taxonomy::Term.new("Life", key: "life")
+            }
+          )
+        )
         allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("")
         allow(Simpress::Context).to receive(:update)

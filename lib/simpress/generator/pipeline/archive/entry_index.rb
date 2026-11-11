@@ -19,8 +19,8 @@ module Simpress
           def self.generate_json(entries)
             base_path = path("/archives/page")
             each_page(entries) do |slice, paginator|
-              data = { entries: slice.map {|entry| entry.to_h(keys: DATA_JSON_KEYS) }, total_pages: paginator.maxpage }
-              write_json(base_path.path(paginator.page), data) do |file|
+              data = { entries: slice, total_pages: paginator.maxpage }
+              write_json(base_path.path(paginator.page), data, keys: DATA_JSON_KEYS) do |file|
                 Simpress::Logger.verbose { "[BUILD ARCHIVE]: #{file}" }
               end
             end

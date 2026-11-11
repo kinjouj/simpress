@@ -3,7 +3,7 @@
 require "simpress/logger"
 
 describe Simpress::Logger do
-  before do
+  after do
     described_class.clear
   end
 
@@ -13,11 +13,16 @@ describe Simpress::Logger do
         allow(Simpress::Config).to receive(:logging).and_return(true)
       end
 
-      it "標準出力に出力されること" do
-        expect { described_class.verbose("test info message") }.to output(/INFO -- : test info message/).to_stdout
+      context "メッセージを渡した場合" do
+        it "出力されること" do
+          expect { described_class.verbose("test info message") }.to output(/INFO -- : test info message/).to_stdout
+        end
+      end
 
-        described_class.clear
-        expect { described_class.verbose { "test info block" } }.to output(/INFO -- : test info block/).to_stdout
+      context "ブロックを渡した場合" do
+        it "出力されること" do
+          expect { described_class.verbose { "test info block" } }.to output(/INFO -- : test info block/).to_stdout
+        end
       end
     end
 
@@ -26,17 +31,14 @@ describe Simpress::Logger do
         allow(Simpress::Config).to receive(:logging).and_return(false)
       end
 
-      it "標準出力に出力されないこと" do
-        evaluated = false
-
-        expect { described_class.verbose { evaluated = true } }.not_to output.to_stdout
-        expect(evaluated).to be false
+      it "出力されないこと" do
+        expect { described_class.verbose { true } }.not_to output.to_stdout
       end
     end
   end
 
   describe ".debug" do
-    it "標準出力に出力されること" do
+    it "出力されること" do
       expect { described_class.debug("test debug message") }.to output(/DEBUG -- : test debug message/).to_stdout
     end
   end
@@ -45,6 +47,7 @@ describe Simpress::Logger do
     it "設定をリセットする" do
       obj = described_class.instance
       described_class.clear
+
       expect(obj).not_to be described_class.instance
     end
   end

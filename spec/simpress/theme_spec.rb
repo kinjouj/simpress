@@ -4,7 +4,6 @@ require "simpress/theme"
 
 describe Simpress::Theme do
   before do
-    described_class.clear
     allow(Simpress::Config).to receive(:theme_dir).and_return("spec/fixtures/theme")
   end
 
@@ -12,7 +11,9 @@ describe Simpress::Theme do
     described_class.clear
   end
 
-  let(:tilt_template) { instance_double(Tilt::ErubiTemplate) }
+  let(:tilt_template) do
+    instance_double(Tilt::ErubiTemplate)
+  end
 
   describe ".render" do
     before do
@@ -23,6 +24,7 @@ describe Simpress::Theme do
 
     it "正しいパスでテンプレートを初期化してレンダリング結果を返す" do
       result = described_class.render("layout", { page_title: "Entry" })
+
       expect(Tilt::ErubiTemplate).to have_received(:new).with("spec/fixtures/theme/layout.erb", escape: true)
       expect(result).to eq "<html>My Blog</html>"
     end
@@ -49,6 +51,7 @@ describe Simpress::Theme do
       described_class.render("test", {})
       described_class.clear
       described_class.render("test", {})
+
       expect(Tilt::ErubiTemplate).to have_received(:new).twice
     end
   end

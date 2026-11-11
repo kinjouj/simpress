@@ -5,10 +5,9 @@ require "simpress/taxonomy"
 require "simpress/generator/pipeline"
 
 describe Simpress::Generator::Pipeline do
-  let(:entry1) { build(:entry, date: Time.new(2026, 1, 15)) }
-  let(:entry2) { build(:entry, date: Time.new(2026, 1, 10)) }
-  let(:entries) { [entry1, entry2] }
-  let(:taxonomy) { Simpress::Taxonomy.fetch("categories") }
+  let(:taxonomy) do
+    Simpress::Taxonomy.fetch("categories")
+  end
 
   before do
     allow(Simpress::Taxonomy).to receive(:taxonomies).and_return([taxonomy])
@@ -23,8 +22,21 @@ describe Simpress::Generator::Pipeline do
   end
 
   describe ".generate" do
+    let(:entry1) do
+      build(:entry, date: Time.new(2026, 1, 15))
+    end
+
+    let(:entry2) do
+      build(:entry, date: Time.new(2026, 1, 10))
+    end
+
+    let(:entries) do
+      [entry1, entry2]
+    end
+
     it "各パイプラインを実行する" do
       described_class.generate(entries)
+
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry1)
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry2)
       expect(Simpress::Generator::Pipeline::Archive::Monthly).to have_received(:generate).with({ [2026, 1] => [entry1, entry2] })

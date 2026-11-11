@@ -7,18 +7,15 @@ describe Simpress::Plugin::InlineNote do
     it "HTMLに変換する" do
       markdown = "[^]: This is a note."
       expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>This is a note.</span></div>'
+
       expect(described_class.preprocess(markdown)).to eq expected
     end
 
     it "コロンの後のスペースを無視する" do
       markdown = "[^]:    Note with leading spaces."
       expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>Note with leading spaces.</span></div>'
-      expect(described_class.preprocess(markdown)).to eq expected
-    end
 
-    it "行頭にない記法は変換しない" do
-      markdown = "Text before [^]: Not a note."
-      expect(described_class.preprocess(markdown)).to eq markdown
+      expect(described_class.preprocess(markdown)).to eq expected
     end
 
     it "複数のnoteを変換する" do
@@ -37,9 +34,25 @@ describe Simpress::Plugin::InlineNote do
       expect(described_class.preprocess(markdown)).to eq expected
     end
 
-    it "不完全な記法は変換しない" do
-      expect(described_class.preprocess("[^] : No space before colon")).to eq "[^] : No space before colon"
-      expect(described_class.preprocess("[*]: Wrong bracket content")).to eq "[*]: Wrong bracket content"
+    context "行頭にない場合" do
+      it "変換しない" do
+        markdown = "Text before [^]: Not a note."
+        expect(described_class.preprocess(markdown)).to eq markdown
+      end
+    end
+
+    context "コロンの前にスペースがある場合" do
+      it "変換しない" do
+        markdown = "[^] : No space before colon"
+        expect(described_class.preprocess(markdown)).to eq markdown
+      end
+    end
+
+    context "括弧の中身が違う場合" do
+      it "変換しない" do
+        markdown = "[*]: Wrong bracket content"
+        expect(described_class.preprocess(markdown)).to eq markdown
+      end
     end
   end
 end

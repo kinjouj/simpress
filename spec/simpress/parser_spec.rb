@@ -3,7 +3,10 @@
 require "simpress/parser"
 
 describe Simpress::Parser do
-  let(:file) { "2026-01-01-test-entry.md" }
+  let(:file) do
+    "2026-01-01-test-entry.md"
+  end
+
   let(:markdown) do
     <<~MD
       ---
@@ -17,17 +20,24 @@ describe Simpress::Parser do
     MD
   end
 
-  let(:render_result) do
-    Simpress::Parser::Markdown::Processor::Result.new(
-      "<p>This is the description.</p>\n<p>This is the content.</p>",
-      "cover.jpg",
-      []
-    )
+  let(:body) do
+    <<~MD
+      This is the description.
+
+      This is the content.
+    MD
+  end
+
+  let(:html) do
+    <<~HTML
+      <p>This is the description.</p>
+      <p>This is the content.</p>
+    HTML
   end
 
   before do
-    allow(File).to receive(:read).with(file).and_return(markdown)
-    allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(render_result)
+    allow(File).to receive(:read).and_return(markdown)
+    allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(Simpress::Parser::Markdown::Processor::Result.new(html, "cover.jpg", []))
     allow(XXhash).to receive(:xxh64).and_return(999)
   end
 
@@ -39,11 +49,11 @@ describe Simpress::Parser do
       expect(entry.title).to eq "Test Title"
       expect(entry.date).to eq Time.new(2026, 1, 1)
       expect(entry.permalink).to eq "/2026/01/test-entry"
-      expect(entry.content).to eq "<p>This is the description.</p>\n<p>This is the content.</p>"
+      expect(entry.content).to eq html
       expect(entry.toc).to eq []
       expect(entry.description).to eq "This is the description."
       expect(entry.cover).to eq "cover.jpg"
-      expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with("This is the description.\n\nThis is the content.\n")
+      expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with(body)
     end
 
     context "フロントマターに独自キーが指定されている場合" do
@@ -88,8 +98,10 @@ describe Simpress::Parser do
     end
 
     context "フロントマターでcoverとdescriptionが指定されておらず、本文から画像も抽出されなかった場合" do
-      let(:render_result) do
-        Simpress::Parser::Markdown::Processor::Result.new("<p>Hello <strong>world</strong>!</p>", nil, [])
+      before do
+        allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(
+          Simpress::Parser::Markdown::Processor::Result.new("<p>Hello <strong>world</strong>!</p>", nil, [])
+        )
       end
 
       it "coverはデフォルト、descriptionは最初の段落のテキスト(インラインタグ除去)にフォールバックする" do
@@ -122,19 +134,41 @@ describe Simpress::Parser do
     end
 
     context "フロントマターにdateが指定されていない場合" do
-      before do
-        allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\npermalink: /no-date\n---\nbody")
-        allow(File).to receive(:read).with("2026-01-01-from-filename.md").and_return("---\ntitle: From Filename\n---\nbody")
+      context "ファイル名に日付がない場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: No Date
+            permalink: /no-date
+            ---
+            body
+          MD
+        end
+
+        it "dateをnilにしてindexをfalseにする" do
+          entry = described_class.parse("no-date.md")
+
+          expect(entry.date).to be_nil
+          expect(entry.index).to be false
+        end
       end
 
-      it "ファイル名の日付は使わず、dateはnilでindexを強制的にfalseにする" do
-        entry = described_class.parse("no-date.md")
-        from_filename = described_class.parse("2026-01-01-from-filename.md")
+      context "ファイル名に日付がある場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: From Filename
+            ---
+            body
+          MD
+        end
 
-        expect(entry.date).to be_nil
-        expect(entry.index).to be false
-        expect(from_filename.date).to be_nil
-        expect(from_filename.index).to be false
+        it "dateをnilにしてindexをfalseにする" do
+          entry = described_class.parse("2026-01-01-from-filename.md")
+
+          expect(entry.date).to be_nil
+          expect(entry.index).to be false
+        end
       end
     end
 
@@ -153,94 +187,188 @@ describe Simpress::Parser do
 
       before do
         allow(Simpress::Config).to receive(:taxonomies).and_return({ aliases: { categories: { Ruby: "ruby" } } })
-        allow(File).to receive(:read).with("2026-01-02-hidden.md").and_return("---\ntitle: Hidden\ndate: 2026-01-02\nindex: false\ncategories: Ruby\n---\nbody")
-        allow(File).to receive(:read).with("no-date.md").and_return("---\ntitle: No Date\npermalink: /no-date\ncategories: Ruby\n---\nbody")
       end
 
       after do
         Simpress::Taxonomy.clear
       end
 
-      it "indexがtrueならtaxonomiesのtermを持ち、falseまたは日付なしで強制falseならtaxonomiesを持たない" do
-        listed = described_class.parse(file)
-        hidden = described_class.parse("2026-01-02-hidden.md")
-        undated = described_class.parse("no-date.md")
+      it "taxonomiesのtermを持つ" do
+        entry = described_class.parse(file)
 
-        expect(listed.taxonomies["categories"].map(&:name)).to eq ["Ruby"]
-        expect(listed.taxonomies["categories"].first.entries).not_to include(listed)
-        expect(hidden.taxonomies.values).to all(eq [])
-        expect(undated.taxonomies.values).to all(eq [])
+        expect(entry.taxonomies["categories"].map(&:name)).to eq ["Ruby"]
+        expect(entry.taxonomies["categories"].first.entries).not_to include(entry)
+      end
+
+      context "indexがfalseの場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: Hidden
+            date: 2026-01-02
+            index: false
+            categories: Ruby
+            ---
+            body
+          MD
+        end
+
+        it "taxonomiesを持たない" do
+          entry = described_class.parse(file)
+
+          expect(entry.taxonomies.values).to all(eq [])
+        end
+      end
+
+      context "dateが指定されていない場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: No Date
+            permalink: /no-date
+            categories: Ruby
+            ---
+            body
+          MD
+        end
+
+        it "taxonomiesを持たない" do
+          entry = described_class.parse(file)
+
+          expect(entry.taxonomies.values).to all(eq [])
+        end
       end
     end
 
     context "フロントマターでpermalinkが指定されていない場合" do
-      before do
-        allow(File).to receive(:read).with("source/company/about.markdown").and_return("---\ntitle: About\ndate: 2026-01-01\n---\nbody")
-        allow(File).to receive(:read).with("source/contact.markdown").and_return("---\ntitle: Contact\n---\nbody")
+      context "サブディレクトリのファイルの場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: About
+            date: 2026-01-01
+            ---
+            body
+          MD
+        end
+
+        it "ディレクトリとbasenameからpermalinkを生成する" do
+          expect(described_class.parse("source/company/about.markdown").permalink).to eq "/company/about"
+        end
       end
 
-      it "dateを使わず、sourceからのディレクトリとbasenameからpermalinkを生成する" do
-        expect(described_class.parse("source/company/about.markdown").permalink).to eq "/company/about"
-        expect(described_class.parse("source/contact.markdown").permalink).to eq "/contact"
+      context "sourceの直下のファイルの場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: Contact
+            ---
+            body
+          MD
+        end
+
+        it "basenameからpermalinkを生成する" do
+          expect(described_class.parse("source/contact.markdown").permalink).to eq "/contact"
+        end
       end
     end
 
     context "フロントマターでpermalinkが指定されている場合" do
-      let(:markdown) do
-        <<~MD
-          ---
-          title: Test Title
-          permalink: /existing/path
-          ---
-        MD
+      context "sourceの直下のファイルの場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: Test Title
+            permalink: /existing/path
+            ---
+          MD
+        end
+
+        it "そのpermalinkにする" do
+          expect(described_class.parse(file).permalink).to eq "/existing/path"
+        end
       end
 
-      before do
-        allow(File).to receive(:read).with("source/company/about.markdown").and_return("---\ntitle: About\npermalink: /team\n---\nbody")
-        allow(File).to receive(:read).with("source/company/staff.markdown").and_return("---\ntitle: Staff\npermalink: staff/list\n---\nbody")
+      context "先頭にスラッシュがある場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: About
+            permalink: /team
+            ---
+            body
+          MD
+        end
+
+        it "ファイルのディレクトリ配下に配置する" do
+          expect(described_class.parse("source/company/about.markdown").permalink).to eq "/company/team"
+        end
       end
 
-      it "ファイルのディレクトリ配下に配置する(先頭スラッシュの有無は問わない)" do
-        expect(described_class.parse(file).permalink).to eq "/existing/path"
-        expect(described_class.parse("source/company/about.markdown").permalink).to eq "/company/team"
-        expect(described_class.parse("source/company/staff.markdown").permalink).to eq "/company/staff/list"
+      context "先頭にスラッシュがない場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: Staff
+            permalink: staff/list
+            ---
+            body
+          MD
+        end
+
+        it "ファイルのディレクトリ配下に配置する" do
+          expect(described_class.parse("source/company/staff.markdown").permalink).to eq "/company/staff/list"
+        end
       end
     end
 
     context "フロントマターで日付が指定されている場合" do
-      it "Time文字列、Date、String形式の日付を全てTimeにパースする" do
-        time_string_md = <<~MD
-          ---
-          title: Test Title
-          permalink: /2026/01/test-entry
-          date: 2025-01-01 00:00:00
-          ---
-        MD
+      context "Time文字列の場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: Test Title
+            permalink: /2026/01/test-entry
+            date: 2025-01-01 00:00:00
+            ---
+          MD
+        end
 
-        allow(File).to receive(:read).with(file).and_return(time_string_md)
-        expect(described_class.parse(file).date).to be_a(Time)
+        it "Timeにパースする" do
+          expect(described_class.parse(file).date).to be_a(Time)
+        end
+      end
 
-        date_md = <<~MD
-          ---
-          title: Test Title
-          permalink: /2026/01/test-entry
-          date: 2025-01-01
-          ---
-        MD
+      context "Dateの場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: Test Title
+            permalink: /2026/01/test-entry
+            date: 2025-01-01
+            ---
+          MD
+        end
 
-        allow(File).to receive(:read).with(file).and_return(date_md)
-        expect(described_class.parse(file).date).to be_a(Time)
+        it "Timeにパースする" do
+          expect(described_class.parse(file).date).to be_a(Time)
+        end
+      end
 
-        string_md = <<~MD
-          ---
-          title: Test Title
-          permalink: /2026/01/test-entry
-          date: "2025-01-01"
-          ---
-        MD
+      context "String形式の場合" do
+        let(:markdown) do
+          <<~MD
+            ---
+            title: Test Title
+            permalink: /2026/01/test-entry
+            date: "2025-01-01"
+            ---
+          MD
+        end
 
-        allow(File).to receive(:read).with(file).and_return(string_md)
-        expect(described_class.parse(file).date).to be_a(Time)
+        it "Timeにパースする" do
+          expect(described_class.parse(file).date).to be_a(Time)
+        end
       end
     end
   end

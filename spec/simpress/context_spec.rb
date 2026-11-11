@@ -10,19 +10,23 @@ describe Simpress::Context do
   describe ".[]=" do
     it "値を設定する" do
       described_class[:test_key] = "value"
+
       expect(described_class[:test_key]).to eq "value"
     end
   end
 
   describe ".[]" do
-    it "キーが存在しない場合はKeyErrorを発生させる" do
-      expect { described_class[:missing] }.to raise_error(KeyError, "key not found: missing")
+    context "キーが存在しない場合" do
+      it "KeyErrorを発生させる" do
+        expect { described_class[:missing] }.to raise_error(KeyError, "key not found: missing")
+      end
     end
   end
 
   describe ".update" do
     it "マージする" do
       described_class.update(a: 1, b: 2)
+
       expect(described_class[:a]).to eq 1
       expect(described_class[:b]).to eq 2
     end
@@ -31,6 +35,7 @@ describe Simpress::Context do
   describe ".to_h" do
     it "ハッシュを返す" do
       described_class[:key] = "val"
+
       expect(described_class.to_h).to eq({ key: "val" })
     end
   end
@@ -39,6 +44,7 @@ describe Simpress::Context do
     it "データを削除する" do
       described_class[:key] = "val"
       described_class.clear
+
       expect { described_class[:key] }.to raise_error(KeyError)
     end
   end

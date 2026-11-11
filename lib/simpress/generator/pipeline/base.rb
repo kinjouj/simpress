@@ -36,7 +36,7 @@ module Simpress
           def each_page(entries, prefix = nil)
             raise "block is required" unless block_given?
 
-            per_page = Simpress::Config.paginate || 10
+            per_page = Simpress::Config.paginate
             page_size = (entries.size / per_page.to_f).ceil
             entries.each_slice(per_page).with_index(1) do |slice, page|
               paginator = Simpress::Paginator.new(page: page, maxpage: page_size, prefix: prefix)

@@ -27,6 +27,7 @@ describe Simpress do
 
   it "期待どおりの出力ファイルを生成する" do
     described_class.build
+
     expect(Simpress::Logger).to have_received(:verbose).at_least(1).times
     expect(Simpress::Logger).to have_received(:debug).exactly(1).times
     expect(File).to exist(create_filepath("public/count.txt"))
