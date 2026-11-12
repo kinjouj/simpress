@@ -43,24 +43,24 @@ describe Simpress::Plugin do
       FileUtils.remove_entry(plugin_dir)
     end
 
-    context "設定にあるプラグインの場合" do
+    context "when plugin is in config" do
       before do
         allow(Simpress::Config).to receive(:plugins).and_return(["test1"])
       end
 
-      it "プラグインを登録する" do
+      it "registers the plugin" do
         described_class.load
 
         expect(described_class.register_plugins.map(&:name)).to eq ["Simpress::Plugin::Test1"]
       end
     end
 
-    context "設定にないプラグインの場合" do
+    context "when plugin isn't in config" do
       before do
         allow(Simpress::Config).to receive(:plugins).and_return([])
       end
 
-      it "プラグインを登録しない" do
+      it "doesn't register the plugin" do
         described_class.load
 
         expect(described_class.register_plugins).to be_empty
@@ -69,8 +69,8 @@ describe Simpress::Plugin do
   end
 
   describe ".register" do
-    context "プラグインの場合" do
-      it "プラグインを登録する" do
+    context "when a plugin" do
+      it "registers the plugin" do
         klass = Class.new { extend Simpress::Plugin }
         described_class.register(klass)
 
@@ -78,8 +78,8 @@ describe Simpress::Plugin do
       end
     end
 
-    context "Markdownフィルターの場合" do
-      it "Markdownフィルターを登録する" do
+    context "when a Markdown filter" do
+      it "registers the Markdown filter" do
         klass = Class.new { extend Simpress::Parser::Markdown::Filter }
         described_class.register(klass)
 
@@ -87,8 +87,8 @@ describe Simpress::Plugin do
       end
     end
 
-    context "Markdownフィルターを内包するプラグインの場合" do
-      it "プラグインとMarkdownフィルターを登録する" do
+    context "when plugin contains a filter" do
+      it "registers plugin and filter" do
         filter = Class.new { extend Simpress::Parser::Markdown::Filter }
         klass = Class.new { extend Simpress::Plugin }.tap {|plugin| plugin.const_set(:Filter, filter) }
         described_class.register(klass)
@@ -98,8 +98,8 @@ describe Simpress::Plugin do
       end
     end
 
-    context "プラグインでもMarkdownフィルターでもない場合" do
-      it "何も登録しない" do
+    context "when something else" do
+      it "registers nothing" do
         described_class.register(Class.new)
 
         expect(described_class.register_plugins).to be_empty
@@ -109,7 +109,7 @@ describe Simpress::Plugin do
   end
 
   describe ".clear" do
-    it "Markdownフィルターも消す" do
+    it "also clears the Markdown filters" do
       filter_class = Class.new { extend Simpress::Parser::Markdown::Filter }
       Simpress::Parser::Markdown::Filter.register_filters << filter_class
       described_class.clear
@@ -119,7 +119,7 @@ describe Simpress::Plugin do
   end
 
   describe ".process" do
-    context "プラグインが1つの場合" do
+    context "when there is one plugin" do
       before do
         test_plugin = Class.new { extend Simpress::Plugin }
         stub_const("Simpress::Plugin::Test", test_plugin)
@@ -127,14 +127,14 @@ describe Simpress::Plugin do
         allow(Simpress::Plugin::Test).to receive(:run)
       end
 
-      it "プラグインを実行する" do
+      it "runs the plugin" do
         described_class.process([])
 
         expect(Simpress::Plugin::Test).to have_received(:run)
       end
     end
 
-    context "priorityが異なるプラグインの場合" do
+    context "when plugins have different priorities" do
       before do
         high_plugin = Class.new { extend Simpress::Plugin }
         high_plugin.define_singleton_method(:priority) { 10 }
@@ -147,7 +147,7 @@ describe Simpress::Plugin do
         allow(Simpress::Plugin::Low).to receive(:run)
       end
 
-      it "priorityの大きい順に実行する" do
+      it "runs by descending priority" do
         described_class.process([])
 
         expect(Simpress::Plugin::High).to have_received(:run).ordered
@@ -155,7 +155,7 @@ describe Simpress::Plugin do
       end
     end
 
-    it "priorityが同じプラグインは登録順に実行する" do
+    it "runs ties in registration order" do
       calls = []
       plugin_classes = Array.new(10) do |i|
         Class.new do
@@ -173,7 +173,7 @@ describe Simpress::Plugin do
   end
 
   describe "#bind_context" do
-    it "コンテキストを更新する" do
+    it "updates the context" do
       test_klass = Class.new { extend Simpress::Plugin }
       test_klass.bind_context(plugin_key: "value")
 
@@ -182,7 +182,7 @@ describe Simpress::Plugin do
   end
 
   describe "#priority" do
-    it "1を返す" do
+    it "returns 1" do
       test_klass = Class.new { extend Simpress::Plugin }
 
       expect(test_klass.priority).to eq 1
@@ -190,7 +190,7 @@ describe Simpress::Plugin do
   end
 
   describe "#run" do
-    it "NotImplementedErrorを発生させる" do
+    it "raises NotImplementedError" do
       test_klass = Class.new { extend Simpress::Plugin }
 
       expect { test_klass.run }.to raise_error(NotImplementedError)

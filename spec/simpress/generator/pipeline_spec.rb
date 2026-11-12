@@ -13,8 +13,8 @@ describe Simpress::Generator::Pipeline do
     allow(Simpress::Taxonomy).to receive(:taxonomies).and_return([taxonomy])
     allow(Simpress::Generator::Pipeline::Permalink).to receive(:generate)
     allow(Simpress::Generator::Pipeline::Archive::EntryIndex).to receive(:generate)
-    allow(Simpress::Generator::Pipeline::Archive::Monthly).to receive(:generate)
-    allow(Simpress::Generator::Pipeline::Archive::Taxonomy).to receive(:generate)
+    allow(Simpress::Generator::Pipeline::Archive::MonthlyIndex).to receive(:generate)
+    allow(Simpress::Generator::Pipeline::Archive::TaxonomyIndex).to receive(:generate)
   end
 
   after do
@@ -34,14 +34,14 @@ describe Simpress::Generator::Pipeline do
       [entry1, entry2]
     end
 
-    it "各パイプラインを実行する" do
+    it "runs each pipeline" do
       described_class.generate(entries)
 
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry1)
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry2)
-      expect(Simpress::Generator::Pipeline::Archive::Monthly).to have_received(:generate).with({ [2026, 1] => [entry1, entry2] })
+      expect(Simpress::Generator::Pipeline::Archive::MonthlyIndex).to have_received(:generate).with({ [2026, 1] => [entry1, entry2] })
       expect(Simpress::Generator::Pipeline::Archive::EntryIndex).to have_received(:generate).with(entries)
-      expect(Simpress::Generator::Pipeline::Archive::Taxonomy).to have_received(:generate).with([taxonomy])
+      expect(Simpress::Generator::Pipeline::Archive::TaxonomyIndex).to have_received(:generate).with([taxonomy])
     end
   end
 end

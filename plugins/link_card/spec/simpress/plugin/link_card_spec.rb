@@ -8,19 +8,19 @@ describe Simpress::Plugin::LinkCard do
       build(
         :entry,
         permalink: "/target.html",
-        title: "対象タイトル",
-        description: "対象の説明文",
+        title: "Target Title",
+        description: "Target description",
         cover: "/images/target.webp",
-        content: +"<p>対象本文</p>"
+        content: +"<p>Target body</p>"
       )
     end
 
-    context "リンク先のエントリが存在する場合" do
+    context "when the linked entry exists" do
       let(:content) do
         <<~HTML
-          <p>前</p>
+          <p>Before</p>
           <!--link-card:/target.html-->
-          <p>後</p>
+          <p>After</p>
         HTML
       end
 
@@ -28,24 +28,24 @@ describe Simpress::Plugin::LinkCard do
         build(:entry, permalink: "/source.html", content: content.dup)
       end
 
-      it "カードに置き換える" do
+      it "replaces with a card" do
         described_class.run([source, target])
 
         expect(source.content).to include(
-          "<p>前</p>",
-          "<p>後</p>",
+          "<p>Before</p>",
+          "<p>After</p>",
           '<a href="/target.html">',
           '<img src="/images/target.webp" alt="" />',
-          "<span>対象タイトル</span>",
-          "<span>対象の説明文</span>"
+          "<span>Target Title</span>",
+          "<span>Target description</span>"
         )
         expect(source.content).not_to include("<!--link-card")
       end
     end
 
-    context "複数のエントリや複数の目印がある場合" do
+    context "when multiple markers exist" do
       let(:other) do
-        build(:entry, permalink: "/other.html", title: "別タイトル", content: +"<p>別本文</p>")
+        build(:entry, permalink: "/other.html", title: "Other Title", content: +"<p>Other body</p>")
       end
 
       let(:content1) do
@@ -67,21 +67,21 @@ describe Simpress::Plugin::LinkCard do
         )
       end
 
-      it "それぞれカードに置き換える" do
+      it "replaces each with a card" do
         described_class.run([source1, source2, target, other])
 
-        expect(source1.content).to include("<span>対象タイトル</span>", "<span>別タイトル</span>")
-        expect(source2.content).to include("<span>対象タイトル</span>")
+        expect(source1.content).to include("<span>Target Title</span>", "<span>Other Title</span>")
+        expect(source2.content).to include("<span>Target Title</span>")
         expect([source1, source2].map(&:content).join).not_to include("<!--link-card")
       end
     end
 
-    context "リンク先のエントリが存在しない場合" do
+    context "when linked entry doesn't exist" do
       let(:content) do
         <<~HTML
-          <p>前</p>
+          <p>Before</p>
           <!--link-card:/missing.html-->
-          <p>後</p>
+          <p>After</p>
         HTML
       end
 
@@ -89,38 +89,38 @@ describe Simpress::Plugin::LinkCard do
         build(:entry, permalink: "/source.html", content: content.dup)
       end
 
-      it "置き換えない" do
+      it "doesn't replace" do
         described_class.run([source, target])
 
         expect(source.content).to eq content
       end
     end
 
-    context "目印がないエントリの場合" do
+    context "when the entry lacks markers" do
       let(:source) do
-        build(:entry, permalink: "/source.html", content: +"<p>本文</p>")
+        build(:entry, permalink: "/source.html", content: +"<p>Body</p>")
       end
 
-      it "contentを変更しない" do
+      it "doesn't change the content" do
         described_class.run([source, target])
 
-        expect(source.content).to eq "<p>本文</p>"
+        expect(source.content).to eq "<p>Body</p>"
       end
     end
 
-    context "パーマリンクの末尾にハイフンがある場合" do
+    context "when permalink ends with hyphen" do
       let(:hyphen) do
-        build(:entry, permalink: "/hyphen-", title: "ハイフンタイトル", content: +"<p>本文</p>")
+        build(:entry, permalink: "/hyphen-", title: "Hyphen Title", content: +"<p>Body</p>")
       end
 
       let(:source) do
         build(:entry, permalink: "/source.html", content: +"<!--link-card:/hyphen--->")
       end
 
-      it "カードに置き換える" do
+      it "replaces with a card" do
         described_class.run([source, hyphen])
 
-        expect(source.content).to include('<a href="/hyphen-">', "<span>ハイフンタイトル</span>")
+        expect(source.content).to include('<a href="/hyphen-">', "<span>Hyphen Title</span>")
         expect(source.content).not_to include("<!--link-card")
       end
     end
@@ -131,65 +131,65 @@ describe Simpress::Plugin::LinkCard do
       described_class::Filter
     end
 
-    context "単独行の内部リンクの場合" do
+    context "when a standalone link" do
       let(:markdown) do
         <<~MARKDOWN
-          前の文章
+          Text before
 
           [](/first.html)
           [](/second/page.html)
 
-          後の文章
+          Text after
         MARKDOWN
       end
 
       let(:expected) do
         <<~MARKDOWN
-          前の文章
+          Text before
 
           <!--link-card:/first.html-->
           <!--link-card:/second/page.html-->
 
-          後の文章
+          Text after
         MARKDOWN
       end
 
-      it "目印のコメントに変換する" do
+      it "converts to a marker" do
         expect(filter.preprocess(markdown)).to eq expected
       end
     end
 
-    context "変換対象ではない場合" do
-      context "ラベル付きのリンクの場合" do
-        it "変換しない" do
-          data = "[ラベル](/label.html)"
+    context "when not a conversion target" do
+      context "when the link has label" do
+        it "doesn't convert" do
+          data = "[Label](/label.html)"
           expect(filter.preprocess(data)).to eq data
         end
       end
 
-      context "外部URLの場合" do
-        it "変換しない" do
+      context "when an external URL" do
+        it "doesn't convert" do
           data = "[](https://example.com/page.html)"
           expect(filter.preprocess(data)).to eq data
         end
       end
 
-      context "前に文字がある場合" do
-        it "変換しない" do
+      context "when text precedes link" do
+        it "doesn't convert" do
           data = "abc[](/inline.html)"
           expect(filter.preprocess(data)).to eq data
         end
       end
 
-      context "後ろに文字がある場合" do
-        it "変換しない" do
+      context "when text follows link" do
+        it "doesn't convert" do
           data = "[](/inline.html)abc"
           expect(filter.preprocess(data)).to eq data
         end
       end
 
-      context "パスに空白がある場合" do
-        it "変換しない" do
+      context "when path contains a space" do
+        it "doesn't convert" do
           data = "[](/with space.html)"
           expect(filter.preprocess(data)).to eq data
         end

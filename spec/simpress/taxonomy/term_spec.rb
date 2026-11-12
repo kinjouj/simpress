@@ -8,7 +8,7 @@ describe Simpress::Taxonomy::Term do
   end
 
   describe "#initialize" do
-    it "プロパティを設定する" do
+    it "sets the properties" do
       expect(term.key).to eq "ruby-on-rails"
       expect(term.name).to eq "Ruby on Rails"
       expect(term.entries).to eq []
@@ -17,7 +17,7 @@ describe Simpress::Taxonomy::Term do
   end
 
   describe "#initialize_copy" do
-    it "children配列をディープコピーする" do
+    it "deep copies the children array" do
       child_term = described_class.new("Child")
       term.children << child_term
       copy = term.dup
@@ -32,29 +32,29 @@ describe Simpress::Taxonomy::Term do
       allow(term.entries).to receive(:size).and_return(5)
     end
 
-    it "関連付けられたエントリの数を返す" do
+    it "returns the entry count" do
       expect(term.count).to eq 5
     end
   end
 
   describe "#to_h" do
-    context "オプションが指定されない場合" do
-      it "デフォルトのキーを返す" do
+    context "when no options are given" do
+      it "returns the default keys" do
         result = term.to_h
 
         expect(result.keys).to contain_exactly(:key, :name)
       end
     end
 
-    context "許可済みキーが指定された場合" do
-      it "要求されたキーを返す" do
+    context "when allowed keys are given" do
+      it "returns the requested keys" do
         result = term.to_h(keys: [:key, :count])
 
         expect(result.keys).to contain_exactly(:key, :count)
       end
     end
 
-    context "childrenを持つ場合" do
+    context "when children exist" do
       let(:child_term) do
         described_class.new("Child")
       end
@@ -63,7 +63,7 @@ describe Simpress::Taxonomy::Term do
         term.children << child_term
       end
 
-      it "childrenもハッシュに変換して返す" do
+      it "converts children to hashes" do
         result = term.to_h(keys: [:name, :children])
 
         expect(result[:children]).to eq [{ name: "Child", children: [] }]
@@ -72,7 +72,7 @@ describe Simpress::Taxonomy::Term do
   end
 
   describe "#to_json" do
-    it "keyとnameのJSON文字列を返す" do
+    it "returns key and name JSON" do
       result = term.to_json
 
       expect(result).to eq '{"key":"ruby-on-rails","name":"Ruby on Rails"}'
@@ -80,28 +80,28 @@ describe Simpress::Taxonomy::Term do
   end
 
   describe "#eql?" do
-    context "同じkeyとnameを持つTermの場合" do
+    context "when key and name match" do
       let(:other) do
         described_class.new("Ruby on Rails")
       end
 
-      it "trueを返す" do
+      it "returns true" do
         expect(term.eql?(other)).to be true
       end
     end
 
-    context "keyまたはnameが異なる場合" do
+    context "when key or name differs" do
       let(:other) do
         described_class.new("Other")
       end
 
-      it "falseを返す" do
+      it "returns false" do
         expect(term.eql?(other)).to be false
       end
     end
 
-    context "Termではない場合" do
-      it "falseを返す" do
+    context "when not a Term" do
+      it "returns false" do
         expect(term.eql?("string")).to be false
       end
     end

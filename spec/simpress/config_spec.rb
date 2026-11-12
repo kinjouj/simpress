@@ -17,7 +17,7 @@ describe Simpress::Config do
   end
 
   describe ".instance" do
-    it "設定ファイルを読み込む" do
+    it "loads the config file" do
       config = described_class.instance
 
       expect(config.mode).to eq "html"
@@ -28,14 +28,14 @@ describe Simpress::Config do
       expect(config.taxonomies).to eq taxonomies
     end
 
-    context "設定が省略された場合" do
+    context "when settings are omitted" do
       before do
         allow(Psych).to receive(:load_file).with(Simpress::Config::CONFIG_FILE, any_args).and_return(
           { default: { host: "https://example.com" } }
         )
       end
 
-      it "既定値を返す" do
+      it "returns the default values" do
         config = described_class.instance
 
         expect(config.mode).to eq "html"
@@ -48,7 +48,7 @@ describe Simpress::Config do
   end
 
   describe ".clear" do
-    it "新しいインスタンスを返す" do
+    it "returns a new instance" do
       obj = described_class.instance
       described_class.clear
 
@@ -57,22 +57,22 @@ describe Simpress::Config do
   end
 
   describe "#taxonomies" do
-    context "taxonomies.yamlが存在しない場合" do
+    context "when taxonomies.yaml doesn't exist" do
       before do
         allow(File).to receive(:exist?).with(Simpress::Config::TAXONOMIES_FILE).and_return(false)
       end
 
-      it "空のハッシュを返す" do
+      it "returns an empty hash" do
         expect(described_class.instance.taxonomies).to eq({})
       end
     end
 
-    context "taxonomies.yamlが空の場合" do
+    context "when taxonomies.yaml is empty" do
       before do
         allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE, any_args).and_return(nil)
       end
 
-      it "空のハッシュを返す" do
+      it "returns an empty hash" do
         expect(described_class.instance.taxonomies).to eq({})
       end
     end

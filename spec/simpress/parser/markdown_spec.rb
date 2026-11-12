@@ -19,7 +19,7 @@ describe Simpress::Parser::Markdown do
       allow(File).to receive(:read).and_return(markdown)
     end
 
-    it "ヘッダーと本文を返す" do
+    it "returns the header and body" do
       header, result_body = described_class.parse("test.markdown")
 
       expect(header[:title]).to eq "test"
@@ -27,19 +27,19 @@ describe Simpress::Parser::Markdown do
       expect(result_body.strip).to eq "TEST MARKDOWN"
     end
 
-    context "フロントマターがない場合" do
+    context "when front matter is missing" do
       let(:markdown) do
         <<~MARKDOWN
           No front matter here
         MARKDOWN
       end
 
-      it "ファイル名付きのエラーを発生させる" do
+      it "raises error with file name" do
         expect { described_class.parse("test.markdown") }.to raise_error("Markdown parse failed: test.markdown")
       end
     end
 
-    context "フロントマターが空の場合" do
+    context "when front matter is empty" do
       let(:markdown) do
         <<~MARKDOWN
           ---
@@ -48,12 +48,12 @@ describe Simpress::Parser::Markdown do
         MARKDOWN
       end
 
-      it "ファイル名付きのエラーを発生させる" do
+      it "raises error with file name" do
         expect { described_class.parse("test.markdown") }.to raise_error("Front matter must be a mapping: test.markdown")
       end
     end
 
-    context "フロントマターがHashでない場合" do
+    context "when front matter isn't Hash" do
       let(:markdown) do
         <<~MARKDOWN
           ---
@@ -64,12 +64,12 @@ describe Simpress::Parser::Markdown do
         MARKDOWN
       end
 
-      it "ファイル名付きのエラーを発生させる" do
+      it "raises error with file name" do
         expect { described_class.parse("test.markdown") }.to raise_error("Front matter must be a mapping: test.markdown")
       end
     end
 
-    context "フロントマターのYAMLが不正な場合" do
+    context "when YAML front matter invalid" do
       let(:markdown) do
         <<~MARKDOWN
           ---
@@ -79,7 +79,7 @@ describe Simpress::Parser::Markdown do
         MARKDOWN
       end
 
-      it "ファイル名付きのエラーを発生させる" do
+      it "raises error with file name" do
         expect { described_class.parse("test.markdown") }.to raise_error(Psych::SyntaxError, /test\.markdown/)
       end
     end

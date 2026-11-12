@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "simpress/entry"
-require "simpress/generator/pipeline/archive/monthly"
+require "simpress/generator/pipeline/archive/monthly_index"
 
-describe Simpress::Generator::Pipeline::Archive::Monthly do
+describe Simpress::Generator::Pipeline::Archive::MonthlyIndex do
   let(:entry) do
     build(:entry)
   end
@@ -12,12 +12,12 @@ describe Simpress::Generator::Pipeline::Archive::Monthly do
     { [2026, 1] => [entry] }
   end
 
-  let(:verbose_messages) do
-    []
+  before do
+    allow(Simpress::Config).to receive(:logging).and_return(true)
   end
 
-  before do
-    allow(Simpress::Logger).to receive(:verbose) {|&block| verbose_messages << block.call }
+  after do
+    Simpress::Logger.clear
   end
 
   describe ".generate_html" do
@@ -26,12 +26,10 @@ describe Simpress::Generator::Pipeline::Archive::Monthly do
       allow(Simpress::Writer).to receive(:write).and_yield("public/archives/2026/01/index.html")
     end
 
-    it "/archives/2026/01/index.htmlとして出力する" do
-      described_class.generate_html(monthly_archives)
-
+    it "/archives/2026/01/index.html is generated" do
+      expect { described_class.generate_html(monthly_archives) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/2026/01/index\.html}).to_stdout_from_any_process
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/index.html", "<html>content</html>")
-      expect(verbose_messages).to include("[BUILD ARCHIVE]: public/archives/2026/01/index.html")
     end
   end
 
@@ -44,11 +42,9 @@ describe Simpress::Generator::Pipeline::Archive::Monthly do
       allow(Simpress::Writer).to receive(:write).with("/archives/2026/01/1.json", anything).and_yield("public/archives/2026/01/1.json")
     end
 
-    it "/archives/2026/01/1.jsonとして出力する" do
-      described_class.generate_json(monthly_archives)
-
+    it "/archives/2026/01/1.json is generated" do
+      expect { described_class.generate_json(monthly_archives) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/2026/01/1\.json}).to_stdout_from_any_process
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/1.json", expected_index_json)
-      expect(verbose_messages).to include("[BUILD ARCHIVE]: public/archives/2026/01/1.json")
     end
   end
 end

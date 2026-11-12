@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "simpress/generator/pipeline/permalink"
-require "simpress/generator/pipeline/archive/monthly"
 require "simpress/generator/pipeline/archive/entry_index"
-require "simpress/generator/pipeline/archive/taxonomy"
+require "simpress/generator/pipeline/archive/monthly_index"
+require "simpress/generator/pipeline/archive/taxonomy_index"
 require "simpress/paginator"
 
 module Simpress
@@ -21,8 +21,8 @@ module Simpress
         end
 
         Simpress::Generator::Pipeline::Archive::EntryIndex.generate(index_entries)
-        Simpress::Generator::Pipeline::Archive::Monthly.generate(monthly_entries)
-        Simpress::Generator::Pipeline::Archive::Taxonomy.generate(Simpress::Taxonomy.taxonomies)
+        Simpress::Generator::Pipeline::Archive::MonthlyIndex.generate(monthly_entries)
+        Simpress::Generator::Pipeline::Archive::TaxonomyIndex.generate(Simpress::Taxonomy.taxonomies)
       end
     end
   end

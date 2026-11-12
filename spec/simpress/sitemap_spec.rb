@@ -9,13 +9,13 @@ describe Simpress::Sitemap do
   end
 
   describe ".build" do
-    context "ブロックが渡されない場合" do
-      it "エラーを発生させる" do
+    context "when no block is given" do
+      it "raises an error" do
         expect { described_class.build("https://example.com") }.to raise_error("block is required")
       end
     end
 
-    it "ブロックの内容でsitemap.xmlを書き出す" do
+    it "writes sitemap.xml from the block" do
       described_class.build("https://example.com") { url(file: "index.html", lastmod: "2026-01-01") }
 
       expect(Simpress::Writer).to have_received(:write).with("sitemap.xml", anything)
@@ -23,7 +23,7 @@ describe Simpress::Sitemap do
   end
 
   describe "#url" do
-    it "loc要素とlastmod要素とchangefreq属性を含む" do
+    it "includes loc, lastmod and changefreq" do
       sitemap = described_class.send(:new, "https://example.com")
       sitemap.url(file: "test.html", lastmod: "2026-01-01", changefreq: "daily")
       xml = Ox.dump(sitemap.instance_variable_get(:@doc))
@@ -35,11 +35,10 @@ describe Simpress::Sitemap do
   end
 
   describe "#write" do
-    it "sitemap.xmlを書き出して件数を出力する" do
+    it "writes sitemap.xml and prints count" do
       sitemap = described_class.send(:new, "https://example.com")
       sitemap.url(file: "page1.html", lastmod: "2026-01-01")
       sitemap.url(file: "page2.html", lastmod: "2026-01-01")
-
       sitemap.write
 
       expect(Simpress::Writer).to have_received(:write).with("sitemap.xml", instance_of(String))
