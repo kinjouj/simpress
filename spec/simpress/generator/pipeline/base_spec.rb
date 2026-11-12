@@ -11,37 +11,37 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".generate" do
-    context "modeがhtmlの場合" do
+    context "when mode is html" do
       before do
         allow(described_class).to receive(:generate_html)
       end
 
-      it "HTMLを生成する" do
+      it "generates HTML" do
         described_class.generate(:arg)
 
         expect(described_class).to have_received(:generate_html).with(:arg)
       end
     end
 
-    context "modeがjsonの場合" do
+    context "when mode is json" do
       before do
         allow(Simpress::Config).to receive(:mode).and_return("json")
         allow(described_class).to receive(:generate_json)
       end
 
-      it "JSONを生成する" do
+      it "generates JSON" do
         described_class.generate(:arg)
 
         expect(described_class).to have_received(:generate_json).with(:arg)
       end
     end
 
-    context "modeがhtml or jsonではない場合" do
+    context "when mode is unsupported" do
       before do
         allow(Simpress::Config).to receive(:mode).and_return("unknown")
       end
 
-      it "エラーを発生させる" do
+      it "raises an error" do
         expect { described_class.generate }.to raise_error("Unknown mode: unknown")
       end
     end
@@ -52,22 +52,22 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Config).to receive(:paginate).and_return(2)
     end
 
-    it "ページごとに分けて渡す" do
+    it "yields entries page by page" do
       expect {|b| described_class.each_page([1, 2, 3], "blog", &b) }.to yield_successive_args(
         [[1, 2], have_attributes(page: 1)],
         [[3], have_attributes(page: 2)]
       )
     end
 
-    context "ブロックが渡されない場合" do
-      it "エラーを発生させる" do
+    context "when no block is given" do
+      it "raises an error" do
         expect { described_class.each_page([]) }.to raise_error("block is required")
       end
     end
   end
 
   describe ".path" do
-    it "Pathを返す" do
+    it "returns a Path" do
       result = described_class.path("test")
 
       expect(result).to be_a(Simpress::Path)
@@ -76,7 +76,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".write_html" do
-    it "index.htmlとして出力する" do
+    it "index.html is generated" do
       context = { entries: [] }
       described_class.write_html("index", template: "layout", **context)
 
@@ -86,7 +86,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".write_json" do
-    it "api/data.jsonとして出力する" do
+    it "api/data.json is generated" do
       data = { key: "value" }
       described_class.write_json("api/data", data)
 
@@ -100,7 +100,7 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Writer).to receive(:write) {|path, _data, &block| block&.call(path) }
     end
 
-    it "file.txtとして出力する" do
+    it "file.txt is generated" do
       expect {|b| described_class.write("file", "content", "txt", &b) }.to yield_with_args("file.txt")
       expect(Simpress::Writer).to have_received(:write).with("file.txt", "content")
     end

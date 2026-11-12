@@ -8,8 +8,8 @@ describe Simpress::Theme::Helper do
   end
 
   describe ".included" do
-    context "モジュールにincludeした場合" do
-      it "テーマのヘルパーとして使えるようにする" do
+    context "when included in a module" do
+      it "works as a theme helper" do
         Module.new do
           def test_helper
             "test_helper"
@@ -24,7 +24,7 @@ describe Simpress::Theme::Helper do
   end
 
   describe "#encode_json" do
-    it "JSON文字列を返す" do
+    it "returns a JSON string" do
       data = { key: "value" }
 
       expect(helper.encode_json(data)).to eq '{"key":"value"}'
@@ -36,45 +36,45 @@ describe Simpress::Theme::Helper do
       allow(Simpress::Config).to receive(:host).and_return("https://example.com")
     end
 
-    it "ルートのパスから絶対URLを返す" do
+    it "returns absolute URL for root" do
       expect(helper.absolute_url("/")).to eq "https://example.com/"
     end
 
-    it "ファイルのパスから絶対URLを返す" do
+    it "returns absolute URL for file" do
       expect(helper.absolute_url("/images/cover.webp")).to eq "https://example.com/images/cover.webp"
     end
 
-    it "uriの結果から絶対URLを返す" do
+    it "returns absolute URL from uri" do
       expect(helper.absolute_url(helper.uri("/entry-1"))).to eq "https://example.com/entry-1.html"
     end
   end
 
   describe "#uri" do
-    it "パスをラップしてhtml拡張子を保証する" do
+    it "wraps path and ensures .html" do
       expect(helper.uri("/test").to_s).to eq "/test.html"
     end
   end
 
   describe "#flatten_toc" do
-    it "空のtocに対しては空配列を返す" do
+    it "returns an empty array" do
       expect(helper.flatten_toc([])).to eq []
     end
 
-    it "フラットな見出しリストにはdepth 0を割り当てる" do
+    it "gives flat headings depth 0" do
       headings = [{ id: "section-1", text: "First", children: [] }]
       result = helper.flatten_toc(headings)
 
       expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }]
     end
 
-    it "兄弟の見出しを同じdepthで順序を保ったまま保持する" do
+    it "keeps sibling headings in order" do
       headings = [{ id: "section-1", text: "First", children: [] }, { id: "section-2", text: "Second", children: [] }]
       result = helper.flatten_toc(headings)
 
       expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }, { id: "section-2", text: "Second", depth: 0 }]
     end
 
-    it "子を親の直後にdepthをインクリメントして配置する" do
+    it "places children after parent" do
       child = { id: "section-2", text: "Child" }
       parent = { id: "section-1", text: "Parent", children: [child] }
       result = helper.flatten_toc([parent])

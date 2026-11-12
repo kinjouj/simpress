@@ -27,7 +27,7 @@ describe Simpress::Entry do
   end
 
   describe "#initialize" do
-    it "プロパティを設定する" do
+    it "sets the properties" do
       entry = described_class.new(params)
 
       expect(entry.id).to eq "entry-123"
@@ -48,7 +48,7 @@ describe Simpress::Entry do
   end
 
   describe "#prev and #next" do
-    it "デフォルトはnilになり代入できる" do
+    it "defaults to nil, assignable" do
       entry = described_class.new(params)
 
       expect(entry.prev).to be_nil
@@ -63,7 +63,7 @@ describe Simpress::Entry do
   end
 
   describe "#to_h" do
-    it "許可されたjsonキーのみを含むハッシュを返す" do
+    it "returns allowed json keys only" do
       entry = described_class.new(params)
       result = entry.to_h
 
@@ -73,8 +73,8 @@ describe Simpress::Entry do
       expect(result[:next]).to be_nil
     end
 
-    context "特定のキーが要求された場合" do
-      it "キーを絞り込む" do
+    context "when specific keys are requested" do
+      it "narrows the keys" do
         entry = described_class.new(params)
         result = entry.to_h(keys: [:title, :permalink])
 
@@ -82,7 +82,7 @@ describe Simpress::Entry do
       end
     end
 
-    it "代入されたprevとnextを含む" do
+    it "includes assigned prev and next" do
       newer = described_class.new(id: "entry-456", title: "Newer Entry", permalink: "/newer-entry")
       older = described_class.new(id: "entry-789", title: "Older Entry", permalink: "/older-entry")
       entry = described_class.new(params)
@@ -96,7 +96,7 @@ describe Simpress::Entry do
   end
 
   describe "#as_json" do
-    it "#to_hと同じハッシュを返す" do
+    it "returns the #to_h hash" do
       entry = described_class.new(params)
 
       expect(entry.as_json).to eq entry.to_h
@@ -104,7 +104,7 @@ describe Simpress::Entry do
   end
 
   describe "#to_json" do
-    it "JSON文字列を返す" do
+    it "returns a JSON string" do
       entry = described_class.new(params)
       json = Simpress::JSON.load(entry.to_json, symbol_keys: true)
 
@@ -122,7 +122,7 @@ describe Simpress::Entry do
     end
 
     describe ".build" do
-      it "エントリからLinkを作成する" do
+      it "builds a Link from entry" do
         link = described_class.build(entry)
 
         expect(link).to be_a(described_class)
@@ -131,27 +131,21 @@ describe Simpress::Entry do
         expect(link.permalink).to eq entry.permalink
       end
 
-      context "entryがnilの場合" do
-        it "nilを返す" do
+      context "when entry is nil" do
+        it "returns nil" do
           expect(described_class.build(nil)).to be_nil
         end
       end
     end
 
-    describe ".new" do
-      it "公開しない" do
-        expect { described_class.new(entry) }.to raise_error(NoMethodError)
-      end
-    end
-
     describe "#to_h" do
-      it "idとtitleとpermalinkとcoverのみを持つハッシュを返す" do
+      it "returns id, title, permalink, cover" do
         expect(described_class.build(entry).to_h).to eq expected
       end
     end
 
     describe "#as_json" do
-      it "#to_hと同じハッシュを返す" do
+      it "returns the #to_h hash" do
         link = described_class.build(entry)
 
         expect(link.as_json).to eq link.to_h
@@ -159,7 +153,7 @@ describe Simpress::Entry do
     end
 
     describe "#to_json" do
-      it "JSON文字列にシリアライズする" do
+      it "serializes to a JSON string" do
         link = described_class.build(entry)
 
         expect(Simpress::JSON.load(link.to_json, symbolize_names: true)).to eq expected

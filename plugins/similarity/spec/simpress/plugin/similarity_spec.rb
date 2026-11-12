@@ -130,7 +130,7 @@ describe Simpress::Plugin::Similarity do
     ]
   end
 
-  it "類似エントリを設定する" do
+  it "sets similar entries" do
     described_class.run(entries)
 
     expect(entries[0]).to respond_to(:similarities)
@@ -155,12 +155,12 @@ describe Simpress::Plugin::Similarity do
     expect(entries[4].similarities.map(&:id)).to contain_exactly("entry_004", "entry_002")
   end
 
-  context "indexがfalseのエントリが含まれる場合" do
+  context "when index false entries included" do
     let(:hidden) do
       build(:entry, id: "hidden", title: entries[0].title, markdown: entries[0].markdown, permalink: "/hidden.html", index: false)
     end
 
-    it "対象にしない" do
+    it "excludes them" do
       all = [hidden, *entries]
       described_class.run(all)
 
@@ -170,34 +170,34 @@ describe Simpress::Plugin::Similarity do
     end
   end
 
-  context "類似するエントリがない場合" do
+  context "when nothing is similar" do
     before do
       indexer = Simpress::Plugin::Similarity::Indexer.new(entries)
       allow(indexer).to receive(:each_similarity) {|&block| entries.size.times {|i| block.call([], i) } }
       allow(Simpress::Plugin::Similarity::Indexer).to receive(:new).and_return(indexer)
     end
 
-    it "similaritiesが空になる" do
+    it "leaves similarities empty" do
       described_class.run(entries)
       entries.each {|entry| expect(entry.similarities).to be_empty }
     end
   end
 
-  context "modeがjsonの場合" do
+  context "when mode is json" do
     before do
       allow(Simpress::Config).to receive(:mode).and_return("json")
     end
 
-    context "keysにcontentを含む場合" do
-      it "similaritiesを含む" do
+    context "when keys include content" do
+      it "includes similarities" do
         described_class.run(entries)
 
         expect(entries[0].to_h(keys: [:title, :content])).to include(:similarities)
       end
     end
 
-    context "keysにcontentを含まない場合" do
-      it "similaritiesを含まない" do
+    context "when keys don't include content" do
+      it "doesn't include similarities" do
         described_class.run(entries)
 
         expect(entries[0].to_h(keys: [:title])).not_to include(:similarities)

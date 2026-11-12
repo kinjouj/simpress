@@ -26,7 +26,7 @@ describe Simpress::Parser::Markdown::Processor do
   end
 
   describe ".render" do
-    it "contentとtocとcoverを持つResultを返す" do
+    it "returns content, toc and cover" do
       result = described_class.render(markdown1)
 
       expect(result.content).to include("Hello")
@@ -37,7 +37,7 @@ describe Simpress::Parser::Markdown::Processor do
       expect(result.toc.first[:children]).to eq [{ id: "section-2", text: "Sub" }]
     end
 
-    it "前回のレンダリングの状態を引き継がない" do
+    it "doesn't keep previous state" do
       described_class.render(markdown1)
       result = described_class.render(markdown2)
 

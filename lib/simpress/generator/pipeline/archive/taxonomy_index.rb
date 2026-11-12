@@ -7,7 +7,7 @@ module Simpress
   module Generator
     module Pipeline
       module Archive
-        class Taxonomy < Simpress::Generator::Pipeline::Archive::Base
+        class TaxonomyIndex < Simpress::Generator::Pipeline::Archive::Base
           def self.generate_html(taxonomies)
             taxonomies.each do |taxonomy|
               taxonomy.terms.each_value do |term|

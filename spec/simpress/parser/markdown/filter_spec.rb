@@ -8,7 +8,7 @@ describe Simpress::Parser::Markdown::Filter do
   end
 
   describe ".apply_preprocess" do
-    it "順に適用する" do
+    it "applies filters in order" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
@@ -30,7 +30,7 @@ describe Simpress::Parser::Markdown::Filter do
       expect(described_class.apply_preprocess("Base")).to eq "Base + Filter1 + Filter2"
     end
 
-    it "文字列以外は無視する" do
+    it "ignores non-string values" do
       filter = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
@@ -46,7 +46,7 @@ describe Simpress::Parser::Markdown::Filter do
   end
 
   describe ".apply_postprocess" do
-    it "順に適用する" do
+    it "applies filters in order" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
@@ -70,7 +70,7 @@ describe Simpress::Parser::Markdown::Filter do
   end
 
   describe ".clear" do
-    it "登録を消す" do
+    it "clears the registered filters" do
       filter = Class.new do
         extend Simpress::Parser::Markdown::Filter
       end

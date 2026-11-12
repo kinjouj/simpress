@@ -2,9 +2,9 @@
 
 require "simpress/entry"
 require "simpress/taxonomy"
-require "simpress/generator/pipeline/archive/taxonomy"
+require "simpress/generator/pipeline/archive/taxonomy_index"
 
-describe Simpress::Generator::Pipeline::Archive::Taxonomy do
+describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
   let!(:entry) do
     build(:entry, categories: ["Ruby"]).tap {|e| Simpress::Taxonomy.register(e.taxonomies, e) }
   end
@@ -13,13 +13,13 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
     Simpress::Taxonomy.taxonomies
   end
 
-  let(:verbose_messages) do
-    []
-  end
-
   before do
     Simpress::Taxonomy.clear
-    allow(Simpress::Logger).to receive(:verbose) {|&block| verbose_messages << block.call }
+    allow(Simpress::Config).to receive(:logging).and_return(true)
+  end
+
+  after do
+    Simpress::Logger.clear
   end
 
   describe ".generate_html" do
@@ -28,12 +28,10 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
       allow(Simpress::Writer).to receive(:write).and_yield("public/archives/categories/ruby/index.html")
     end
 
-    it "各termについてHTMLをレンダリングして書き出す" do
-      described_class.generate_html(taxonomies)
-
+    it "/archives/categories/ruby/index.html is generated" do
+      expect { described_class.generate_html(taxonomies) }.to output(%r{\[BUILD CATEGORY\]: public/archives/categories/ruby/index\.html}).to_stdout_from_any_process
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/index.html", "<html>content</html>")
-      expect(verbose_messages).to include("[BUILD CATEGORY]: public/archives/categories/ruby/index.html")
     end
   end
 
@@ -46,11 +44,9 @@ describe Simpress::Generator::Pipeline::Archive::Taxonomy do
       allow(Simpress::Writer).to receive(:write).with("/archives/categories/ruby/1.json", anything).and_yield("public/archives/categories/ruby/1.json")
     end
 
-    it "各termについてJSONを書き出す" do
-      described_class.generate_json(taxonomies)
-
+    it "/archives/categories/ruby/1.json is generated" do
+      expect { described_class.generate_json(taxonomies) }.to output(%r{\[BUILD CATEGORY\]: public/archives/categories/ruby/1\.json}).to_stdout_from_any_process
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/1.json", expected_index_json)
-      expect(verbose_messages).to include("[BUILD CATEGORY]: public/archives/categories/ruby/1.json")
     end
   end
 end

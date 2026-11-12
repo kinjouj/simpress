@@ -17,14 +17,14 @@ describe Simpress::Plugin::CategoryTree do
   end
 
   describe ".run" do
-    context "modeがhtmlの場合" do
+    context "when mode is html" do
       before do
         allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("<ul>categories</ul>")
         allow(Simpress::Context).to receive(:update)
       end
 
-      it "コンテキストにデータをbindする" do
+      it "binds data to the context" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with("sidebar_categories", categories: anything)
@@ -32,14 +32,14 @@ describe Simpress::Plugin::CategoryTree do
       end
     end
 
-    context "modeがjsonの場合" do
+    context "when mode is json" do
       before do
         allow(Simpress::Config).to receive(:mode).and_return("json")
         allow(Simpress::JSON).to receive(:dump).and_return("{}")
         allow(Simpress::Writer).to receive(:write)
       end
 
-      it "categories.jsonとして出力する" do
+      it "categories.json is generated" do
         described_class.run
 
         expect(Simpress::JSON).to have_received(:dump).with(anything, keys: described_class::KEYS)
@@ -47,17 +47,17 @@ describe Simpress::Plugin::CategoryTree do
       end
     end
 
-    context "modeが不明な場合" do
+    context "when mode is unknown" do
       before do
         allow(Simpress::Config).to receive(:mode).and_return("unknown")
       end
 
-      it "エラーを発生させる" do
+      it "raises an error" do
         expect { described_class.run }.to raise_error("Unknown mode: unknown")
       end
     end
 
-    context "category_indexes.jsonが存在する場合" do
+    context "when category_indexes.json exists" do
       before do
         allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(
           instance_double(
@@ -72,7 +72,7 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "ruby" => ["rails"] })
       end
 
-      it "子カテゴリを親にネストする" do
+      it "nests child categories under parents" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
@@ -82,7 +82,7 @@ describe Simpress::Plugin::CategoryTree do
       end
     end
 
-    context "category_indexes.jsonにordersキーが含まれる場合" do
+    context "when orders key exists" do
       before do
         allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(
           instance_double(
@@ -97,7 +97,7 @@ describe Simpress::Plugin::CategoryTree do
         allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "orders" => ["tech", "life"] })
       end
 
-      it "ルートカテゴリを並べ替える" do
+      it "reorders the root categories" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(
@@ -112,7 +112,7 @@ describe Simpress::Plugin::CategoryTree do
       end
     end
 
-    context "category_indexes.jsonにネストとordersの両方がある場合" do
+    context "when nesting and orders exist" do
       before do
         allow(Simpress::Taxonomy).to receive(:fetch).with("categories").and_return(
           instance_double(
@@ -134,7 +134,7 @@ describe Simpress::Plugin::CategoryTree do
         )
       end
 
-      it "ネストした子も並べ替える" do
+      it "reorders nested children" do
         described_class.run
 
         expect(Simpress::Theme).to have_received(:render).with(

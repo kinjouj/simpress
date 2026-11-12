@@ -22,7 +22,7 @@ describe Simpress::Theme do
       allow(tilt_template).to receive(:render).and_return("<html>My Blog</html>")
     end
 
-    it "正しいパスでテンプレートを初期化してレンダリング結果を返す" do
+    it "renders with the right template" do
       result = described_class.render("layout", { page_title: "Entry" })
 
       expect(Tilt::ErubiTemplate).to have_received(:new).with("spec/fixtures/theme/layout.erb", escape: true)
@@ -36,7 +36,7 @@ describe Simpress::Theme do
       allow(tilt_template).to receive(:render).and_return("<div>partial</div>")
     end
 
-    it "レンダリング結果を返す" do
+    it "returns the render result" do
       expect(described_class.render_partial("part", { item: "value" })).to eq "<div>partial</div>"
     end
   end
@@ -47,7 +47,7 @@ describe Simpress::Theme do
       allow(tilt_template).to receive(:render).and_return("content")
     end
 
-    it "tiltのキャッシュをリセットする" do
+    it "resets the tilt cache" do
       described_class.render("test", {})
       described_class.clear
       described_class.render("test", {})

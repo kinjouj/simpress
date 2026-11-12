@@ -22,7 +22,7 @@ describe Simpress::Generator do
   end
 
   describe ".generate" do
-    it "出力を生成する" do
+    it "generates the output" do
       described_class.generate
 
       expect(Simpress::Plugin).to have_received(:process).with([entry2, entry1]).ordered
@@ -48,7 +48,7 @@ describe Simpress::Generator do
       described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c])
     end
 
-    it "prevとnextを設定する" do
+    it "sets prev and next" do
       expect(entry_a.prev.permalink).to eq "/entry-b.html"
       expect(entry_a.next).to be_nil
       expect(entry_b.prev.permalink).to eq "/entry-c.html"
@@ -57,7 +57,7 @@ describe Simpress::Generator do
       expect(entry_c.next.permalink).to eq "/entry-b.html"
     end
 
-    it "indexがfalseのエントリを除外する" do
+    it "excludes entries with index false" do
       newer = build(:entry, permalink: "/newer.html")
       hidden = build(:entry, permalink: "/hidden.html", index: false)
       older = build(:entry, permalink: "/older.html")

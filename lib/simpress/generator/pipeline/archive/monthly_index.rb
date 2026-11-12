@@ -7,7 +7,7 @@ module Simpress
   module Generator
     module Pipeline
       module Archive
-        class Monthly < Simpress::Generator::Pipeline::Archive::Base
+        class MonthlyIndex < Simpress::Generator::Pipeline::Archive::Base
           def self.generate_html(monthly_archives)
             monthly_archives.each do |(year, month), entries_by_monthly|
               key = "#{year}/#{month}"

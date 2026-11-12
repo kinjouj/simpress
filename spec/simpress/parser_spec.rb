@@ -42,7 +42,7 @@ describe Simpress::Parser do
   end
 
   describe ".parse" do
-    it "エントリを返す" do
+    it "returns an entry" do
       entry = described_class.parse(file)
 
       expect(entry.id).to eq "999"
@@ -56,7 +56,7 @@ describe Simpress::Parser do
       expect(Simpress::Parser::Markdown::Processor).to have_received(:render).with(body)
     end
 
-    context "フロントマターに独自キーが指定されている場合" do
+    context "when custom keys are given" do
       let(:markdown) do
         <<~MD
           ---
@@ -68,7 +68,7 @@ describe Simpress::Parser do
         MD
       end
 
-      it "paramsから独自キーを参照できる" do
+      it "exposes custom keys in params" do
         entry = described_class.parse(file)
 
         expect(entry.params[:og_image]).to eq "/images/og.png"
@@ -76,7 +76,7 @@ describe Simpress::Parser do
       end
     end
 
-    context "フロントマターでcoverとdescriptionが指定されている場合" do
+    context "when cover and description set" do
       let(:markdown) do
         <<~MD
           ---
@@ -89,7 +89,7 @@ describe Simpress::Parser do
         MD
       end
 
-      it "本文から抽出したcoverとdescriptionよりフロントマターの値を優先する" do
+      it "prefers front matter values" do
         entry = described_class.parse(file)
 
         expect(entry.cover).to eq "front.png"
@@ -97,14 +97,14 @@ describe Simpress::Parser do
       end
     end
 
-    context "フロントマターでcoverとdescriptionが指定されておらず、本文から画像も抽出されなかった場合" do
+    context "when cover and description unset" do
       before do
         allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(
           Simpress::Parser::Markdown::Processor::Result.new("<p>Hello <strong>world</strong>!</p>", nil, [])
         )
       end
 
-      it "coverはデフォルト、descriptionは最初の段落のテキスト(インラインタグ除去)にフォールバックする" do
+      it "falls back to defaults" do
         entry = described_class.parse(file)
 
         expect(entry.cover).to eq described_class::DEFAULT_COVER
@@ -112,7 +112,7 @@ describe Simpress::Parser do
       end
     end
 
-    context "フロントマターでdraftが指定されている場合" do
+    context "when front matter sets draft" do
       let(:markdown) do
         <<~MD
           ---
@@ -124,7 +124,7 @@ describe Simpress::Parser do
         MD
       end
 
-      it "Markdownをレンダリングしない" do
+      it "doesn't render the Markdown" do
         entry = described_class.parse(file)
 
         expect(entry.draft).to be true
@@ -133,8 +133,8 @@ describe Simpress::Parser do
       end
     end
 
-    context "フロントマターにdateが指定されていない場合" do
-      context "ファイル名に日付がない場合" do
+    context "when date is missing" do
+      context "when file name lacks date" do
         let(:markdown) do
           <<~MD
             ---
@@ -145,7 +145,7 @@ describe Simpress::Parser do
           MD
         end
 
-        it "dateをnilにしてindexをfalseにする" do
+        it "sets date nil, index false" do
           entry = described_class.parse("no-date.md")
 
           expect(entry.date).to be_nil
@@ -153,7 +153,7 @@ describe Simpress::Parser do
         end
       end
 
-      context "ファイル名に日付がある場合" do
+      context "when file name has date" do
         let(:markdown) do
           <<~MD
             ---
@@ -163,7 +163,7 @@ describe Simpress::Parser do
           MD
         end
 
-        it "dateをnilにしてindexをfalseにする" do
+        it "sets date nil, index false" do
           entry = described_class.parse("2026-01-01-from-filename.md")
 
           expect(entry.date).to be_nil
@@ -172,7 +172,7 @@ describe Simpress::Parser do
       end
     end
 
-    context "フロントマターにカテゴリが指定されている場合" do
+    context "when front matter has categories" do
       let(:markdown) do
         <<~MD
           ---
@@ -193,14 +193,14 @@ describe Simpress::Parser do
         Simpress::Taxonomy.clear
       end
 
-      it "taxonomiesのtermを持つ" do
+      it "has the taxonomies terms" do
         entry = described_class.parse(file)
 
         expect(entry.taxonomies["categories"].map(&:name)).to eq ["Ruby"]
         expect(entry.taxonomies["categories"].first.entries).not_to include(entry)
       end
 
-      context "indexがfalseの場合" do
+      context "when index is false" do
         let(:markdown) do
           <<~MD
             ---
@@ -213,14 +213,14 @@ describe Simpress::Parser do
           MD
         end
 
-        it "taxonomiesを持たない" do
+        it "has no taxonomies" do
           entry = described_class.parse(file)
 
           expect(entry.taxonomies.values).to all(eq [])
         end
       end
 
-      context "dateが指定されていない場合" do
+      context "when date isn't set" do
         let(:markdown) do
           <<~MD
             ---
@@ -232,7 +232,7 @@ describe Simpress::Parser do
           MD
         end
 
-        it "taxonomiesを持たない" do
+        it "has no taxonomies" do
           entry = described_class.parse(file)
 
           expect(entry.taxonomies.values).to all(eq [])
@@ -240,8 +240,8 @@ describe Simpress::Parser do
       end
     end
 
-    context "フロントマターでpermalinkが指定されていない場合" do
-      context "サブディレクトリのファイルの場合" do
+    context "when permalink is missing" do
+      context "when file is in subdirectory" do
         let(:markdown) do
           <<~MD
             ---
@@ -252,12 +252,12 @@ describe Simpress::Parser do
           MD
         end
 
-        it "ディレクトリとbasenameからpermalinkを生成する" do
+        it "builds from directory and basename" do
           expect(described_class.parse("source/company/about.markdown").permalink).to eq "/company/about"
         end
       end
 
-      context "sourceの直下のファイルの場合" do
+      context "when file is under source" do
         let(:markdown) do
           <<~MD
             ---
@@ -267,14 +267,14 @@ describe Simpress::Parser do
           MD
         end
 
-        it "basenameからpermalinkを生成する" do
+        it "builds permalink from basename" do
           expect(described_class.parse("source/contact.markdown").permalink).to eq "/contact"
         end
       end
     end
 
-    context "フロントマターでpermalinkが指定されている場合" do
-      context "sourceの直下のファイルの場合" do
+    context "when permalink is given" do
+      context "when file is under source" do
         let(:markdown) do
           <<~MD
             ---
@@ -284,12 +284,12 @@ describe Simpress::Parser do
           MD
         end
 
-        it "そのpermalinkにする" do
+        it "uses that permalink" do
           expect(described_class.parse(file).permalink).to eq "/existing/path"
         end
       end
 
-      context "先頭にスラッシュがある場合" do
+      context "when there's a leading slash" do
         let(:markdown) do
           <<~MD
             ---
@@ -300,12 +300,12 @@ describe Simpress::Parser do
           MD
         end
 
-        it "ファイルのディレクトリ配下に配置する" do
+        it "places under file directory" do
           expect(described_class.parse("source/company/about.markdown").permalink).to eq "/company/team"
         end
       end
 
-      context "先頭にスラッシュがない場合" do
+      context "when there's no leading slash" do
         let(:markdown) do
           <<~MD
             ---
@@ -316,14 +316,14 @@ describe Simpress::Parser do
           MD
         end
 
-        it "ファイルのディレクトリ配下に配置する" do
+        it "places under file directory" do
           expect(described_class.parse("source/company/staff.markdown").permalink).to eq "/company/staff/list"
         end
       end
     end
 
-    context "フロントマターで日付が指定されている場合" do
-      context "Time文字列の場合" do
+    context "when date is given" do
+      context "when a Time string" do
         let(:markdown) do
           <<~MD
             ---
@@ -334,12 +334,12 @@ describe Simpress::Parser do
           MD
         end
 
-        it "Timeにパースする" do
+        it "parses into Time" do
           expect(described_class.parse(file).date).to be_a(Time)
         end
       end
 
-      context "Dateの場合" do
+      context "when a Date" do
         let(:markdown) do
           <<~MD
             ---
@@ -350,12 +350,12 @@ describe Simpress::Parser do
           MD
         end
 
-        it "Timeにパースする" do
+        it "parses into Time" do
           expect(described_class.parse(file).date).to be_a(Time)
         end
       end
 
-      context "String形式の場合" do
+      context "when a String" do
         let(:markdown) do
           <<~MD
             ---
@@ -366,7 +366,7 @@ describe Simpress::Parser do
           MD
         end
 
-        it "Timeにパースする" do
+        it "parses into Time" do
           expect(described_class.parse(file).date).to be_a(Time)
         end
       end

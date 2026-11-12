@@ -9,12 +9,12 @@ describe Simpress::Generator::Pipeline::Permalink do
     build(:entry, title: "My Entry", permalink: "my-entry", layout: "page", date: Time.new(2026, 1, 1))
   end
 
-  let(:verbose_messages) do
-    []
+  before do
+    allow(Simpress::Config).to receive(:logging).and_return(true)
   end
 
-  before do
-    allow(Simpress::Logger).to receive(:verbose) {|&block| verbose_messages << block.call }
+  after do
+    Simpress::Logger.clear
   end
 
   describe ".generate_html" do
@@ -24,13 +24,11 @@ describe Simpress::Generator::Pipeline::Permalink do
       allow(File).to receive(:utime)
     end
 
-    it "HTMLを書き出してエントリのmtimeを設定する" do
-      described_class.generate_html(entry)
-
+    it "HTML is generated, mtime set" do
+      expect { described_class.generate_html(entry) }.to output(%r{\[BUILD PAGE\]: My Entry public/my-entry\.html}).to_stdout_from_any_process
       expect(Simpress::Theme).to have_received(:render).with("page", entry: entry)
       expect(Simpress::Writer).to have_received(:write).with("my-entry.html", "<html>content</html>")
       expect(File).to have_received(:utime).with(entry.date, entry.date, "public/my-entry.html")
-      expect(verbose_messages).to include("[BUILD PAGE]: My Entry public/my-entry.html")
     end
   end
 
@@ -43,11 +41,9 @@ describe Simpress::Generator::Pipeline::Permalink do
       allow(Simpress::Writer).to receive(:write).with(anything, expected_entry_json).and_yield("public/my-entry.json")
     end
 
-    it "許可されたキーでJSONを書き出す" do
-      described_class.generate_json(entry)
-
+    it "JSON is generated, keys filtered" do
+      expect { described_class.generate_json(entry) }.to output(%r{\[BUILD PAGE\]: My Entry public/my-entry\.json}).to_stdout_from_any_process
       expect(Simpress::Writer).to have_received(:write).with(anything, expected_entry_json)
-      expect(verbose_messages).to include("[BUILD PAGE]: My Entry public/my-entry.json")
     end
   end
 end

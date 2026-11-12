@@ -4,15 +4,15 @@ require "simpress/path"
 
 describe Simpress::Path do
   describe ".wrap" do
-    context "Simpress::Pathの場合" do
-      it "そのインスタンスを返す" do
+    context "when given a Simpress::Path" do
+      it "returns the same instance" do
         path = described_class.new("/base")
         expect(described_class.wrap(path)).to equal(path)
       end
     end
 
-    context "文字列の場合" do
-      it "文字列の値を保持した新しいインスタンスを返す" do
+    context "when given a string" do
+      it "returns a new instance" do
         wrapped = described_class.wrap("/base")
 
         expect(wrapped).to be_a(described_class)
@@ -22,13 +22,13 @@ describe Simpress::Path do
   end
 
   describe "#path" do
-    it "ベースパスと追加の要素を結合する" do
+    it "joins base path and parts" do
       path = described_class.new("base").path("sub", "dir")
 
       expect(path.to_s).to eq "base/sub/dir"
     end
 
-    it "結合前に要素の先頭のスラッシュを取り除く" do
+    it "strips leading slashes before joining" do
       path = described_class.new("base").path("/sub", "/dir/")
 
       expect(path.to_s).to eq "base/sub/dir/"
@@ -36,7 +36,7 @@ describe Simpress::Path do
   end
 
   describe "#with_ext" do
-    it "ビルドされるパスの拡張子を設定する" do
+    it "sets the path extension" do
       path = described_class.new("image.png").with_ext("webp")
 
       expect(path.to_s).to eq "image.webp"
@@ -44,14 +44,14 @@ describe Simpress::Path do
   end
 
   describe "#build" do
-    it "要素をスラッシュで結合する" do
+    it "joins parts with slashes" do
       path = described_class.new("root").path("a", "b")
 
       expect(path.build).to eq "root/a/b"
     end
 
-    context "with_extが使われた場合" do
-      it "既存の拡張子を置き換える" do
+    context "when with_ext is used" do
+      it "replaces the existing extension" do
         path = described_class.new("archive.tar.gz").with_ext("zip")
 
         expect(path.build).to eq "archive.tar.zip"
@@ -60,7 +60,7 @@ describe Simpress::Path do
   end
 
   describe "#to_s" do
-    it "パスを返す" do
+    it "returns the path" do
       expect(described_class.new("file.html").to_s).to eq("file.html")
     end
   end

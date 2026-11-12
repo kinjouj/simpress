@@ -8,12 +8,12 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
     build(:entry)
   end
 
-  let(:verbose_messages) do
-    []
+  before do
+    allow(Simpress::Config).to receive(:logging).and_return(true)
   end
 
-  before do
-    allow(Simpress::Logger).to receive(:verbose) {|&block| verbose_messages << block.call }
+  after do
+    Simpress::Logger.clear
   end
 
   describe ".generate_html" do
@@ -22,12 +22,10 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
       allow(Simpress::Writer).to receive(:write).and_yield("public/index.html")
     end
 
-    it "index.htmlとして出力する" do
-      described_class.generate_html([entry])
-
+    it "index.html is generated" do
+      expect { described_class.generate_html([entry]) }.to output(%r{\[BUILD ARCHIVE\]: public/index\.html}).to_stdout_from_any_process
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/index.html", "<html>content</html>")
-      expect(verbose_messages).to include("[BUILD ARCHIVE]: public/index.html")
     end
   end
 
@@ -40,11 +38,9 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
       allow(Simpress::Writer).to receive(:write).with("/archives/page/1.json", anything).and_yield("public/archives/page/1.json")
     end
 
-    it "/archives/page/1.jsonとして出力する" do
-      described_class.generate_json([entry])
-
+    it "/archives/page/1.json is generated" do
+      expect { described_class.generate_json([entry]) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/page/1\.json}).to_stdout_from_any_process
       expect(Simpress::Writer).to have_received(:write).with("/archives/page/1.json", expected_page_json)
-      expect(verbose_messages).to include("[BUILD ARCHIVE]: public/archives/page/1.json")
     end
   end
 end
