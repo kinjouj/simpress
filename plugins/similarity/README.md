@@ -2,12 +2,12 @@
 
 Plugin that gets related entries from parsed Markdown. When enabled, data is available through these methods
 
-- Similarity::EntryWithSimilarities#similarities
-- Similarity::EntryWithSimilarities#as_json (similarities is injected when content is included)
+- Simpress::Plugin::Similarity::EntryWithSimilarities#similarities
+- Simpress::Plugin::Similarity::EntryWithSimilarities#as_json (similarities is injected when content is included)
 
 ## Parameters
 
-BM25-based similarity parameters, defined in lib/similarity.rb
+BM25-based similarity parameters, defined in lib/simpress/plugin/similarity.rb
 
 | Constant | Value | Description |
 | -------- | ----- | ----------- |

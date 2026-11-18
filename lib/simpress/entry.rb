@@ -33,16 +33,14 @@ module Simpress
       (keys ? PERMITTED_JSON_KEYS & keys : PERMITTED_JSON_KEYS).to_h {|key| [key, public_send(key)] }
     end
 
+    def to_link
+      Link.new(self)
+    end
+
     class Link
       include Simpress::JSON::Serializable
 
       attr_reader :id, :title, :permalink, :cover
-
-      def self.build(entry)
-        return if entry.nil?
-
-        new(entry)
-      end
 
       def initialize(entry)
         @id = entry.id
@@ -54,8 +52,8 @@ module Simpress
       def to_h(_options = {})
         { id: id, title: title, permalink: permalink, cover: cover }
       end
-
-      private_class_method :new
     end
+
+    private_constant :Link
   end
 end
