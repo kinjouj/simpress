@@ -2,13 +2,17 @@
 
 require "simpress/config"
 require "simpress/json"
+require "simpress/logger"
 require "simpress/path"
 
 module Simpress
   module Theme
     module Helper
       def self.included(base)
-        Scope.include(base) if base.instance_of?(Module)
+        return unless base.instance_of?(Module)
+
+        Simpress::Logger.debug("REGISTER HELPER: #{base}")
+        Scope.include(base)
       end
 
       def encode_json(data)

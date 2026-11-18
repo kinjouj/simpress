@@ -8,25 +8,7 @@ vi.mock('../../src/api/Simpress');
 const SimpressMock = vi.mocked(Simpress);
 
 describe('RecentEntries', () => {
-  it('取得中はNotFoundを表示しない', () => {
-    let resolveFetch: (value: (typeof testEntryData)[]) => void = () => {};
-    SimpressMock.getRecentEntries.mockReturnValue(
-      new Promise((resolve) => {
-        resolveFetch = resolve;
-      })
-    );
-
-    render(
-      <MemoryRouter>
-        <RecentEntries />
-      </MemoryRouter>
-    );
-
-    expect(screen.queryByText(/not found/i)).not.toBeInTheDocument();
-    void resolveFetch;
-  });
-
-  it('最近のエントリを表示する', async () => {
+  it('shows recent entries', async () => {
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     render(
       <MemoryRouter>

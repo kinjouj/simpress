@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import EntryListPage from '../../src/pages/EntryListPage';
 import Simpress from '../../src/api/Simpress';
@@ -20,30 +20,39 @@ const renderEntryListPage = (): RenderResult => {
 
 describe('EntryListPage', () => {
   beforeEach(() => {
-    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.useFakeTimers({ shouldAdvanceTime: true });
   });
 
-  it('取得中はloadingを表示する', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('shows loading while fetching', () => {
     SimpressMock.getEntriesByPage.mockReturnValue(new Promise(() => {}));
-    const { container } = renderEntryListPage();
+    renderEntryListPage();
 
     expect(screen.getByText('loading...')).toBeInTheDocument();
-    expect(container).not.toBeEmptyDOMElement();
   });
 
-  it('エントリ一覧を表示する', async () => {
+  it('shows the entries', async () => {
     SimpressMock.getEntriesByPage.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     renderEntryListPage();
+    act(() => {
+      vi.runAllTimers();
+    });
 
-    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
+    const entries = await screen.findAllByRole('listitem', { name: 'entry' });
     expect(entries).toHaveLength(1);
   });
 
-  it('Simpress.getEntriesByPageがエラーを吐いた場合', async () => {
+  it('shows Not Found on error', async () => {
     SimpressMock.getEntriesByPage.mockRejectedValue(new Error('ERR'));
     renderEntryListPage();
+    act(() => {
+      vi.runAllTimers();
+    });
 
-    expect(await screen.findByText('Not Found', {}, { timeout: 10000 })).toBeInTheDocument();
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 });

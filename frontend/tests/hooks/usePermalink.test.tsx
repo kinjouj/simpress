@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { usePermalink } from '../../src/hooks/usePermalink';
 
 describe('usePermalink', () => {
-  it('パスからjsonのpermalinkを返す', () => {
+  it('returns the json permalink', () => {
     const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
       <MemoryRouter initialEntries={[`/test.html`]}>
         <Routes>
@@ -11,18 +11,16 @@ describe('usePermalink', () => {
         </Routes>
       </MemoryRouter>
     );
-
     const { result } = renderHook(() => usePermalink(), { wrapper });
     expect(result.current).toBe('/test.json');
   });
 
-  it('permalinkパラメーターが不正な場合', () => {
+  it('returns null if invalid', () => {
     const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
       <MemoryRouter>
         {children}
       </MemoryRouter>
     );
-
     const { result } = renderHook(() => usePermalink(), { wrapper });
     expect(result.current).toBeNull();
   });

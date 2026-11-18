@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import CategoryPage from '../../src/pages/CategoryPage';
 import Simpress from '../../src/api/Simpress';
@@ -20,19 +20,26 @@ const renderCategoryEntryListPage = (): RenderResult => {
 
 describe('CategoryPage', () => {
   beforeEach(() => {
-    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.useFakeTimers({ shouldAdvanceTime: true });
   });
 
-  it('カテゴリのエントリ一覧を表示する', async () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('shows category entries', async () => {
     SimpressMock.getEntriesByCategory.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     renderCategoryEntryListPage();
+    act(() => {
+      vi.runAllTimers();
+    });
 
-    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
+    const entries = await screen.findAllByRole('listitem', { name: 'entry' });
     expect(entries).toHaveLength(1);
   });
 
-  it('useCategoryがnullを返した場合', async () => {
+  it('shows Not Found if null', async () => {
     render(
       <MemoryRouter>
         <CategoryPage />
@@ -42,10 +49,13 @@ describe('CategoryPage', () => {
     expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 
-  it('Simpress.getEntriesByCategoryがエラーを吐いた場合', async () => {
+  it('shows Not Found on error', async () => {
     SimpressMock.getEntriesByCategory.mockRejectedValue(new Error('ERROR'));
     renderCategoryEntryListPage();
+    act(() => {
+      vi.runAllTimers();
+    });
 
-    expect(await screen.findByText('Not Found', {}, { timeout: 10000 })).toBeInTheDocument();
+    expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 });

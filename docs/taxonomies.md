@@ -1,10 +1,10 @@
 # taxonomies.yaml
 
-TaxonomyとそのURLスラッグのエイリアスを定義する
+Defines Taxonomies and aliases for their URL slugs
 
-`categories`と`tags`はデフォルトで有効なので`types`に列挙する必要はない
+`categories` and `tags` are enabled by default, so they need not be listed in `types`
 
-`types`と`aliases`はどちらも省略可能
+Both `types` and `aliases` are optional
 
 ```yaml
 types:
@@ -12,8 +12,7 @@ types:
 
 aliases:
   categories:
-    社会: shakai
+    Web Development: web-dev
   series:
-    Ruby入門: ruby-intro
+    Ruby Basics: ruby-basics
 ```
-

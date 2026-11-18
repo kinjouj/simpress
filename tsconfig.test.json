@@ -4,5 +4,5 @@
     "tsBuildInfoFile": "./node_modules/.tsbuildinfo.test",
     "types": ["node", "vitest/globals"]
   },
-  "include": ["frontend/tests/**/*", "frontend/src/**/*.d.ts"]
+  "include": ["frontend/tests/**/*", "frontend/src/**/*.d.ts", "./vite.config.ts", "./vitest.config.ts"]
 }

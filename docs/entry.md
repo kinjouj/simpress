@@ -1,27 +1,27 @@
 # Entry
 
-| 属性 | 説明 |
-| ---- | ---- |
-| id | 一意なID |
-| title | タイトル |
-| date | 日付。省略した場合はindexが強制的にfalseになる |
-| permalink | パーマリンク |
-| taxonomies | categoriesやtagsなどのTaxonomy |
-| layout | レイアウト名。デフォルトは"page" |
-| index | 一覧に表示するかどうか。デフォルトはtrue、dateを取得できなかった場合は強制的にfalseになる |
-| draft | 下書きフラグ。デフォルトはfalse |
-| cover | カバー画像のパス。未指定の場合は本文の最初の画像、それもなければ[DEFAULT_COVER](./parameters.md)になる |
-| description | 説明。未指定の場合はMarkdown本文の最初の空でない行になる |
-| content | レンダリング済みのHTML |
-| toc | 目次の構造 |
-| prev | 次に古いEntryへのEntry::Link(なければnil) |
-| next | 次に新しいEntryへのEntry::Link(なければnil) |
-| markdown | レンダリング前のMarkdown |
-| params | FrontMatterと上記の補完値をまとめたハッシュ |
+| Attribute | Description |
+| --------- | ----------- |
+| id | Unique ID |
+| title | Title |
+| date | Date. If omitted, index is forced to false |
+| permalink | Permalink |
+| taxonomies | Taxonomies such as categories and tags |
+| layout | Layout name. Defaults to "page" |
+| index | Whether to list the entry. Defaults to true. Forced to false when date is missing |
+| draft | Draft flag. Defaults to false |
+| cover | Cover image path. Defaults to the first image in the body, then [DEFAULT_COVER](./parameters.md) |
+| description | Description. Defaults to the first non-empty line of the Markdown body |
+| content | Rendered HTML |
+| toc | Table of contents structure |
+| prev | Entry::Link to the next older Entry (nil if none) |
+| next | Entry::Link to the next newer Entry (nil if none) |
+| markdown | Markdown before rendering |
+| params | Hash of the front matter and the completed values above |
 
 ## Entry::Link
 
-他のエントリへの参照を表す軽量なクラス
+Lightweight class that references another entry
 
 ```json
 {

@@ -1,8 +1,8 @@
 # Plugins
 
-`plugins/名前/lib`にRubyプロジェクトの構成で配置する。ファイルパスと定数名はZeitwerkの命名規則に従う
+Place plugins under `plugins/name/lib` as a Ruby project. File paths and constant names follow Zeitwerk naming rules
 
-有効にするにはconfig.yamlのpluginsにディレクトリ名を列挙する
+To enable one, list its directory name under plugins in config.yaml
 
 ```yaml
 default:
@@ -14,35 +14,31 @@ default:
 ## Custom Plugin
 
 ```ruby
-module Simpress
-  module Plugin
-    class Sample
-      extend Simpress::Plugin
+class Sample
+  extend Simpress::Plugin
 
-      def self.priority
-        1
-      end
+  def self.priority
+    1
+  end
 
-      def self.run(entries)
-        case Simpress::Config.mode
-        when "html"
-          bind_context(sample: entries.select(&:index).take(5))
-        when "json"
-          Simpress::Writer.write("sample.json", Simpress::JSON.dump(entries.select(&:index).take(5), keys: [:id, :title, :permalink]))
-        end
-      end
+  def self.run(entries)
+    case Simpress::Config.mode
+    when "html"
+      bind_context(sample: entries.select(&:index).take(5))
+    when "json"
+      Simpress::Writer.write("sample.json", Simpress::JSON.dump(entries.select(&:index).take(5), keys: [:id, :title, :permalink]))
     end
   end
 end
 ```
 
-| メソッド | 説明 |
-| ---- | ---- |
-| run(entries) | 必須。パース後、出力の生成前に呼ばれる |
-| priority | 大きいほど先に実行される。デフォルトは1。同じ値は登録順 |
-| bind_context(hash) | テンプレートに値を渡す。テンプレートではインスタンス変数(@sample)で参照する |
+| Method | Description |
+| ------ | ----------- |
+| run(entries) | Required. Called after parsing and before output generation |
+| priority | Higher runs first. Defaults to 1. Equal values run in registration order |
+| bind_context(hash) | Passes values to templates. Templates read them as instance variables (@sample) |
 
-- entriesは日付の新しい順のEntryの配列で`index: false`も含む
+- entries is an array of Entry, newest first, including `index: false`
 
 ## Custom Markdown Filter
 
@@ -60,38 +56,42 @@ class SampleFilter
 end
 ```
 
-| メソッド | 説明 |
-| ---- | ---- |
-| preprocess(markdown) | HTMLへの変換前に呼ばれる |
-| postprocess(html) | HTMLへの変換後に呼ばれる |
+| Method | Description |
+| ------ | ----------- |
+| preprocess(markdown) | Called before conversion to HTML |
+| postprocess(html) | Called after conversion to HTML |
 
-- どちらも任意。実装しない側は何も加工しない
-- 戻り値がStringでない場合は無視される
-- 複数のフィルターは登録順に適用される
+- Both are optional. A side left unimplemented changes nothing
+- A return value that is not a String is ignored
+- Multiple filters apply in registration order
 
 ## Custom Theme Helper
 
 ```ruby
-module ThemeHelper
-  include Simpress::Theme::Helper
+module Simpress
+  module Plugin
+    module ThemeHelper
+      include Simpress::Theme::Helper
 
-  def format_date(date)
-    date.strftime("%Y/%m/%d")
+      def format_date(date)
+        date.strftime("%Y/%m/%d")
+      end
+    end
   end
 end
 ```
 
-- plugins/theme_helper/lib/theme_helper.rbに書き、config.yamlのpluginsにtheme_helperを追加して使う
-- `include Simpress::Theme::Helper`すると、テンプレートから`format_date(date)`のように呼べる
-- モジュール内から`uri`や`encode_json`などの既存のヘルパーも呼べる
+- Write it in plugins/theme_helper/lib/simpress/plugin/theme_helper.rb and add theme_helper to plugins in config.yaml
+- With `include Simpress::Theme::Helper`, templates can call it like `format_date(date)`
+- Existing helpers such as `uri` and `encode_json` are callable inside the module
 
 ## Directory
 
-| ディレクトリ | 説明 |
-| ---- | ---- |
-| lib | プラグイン本体 |
-| scss | `_*.scss`がビルド時に`scss/_plugins.scss`へ追加される |
-| static | ビルド時にルートの`static`と同じように出力先へコピーされる |
-| tasks | `./simpress`のサブコマンドとして読み込まれる |
+| Directory | Description |
+| --------- | ----------- |
+| lib | Plugin body |
+| scss | _*.scss files are added to scss/_plugins.scss at build time |
+| static | Copied to the output at build time, like the root static directory |
+| tasks | Loaded as subcommands of ./simpress |
 
-- 有効にしたプラグインだけが対象
+- Only enabled plugins are included

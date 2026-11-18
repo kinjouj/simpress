@@ -1,38 +1,42 @@
 # theme_helper
 
-テンプレートで使うヘルパーを追加するためのプラグイン
+Plugin for adding helpers used in templates
 
-## 概要
+## Overview
 
-`Simpress::Theme::Helper`を拡張したい場合は、lib/theme_helper.rbの`ThemeHelper`にメソッドを定義する。定義したメソッドはテンプレートから直接呼べる
+To extend `Simpress::Theme::Helper`, define methods in `Simpress::Plugin::ThemeHelper` in lib/simpress/plugin/theme_helper.rb. Defined methods can be called directly from templates
 
-## 使い方
+## Usage
 
-config.yamlのpluginsにtheme_helperを追加する。
+Add theme_helper to plugins in config.yaml
 
 ```yaml
 plugins:
   - theme_helper
 ```
 
-lib/theme_helper.rbにメソッドを定義する。
+Define methods in lib/simpress/plugin/theme_helper.rb
 
 ```ruby
-module ThemeHelper
-  include Simpress::Theme::Helper
+module Simpress
+  module Plugin
+    module ThemeHelper
+      include Simpress::Theme::Helper
 
-  def format_date(date)
-    date.strftime("%Y/%m/%d")
+      def format_date(date)
+        date.strftime("%Y/%m/%d")
+      end
+    end
   end
 end
 ```
 
-テンプレートでは次のように呼ぶ。
+Call it in a template like this
 
 ```erb
 <%= format_date(entry.date) %>
 ```
 
-## 補足
+## Notes
 
-- 定義したメソッドの中から、uriやencode_jsonなどの既存のヘルパーも呼べる
+- Existing helpers such as uri and encode_json can be called from defined methods

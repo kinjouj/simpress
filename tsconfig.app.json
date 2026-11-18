@@ -12,7 +12,8 @@
     "strict": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": []
   },
   "include": ["frontend/src/**/*"]
 }

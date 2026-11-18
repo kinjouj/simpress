@@ -1,30 +1,30 @@
 # Plugin: CategoryTree
 
-カテゴリ一覧を処理・出力するプラグイン。フラットなカテゴリ構造をネスト構造に変換しHTMLまたはJSON形式で出力
+Plugin that processes and outputs the category list. Converts a flat category structure to a nested one and outputs HTML or JSON
 
-## 概要
+## Overview
 
-1. `category_indexes.json`が存在する場合、その定義に従って子カテゴリを親カテゴリに移動し、ルートレベルから除外する
-1. 設定された`mode`に応じてサイドバー用HTMLまたは`categories.json`を出力する
+1. If `category_indexes.json` exists, moves child categories under their parents as defined there and removes them from the root level
+1. Outputs sidebar HTML or `categories.json` depending on `mode`
 
-## 出力
+## Output
 
-- html: テンプレートのインスタンス変数@sidebar_categories_content(sidebar_categories.erbのレンダリング結果のString)
-- json: categories.json(key、name、count、childrenの配列)
+- html: template instance variable @sidebar_categories_content (String, the rendered sidebar_categories.erb)
+- json: categories.json (array of key, name, count, children)
 
 ## category_indexes.json
 
-カテゴリの親子関係を定義するオプションファイル。このファイルが存在する場合のみネスト構造への変換
+Optional file that defines parent-child relations. Categories are nested only when this file exists
 
 ```json
 {
-  "親カテゴリのキー": ["子カテゴリのキー1", "子カテゴリのキー2"],
+  "parent category key": ["child category key 1", "child category key 2"],
   "tech": ["ruby", "python"]
 }
 ```
 
-- 定義された子カテゴリは親の`children`に移動しルートレベルから削除
-- 存在しないキーはスキップされます
+- Defined children move into the parent's `children` and are removed from the root level
+- Keys that don't exist are skipped
 
 ### sidebar_categories.erb
 

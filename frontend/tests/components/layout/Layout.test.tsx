@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import Simpress from '../../../src/api/Simpress';
 import Layout from '../../../src/components/layout/Layout';
@@ -8,9 +8,8 @@ vi.mock('../../../src/api/Simpress');
 const SimpressMock = vi.mocked(Simpress);
 
 describe('Layout', () => {
-  it('ヘッダー、フッター、本文、最近のエントリを表示する', async () => {
+  it('shows layout and recent entries', async () => {
     SimpressMock.getRecentEntries.mockResolvedValueOnce([testEntryData]);
-
     render(
       <MemoryRouter initialEntries={['/']}>
         <Routes>
@@ -24,7 +23,7 @@ describe('Layout', () => {
     expect(screen.getByText('page content')).toBeInTheDocument();
     expect(screen.getByText('Recent Entries')).toBeInTheDocument();
 
-    const entries = await screen.findAllByRole('listitem', {}, { timeout: 10000 });
+    const entries = await within(screen.getByRole('complementary')).findAllByRole('listitem');
     expect(entries).toHaveLength(1);
   });
 });

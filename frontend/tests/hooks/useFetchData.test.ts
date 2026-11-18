@@ -6,19 +6,18 @@ import type { EntryType } from '../../src/types';
 
 describe('useFetchData', () => {
   describe('useFetchData test', () => {
-    it('初期表示ではisLoadingがtrueになる', () => {
+    it('starts loading', () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => new Promise<EntryType>(() => {}), []);
         return useFetchData(fetcher);
       });
-
       const { data, isLoading, isError } = result.current;
       expect(isLoading).toBe(true);
       expect(isError).toBe(false);
       expect(data).toBeNull();
     });
 
-    it('取得に成功する', async () => {
+    it('fetches data', async () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => Promise.resolve(testEntryData), []);
         return useFetchData(fetcher);
@@ -32,12 +31,11 @@ describe('useFetchData', () => {
       });
     });
 
-    it('アンマウント後は状態を更新しない', async () => {
+    it('skips updates after unmount', async () => {
       const { result, unmount } = renderHook(() => {
         const fetcher = useCallback(() => Promise.resolve(testEntryData), []);
         return useFetchData(fetcher);
       });
-
       unmount();
 
       await waitFor(() => {
@@ -49,7 +47,7 @@ describe('useFetchData', () => {
   });
 
   describe('if fetcher throw error', () => {
-    it('取得に失敗するとisErrorがtrueになる', async () => {
+    it('sets isError on failure', async () => {
       const { result } = renderHook(() => {
         const fetcher = useCallback(() => Promise.reject(new Error('error')), []);
         return useFetchData(fetcher);
@@ -63,12 +61,11 @@ describe('useFetchData', () => {
       });
     });
 
-    it('アンマウント後は状態を更新しない', async () => {
+    it('skips updates after unmount', async () => {
       const { result, unmount } = renderHook(() => {
         const fetcher = useCallback(() => Promise.reject(new Error('error')), []);
         return useFetchData(fetcher);
       });
-
       unmount();
 
       await waitFor(() => {
