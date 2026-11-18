@@ -54,7 +54,7 @@ describe Simpress::Entry do
       expect(entry.prev).to be_nil
       expect(entry.next).to be_nil
 
-      link = Simpress::Entry::Link.build(entry)
+      link = entry.to_link
       entry.prev = link
       entry.next = link
       expect(entry.prev).to eq link
@@ -86,8 +86,8 @@ describe Simpress::Entry do
       newer = described_class.new(id: "entry-456", title: "Newer Entry", permalink: "/newer-entry")
       older = described_class.new(id: "entry-789", title: "Older Entry", permalink: "/older-entry")
       entry = described_class.new(params)
-      entry.prev = Simpress::Entry::Link.build(older)
-      entry.next = Simpress::Entry::Link.build(newer)
+      entry.prev = older.to_link
+      entry.next = newer.to_link
       result = entry.to_h
 
       expect(result[:prev]).to eq entry.prev
@@ -112,51 +112,23 @@ describe Simpress::Entry do
     end
   end
 
-  describe Simpress::Entry::Link do
+  describe "#to_link" do
     let(:entry) do
-      Simpress::Entry.new(params)
+      described_class.new(params)
     end
 
-    let(:expected) do
-      { id: "entry-123", title: "Sample Entry", permalink: "/sample-entry", cover: "cover.png" }
-    end
+    it "returns a link to the entry" do
+      link = entry.to_link
 
-    describe ".build" do
-      it "builds a Link from entry" do
-        link = described_class.build(entry)
-
-        expect(link).to be_a(described_class)
-        expect(link.id).to eq entry.id
-        expect(link.title).to eq entry.title
-        expect(link.permalink).to eq entry.permalink
-      end
-
-      context "when entry is nil" do
-        it "returns nil" do
-          expect(described_class.build(nil)).to be_nil
-        end
-      end
+      expect(link.id).to eq entry.id
+      expect(link.title).to eq entry.title
+      expect(link.permalink).to eq entry.permalink
+      expect(link.cover).to eq entry.cover
     end
 
     describe "#to_h" do
       it "returns id, title, permalink, cover" do
-        expect(described_class.build(entry).to_h).to eq expected
-      end
-    end
-
-    describe "#as_json" do
-      it "returns the #to_h hash" do
-        link = described_class.build(entry)
-
-        expect(link.as_json).to eq link.to_h
-      end
-    end
-
-    describe "#to_json" do
-      it "serializes to a JSON string" do
-        link = described_class.build(entry)
-
-        expect(Simpress::JSON.load(link.to_json, symbolize_names: true)).to eq expected
+        expect(entry.to_link.to_h).to eq(id: "entry-123", title: "Sample Entry", permalink: "/sample-entry", cover: "cover.png")
       end
     end
   end

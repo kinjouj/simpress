@@ -45,7 +45,7 @@ module Simpress
       private
 
       def assign_id!
-        @params[:id] = XXhash.xxh64(@basename).to_s
+        @params[:id] = XXhash.xxh64(File.join(@dir, @basename)).to_s
       end
 
       def assign_date!

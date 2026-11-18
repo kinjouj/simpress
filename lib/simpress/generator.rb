@@ -36,8 +36,8 @@ module Simpress
 
       def build_entry_relations!(entries)
         [nil, *entries.select(&:index), nil].each_cons(3) do |newer, entry, older|
-          entry.prev = Simpress::Entry::Link.build(older)
-          entry.next = Simpress::Entry::Link.build(newer)
+          entry.prev = older&.to_link
+          entry.next = newer&.to_link
         end
       end
     end

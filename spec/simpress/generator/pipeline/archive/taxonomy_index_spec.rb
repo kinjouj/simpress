@@ -29,7 +29,7 @@ describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
     end
 
     it "/archives/categories/ruby/index.html is generated" do
-      expect { described_class.generate_html(taxonomies) }.to output(%r{\[BUILD CATEGORY\]: public/archives/categories/ruby/index\.html}).to_stdout_from_any_process
+      expect { described_class.generate_html(taxonomies) }.to output(%r{\[BUILD TAXONOMY\]: public/archives/categories/ruby/index\.html}).to_stdout_from_any_process
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/index.html", "<html>content</html>")
     end
@@ -45,7 +45,7 @@ describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
     end
 
     it "/archives/categories/ruby/1.json is generated" do
-      expect { described_class.generate_json(taxonomies) }.to output(%r{\[BUILD CATEGORY\]: public/archives/categories/ruby/1\.json}).to_stdout_from_any_process
+      expect { described_class.generate_json(taxonomies) }.to output(%r{\[BUILD TAXONOMY\]: public/archives/categories/ruby/1\.json}).to_stdout_from_any_process
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/1.json", expected_index_json)
     end
   end

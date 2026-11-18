@@ -20,7 +20,7 @@ module Simpress
         targets = entries.values_at(*indexes)
         indexer = Indexer.new(targets)
         indexer.each_similarity do |scores, i|
-          similarities = scores.max_by(LIMIT) {|score, _| score }.map {|_score, index| Simpress::Entry::Link.build(targets[index]) }
+          similarities = scores.max_by(LIMIT) {|score, _| score }.map {|_score, index| targets[index].to_link }
           entries[indexes[i]] = EntryWithSimilarities.new(targets[i], similarities)
         end
 
