@@ -1,5 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
+import Prism from 'prismjs';
 import EntryPage from '../../src/pages/EntryPage';
 import Simpress from '../../src/api/Simpress';
 import { testEntryData } from '../fixtures/testEntryData';
@@ -21,14 +22,14 @@ const renderEntryPage = (): RenderResult => {
 describe('EntryPage', () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
-    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.spyOn(Prism, 'highlightAll').mockImplementation(() => {});
   });
 
   afterEach(() => {
     vi.useRealTimers();
   });
 
-  it('エントリを表示する', async () => {
+  it('shows the entry', async () => {
     SimpressMock.getEntry.mockResolvedValue(testEntryData);
     SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
     renderEntryPage();
@@ -40,7 +41,7 @@ describe('EntryPage', () => {
     expect(entry).toBeInTheDocument();
   });
 
-  it('usePermalinkがnullを返した場合', async () => {
+  it('shows Not Found if null', async () => {
     render(
       <MemoryRouter>
         <EntryPage />
@@ -50,7 +51,7 @@ describe('EntryPage', () => {
     expect(await screen.findByText('Not Found')).toBeInTheDocument();
   });
 
-  it('Simpress.getEntryがエラーを出した場合', async () => {
+  it('shows Not Found on error', async () => {
     SimpressMock.getEntry.mockRejectedValue(new Error('ERROR'));
     renderEntryPage();
     act(() => {

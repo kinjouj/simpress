@@ -1,79 +1,117 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import Simpress from '../../src/api/Simpress';
 import AppRoutes from '../../src/routes/AppRoutes';
 import { testEntryData } from '../fixtures/testEntryData';
 
+vi.mock('../../src/api/Simpress');
+const SimpressMock = vi.mocked(Simpress);
+
+const renderRoutes = (path: string): void => {
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <AppRoutes />
+    </MemoryRouter>
+  );
+  act(() => {
+    vi.runAllTimers();
+  });
+};
+
 describe('AppRoutes', () => {
   beforeEach(() => {
-    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
-    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
-      const path = input instanceof Request ? input.url : input.toString();
-      let res: Response;
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    SimpressMock.getRecentEntries.mockResolvedValue([testEntryData]);
+  });
 
-      switch (true) {
-        case path.endsWith('/recent_entries.json'):
-          res = new Response(JSON.stringify([testEntryData]), { status: 200 });
-          break;
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
-        case path.endsWith('/archives/page/1.json'):
-        case path.endsWith('/archives/1234/01/1.json'):
-        case path.endsWith('/archives/categories/test/1.json'):
-          res = new Response(JSON.stringify({ entries: [testEntryData], total_pages: 1 }), { status: 200 });
-          break;
+  describe('page list', () => {
+    beforeEach(() => {
+      SimpressMock.getEntriesByPage.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
+    });
 
-        case path.endsWith('/test.json'):
-          res = new Response(JSON.stringify(testEntryData), { status: 200 });
-          break;
+    it('shows entries at /', async () => {
+      renderRoutes('/');
 
-        default:
-          res = new Response(null, { status: 404, statusText: 'Not Found' });
-      }
+      const entries = await screen.findAllByRole('listitem', { name: 'entry' });
+      expect(entries).toHaveLength(1);
+    });
 
-      return Promise.resolve(res);
+    it('shows entries at /page/1', async () => {
+      renderRoutes('/page/1');
+
+      const entries = await screen.findAllByRole('listitem', { name: 'entry' });
+      expect(entries).toHaveLength(1);
     });
   });
 
-  it('/page/1でエントリ一覧を表示する', async () => {
-    render(
-      <MemoryRouter initialEntries={['/page/1']}>
-        <AppRoutes />
-      </MemoryRouter>
-    );
+  describe('category list', () => {
+    beforeEach(() => {
+      SimpressMock.getEntriesByCategory.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
+    });
 
-    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
-    expect(entries).toHaveLength(1);
+    it('shows entries at /archives/categories/test', async () => {
+      renderRoutes('/archives/categories/test');
+
+      const entries = await screen.findAllByRole('listitem', { name: 'entry' });
+      expect(entries).toHaveLength(1);
+    });
+
+    it('shows entries at /archives/categories/test/1', async () => {
+      renderRoutes('/archives/categories/test/1');
+
+      const entries = await screen.findAllByRole('listitem', { name: 'entry' });
+      expect(entries).toHaveLength(1);
+    });
   });
 
-  it('/archives/categories/test/1でカテゴリのエントリ一覧を表示する', async () => {
-    render(
-      <MemoryRouter initialEntries={['/archives/categories/test/1']}>
-        <AppRoutes />
-      </MemoryRouter>
-    );
+  describe('archive list', () => {
+    beforeEach(() => {
+      SimpressMock.getEntriesByArchive.mockResolvedValue({ entries: [testEntryData], total_pages: 1 });
+    });
 
-    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
-    expect(entries).toHaveLength(1);
+    it('shows entries at /archives/1234/01', async () => {
+      renderRoutes('/archives/1234/01');
+
+      const entries = await screen.findAllByRole('listitem', { name: 'entry' });
+      expect(entries).toHaveLength(1);
+    });
+
+    it('shows entries at /archives/1234/01/1', async () => {
+      renderRoutes('/archives/1234/01/1');
+
+      const entries = await screen.findAllByRole('listitem', { name: 'entry' });
+      expect(entries).toHaveLength(1);
+    });
   });
 
-  it('/archives/1234/01/1でアーカイブのエントリ一覧を表示する', async () => {
-    render(
-      <MemoryRouter initialEntries={['/archives/1234/01/1']}>
-        <AppRoutes />
-      </MemoryRouter>
-    );
+  describe('entry', () => {
+    beforeEach(() => {
+      SimpressMock.getEntry.mockResolvedValue(testEntryData);
+    });
 
-    const entries = await screen.findAllByRole('listitem', { name: 'entry' }, { timeout: 10000 });
-    expect(entries).toHaveLength(1);
+    it('shows the entry at /test.html', async () => {
+      renderRoutes('/test.html');
+
+      const title = await screen.findByRole('heading', { name: testEntryData.title });
+      expect(title).toBeInTheDocument();
+    });
   });
 
-  it('/test.htmlでエントリを表示する', async () => {
-    render(
-      <MemoryRouter initialEntries={['/test.html']}>
-        <AppRoutes />
-      </MemoryRouter>
-    );
+  describe('error pages', () => {
+    it('shows Not Found at /error', async () => {
+      renderRoutes('/error');
 
-    const entry = await screen.findByRole('main', {}, { timeout: 10000 });
-    expect(entry).toBeInTheDocument();
+      expect(await screen.findByText('Not Found')).toBeInTheDocument();
+    });
+
+    it('redirects bad year to error', async () => {
+      renderRoutes('/archives/a/01');
+
+      expect(await screen.findByText('Not Found')).toBeInTheDocument();
+    });
   });
 });

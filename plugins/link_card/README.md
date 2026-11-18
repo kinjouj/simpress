@@ -1,27 +1,27 @@
 # link_card
 
-内部リンクをリンク先エントリのカードに変換するプラグイン
+Plugin that converts internal links into cards of the linked entry
 
-## 概要
+## Overview
 
-`[](/パス)`だけの行をリンク先エントリの情報を持つ`<div class="link-card">`要素へ変換
+Converts lines containing only `[](/path)` into a `<div class="link-card">` element with the linked entry's information
 
-## 記法
+## Syntax
 
 ```
 [](/target.html)
 ```
 
-対象は行全体がラベルの空な内部リンクになっている行だけ。それ以外のリンクは変換されない。リンク先のエントリが存在しない場合はカードに置き換えられない
+Only lines that are entirely an internal link with an empty label are converted. Other links are left as is. If the linked entry doesn't exist, the line isn't replaced with a card
 
-## 出力
+## Output
 
 ```html
 <div class="link-card">
   <a href="/target.html">
     <img src="/images/target.webp" alt="" />
-    <span>対象タイトル</span>
+    <span>Target Title</span>
   </a>
-  <span>対象の説明文</span>
+  <span>Target description</span>
 </div>
 ```

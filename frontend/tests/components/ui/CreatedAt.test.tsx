@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router';
 import CreatedAt from '../../../src/components/ui/CreatedAt';
 
 describe('CreatedAt Component', () => {
-  it('日付をYYYY-MM-DD形式で表示し、その月のアーカイブにリンクする', () => {
+  it('shows linked YYYY-MM-DD date', () => {
     const date = { year: 2000, month: 1, day: 1, hour: 0, minute: 0, second: 0, utc_offset: 32400 };
     render(
       <MemoryRouter>
@@ -17,7 +17,7 @@ describe('CreatedAt Component', () => {
     expect(screen.getByRole('link')).toHaveAttribute('href', '/archives/2000/01');
   });
 
-  it('dateがnullの場合は何も表示しない', () => {
+  it('shows nothing when null', () => {
     render(
       <MemoryRouter>
         <CreatedAt date={null} />

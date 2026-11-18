@@ -26,14 +26,14 @@ describe('AdjacentEntries', () => {
     cover: '/images/no_image.webp',
   };
 
-  it('nextとprevがある場合は両方のリンクを表示する', () => {
+  it('shows both links', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     expect(screen.getByRole('link', { name: new RegExp(nextSummary.title) })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: new RegExp(prevSummary.title) })).toBeInTheDocument();
   });
 
-  it('nextはpermalinkへrel="prev"でリンクする', () => {
+  it('links next with rel="prev"', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     const link = screen.getByRole('link', { name: new RegExp(nextSummary.title) });
@@ -41,7 +41,7 @@ describe('AdjacentEntries', () => {
     expect(link).toHaveAttribute('rel', 'prev');
   });
 
-  it('prevはpermalinkへrel="next"でリンクする', () => {
+  it('links prev with rel="next"', () => {
     renderWithRouter({ next: nextSummary, prev: prevSummary });
 
     const link = screen.getByRole('link', { name: new RegExp(prevSummary.title) });
@@ -49,21 +49,21 @@ describe('AdjacentEntries', () => {
     expect(link).toHaveAttribute('rel', 'next');
   });
 
-  it('nextがnullの場合はnextリンクを表示しない', () => {
+  it('hides next link when null', () => {
     renderWithRouter({ next: null, prev: prevSummary });
 
     expect(screen.queryByRole('link', { name: new RegExp(nextSummary.title) })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: new RegExp(prevSummary.title) })).toBeInTheDocument();
   });
 
-  it('prevがnullの場合はprevリンクを表示しない', () => {
+  it('hides prev link when null', () => {
     renderWithRouter({ next: nextSummary, prev: null });
 
     expect(screen.getByRole('link', { name: new RegExp(nextSummary.title) })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: new RegExp(prevSummary.title) })).not.toBeInTheDocument();
   });
 
-  it('nextとprevが両方nullの場合は空のコンテナを表示する', () => {
+  it('shows empty if both null', () => {
     renderWithRouter({ next: null, prev: null });
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument();

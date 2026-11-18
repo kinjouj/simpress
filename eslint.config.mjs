@@ -48,7 +48,6 @@ export default defineConfig(
       "no-restricted-imports": ["error", { "paths": ["./"] }],
       "no-unused-expressions": "error",
       "@stylistic/arrow-parens": ["error", "always"],
-      "@stylistic/array-bracket-spacing": ["error", "never"],
       "@stylistic/brace-style": ["error", "1tbs", { allowSingleLine: true }],
       "@stylistic/comma-dangle": [
         "error",

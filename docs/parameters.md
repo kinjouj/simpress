@@ -2,30 +2,30 @@
 
 ## Parser `lib/simpress/parser.rb`
 
-| 定数 | 説明 |
-| ---- | ---- |
-| DEFAULT_COVER | カバー画像が未指定で本文からも自動抽出できなかった場合のデフォルトのカバー画像パス |
+| Constant | Description |
+| -------- | ----------- |
+| DEFAULT_COVER | Default cover image path when no cover is given and none can be extracted from the body |
 
 ## Markdown Renderer `lib/simpress/parser/markdown/renderer.rb`
 
-| 定数 | 説明 |
-| ---- | ---- |
-| RENDERER_OPTIONS | Redcarpet::Render::HTMLに渡されるデフォルトのオプション |
+| Constant | Description |
+| -------- | ----------- |
+| RENDERER_OPTIONS | Default options passed to Redcarpet::Render::HTML |
 
 ## Markdown Processor `lib/simpress/parser/markdown/processor.rb`
 
-| 定数 | 説明 |
-| ---- | ---- |
-| REDCARPET_OPTIONS | Redcarpet::Markdownに渡されるパースオプション |
+| Constant | Description |
+| -------- | ----------- |
+| REDCARPET_OPTIONS | Parse options passed to Redcarpet::Markdown |
 
 ## Paginator `lib/simpress/paginator.rb`
 
-| 定数 | 説明 |
-| ---- | ---- |
-| DEFAULT_PREFIX | ページネーションのURLのデフォルトのプレフィックス |
+| Constant | Description |
+| -------- | ----------- |
+| DEFAULT_PREFIX | Default URL prefix for pagination |
 
 ## Taxonomy `lib/simpress/taxonomy.rb`
 
-| 定数 | 説明 |
-| ---- | ---- |
-| DEFAULT_TAXONOMIES | 設定で指定されていない場合に使われるデフォルトのTaxonomyの種類 |
+| Constant | Description |
+| -------- | ----------- |
+| DEFAULT_TAXONOMIES | Default Taxonomy types used when none are set in the config |

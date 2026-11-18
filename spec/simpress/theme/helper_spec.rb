@@ -9,15 +9,20 @@ describe Simpress::Theme::Helper do
 
   describe ".included" do
     context "when included in a module" do
+      after do
+        Simpress::Logger.clear
+      end
+
       it "works as a theme helper" do
-        Module.new do
-          def test_helper
-            "test_helper"
+        expect {
+          Module.new do
+            def test_helper
+              "test_helper"
+            end
+
+            include Simpress::Theme::Helper
           end
-
-          include Simpress::Theme::Helper
-        end
-
+        }.to output(/DEBUG -- : REGISTER HELPER: /).to_stdout_from_any_process
         expect(Simpress::Theme.const_get(:Scope).new.test_helper).to eq "test_helper"
       end
     end

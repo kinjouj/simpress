@@ -1,14 +1,14 @@
 # Plugin: RecentEntries
 
-最新の記事の一覧を取得するプラグイン。このプラグインを有効にした場合にはmodeに応じて以下でデータを取得できる
+Plugin that gets the latest entries. When enabled, data is available depending on `mode`
 
-- html: テンプレートのインスタンス変数@recent_entries(Array[Simpress::Entry])
-- json: recent_entries.json(id、title、permalinkの配列)
+- html: template instance variable @recent_entries (Array[Simpress::Entry])
+- json: recent_entries.json (array of id, title, permalink)
 
 ## Parameters
 
-lib/simpress/plugin/recent_entries.rbに定義されている、取得する記事に関するパラメータ。
+Parameters for the entries to get, defined in lib/simpress/plugin/recent_entries.rb
 
-|定数|値|説明|
-|---|---|---|
-|LIMIT|5|取得する件数の上限|
+| Constant | Value | Description |
+| -------- | ----- | ----------- |
+| LIMIT | 5 | Maximum number of entries to get |

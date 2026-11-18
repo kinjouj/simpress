@@ -5,24 +5,22 @@ import { testEntryData } from '../../fixtures/testEntryData';
 import type { TocType } from '../../../src/types';
 
 describe('TableOfContents', () => {
-  it('tocが1件のみで子要素がない場合は何も表示しない', () => {
+  it('hides single item without children', () => {
     const toc: TocType[] = [testEntryData.toc[0]];
     const { container } = render(<TableOfContents toc={toc} />);
 
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('tocが1件のみでも子要素がある場合は表示する', () => {
-    const toc: TocType[] = [
-      { id: 'section-1', text: 'Intro', children: [{ id: 'section-1-1', text: 'Intro Detail' }] },
-    ];
+  it('shows single item with children', () => {
+    const toc: TocType[] = [{ id: 'section-1', text: 'Intro', children: [{ id: 'section-1-1', text: 'Intro Detail' }] }];
     render(<TableOfContents toc={toc} />);
 
     expect(screen.getByText('Table of Contents')).toBeInTheDocument();
     expect(screen.getAllByRole('link').map((link) => link.textContent)).toEqual(['Intro', 'Intro Detail']);
   });
 
-  it('tocが2件以上の場合は見出しとリンクを表示する', () => {
+  it('shows headings and links', () => {
     render(<TableOfContents toc={testEntryData.toc} />);
 
     expect(screen.getByText('Table of Contents')).toBeInTheDocument();
@@ -30,14 +28,14 @@ describe('TableOfContents', () => {
     expect(screen.getByRole('link', { name: testEntryData.toc[1].text })).toBeInTheDocument();
   });
 
-  it('セクションidのアンカーにリンクする', () => {
+  it('links to section anchors', () => {
     render(<TableOfContents toc={testEntryData.toc} />);
 
     expect(screen.getByRole('link', { name: testEntryData.toc[0].text })).toHaveAttribute('href', `#${testEntryData.toc[0].id}`);
     expect(screen.getByRole('link', { name: testEntryData.toc[1].text })).toHaveAttribute('href', `#${testEntryData.toc[1].id}`);
   });
 
-  it('子要素を平坦化してインデントし、リンクする', () => {
+  it('flattens and indents children', () => {
     const toc: TocType[] = [
       { id: 'section-1', text: 'Intro', children: [{ id: 'section-1-1', text: 'Intro Detail' }] },
       { id: 'section-2', text: 'Summary', children: [] },
@@ -54,34 +52,33 @@ describe('TableOfContents', () => {
   });
 
   describe('when a link is clicked', () => {
-    it('デフォルトの遷移を防ぐ', () => {
+    it('prevents default navigation', () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const link = screen.getByRole('link', { name: testEntryData.toc[0].text });
       const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
       link.dispatchEvent(clickEvent);
-
       expect(clickEvent.defaultPrevented).toBe(true);
     });
 
-    it('対象セクションまでスクロールする', async () => {
+    it('scrolls to the section', async () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const target = document.createElement('div');
       target.id = testEntryData.toc[0].id;
       document.body.appendChild(target);
+
       const scrollIntoView = vi.fn();
       target.scrollIntoView = scrollIntoView;
 
       const user = userEvent.setup();
       await user.click(screen.getByRole('link', { name: testEntryData.toc[0].text }));
-
       expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
 
       document.body.removeChild(target);
     });
 
-    it('対象セクションがなくても例外を投げない', async () => {
+    it('ignores missing sections', async () => {
       render(<TableOfContents toc={testEntryData.toc} />);
 
       const user = userEvent.setup();

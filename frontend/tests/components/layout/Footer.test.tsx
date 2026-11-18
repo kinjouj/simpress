@@ -1,9 +1,10 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import Footer from '../../../src/components/layout/Footer';
 
 describe('Footer', () => {
-  it('フッターを表示する', () => {
-    const { container } = render(<Footer />);
-    expect(container.innerHTML).not.toBeNull();
+  it('shows the footer', () => {
+    render(<Footer />);
+
+    expect(screen.getByRole('contentinfo')).toHaveTextContent('Powered by simpress');
   });
 });
