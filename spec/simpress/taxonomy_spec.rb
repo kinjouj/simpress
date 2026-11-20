@@ -5,7 +5,7 @@ require "simpress/taxonomy"
 
 describe Simpress::Taxonomy do
   before do
-    allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["tags"], aliases: { categories: { Ruby: "ruby" } } })
+    allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories", "tags"] })
   end
 
   after do
@@ -23,10 +23,20 @@ describe Simpress::Taxonomy do
   end
 
   describe ".taxonomies" do
-    it "includes default and yaml Taxonomies" do
+    it "returns the Taxonomies in types" do
       names = described_class.taxonomies.map(&:name)
 
-      expect(names).to include("categories", "tags")
+      expect(names).to eq ["categories", "tags"]
+    end
+
+    context "when types is not set" do
+      before do
+        allow(Simpress::Config).to receive(:taxonomies).and_return({})
+      end
+
+      it "returns an empty array" do
+        expect(described_class.taxonomies).to eq []
+      end
     end
   end
 

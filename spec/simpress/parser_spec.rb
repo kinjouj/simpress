@@ -186,7 +186,8 @@ describe Simpress::Parser do
       end
 
       before do
-        allow(Simpress::Config).to receive(:taxonomies).and_return({ aliases: { categories: { Ruby: "ruby" } } })
+        Simpress::Taxonomy.clear
+        allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories", "tags"] })
       end
 
       after do

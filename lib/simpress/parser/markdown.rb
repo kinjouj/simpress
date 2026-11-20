@@ -9,7 +9,7 @@ module Simpress
       PERMITTED_CLASSES = [Date, Time].freeze
 
       def self.parse(file)
-        match = File.read(file).match(FRONT_MATTER_MARKDOWN_REGEX)
+        match = File.read(file, encoding: "UTF-8").match(FRONT_MATTER_MARKDOWN_REGEX)
         raise "Markdown parse failed: #{file}" unless match
 
         header = Psych.load(match[:header], filename: file, symbolize_names: true, permitted_classes: PERMITTED_CLASSES)

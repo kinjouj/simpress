@@ -28,7 +28,7 @@ module Simpress
 
       def create_tilt(template)
         filename = "#{Simpress::Config.theme_dir}/#{template}.erb"
-        tilt_caches[filename] ||= Tilt::ErubiTemplate.new(filename, escape: true)
+        tilt_caches[filename] ||= Tilt::ErubiTemplate.new(filename, escape: true, default_encoding: "UTF-8")
       end
 
       def render_internal(template, scope)

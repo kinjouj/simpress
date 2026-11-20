@@ -23,9 +23,3 @@
 | Constant | Description |
 | -------- | ----------- |
 | DEFAULT_PREFIX | Default URL prefix for pagination |
-
-## Taxonomy `lib/simpress/taxonomy.rb`
-
-| Constant | Description |
-| -------- | ----------- |
-| DEFAULT_TAXONOMIES | Default Taxonomy types used when none are set in the config |

@@ -7,7 +7,7 @@ module Simpress
     class InlineNote
       extend Simpress::Parser::Markdown::Filter
 
-      INLINE_NOTE_REGEX = /^\[\^\]:[^\S\r\n]*([^\r\n]+)$/
+      INLINE_NOTE_REGEX = /^>[^\S\r\n]*\[!NOTE\][^\S\r\n]+(\S[^\r\n]*)/
 
       def self.preprocess(markdown)
         markdown.gsub(INLINE_NOTE_REGEX, %(<div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>\\1</span></div>))
