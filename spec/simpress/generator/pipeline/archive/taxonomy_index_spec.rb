@@ -5,17 +5,18 @@ require "simpress/taxonomy"
 require "simpress/generator/pipeline/archive/taxonomy_index"
 
 describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
+  before do
+    Simpress::Taxonomy.clear
+    allow(Simpress::Config).to receive(:logging).and_return(true)
+    allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories", "tags"] })
+  end
+
   let!(:entry) do
     build(:entry, categories: ["Ruby"]).tap {|e| Simpress::Taxonomy.register(e.taxonomies, e) }
   end
 
   let!(:taxonomies) do
     Simpress::Taxonomy.taxonomies
-  end
-
-  before do
-    Simpress::Taxonomy.clear
-    allow(Simpress::Config).to receive(:logging).and_return(true)
   end
 
   after do

@@ -7,6 +7,8 @@ source/*
 !source/testdata-momotaro.markdown
 theme/*
 !theme/.gitkeep
+!theme/page.erb
+!theme/index.erb
 static/*
 !static/.gitkeep
 static/images/*

@@ -17,11 +17,11 @@ module Simpress
           entry = Simpress::Parser.parse(file)
           next if entry.draft
 
-          Simpress::Taxonomy.register(entry.taxonomies, entry)
           entries << entry
         end
 
         entries.sort_by!.with_index {|entry, i| [-entry.date.to_i, i] }
+        entries.each {|entry| Simpress::Taxonomy.register(entry.taxonomies, entry) }
         process_and_generate(entries)
       end
 

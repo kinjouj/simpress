@@ -8,6 +8,8 @@ end
 
 describe Simpress do
   before do
+    Simpress::Taxonomy.clear
+    allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories", "tags"] })
     allow(Simpress::Logger).to receive(:verbose)
     allow(Simpress::Logger).to receive(:debug)
     allow(Simpress::Config).to receive(:source_dir).and_return(create_filepath("source"))

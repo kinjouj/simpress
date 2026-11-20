@@ -5,8 +5,6 @@ require "simpress/taxonomy/term"
 
 module Simpress
   class Taxonomy
-    DEFAULT_TAXONOMIES = ["categories", "tags"].freeze
-
     attr_reader :name
 
     class << self
@@ -20,7 +18,7 @@ module Simpress
       end
 
       def taxonomies
-        @taxonomies ||= DEFAULT_TAXONOMIES.union(Simpress::Config.taxonomies[:types] || []).map {|name| fetch(name) }
+        @taxonomies ||= (Simpress::Config.taxonomies[:types] || []).map {|name| fetch(name) }
       end
 
       def resolve(params)
