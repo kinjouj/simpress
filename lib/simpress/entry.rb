@@ -6,7 +6,7 @@ module Simpress
   class Entry
     include Simpress::JSON::Serializable
 
-    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :content, :description, :cover, :toc, :prev, :next].freeze
+    PERMITTED_JSON_KEYS = [:id, :title, :date, :permalink, :taxonomies, :cover, :description, :content, :toc, :prev, :next].freeze
 
     attr_reader :id, :title, :date, :permalink, :taxonomies, :content, :description, :cover, :toc, :layout, :index, :draft, :markdown, :params
     attr_accessor :prev, :next
