@@ -2,12 +2,14 @@
 
 Defines Taxonomies and aliases for their URL slugs
 
-`categories` and `tags` are enabled by default, so they need not be listed in `types`
+`types` lists the enabled Taxonomies. If it is omitted, no Taxonomy is enabled.
 
-Both `types` and `aliases` are optional
+`aliases` is optional
 
 ```yaml
 types:
+  - categories
+  - tags
   - series
 
 aliases:

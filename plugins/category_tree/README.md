@@ -7,6 +7,10 @@ Plugin that processes and outputs the category list. Converts a flat category st
 1. If `category_indexes.json` exists, moves child categories under their parents as defined there and removes them from the root level
 1. Outputs sidebar HTML or `categories.json` depending on `mode`
 
+## Requirements
+
+`categories` must be listed in `types` of taxonomies.yaml
+
 ## Output
 
 - html: template instance variable @sidebar_categories_content (String, the rendered sidebar_categories.erb)

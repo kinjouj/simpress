@@ -116,6 +116,18 @@ describe Simpress::Taxonomy do
       expect(taxonomy.term("Ruby")).to equal(term)
     end
 
+    context "when slug override is set" do
+      before do
+        allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories", "tags"], aliases: { categories: { 社会: "social" } } })
+      end
+
+      it "uses the alias as the key" do
+        term = described_class.fetch("categories").term("社会")
+
+        expect(term.key).to eq "social"
+      end
+    end
+
     context "when slug override is absent" do
       it "falls back to to_url" do
         term = described_class.fetch("categories").term("Unknown")
