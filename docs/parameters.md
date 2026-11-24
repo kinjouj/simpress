@@ -1,4 +1,4 @@
-# Parameter
+# Parameters
 
 ## Parser `lib/simpress/parser.rb`
 

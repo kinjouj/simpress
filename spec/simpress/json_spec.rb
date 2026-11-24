@@ -51,12 +51,31 @@ describe Simpress::JSON do
     end
   end
 
-  describe "Time output" do
-    it "keeps written time and offset" do
-      time = Time.new(2026, 2, 1, 5, 0, 0, "+09:00")
+  describe Simpress::JSON::TimeSerializable do
+    describe "#as_json" do
+      it "returns the time components and utc_offset" do
+        time = Time.new(2026, 2, 1, 5, 0, 0, "+09:00")
 
-      expect(time.as_json).to eq({ year: 2026, month: 2, day: 1, hour: 5, minute: 0, second: 0, utc_offset: 32_400 })
-      expect(described_class.dump({ date: time })).to eq '{"date":{"year":2026,"month":2,"day":1,"hour":5,"minute":0,"second":0,"utc_offset":32400}}'
+        expect(time.as_json).to eq(
+          {
+            year: 2026,
+            month: 2,
+            day: 1,
+            hour: 5,
+            minute: 0,
+            second: 0,
+            utc_offset: 32_400
+          }
+        )
+      end
+
+      it "outputs the time components in the dumped JSON" do
+        time = Time.new(2026, 2, 1, 5, 0, 0, "+09:00")
+
+        expect(Simpress::JSON.dump({ date: time })).to eq(
+          '{"date":{"year":2026,"month":2,"day":1,"hour":5,"minute":0,"second":0,"utc_offset":32400}}'
+        )
+      end
     end
   end
 end

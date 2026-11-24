@@ -126,72 +126,70 @@ describe Simpress::Plugin::LinkCard do
     end
   end
 
-  describe "Filter.preprocess" do
-    subject(:filter) do
-      described_class::Filter
-    end
+  describe Simpress::Plugin::LinkCard::Filter do
+    describe ".preprocess" do
+      context "when a standalone link" do
+        let(:markdown) do
+          <<~MARKDOWN
+            Text before
 
-    context "when a standalone link" do
-      let(:markdown) do
-        <<~MARKDOWN
-          Text before
+            [](/first.html)
+            [](/second/page.html)
 
-          [](/first.html)
-          [](/second/page.html)
+            Text after
+          MARKDOWN
+        end
 
-          Text after
-        MARKDOWN
-      end
+        let(:expected) do
+          <<~MARKDOWN
+            Text before
 
-      let(:expected) do
-        <<~MARKDOWN
-          Text before
+            <!--link-card:/first.html-->
+            <!--link-card:/second/page.html-->
 
-          <!--link-card:/first.html-->
-          <!--link-card:/second/page.html-->
+            Text after
+          MARKDOWN
+        end
 
-          Text after
-        MARKDOWN
-      end
-
-      it "converts to a marker" do
-        expect(filter.preprocess(markdown)).to eq expected
-      end
-    end
-
-    context "when not a conversion target" do
-      context "when the link has label" do
-        it "doesn't convert" do
-          data = "[Label](/label.html)"
-          expect(filter.preprocess(data)).to eq data
+        it "converts to a marker" do
+          expect(described_class.preprocess(markdown)).to eq expected
         end
       end
 
-      context "when an external URL" do
-        it "doesn't convert" do
-          data = "[](https://example.com/page.html)"
-          expect(filter.preprocess(data)).to eq data
+      context "when not a conversion target" do
+        context "when the link has label" do
+          it "doesn't convert" do
+            data = "[Label](/label.html)"
+            expect(described_class.preprocess(data)).to eq data
+          end
         end
-      end
 
-      context "when text precedes link" do
-        it "doesn't convert" do
-          data = "abc[](/inline.html)"
-          expect(filter.preprocess(data)).to eq data
+        context "when an external URL" do
+          it "doesn't convert" do
+            data = "[](https://example.com/page.html)"
+            expect(described_class.preprocess(data)).to eq data
+          end
         end
-      end
 
-      context "when text follows link" do
-        it "doesn't convert" do
-          data = "[](/inline.html)abc"
-          expect(filter.preprocess(data)).to eq data
+        context "when text precedes link" do
+          it "doesn't convert" do
+            data = "abc[](/inline.html)"
+            expect(described_class.preprocess(data)).to eq data
+          end
         end
-      end
 
-      context "when path contains a space" do
-        it "doesn't convert" do
-          data = "[](/with space.html)"
-          expect(filter.preprocess(data)).to eq data
+        context "when text follows link" do
+          it "doesn't convert" do
+            data = "[](/inline.html)abc"
+            expect(described_class.preprocess(data)).to eq data
+          end
+        end
+
+        context "when path contains a space" do
+          it "doesn't convert" do
+            data = "[](/with space.html)"
+            expect(described_class.preprocess(data)).to eq data
+          end
         end
       end
     end

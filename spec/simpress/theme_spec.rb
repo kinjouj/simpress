@@ -47,7 +47,7 @@ describe Simpress::Theme do
       allow(tilt_template).to receive(:render).and_return("content")
     end
 
-    it "resets the tilt cache" do
+    it "resets the cache" do
       described_class.render("test", {})
       described_class.clear
       described_class.render("test", {})

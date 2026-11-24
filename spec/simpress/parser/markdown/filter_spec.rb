@@ -8,7 +8,7 @@ describe Simpress::Parser::Markdown::Filter do
   end
 
   describe ".apply_preprocess" do
-    it "applies filters in order" do
+    it "returns the filtered string" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
 
@@ -30,23 +30,25 @@ describe Simpress::Parser::Markdown::Filter do
       expect(described_class.apply_preprocess("Base")).to eq "Base + Filter1 + Filter2"
     end
 
-    it "ignores non-string values" do
-      filter = Class.new do
-        extend Simpress::Parser::Markdown::Filter
+    context "when a filter returns a non-string value" do
+      it "returns the original string" do
+        filter = Class.new do
+          extend Simpress::Parser::Markdown::Filter
 
-        def self.preprocess(_data)
-          {}
+          def self.preprocess(_data)
+            {}
+          end
         end
+
+        described_class.register_filters << filter
+
+        expect(described_class.apply_preprocess("Original")).to eq "Original"
       end
-
-      described_class.register_filters << filter
-
-      expect(described_class.apply_preprocess("Original")).to eq "Original"
     end
   end
 
   describe ".apply_postprocess" do
-    it "applies filters in order" do
+    it "returns the filtered string" do
       filter1 = Class.new do
         extend Simpress::Parser::Markdown::Filter
 

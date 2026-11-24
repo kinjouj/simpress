@@ -2,6 +2,8 @@
 
 source "https://rubygems.org"
 
+ruby ">= 3.2"
+
 gem "benchmark", "~> 0.5"
 gem "erubi", "~> 1.13"
 gem "oj", "~> 3.17"

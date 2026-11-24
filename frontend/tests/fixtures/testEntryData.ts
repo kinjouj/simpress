@@ -1,7 +1,15 @@
+import type { TocType } from '../../src/types';
+
+const toc: [TocType, TocType] = [
+  { id: 'section-1', text: 'toc-1', children: [] },
+  { id: 'section-2', text: 'toc-2', children: [] },
+];
+
 export const testEntryData = {
   id: '1',
   title: 'test1',
   date: { year: 2000, month: 1, day: 1, hour: 0, minute: 0, second: 0, utc_offset: 0 },
+  lastmod: { year: 2000, month: 1, day: 1, hour: 0, minute: 0, second: 0, utc_offset: 0 },
   permalink: '/test.html',
   cover: '/images/no_image.png',
   taxonomies: { categories: [{ key: 'test', count: 1, name: 'Test' }] },
@@ -9,10 +17,7 @@ export const testEntryData = {
   description: 'test1',
   prev: null,
   next: null,
-  toc: [
-    { id: 'section-1', text: 'toc-1', children: [] },
-    { id: 'section-2', text: 'toc-2', children: [] },
-  ],
+  toc,
   similarities: [
     { id: '2', title: 'test2', permalink: '/test2.html', cover: '/images/no_image.webp' },
     { id: '3', title: 'test3', permalink: '/test3.html', cover: '/images/no_image.webp' },

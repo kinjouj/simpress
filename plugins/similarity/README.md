@@ -5,6 +5,8 @@ Plugin that gets related entries from parsed Markdown. When enabled, data is ava
 - Simpress::Plugin::Similarity::EntryWithSimilarities#similarities
 - Simpress::Plugin::Similarity::EntryWithSimilarities#as_json (similarities is injected when content is included)
 
+Entries with `index: false` are excluded. They are neither compared nor given similarities
+
 ## Parameters
 
 BM25-based similarity parameters, defined in lib/simpress/plugin/similarity.rb

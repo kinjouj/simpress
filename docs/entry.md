@@ -5,6 +5,7 @@
 | id | Unique ID |
 | title | Title |
 | date | Date. If omitted, index is forced to false |
+| lastmod | Last modified date. Defaults to date |
 | permalink | Permalink |
 | taxonomies | Taxonomies such as categories and tags |
 | layout | Layout name. Defaults to "page" |

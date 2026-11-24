@@ -33,18 +33,22 @@ describe Simpress::Plugin::RecentEntries do
         expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
       end
 
-      it "excludes entries with index false" do
-        hidden = Simpress::Entry.new(id: "hidden", title: "Hidden", permalink: "/hidden", index: false)
-        described_class.run([hidden, *entries])
+      context "when an entry has index false" do
+        it "excludes the entry" do
+          hidden = Simpress::Entry.new(id: "hidden", title: "Hidden", permalink: "/hidden", index: false)
+          described_class.run([hidden, *entries])
 
-        expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
+          expect(described_class).to have_received(:bind_context).with(recent_entries: entries.take(5))
+        end
       end
 
-      it "binds fewer than 5 entries" do
-        small_entries = entries.take(2)
-        described_class.run(small_entries)
+      context "when there are fewer than 5 entries" do
+        it "binds all the entries" do
+          small_entries = entries.take(2)
+          described_class.run(small_entries)
 
-        expect(described_class).to have_received(:bind_context).with(recent_entries: small_entries)
+          expect(described_class).to have_received(:bind_context).with(recent_entries: small_entries)
+        end
       end
     end
 
@@ -53,7 +57,7 @@ describe Simpress::Plugin::RecentEntries do
         allow(Simpress::Config).to receive(:mode).and_return("json")
       end
 
-      it "recent_entries.json is generated" do
+      it "outputs recent_entries.json" do
         described_class.run(entries)
 
         expect(Simpress::JSON).to have_received(:dump).with(entries.take(5), keys: [:id, :title, :permalink])

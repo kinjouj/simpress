@@ -32,41 +32,56 @@ describe Simpress::Generator do
   end
 
   describe ".build_entry_relations!" do
-    let(:entry_a) do
-      build(:entry, permalink: "/entry-a.html")
+    context "when all entries are indexed" do
+      let(:entry_a) do
+        build(:entry, permalink: "/entry-a.html")
+      end
+
+      let(:entry_b) do
+        build(:entry, permalink: "/entry-b.html")
+      end
+
+      let(:entry_c) do
+        build(:entry, permalink: "/entry-c.html")
+      end
+
+      before do
+        described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c])
+      end
+
+      it "sets prev and next" do
+        expect(entry_a.prev.permalink).to eq "/entry-b.html"
+        expect(entry_a.next).to be_nil
+        expect(entry_b.prev.permalink).to eq "/entry-c.html"
+        expect(entry_b.next.permalink).to eq "/entry-a.html"
+        expect(entry_c.prev).to be_nil
+        expect(entry_c.next.permalink).to eq "/entry-b.html"
+      end
     end
 
-    let(:entry_b) do
-      build(:entry, permalink: "/entry-b.html")
-    end
+    context "when an entry has index false" do
+      let(:newer) do
+        build(:entry, permalink: "/newer.html")
+      end
 
-    let(:entry_c) do
-      build(:entry, permalink: "/entry-c.html")
-    end
+      let(:hidden) do
+        build(:entry, permalink: "/hidden.html", index: false)
+      end
 
-    before do
-      described_class.send(:build_entry_relations!, [entry_a, entry_b, entry_c])
-    end
+      let(:older) do
+        build(:entry, permalink: "/older.html")
+      end
 
-    it "sets prev and next" do
-      expect(entry_a.prev.permalink).to eq "/entry-b.html"
-      expect(entry_a.next).to be_nil
-      expect(entry_b.prev.permalink).to eq "/entry-c.html"
-      expect(entry_b.next.permalink).to eq "/entry-a.html"
-      expect(entry_c.prev).to be_nil
-      expect(entry_c.next.permalink).to eq "/entry-b.html"
-    end
+      before do
+        described_class.send(:build_entry_relations!, [newer, hidden, older])
+      end
 
-    it "excludes entries with index false" do
-      newer = build(:entry, permalink: "/newer.html")
-      hidden = build(:entry, permalink: "/hidden.html", index: false)
-      older = build(:entry, permalink: "/older.html")
-      described_class.send(:build_entry_relations!, [newer, hidden, older])
-
-      expect(newer.prev.permalink).to eq "/older.html"
-      expect(older.next.permalink).to eq "/newer.html"
-      expect(hidden.prev).to be_nil
-      expect(hidden.next).to be_nil
+      it "skips the entry" do
+        expect(newer.prev.permalink).to eq "/older.html"
+        expect(older.next.permalink).to eq "/newer.html"
+        expect(hidden.prev).to be_nil
+        expect(hidden.next).to be_nil
+      end
     end
   end
 end

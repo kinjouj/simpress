@@ -7,11 +7,16 @@ describe Simpress::Entry do
     Time.new(2026, 1, 1)
   end
 
+  let(:lastmod) do
+    Time.new(2026, 2, 1)
+  end
+
   let(:params) do
     {
       id: "entry-123",
       title: "Sample Entry",
       date: date,
+      lastmod: lastmod,
       permalink: "/sample-entry",
       description: "Short description",
       cover: "cover.png",
@@ -33,6 +38,7 @@ describe Simpress::Entry do
       expect(entry.id).to eq "entry-123"
       expect(entry.title).to eq "Sample Entry"
       expect(entry.date).to eq date
+      expect(entry.lastmod).to eq lastmod
       expect(entry.permalink).to eq "/sample-entry"
       expect(entry.description).to eq "Short description"
       expect(entry.cover).to eq "cover.png"
@@ -48,15 +54,19 @@ describe Simpress::Entry do
   end
 
   describe "#prev and #next" do
-    it "defaults to nil, assignable" do
+    it "returns nil by default" do
       entry = described_class.new(params)
 
       expect(entry.prev).to be_nil
       expect(entry.next).to be_nil
+    end
 
+    it "returns the assigned links" do
+      entry = described_class.new(params)
       link = entry.to_link
       entry.prev = link
       entry.next = link
+
       expect(entry.prev).to eq link
       expect(entry.next).to eq link
     end
@@ -82,16 +92,18 @@ describe Simpress::Entry do
       end
     end
 
-    it "includes assigned prev and next" do
-      newer = described_class.new(id: "entry-456", title: "Newer Entry", permalink: "/newer-entry")
-      older = described_class.new(id: "entry-789", title: "Older Entry", permalink: "/older-entry")
-      entry = described_class.new(params)
-      entry.prev = older.to_link
-      entry.next = newer.to_link
-      result = entry.to_h
+    context "when prev and next are assigned" do
+      it "includes them" do
+        newer = described_class.new(id: "entry-456", title: "Newer Entry", permalink: "/newer-entry")
+        older = described_class.new(id: "entry-789", title: "Older Entry", permalink: "/older-entry")
+        entry = described_class.new(params)
+        entry.prev = older.to_link
+        entry.next = newer.to_link
+        result = entry.to_h
 
-      expect(result[:prev]).to eq entry.prev
-      expect(result[:next]).to eq entry.next
+        expect(result[:prev]).to eq entry.prev
+        expect(result[:next]).to eq entry.next
+      end
     end
   end
 

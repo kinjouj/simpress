@@ -77,8 +77,11 @@ describe Simpress::Taxonomy do
   end
 
   describe ".register" do
+    let(:entry) do
+      build(:entry, categories: ["Ruby"])
+    end
+
     it "registers the entry under terms" do
-      entry = build(:entry, categories: ["Ruby"])
       described_class.register(entry.taxonomies, entry)
 
       expect(entry.taxonomies["categories"].first.entries).to include(entry)
@@ -86,7 +89,7 @@ describe Simpress::Taxonomy do
   end
 
   describe ".clear" do
-    it "resets cache and memoized Taxonomies" do
+    it "resets the cache" do
       obj = described_class.fetch("categories")
       described_class.clear
 
@@ -95,18 +98,22 @@ describe Simpress::Taxonomy do
   end
 
   describe "#terms" do
+    let(:entry) do
+      build(:entry)
+    end
+
     it "returns terms with entries" do
       taxonomy = described_class.fetch("categories")
       used = taxonomy.term("Ruby")
       taxonomy.term("Unused")
-      used.entries << build(:entry)
+      used.entries << entry
 
       expect(taxonomy.terms).to eq({ "Ruby" => used })
     end
   end
 
   describe "#term" do
-    it "returns a memoized Term" do
+    it "returns the same Term" do
       taxonomy = described_class.fetch("categories")
       term = taxonomy.term("Ruby")
 
@@ -118,7 +125,7 @@ describe Simpress::Taxonomy do
 
     context "when slug override is set" do
       before do
-        allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories", "tags"], aliases: { categories: { 社会: "social" } } })
+        allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories"], aliases: { categories: { 社会: "social" } } })
       end
 
       it "uses the alias as the key" do

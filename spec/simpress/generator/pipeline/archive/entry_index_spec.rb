@@ -22,7 +22,7 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
       allow(Simpress::Writer).to receive(:write).and_yield("public/index.html")
     end
 
-    it "index.html is generated" do
+    it "outputs /index.html" do
       expect { described_class.generate_html([entry]) }.to output(%r{\[BUILD ARCHIVE\]: public/index\.html}).to_stdout_from_any_process
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/index.html", "<html>content</html>")
@@ -38,7 +38,7 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
       allow(Simpress::Writer).to receive(:write).with("/archives/page/1.json", anything).and_yield("public/archives/page/1.json")
     end
 
-    it "/archives/page/1.json is generated" do
+    it "outputs /archives/page/1.json" do
       expect { described_class.generate_json([entry]) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/page/1\.json}).to_stdout_from_any_process
       expect(Simpress::Writer).to have_received(:write).with("/archives/page/1.json", expected_page_json)
     end

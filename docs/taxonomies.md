@@ -2,7 +2,7 @@
 
 Defines Taxonomies and aliases for their URL slugs
 
-`types` lists the enabled Taxonomies. If it is omitted, no Taxonomy is enabled.
+`types` lists the enabled Taxonomies. If it is omitted, no Taxonomy is enabled
 
 `aliases` is optional
 
