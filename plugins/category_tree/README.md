@@ -5,6 +5,7 @@ Plugin that processes and outputs the category list. Converts a flat category st
 ## Overview
 
 1. If `category_indexes.json` exists, moves child categories under their parents as defined there and removes them from the root level
+1. If `orders` is defined in `category_indexes.json`, sorts the categories by it
 1. Outputs sidebar HTML or `categories.json` depending on `mode`
 
 ## Requirements
@@ -23,12 +24,14 @@ Optional file that defines parent-child relations. Categories are nested only wh
 ```json
 {
   "parent category key": ["child category key 1", "child category key 2"],
-  "tech": ["ruby", "python"]
+  "tech": ["ruby", "python"],
+  "orders": ["tech", "life"]
 }
 ```
 
 - Defined children move into the parent's `children` and are removed from the root level
 - Keys that don't exist are skipped
+- `orders` is an optional list of category keys that sets the display order. It applies to the root level and to each `children` list. Categories not listed come after the listed ones, in their original order. `orders` itself isn't treated as a category
 
 ### sidebar_categories.erb
 

@@ -15,18 +15,14 @@ FactoryBot.define do
     title { "title" }
     description { "content description" }
     date { Time.new(2025, 1, 1) }
+    lastmod { date }
     cover { "/images/no_image.webp" }
     index { true }
     draft { false }
     markdown { "# Test\n\ncontent\n123" }
     content { "<h1>Test</h1>\n<p>content\n123</p>" }
     toc { [] }
-    taxonomies do
-      {
-        "categories" => categories.map {|name| build(:taxonomy, name: "categories").term(name) },
-        "tags" => tags.map {|name| build(:taxonomy, name: "tags").term(name) }
-      }
-    end
+    taxonomies { { "categories" => categories.map {|name| build(:taxonomy, name: "categories").term(name) } } }
 
     initialize_with { new(attributes) }
   end

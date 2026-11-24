@@ -30,6 +30,7 @@ export type EntryType = {
   title: string
   permalink: string
   date: DateType | null
+  lastmod: DateType | null
   taxonomies: TaxonomiesType
   description?: string
   cover: string

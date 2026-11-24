@@ -130,77 +130,79 @@ describe Simpress::Plugin::Similarity do
     ]
   end
 
-  it "sets similar entries" do
-    described_class.run(entries)
-
-    expect(entries[0]).to respond_to(:similarities)
-    expect(entries[0].similarities.size).to eq(1)
-    expect(entries[0].similarities.first.id).to eq("entry_003")
-    expect(entries[0].similarities.first.cover).to eq("/images/no_image.png")
-
-    expect(entries[1]).to respond_to(:similarities)
-    expect(entries[1].similarities.size).to eq(2)
-    expect(entries[1].similarities.map(&:id)).to contain_exactly("entry_004", "entry_005")
-
-    expect(entries[2]).to respond_to(:similarities)
-    expect(entries[2].similarities.size).to eq(1)
-    expect(entries[2].similarities.first.id).to eq("entry_001")
-
-    expect(entries[3]).to respond_to(:similarities)
-    expect(entries[3].similarities.size).to eq(2)
-    expect(entries[3].similarities.map(&:id)).to contain_exactly("entry_002", "entry_005")
-
-    expect(entries[4]).to respond_to(:similarities)
-    expect(entries[4].similarities.size).to eq(2)
-    expect(entries[4].similarities.map(&:id)).to contain_exactly("entry_004", "entry_002")
-  end
-
-  context "when index false entries included" do
-    let(:hidden) do
-      build(:entry, id: "hidden", title: entries[0].title, markdown: entries[0].markdown, permalink: "/hidden.html", index: false)
-    end
-
-    it "excludes them" do
-      all = [hidden, *entries]
-      described_class.run(all)
-
-      expect(all[0]).to equal(hidden)
-      expect(all[0]).not_to respond_to(:similarities)
-      expect(all.drop(1).flat_map {|entry| entry.similarities.map(&:id) }).not_to include("hidden")
-    end
-  end
-
-  context "when nothing is similar" do
-    before do
-      indexer = Simpress::Plugin::Similarity::Indexer.new(entries)
-      allow(indexer).to receive(:each_similarity) {|&block| entries.size.times {|i| block.call([], i) } }
-      allow(Simpress::Plugin::Similarity::Indexer).to receive(:new).and_return(indexer)
-    end
-
-    it "leaves similarities empty" do
+  describe ".run" do
+    it "sets similar entries" do
       described_class.run(entries)
-      entries.each {|entry| expect(entry.similarities).to be_empty }
+
+      expect(entries[0]).to respond_to(:similarities)
+      expect(entries[0].similarities.size).to eq(1)
+      expect(entries[0].similarities.first.id).to eq("entry_003")
+      expect(entries[0].similarities.first.cover).to eq("/images/no_image.png")
+
+      expect(entries[1]).to respond_to(:similarities)
+      expect(entries[1].similarities.size).to eq(2)
+      expect(entries[1].similarities.map(&:id)).to contain_exactly("entry_004", "entry_005")
+
+      expect(entries[2]).to respond_to(:similarities)
+      expect(entries[2].similarities.size).to eq(1)
+      expect(entries[2].similarities.first.id).to eq("entry_001")
+
+      expect(entries[3]).to respond_to(:similarities)
+      expect(entries[3].similarities.size).to eq(2)
+      expect(entries[3].similarities.map(&:id)).to contain_exactly("entry_002", "entry_005")
+
+      expect(entries[4]).to respond_to(:similarities)
+      expect(entries[4].similarities.size).to eq(2)
+      expect(entries[4].similarities.map(&:id)).to contain_exactly("entry_004", "entry_002")
     end
-  end
 
-  context "when mode is json" do
-    before do
-      allow(Simpress::Config).to receive(:mode).and_return("json")
-    end
+    context "when index false entries included" do
+      let(:hidden) do
+        build(:entry, id: "hidden", title: entries[0].title, markdown: entries[0].markdown, permalink: "/hidden.html", index: false)
+      end
 
-    context "when keys include content" do
-      it "includes similarities" do
-        described_class.run(entries)
+      it "excludes them" do
+        all = [hidden, *entries]
+        described_class.run(all)
 
-        expect(entries[0].to_h(keys: [:title, :content])).to include(:similarities)
+        expect(all[0]).to equal(hidden)
+        expect(all[0]).not_to respond_to(:similarities)
+        expect(all.drop(1).flat_map {|entry| entry.similarities.map(&:id) }).not_to include("hidden")
       end
     end
 
-    context "when keys don't include content" do
-      it "doesn't include similarities" do
-        described_class.run(entries)
+    context "when nothing is similar" do
+      before do
+        indexer = Simpress::Plugin::Similarity::Indexer.new(entries)
+        allow(indexer).to receive(:each_similarity) {|&block| entries.size.times {|i| block.call([], i) } }
+        allow(Simpress::Plugin::Similarity::Indexer).to receive(:new).and_return(indexer)
+      end
 
-        expect(entries[0].to_h(keys: [:title])).not_to include(:similarities)
+      it "leaves similarities empty" do
+        described_class.run(entries)
+        entries.each {|entry| expect(entry.similarities).to be_empty }
+      end
+    end
+
+    context "when mode is json" do
+      before do
+        allow(Simpress::Config).to receive(:mode).and_return("json")
+      end
+
+      context "when keys include content" do
+        it "includes similarities" do
+          described_class.run(entries)
+
+          expect(entries[0].to_h(keys: [:title, :content])).to include(:similarities)
+        end
+      end
+
+      context "when keys don't include content" do
+        it "doesn't include similarities" do
+          described_class.run(entries)
+
+          expect(entries[0].to_h(keys: [:title])).not_to include(:similarities)
+        end
       end
     end
   end

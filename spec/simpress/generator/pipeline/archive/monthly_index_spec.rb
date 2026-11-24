@@ -26,7 +26,7 @@ describe Simpress::Generator::Pipeline::Archive::MonthlyIndex do
       allow(Simpress::Writer).to receive(:write).and_yield("public/archives/2026/01/index.html")
     end
 
-    it "/archives/2026/01/index.html is generated" do
+    it "outputs /archives/2026/01/index.html" do
       expect { described_class.generate_html(monthly_archives) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/2026/01/index\.html}).to_stdout_from_any_process
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/index.html", "<html>content</html>")
@@ -42,7 +42,7 @@ describe Simpress::Generator::Pipeline::Archive::MonthlyIndex do
       allow(Simpress::Writer).to receive(:write).with("/archives/2026/01/1.json", anything).and_yield("public/archives/2026/01/1.json")
     end
 
-    it "/archives/2026/01/1.json is generated" do
+    it "outputs /archives/2026/01/1.json" do
       expect { described_class.generate_json(monthly_archives) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/2026/01/1\.json}).to_stdout_from_any_process
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/1.json", expected_index_json)
     end

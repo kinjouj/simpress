@@ -155,20 +155,22 @@ describe Simpress::Plugin do
       end
     end
 
-    it "runs ties in registration order" do
-      calls = []
-      plugin_classes = Array.new(10) do |i|
-        Class.new do
-          extend Simpress::Plugin
+    context "when plugins have the same priority" do
+      it "runs in registration order" do
+        calls = []
+        plugin_classes = Array.new(10) do |i|
+          Class.new do
+            extend Simpress::Plugin
 
-          define_singleton_method(:run) {|_entries| calls << i }
+            define_singleton_method(:run) {|_entries| calls << i }
+          end
         end
+
+        plugin_classes.each {|plugin| described_class.register_plugins << plugin }
+        described_class.process([])
+
+        expect(calls).to eq((0...10).to_a)
       end
-
-      plugin_classes.each {|plugin| described_class.register_plugins << plugin }
-      described_class.process([])
-
-      expect(calls).to eq((0...10).to_a)
     end
   end
 

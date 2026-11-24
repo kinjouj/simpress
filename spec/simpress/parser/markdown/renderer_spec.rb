@@ -42,87 +42,105 @@ describe Simpress::Parser::Markdown::Renderer do
   end
 
   describe "#header" do
-    it "returns h1 for level 1" do
-      result = renderer.header("Title", 1)
+    context "when level is 1" do
+      it "returns h1 without adding to the toc" do
+        result = renderer.header("Title", 1)
 
-      expect(result).to eq "<h1>Title</h1>"
-      expect(renderer.toc).to be_empty
+        expect(result).to eq "<h1>Title</h1>"
+        expect(renderer.toc).to be_empty
+      end
     end
 
-    it "returns headings with ids" do
-      result = renderer.header("SubTitle", 2)
+    context "when level is 2" do
+      it "returns the heading with an id" do
+        result = renderer.header("SubTitle", 2)
 
-      expect(result).to eq '<h2 id="section-1">SubTitle</h2>'
-      expect(renderer.toc.size).to eq 1
+        expect(result).to eq '<h2 id="section-1">SubTitle</h2>'
+        expect(renderer.toc.size).to eq 1
 
-      heading = renderer.toc.first
-      expect(heading[:id]).to eq "section-1"
-      expect(heading[:text]).to eq "SubTitle"
-      expect(heading[:children]).to eq []
+        heading = renderer.toc.first
+        expect(heading[:id]).to eq "section-1"
+        expect(heading[:text]).to eq "SubTitle"
+        expect(heading[:children]).to eq []
+      end
     end
 
-    it "puts level 2 at top" do
-      renderer.header("First", 2)
-      renderer.header("Second", 2)
+    context "when level 2 headings are consecutive" do
+      it "adds them at the top level" do
+        renderer.header("First", 2)
+        renderer.header("Second", 2)
 
-      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Second"]
+        expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Second"]
+      end
     end
 
-    it "nests level 3+ under 2" do
-      renderer.header("First", 2)
-      result = renderer.header("Second", 3)
+    context "when level 3 follows level 2" do
+      it "nests it under the level 2 heading" do
+        renderer.header("First", 2)
+        result = renderer.header("Second", 3)
 
-      expect(result).to include('id="section-2"')
-      expect(renderer.toc.size).to eq 1
-      first = renderer.toc.first
-      expect(first[:text]).to eq "First"
-      expect(first[:children]).to eq [{ id: "section-2", text: "Second" }]
+        expect(result).to include('id="section-2"')
+        expect(renderer.toc.size).to eq 1
+        first = renderer.toc.first
+        expect(first[:text]).to eq "First"
+        expect(first[:children]).to eq [{ id: "section-2", text: "Second" }]
+      end
     end
 
-    it "groups consecutive deep headings" do
-      renderer.header("First", 2)
-      renderer.header("Second", 3)
-      renderer.header("Third", 4)
+    context "when deeper headings are consecutive" do
+      it "groups them under one parent" do
+        renderer.header("First", 2)
+        renderer.header("Second", 3)
+        renderer.header("Third", 4)
 
-      expect(renderer.toc.first[:children].map {|heading| heading[:text] }).to eq ["Second", "Third"]
+        expect(renderer.toc.first[:children].map {|heading| heading[:text] }).to eq ["Second", "Third"]
+      end
     end
 
-    it "starts a new top entry" do
-      renderer.header("First", 2)
-      renderer.header("Second", 3)
-      renderer.header("Third", 2)
-      renderer.header("Fourth", 3)
+    context "when level 2 follows nested headings" do
+      it "starts a new top entry" do
+        renderer.header("First", 2)
+        renderer.header("Second", 3)
+        renderer.header("Third", 2)
+        renderer.header("Fourth", 3)
 
-      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Third"]
-      expect(renderer.toc[0][:children].map {|heading| heading[:text] }).to eq ["Second"]
-      expect(renderer.toc[1][:children].map {|heading| heading[:text] }).to eq ["Fourth"]
+        expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Third"]
+        expect(renderer.toc[0][:children].map {|heading| heading[:text] }).to eq ["Second"]
+        expect(renderer.toc[1][:children].map {|heading| heading[:text] }).to eq ["Fourth"]
+      end
     end
 
-    it "makes early deep headings top-level" do
-      renderer.header("First", 3)
+    context "when the first heading is level 3" do
+      it "makes it top-level" do
+        renderer.header("First", 3)
 
-      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First"]
-    end
+        expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First"]
+      end
 
-    it "uses first heading as top" do
-      renderer.header("First", 3)
-      renderer.header("Second", 4)
-      renderer.header("Third", 4)
-      renderer.header("Fourth", 3)
+      context "when deeper headings follow" do
+        it "nests them under the first heading" do
+          renderer.header("First", 3)
+          renderer.header("Second", 4)
+          renderer.header("Third", 4)
+          renderer.header("Fourth", 3)
 
-      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Fourth"]
-      expect(renderer.toc[0][:children].map {|heading| heading[:text] }).to eq ["Second", "Third"]
-      expect(renderer.toc[1][:children]).to eq []
-    end
+          expect(renderer.toc.map {|heading| heading[:text] }).to eq ["First", "Fourth"]
+          expect(renderer.toc[0][:children].map {|heading| heading[:text] }).to eq ["Second", "Third"]
+          expect(renderer.toc[1][:children]).to eq []
+        end
+      end
 
-    it "makes shallower headings top-level" do
-      renderer.header("A", 3)
-      renderer.header("B", 2)
-      renderer.header("C", 3)
+      context "when a level 2 heading follows" do
+        it "makes the level 2 heading top-level" do
+          renderer.header("A", 3)
+          renderer.header("B", 2)
+          renderer.header("C", 3)
 
-      expect(renderer.toc.map {|heading| heading[:text] }).to eq ["A", "B"]
-      expect(renderer.toc[0][:children]).to eq []
-      expect(renderer.toc[1][:children].map {|heading| heading[:text] }).to eq ["C"]
+          expect(renderer.toc.map {|heading| heading[:text] }).to eq ["A", "B"]
+          expect(renderer.toc[0][:children]).to eq []
+          expect(renderer.toc[1][:children].map {|heading| heading[:text] }).to eq ["C"]
+        end
+      end
     end
   end
 

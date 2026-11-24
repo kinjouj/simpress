@@ -99,9 +99,8 @@ describe Simpress::Parser do
 
     context "when cover and description unset" do
       before do
-        allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(
-          Simpress::Parser::Markdown::Processor::Result.new("<p>Hello <strong>world</strong>!</p>", nil, [])
-        )
+        result = Simpress::Parser::Markdown::Processor::Result.new("<p>Hello <strong>world</strong>!</p>", nil, [])
+        allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(result)
       end
 
       it "falls back to defaults" do
@@ -145,7 +144,7 @@ describe Simpress::Parser do
           MD
         end
 
-        it "sets date nil, index false" do
+        it "returns nil date and index false" do
           entry = described_class.parse("no-date.md")
 
           expect(entry.date).to be_nil
@@ -163,7 +162,7 @@ describe Simpress::Parser do
           MD
         end
 
-        it "sets date nil, index false" do
+        it "ignores the date in the file name" do
           entry = described_class.parse("2026-01-01-from-filename.md")
 
           expect(entry.date).to be_nil
@@ -187,7 +186,7 @@ describe Simpress::Parser do
 
       before do
         Simpress::Taxonomy.clear
-        allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories", "tags"] })
+        allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories"] })
       end
 
       after do
@@ -370,6 +369,31 @@ describe Simpress::Parser do
         it "parses into Time" do
           expect(described_class.parse(file).date).to be_a(Time)
         end
+      end
+    end
+
+    context "when lastmod is given" do
+      let(:markdown) do
+        <<~MD
+          ---
+          title: Test Title
+          permalink: /2026/01/test-entry
+          date: 2025-01-01
+          lastmod: 2025-02-03
+          ---
+        MD
+      end
+
+      it "parses into Time" do
+        expect(described_class.parse(file).lastmod).to eq Time.new(2025, 2, 3)
+      end
+    end
+
+    context "when lastmod is omitted" do
+      it "returns date" do
+        entry = described_class.parse(file)
+
+        expect(entry.lastmod).to eq entry.date
       end
     end
   end

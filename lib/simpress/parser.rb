@@ -31,6 +31,7 @@ module Simpress
       def build
         assign_id!
         assign_date!
+        assign_lastmod!
         assign_index!
         assign_taxonomies!
         assign_draft!
@@ -49,7 +50,11 @@ module Simpress
       end
 
       def assign_date!
-        @params[:date] = parse_datetime
+        @params[:date] = parse_datetime(@params[:date])
+      end
+
+      def assign_lastmod!
+        @params[:lastmod] = parse_datetime(@params[:lastmod]) || @params[:date]
       end
 
       def assign_index!
@@ -89,12 +94,11 @@ module Simpress
         @params[:permalink] = File.join("/", @dir, (@params[:permalink] || @basename).to_s.delete_prefix("/"))
       end
 
-      def parse_datetime
-        date = @params[:date]
-        return unless date
-        return date.to_time if date.respond_to?(:to_time)
+      def parse_datetime(value)
+        return unless value
+        return value.to_time if value.respond_to?(:to_time)
 
-        Time.parse(date.to_s) rescue nil # rubocop:disable Style/RescueModifier
+        Time.parse(value.to_s) rescue nil # rubocop:disable Style/RescueModifier
       end
     end
   end

@@ -7,8 +7,8 @@ require "simpress/generator/pipeline/archive/taxonomy_index"
 describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
   before do
     Simpress::Taxonomy.clear
+    allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories"] })
     allow(Simpress::Config).to receive(:logging).and_return(true)
-    allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories", "tags"] })
   end
 
   let!(:entry) do
@@ -20,6 +20,7 @@ describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
   end
 
   after do
+    Simpress::Taxonomy.clear
     Simpress::Logger.clear
   end
 
@@ -29,7 +30,7 @@ describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
       allow(Simpress::Writer).to receive(:write).and_yield("public/archives/categories/ruby/index.html")
     end
 
-    it "/archives/categories/ruby/index.html is generated" do
+    it "outputs /archives/categories/ruby/index.html" do
       expect { described_class.generate_html(taxonomies) }.to output(%r{\[BUILD TAXONOMY\]: public/archives/categories/ruby/index\.html}).to_stdout_from_any_process
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/index.html", "<html>content</html>")
@@ -45,7 +46,7 @@ describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
       allow(Simpress::Writer).to receive(:write).with("/archives/categories/ruby/1.json", anything).and_yield("public/archives/categories/ruby/1.json")
     end
 
-    it "/archives/categories/ruby/1.json is generated" do
+    it "outputs /archives/categories/ruby/1.json" do
       expect { described_class.generate_json(taxonomies) }.to output(%r{\[BUILD TAXONOMY\]: public/archives/categories/ruby/1\.json}).to_stdout_from_any_process
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/1.json", expected_index_json)
     end

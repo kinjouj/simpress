@@ -1,13 +1,14 @@
-## Simpress
+# Simpress
 
 a simple static blog generator
 
-### Requirement
+## Requirement
 
 * Ruby >= 3.2
+* Node.js (optional, for the frontend)
 * MeCab (required by the `natto` gem for Japanese morphological analysis)
 
-### Installation
+## Installation
 
 ```bash
 git clone https://github.com/kinjouj/simpress.git blog
@@ -18,7 +19,7 @@ cp config.yaml.orig config.yaml
 ./simpress build
 ```
 
-### Configuration(config.yaml)
+## Configuration(config.yaml)
 
 ```yaml
 default:
@@ -30,7 +31,7 @@ default:
     - recent_entries
 ```
 
-### Markdown Format
+## Markdown Format
 
 ```markdown
 ---
@@ -47,7 +48,7 @@ categories:
 TEST BODY
 ```
 
-### SEE ALSO
+## SEE ALSO
 
 - [Simpress::Entry Object Specification](docs/entry.md)
 - [Parameters](docs/parameters.md)

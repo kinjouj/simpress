@@ -52,7 +52,7 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Config).to receive(:paginate).and_return(2)
     end
 
-    it "yields entries page by page" do
+    it "returns the entries for each page" do
       expect {|b| described_class.each_page([1, 2, 3], "blog", &b) }.to yield_successive_args(
         [[1, 2], have_attributes(page: 1)],
         [[3], have_attributes(page: 2)]
@@ -76,7 +76,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".write_html" do
-    it "index.html is generated" do
+    it "outputs index.html" do
       context = { entries: [] }
       described_class.write_html("index", template: "layout", **context)
 
@@ -86,7 +86,7 @@ describe Simpress::Generator::Pipeline::Base do
   end
 
   describe ".write_json" do
-    it "api/data.json is generated" do
+    it "outputs api/data.json" do
       data = { key: "value" }
       described_class.write_json("api/data", data)
 
@@ -100,7 +100,7 @@ describe Simpress::Generator::Pipeline::Base do
       allow(Simpress::Writer).to receive(:write) {|path, _data, &block| block&.call(path) }
     end
 
-    it "file.txt is generated" do
+    it "outputs file.txt" do
       expect {|b| described_class.write("file", "content", "txt", &b) }.to yield_with_args("file.txt")
       expect(Simpress::Writer).to have_received(:write).with("file.txt", "content")
     end

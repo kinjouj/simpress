@@ -55,36 +55,44 @@ describe Simpress::Theme::Helper do
   end
 
   describe "#uri" do
-    it "wraps path and ensures .html" do
+    it "returns the path with .html" do
       expect(helper.uri("/test").to_s).to eq "/test.html"
     end
   end
 
   describe "#flatten_toc" do
-    it "returns an empty array" do
-      expect(helper.flatten_toc([])).to eq []
+    context "when headings is empty" do
+      it "returns an empty array" do
+        expect(helper.flatten_toc([])).to eq []
+      end
     end
 
-    it "gives flat headings depth 0" do
-      headings = [{ id: "section-1", text: "First", children: [] }]
-      result = helper.flatten_toc(headings)
+    context "when there is one heading" do
+      it "returns it with depth 0" do
+        headings = [{ id: "section-1", text: "First", children: [] }]
+        result = helper.flatten_toc(headings)
 
-      expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }]
+        expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }]
+      end
     end
 
-    it "keeps sibling headings in order" do
-      headings = [{ id: "section-1", text: "First", children: [] }, { id: "section-2", text: "Second", children: [] }]
-      result = helper.flatten_toc(headings)
+    context "when there are sibling headings" do
+      it "returns them in order" do
+        headings = [{ id: "section-1", text: "First", children: [] }, { id: "section-2", text: "Second", children: [] }]
+        result = helper.flatten_toc(headings)
 
-      expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }, { id: "section-2", text: "Second", depth: 0 }]
+        expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }, { id: "section-2", text: "Second", depth: 0 }]
+      end
     end
 
-    it "places children after parent" do
-      child = { id: "section-2", text: "Child" }
-      parent = { id: "section-1", text: "Parent", children: [child] }
-      result = helper.flatten_toc([parent])
+    context "when a heading has children" do
+      it "returns the children after the parent" do
+        child = { id: "section-2", text: "Child" }
+        parent = { id: "section-1", text: "Parent", children: [child] }
+        result = helper.flatten_toc([parent])
 
-      expect(result).to eq [{ id: "section-1", text: "Parent", depth: 0 }, { id: "section-2", text: "Child", depth: 1 }]
+        expect(result).to eq [{ id: "section-1", text: "Parent", depth: 0 }, { id: "section-2", text: "Child", depth: 1 }]
+      end
     end
   end
 end

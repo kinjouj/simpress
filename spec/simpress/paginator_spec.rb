@@ -21,13 +21,13 @@ describe Simpress::Paginator do
     end
 
     context "when page is below 1" do
-      it "raises ArgumentError" do
+      it "raises an error" do
         expect { described_class.new(page: 0, maxpage: 5) }.to raise_error(/is out of range/)
       end
     end
 
     context "when page exceeds maxpage" do
-      it "raises ArgumentError" do
+      it "raises an error" do
         expect { described_class.new(page: 6, maxpage: 5) }.to raise_error(/is out of range/)
       end
     end
@@ -87,7 +87,7 @@ describe Simpress::Paginator do
     end
 
     context "when there's no previous page" do
-      it "raises ArgumentError" do
+      it "raises an error" do
         paginator = described_class.new(page: 1, maxpage: 5)
 
         expect { paginator.previous_page }.to raise_error("Not Found previous page")
@@ -105,7 +105,7 @@ describe Simpress::Paginator do
     end
 
     context "when there's no next page" do
-      it "raises ArgumentError" do
+      it "raises an error" do
         paginator = described_class.new(page: 5, maxpage: 5)
 
         expect { paginator.next_page }.to raise_error("Not Found next page")
