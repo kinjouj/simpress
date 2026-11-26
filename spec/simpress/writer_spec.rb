@@ -8,8 +8,8 @@ describe Simpress::Writer do
       before do
         allow(File).to receive(:exist?).with("public/test/index.html").and_return(false)
         allow(File).to receive(:dirname).with("public/test/index.html").and_return("public/test")
-        allow(FileUtils).to receive(:mkdir_p).with("public/test")
-        allow(File).to receive(:write).with("public/test/index.html", "content")
+        allow(File).to receive(:write)
+        allow(FileUtils).to receive(:mkdir_p)
       end
 
       it "writes the file" do

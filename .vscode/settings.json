@@ -7,7 +7,6 @@
     "stackprof.dump": true,
     "node_modules": true,
     "public": true,
-    "**/.gitkeep": true,
     "**/.gitattributes": true,
     "**/coverage": true,
     "**/.rspec": true,
