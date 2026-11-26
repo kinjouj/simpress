@@ -13,7 +13,7 @@ module Simpress
       class Filter
         extend Simpress::Parser::Markdown::Filter
 
-        LINK_REGEX = %r{^\[\]\((/[^)\s"]*)\)$}
+        LINK_REGEX = %r{^@\[\]\((/[^)\s"]*)\)$}
 
         def self.preprocess(markdown)
           markdown.gsub(LINK_REGEX, %(<!--link-card:\\1-->))
@@ -34,7 +34,7 @@ module Simpress
         private
 
         def build_card(entry)
-          %(<div class="link-card"><a href="#{entry.permalink}"><img src="#{entry.cover}" alt="" /><span>#{entry.title}</span></a><span>#{entry.description}</span></div>)
+          %(<div class="link-card"><a href="#{entry.permalink}"><img src="#{entry.cover}" />#{entry.title}</a>#{entry.description}</div>)
         end
       end
     end

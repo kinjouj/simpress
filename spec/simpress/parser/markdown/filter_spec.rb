@@ -78,9 +78,8 @@ describe Simpress::Parser::Markdown::Filter do
       end
 
       described_class.register_filters << filter
-      described_class.clear
 
-      expect(described_class.register_filters).to be_empty
+      expect { described_class.clear }.to change { described_class.register_filters.to_a }.from([filter]).to([])
     end
   end
 end

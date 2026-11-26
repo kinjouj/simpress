@@ -21,7 +21,6 @@ describe Simpress::Taxonomy::Term do
       child_term = described_class.new("Child")
       term.children << child_term
       copy = term.dup
-
       expect(copy.children.first).not_to equal(child_term)
       expect(copy.children.first.name).to eq "Child"
     end
@@ -41,7 +40,6 @@ describe Simpress::Taxonomy::Term do
     context "when no options are given" do
       it "returns the default keys" do
         result = term.to_h
-
         expect(result.keys).to contain_exactly(:key, :name)
       end
     end
@@ -49,7 +47,6 @@ describe Simpress::Taxonomy::Term do
     context "when allowed keys are given" do
       it "returns the requested keys" do
         result = term.to_h(keys: [:key, :count])
-
         expect(result.keys).to contain_exactly(:key, :count)
       end
     end
@@ -65,7 +62,6 @@ describe Simpress::Taxonomy::Term do
 
       it "converts children to hashes" do
         result = term.to_h(keys: [:name, :children])
-
         expect(result[:children]).to eq [{ name: "Child", children: [] }]
       end
     end
@@ -74,7 +70,6 @@ describe Simpress::Taxonomy::Term do
   describe "#to_json" do
     it "returns key and name JSON" do
       result = term.to_json
-
       expect(result).to eq '{"key":"ruby-on-rails","name":"Ruby on Rails"}'
     end
   end

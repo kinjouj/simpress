@@ -19,7 +19,6 @@ describe Simpress::Config do
   describe ".instance" do
     it "loads the config file" do
       config = described_class.instance
-
       expect(config.mode).to eq "html"
       expect(config.host).to eq "https://example.com"
       expect(config.logging).to be true
@@ -37,7 +36,6 @@ describe Simpress::Config do
 
       it "returns the default values" do
         config = described_class.instance
-
         expect(config.mode).to eq "html"
         expect(config.host).to eq "https://example.com"
         expect(config.logging).to be false
@@ -49,10 +47,7 @@ describe Simpress::Config do
 
   describe ".clear" do
     it "returns a new instance" do
-      obj = described_class.instance
-      described_class.clear
-
-      expect(obj).not_to be described_class.instance
+      expect { described_class.clear }.to change(described_class, :instance)
     end
   end
 

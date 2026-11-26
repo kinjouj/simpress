@@ -28,7 +28,6 @@ describe Simpress::Parser::Markdown::Processor do
   describe ".render" do
     it "returns content, toc and cover" do
       result = described_class.render(markdown1)
-
       expect(result.content).to include("Hello")
       expect(result.cover).to eq "cover.png"
       expect(result.toc.size).to eq 1
@@ -39,8 +38,8 @@ describe Simpress::Parser::Markdown::Processor do
 
     it "doesn't keep previous state" do
       described_class.render(markdown1)
-      result = described_class.render(markdown2)
 
+      result = described_class.render(markdown2)
       expect(result.content).to include("World")
       expect(result.cover).to be_nil
       expect(result.toc.size).to eq 1

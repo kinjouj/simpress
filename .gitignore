@@ -13,7 +13,7 @@ static/*
 !static/.gitkeep
 static/images/*
 !static/images
-!static/images/.gitkeep
+!static/images/no_image.webp
 config.yaml
 category_indexes.json
 similarity.cache

@@ -8,7 +8,7 @@ describe Simpress::Generator::Pipeline::Archive::MonthlyIndex do
     build(:entry)
   end
 
-  let(:monthly_archives) do
+  let(:archives) do
     { [2026, 1] => [entry] }
   end
 
@@ -27,24 +27,27 @@ describe Simpress::Generator::Pipeline::Archive::MonthlyIndex do
     end
 
     it "outputs /archives/2026/01/index.html" do
-      expect { described_class.generate_html(monthly_archives) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/2026/01/index\.html}).to_stdout_from_any_process
+      expect { described_class.generate_html(archives) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/2026/01/index\.html}).to_stdout
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/index.html", "<html>content</html>")
     end
   end
 
   describe ".generate_json" do
-    let(:expected_index_json) do
-      Simpress::JSON.dump({ entries: [entry], total_pages: 1 }, keys: described_class::DATA_JSON_KEYS)
-    end
-
     before do
-      allow(Simpress::Writer).to receive(:write).with("/archives/2026/01/1.json", anything).and_yield("public/archives/2026/01/1.json")
+      allow(Simpress::Writer).to receive(:write).and_yield("public/archives/2026/01/1.json")
     end
 
     it "outputs /archives/2026/01/1.json" do
-      expect { described_class.generate_json(monthly_archives) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/2026/01/1\.json}).to_stdout_from_any_process
-      expect(Simpress::Writer).to have_received(:write).with("/archives/2026/01/1.json", expected_index_json)
+      expect { described_class.generate_json(archives) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/2026/01/1\.json}).to_stdout
+      expect(Simpress::Writer).to have_received(:write) do |path, json|
+        expect(path).to eq "/archives/2026/01/1.json"
+
+        data = Simpress::JSON.load(json)
+        expect(data["total_pages"]).to eq 1
+        expect(data["entries"].map {|e| e["permalink"] }).to eq [entry.permalink]
+        expect(data["entries"].first.keys).to match_array(described_class::DATA_JSON_KEYS.map(&:to_s))
+      end
     end
   end
 end

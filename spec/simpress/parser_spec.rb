@@ -37,14 +37,15 @@ describe Simpress::Parser do
 
   before do
     allow(File).to receive(:read).and_return(markdown)
-    allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(Simpress::Parser::Markdown::Processor::Result.new(html, "cover.jpg", []))
     allow(XXhash).to receive(:xxh64).and_return(999)
+    allow(Simpress::Parser::Markdown::Processor).to receive(:render).and_return(
+      Simpress::Parser::Markdown::Processor::Result.new(html, "cover.jpg", [])
+    )
   end
 
   describe ".parse" do
     it "returns an entry" do
       entry = described_class.parse(file)
-
       expect(entry.id).to eq "999"
       expect(entry.title).to eq "Test Title"
       expect(entry.date).to eq Time.new(2026, 1, 1)
@@ -70,7 +71,6 @@ describe Simpress::Parser do
 
       it "exposes custom keys in params" do
         entry = described_class.parse(file)
-
         expect(entry.params[:og_image]).to eq "/images/og.png"
         expect(entry.params[:title]).to eq "Test Title"
       end
@@ -91,7 +91,6 @@ describe Simpress::Parser do
 
       it "prefers front matter values" do
         entry = described_class.parse(file)
-
         expect(entry.cover).to eq "front.png"
         expect(entry.description).to eq "Front description"
       end
@@ -105,7 +104,6 @@ describe Simpress::Parser do
 
       it "falls back to defaults" do
         entry = described_class.parse(file)
-
         expect(entry.cover).to eq described_class::DEFAULT_COVER
         expect(entry.description).to eq "This is the description."
       end
@@ -125,7 +123,6 @@ describe Simpress::Parser do
 
       it "doesn't render the Markdown" do
         entry = described_class.parse(file)
-
         expect(entry.draft).to be true
         expect(entry.content).to be_nil
         expect(Simpress::Parser::Markdown::Processor).not_to have_received(:render)
@@ -146,7 +143,6 @@ describe Simpress::Parser do
 
         it "returns nil date and index false" do
           entry = described_class.parse("no-date.md")
-
           expect(entry.date).to be_nil
           expect(entry.index).to be false
         end
@@ -164,7 +160,6 @@ describe Simpress::Parser do
 
         it "ignores the date in the file name" do
           entry = described_class.parse("2026-01-01-from-filename.md")
-
           expect(entry.date).to be_nil
           expect(entry.index).to be false
         end
@@ -195,7 +190,6 @@ describe Simpress::Parser do
 
       it "has the taxonomies terms" do
         entry = described_class.parse(file)
-
         expect(entry.taxonomies["categories"].map(&:name)).to eq ["Ruby"]
         expect(entry.taxonomies["categories"].first.entries).not_to include(entry)
       end
@@ -215,7 +209,6 @@ describe Simpress::Parser do
 
         it "has no taxonomies" do
           entry = described_class.parse(file)
-
           expect(entry.taxonomies.values).to all(eq [])
         end
       end
@@ -234,7 +227,6 @@ describe Simpress::Parser do
 
         it "has no taxonomies" do
           entry = described_class.parse(file)
-
           expect(entry.taxonomies.values).to all(eq [])
         end
       end
@@ -392,7 +384,6 @@ describe Simpress::Parser do
     context "when lastmod is omitted" do
       it "returns date" do
         entry = described_class.parse(file)
-
         expect(entry.lastmod).to eq entry.date
       end
     end

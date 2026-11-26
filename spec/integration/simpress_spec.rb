@@ -27,7 +27,7 @@ describe Simpress do
     Simpress::Taxonomy.clear
   end
 
-  it "generates the expected output files" do
+  it "generates entry pages, archives and plugin output" do
     described_class.build
 
     expect(Simpress::Logger).to have_received(:verbose).at_least(1).times

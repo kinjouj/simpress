@@ -26,7 +26,7 @@ module Simpress
               base_path = path("/archives/#{taxonomy.name}")
               taxonomy.terms.each_value do |term|
                 each_page(term.entries) do |entries, paginator|
-                  data = { entries: entries, total_pages: paginator.maxpage }
+                  data = { total_pages: paginator.maxpage, entries: entries }
                   write_json(base_path.path(term.key, paginator.page), data, keys: DATA_JSON_KEYS) do |file|
                     Simpress::Logger.verbose { "[BUILD TAXONOMY]: #{file}" }
                   end

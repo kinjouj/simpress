@@ -22,7 +22,7 @@ describe Simpress::Generator do
   end
 
   describe ".generate" do
-    it "generates the output" do
+    it "generates the site from published entries" do
       described_class.generate
 
       expect(Simpress::Plugin).to have_received(:process).with([entry2, entry1]).ordered

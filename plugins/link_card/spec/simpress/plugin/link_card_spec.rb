@@ -16,16 +16,8 @@ describe Simpress::Plugin::LinkCard do
     end
 
     context "when the linked entry exists" do
-      let(:content) do
-        <<~HTML
-          <p>Before</p>
-          <!--link-card:/target.html-->
-          <p>After</p>
-        HTML
-      end
-
       let(:source) do
-        build(:entry, permalink: "/source.html", content: content.dup)
+        build(:entry, permalink: "/source.html", content: +"<p>Before</p><!--link-card:/target.html--><p>After</p>")
       end
 
       it "replaces with a card" do
@@ -35,9 +27,7 @@ describe Simpress::Plugin::LinkCard do
           "<p>Before</p>",
           "<p>After</p>",
           '<a href="/target.html">',
-          '<img src="/images/target.webp" alt="" />',
-          "<span>Target Title</span>",
-          "<span>Target description</span>"
+          '<img src="/images/target.webp" />Target Title</a>Target description</div>'
         )
         expect(source.content).not_to include("<!--link-card")
       end
@@ -48,15 +38,8 @@ describe Simpress::Plugin::LinkCard do
         build(:entry, permalink: "/other.html", title: "Other Title", content: +"<p>Other body</p>")
       end
 
-      let(:content1) do
-        <<~HTML
-          <!--link-card:/target.html-->
-          <!--link-card:/other.html-->
-        HTML
-      end
-
       let(:source1) do
-        build(:entry, permalink: "/source1.html", content: content1.dup)
+        build(:entry, permalink: "/source1.html", content: +"<!--link-card:/target.html--><!--link-card:/other.html-->")
       end
 
       let(:source2) do
@@ -70,29 +53,19 @@ describe Simpress::Plugin::LinkCard do
       it "replaces each with a card" do
         described_class.run([source1, source2, target, other])
 
-        expect(source1.content).to include("<span>Target Title</span>", "<span>Other Title</span>")
-        expect(source2.content).to include("<span>Target Title</span>")
+        expect(source1.content).to include("Target Title</a>", "Other Title</a>")
+        expect(source2.content).to include("Target Title</a>")
         expect([source1, source2].map(&:content).join).not_to include("<!--link-card")
       end
     end
 
     context "when linked entry doesn't exist" do
-      let(:content) do
-        <<~HTML
-          <p>Before</p>
-          <!--link-card:/missing.html-->
-          <p>After</p>
-        HTML
-      end
-
       let(:source) do
-        build(:entry, permalink: "/source.html", content: content.dup)
+        build(:entry, permalink: "/source.html", content: +"<!--link-card:/missing.html-->")
       end
 
       it "doesn't replace" do
-        described_class.run([source, target])
-
-        expect(source.content).to eq content
+        expect { described_class.run([source, target]) }.not_to change(source, :content)
       end
     end
 
@@ -102,9 +75,7 @@ describe Simpress::Plugin::LinkCard do
       end
 
       it "doesn't change the content" do
-        described_class.run([source, target])
-
-        expect(source.content).to eq "<p>Body</p>"
+        expect { described_class.run([source, target]) }.not_to change(source, :content)
       end
     end
 
@@ -120,7 +91,7 @@ describe Simpress::Plugin::LinkCard do
       it "replaces with a card" do
         described_class.run([source, hyphen])
 
-        expect(source.content).to include('<a href="/hyphen-">', "<span>Hyphen Title</span>")
+        expect(source.content).to include('<a href="/hyphen-">', "Hyphen Title</a>")
         expect(source.content).not_to include("<!--link-card")
       end
     end
@@ -133,8 +104,8 @@ describe Simpress::Plugin::LinkCard do
           <<~MARKDOWN
             Text before
 
-            [](/first.html)
-            [](/second/page.html)
+            @[](/first.html)
+            @[](/second/page.html)
 
             Text after
           MARKDOWN
@@ -157,38 +128,45 @@ describe Simpress::Plugin::LinkCard do
       end
 
       context "when not a conversion target" do
+        context "when the @ is missing" do
+          it "doesn't convert" do
+            data = "[](/plain.html)"
+            expect(described_class.preprocess(data.dup)).to eq data
+          end
+        end
+
         context "when the link has label" do
           it "doesn't convert" do
-            data = "[Label](/label.html)"
-            expect(described_class.preprocess(data)).to eq data
+            data = "@[Label](/label.html)"
+            expect(described_class.preprocess(data.dup)).to eq data
           end
         end
 
         context "when an external URL" do
           it "doesn't convert" do
-            data = "[](https://example.com/page.html)"
-            expect(described_class.preprocess(data)).to eq data
+            data = "@[](https://example.com/page.html)"
+            expect(described_class.preprocess(data.dup)).to eq data
           end
         end
 
         context "when text precedes link" do
           it "doesn't convert" do
-            data = "abc[](/inline.html)"
-            expect(described_class.preprocess(data)).to eq data
+            data = "abc@[](/inline.html)"
+            expect(described_class.preprocess(data.dup)).to eq data
           end
         end
 
         context "when text follows link" do
           it "doesn't convert" do
-            data = "[](/inline.html)abc"
-            expect(described_class.preprocess(data)).to eq data
+            data = "@[](/inline.html)abc"
+            expect(described_class.preprocess(data.dup)).to eq data
           end
         end
 
         context "when path contains a space" do
           it "doesn't convert" do
-            data = "[](/with space.html)"
-            expect(described_class.preprocess(data)).to eq data
+            data = "@[](/with space.html)"
+            expect(described_class.preprocess(data.dup)).to eq data
           end
         end
       end

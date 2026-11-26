@@ -27,7 +27,6 @@ describe Simpress::Sitemap do
       sitemap = described_class.send(:new, "https://example.com")
       sitemap.url(file: "test.html", lastmod: "2026-01-01", changefreq: "daily")
       xml = Ox.dump(sitemap.instance_variable_get(:@doc))
-
       expect(xml).to include("<loc>https://example.com/test.html</loc>")
       expect(xml).to include("<lastmod>2026-01-01</lastmod>")
       expect(xml).to include('changefreq="daily"')

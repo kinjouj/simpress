@@ -15,10 +15,14 @@ describe Simpress::Plugin::CategoryTree do
   describe ".run" do
     context "when mode is html" do
       before do
-        allow(Simpress::Taxonomy.fetch("categories")).to receive(:terms).and_return({ "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby") })
         allow(Simpress::Config).to receive(:mode).and_return("html")
-        allow(Simpress::Theme).to receive(:render).and_return("<ul>categories</ul>")
         allow(Simpress::Context).to receive(:update)
+        allow(Simpress::Theme).to receive(:render).and_return("<ul>categories</ul>")
+        allow(Simpress::Taxonomy.fetch("categories")).to receive(:terms).and_return(
+          {
+            "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby")
+          }
+        )
       end
 
       it "binds data to the context" do
@@ -31,17 +35,24 @@ describe Simpress::Plugin::CategoryTree do
 
     context "when mode is json" do
       before do
-        allow(Simpress::Taxonomy.fetch("categories")).to receive(:terms).and_return({ "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby") })
         allow(Simpress::Config).to receive(:mode).and_return("json")
-        allow(Simpress::JSON).to receive(:dump).and_return("{}")
         allow(Simpress::Writer).to receive(:write)
+        allow(Simpress::Taxonomy.fetch("categories")).to receive(:terms).and_return(
+          {
+            "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby")
+          }
+        )
       end
 
       it "outputs categories.json" do
         described_class.run
 
-        expect(Simpress::JSON).to have_received(:dump).with(anything, keys: described_class::KEYS)
-        expect(Simpress::Writer).to have_received(:write).with("categories.json", "{}")
+        expect(Simpress::Writer).to have_received(:write) do |path, json|
+          data = Simpress::JSON.load(json)
+          expect(path).to eq "categories.json"
+          expect(data.map {|category| category["key"] }).to eq ["ruby"]
+          expect(data.first.keys).to match_array(described_class::KEYS.map(&:to_s))
+        end
       end
     end
 
@@ -65,13 +76,13 @@ describe Simpress::Plugin::CategoryTree do
 
       context "when a parent has children" do
         before do
+          allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "ruby" => ["rails"] })
           allow(Simpress::Taxonomy.fetch("categories")).to receive(:terms).and_return(
             {
               "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby"),
               "rails" => Simpress::Taxonomy::Term.new("Rails", key: "rails")
             }
           )
-          allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "ruby" => ["rails"] })
         end
 
         it "nests child categories under parents" do
@@ -79,7 +90,7 @@ describe Simpress::Plugin::CategoryTree do
 
           expect(Simpress::Theme).to have_received(:render).with(
             "sidebar_categories",
-            categories: satisfy {|cats| cats.any? {|c| c.key == "ruby" } && cats.none? {|c| c.key == "rails" } }
+            categories: match([have_attributes(key: "ruby")])
           )
         end
       end
@@ -100,12 +111,7 @@ describe Simpress::Plugin::CategoryTree do
 
           expect(Simpress::Theme).to have_received(:render).with(
             "sidebar_categories",
-            categories: satisfy {|cats| cats.map(&:key) == ["tech", "life"] }
-          )
-
-          expect(Simpress::Theme).to have_received(:render).with(
-            "sidebar_categories",
-            categories: satisfy {|cats| cats.none? {|c| c.key == "orders" } }
+            categories: match([have_attributes(key: "tech"), have_attributes(key: "life")])
           )
         end
       end
@@ -114,14 +120,14 @@ describe Simpress::Plugin::CategoryTree do
         before do
           allow(Simpress::Taxonomy.fetch("categories")).to receive(:terms).and_return(
             {
-            "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby"),
-            "rails" => Simpress::Taxonomy::Term.new("Rails", key: "rails"),
-            "sinatra" => Simpress::Taxonomy::Term.new("Sinatra", key: "sinatra"),
-            "life" => Simpress::Taxonomy::Term.new("Life", key: "life")
+              "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby"),
+              "rails" => Simpress::Taxonomy::Term.new("Rails", key: "rails"),
+              "jruby" => Simpress::Taxonomy::Term.new("JRuby", key: "jruby"),
+              "life" => Simpress::Taxonomy::Term.new("Life", key: "life")
             }
           )
           allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return(
-            { "ruby" => ["sinatra", "rails"], "orders" => ["rails", "sinatra"] }
+            { "ruby" => ["jruby", "rails"], "orders" => ["rails", "jruby"] }
           )
         end
 
@@ -130,15 +136,12 @@ describe Simpress::Plugin::CategoryTree do
 
           expect(Simpress::Theme).to have_received(:render).with(
             "sidebar_categories",
-            categories: satisfy do |cats|
-              ruby_category = cats.find {|c| c.key == "ruby" }
-              ruby_category.children.map(&:key) == ["rails", "sinatra"]
-            end
-          )
-
-          expect(Simpress::Theme).to have_received(:render).with(
-            "sidebar_categories",
-            categories: satisfy {|cats| cats.map(&:key) == ["ruby", "life"] }
+            categories: match(
+              [
+                have_attributes(key: "ruby", children: match([have_attributes(key: "rails"), have_attributes(key: "jruby")])),
+                have_attributes(key: "life")
+              ]
+            )
           )
         end
       end

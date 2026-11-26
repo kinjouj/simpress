@@ -24,7 +24,7 @@ module Simpress
             monthly_archives.each do |(year, month), entries_by_monthly|
               base_path = path("/archives/#{year}/#{month.to_s.rjust(2, '0')}")
               each_page(entries_by_monthly) do |entries, paginator|
-                data = { entries: entries, total_pages: paginator.maxpage }
+                data = { total_pages: paginator.maxpage, entries: entries }
                 write_json(base_path.path(paginator.page), data, keys: DATA_JSON_KEYS) do |file|
                   Simpress::Logger.verbose { "[BUILD ARCHIVE]: #{file}" }
                 end

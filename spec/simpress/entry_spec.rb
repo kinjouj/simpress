@@ -34,7 +34,6 @@ describe Simpress::Entry do
   describe "#initialize" do
     it "sets the properties" do
       entry = described_class.new(params)
-
       expect(entry.id).to eq "entry-123"
       expect(entry.title).to eq "Sample Entry"
       expect(entry.date).to eq date
@@ -56,7 +55,6 @@ describe Simpress::Entry do
   describe "#prev and #next" do
     it "returns nil by default" do
       entry = described_class.new(params)
-
       expect(entry.prev).to be_nil
       expect(entry.next).to be_nil
     end
@@ -76,7 +74,6 @@ describe Simpress::Entry do
     it "returns allowed json keys only" do
       entry = described_class.new(params)
       result = entry.to_h
-
       expect(result.keys).to match_array(described_class::PERMITTED_JSON_KEYS)
       expect(result[:id]).to eq "entry-123"
       expect(result[:prev]).to be_nil
@@ -87,7 +84,6 @@ describe Simpress::Entry do
       it "narrows the keys" do
         entry = described_class.new(params)
         result = entry.to_h(keys: [:title, :permalink])
-
         expect(result.keys).to contain_exactly(:title, :permalink)
       end
     end
@@ -100,7 +96,6 @@ describe Simpress::Entry do
         entry.prev = older.to_link
         entry.next = newer.to_link
         result = entry.to_h
-
         expect(result[:prev]).to eq entry.prev
         expect(result[:next]).to eq entry.next
       end
@@ -110,7 +105,6 @@ describe Simpress::Entry do
   describe "#as_json" do
     it "returns the #to_h hash" do
       entry = described_class.new(params)
-
       expect(entry.as_json).to eq entry.to_h
     end
   end
@@ -119,7 +113,6 @@ describe Simpress::Entry do
     it "returns a JSON string" do
       entry = described_class.new(params)
       json = Simpress::JSON.load(entry.to_json, symbol_keys: true)
-
       expect(json).to include(id: "entry-123", title: "Sample Entry", permalink: "/sample-entry")
     end
   end
@@ -131,7 +124,6 @@ describe Simpress::Entry do
 
     it "returns a link to the entry" do
       link = entry.to_link
-
       expect(link.id).to eq entry.id
       expect(link.title).to eq entry.title
       expect(link.permalink).to eq entry.permalink

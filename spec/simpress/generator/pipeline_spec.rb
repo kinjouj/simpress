@@ -34,7 +34,7 @@ describe Simpress::Generator::Pipeline do
       [entry1, entry2]
     end
 
-    it "runs each pipeline" do
+    it "generates entry pages and archives" do
       described_class.generate(entries)
 
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry1)
