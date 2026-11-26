@@ -16,72 +16,86 @@ describe Simpress::Plugin::InlineNote do
       expect(described_class.preprocess(markdown)).to eq expected
     end
 
-    it "converts multiple notes" do
-      markdown = <<~MARKDOWN
-        > [!NOTE] First note.
-        Some text.
-        > [!NOTE] Second note.
-      MARKDOWN
+    context "when multiple notes exist" do
+      let(:markdown) do
+        <<~MARKDOWN
+          > [!NOTE] First note.
+          Some text.
+          > [!NOTE] Second note.
+        MARKDOWN
+      end
 
-      expected = <<~HTML
-        <div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>First note.</span></div>
-        Some text.
-        <div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>Second note.</span></div>
-      HTML
+      let(:expected) do
+        <<~HTML
+          <div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>First note.</span></div>
+          Some text.
+          <div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>Second note.</span></div>
+        HTML
+      end
 
-      expect(described_class.preprocess(markdown)).to eq expected
+      it "converts each note" do
+        expect(described_class.preprocess(markdown.dup)).to eq expected
+      end
     end
 
-    it "converts only the marker line" do
-      markdown = <<~MARKDOWN
-        > [!NOTE] First line.
-        > Second line.
-      MARKDOWN
+    context "when the blockquote continues after the marker line" do
+      let(:markdown) do
+        <<~MARKDOWN
+          > [!NOTE] First line.
+          > Second line.
+        MARKDOWN
+      end
 
-      expected = <<~HTML
-        <div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>First line.</span></div>
-        > Second line.
-      HTML
+      let(:expected) do
+        <<~HTML
+          <div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>First line.</span></div>
+          > Second line.
+        HTML
+      end
 
-      expect(described_class.preprocess(markdown)).to eq expected
+      it "converts only the marker line" do
+        expect(described_class.preprocess(markdown.dup)).to eq expected
+      end
     end
 
     context "when the blockquote is not a note" do
       it "doesn't convert" do
-        markdown = "> Quote."
-        expect(described_class.preprocess(markdown)).to eq markdown
+        data = "> Quote."
+        expect(described_class.preprocess(data.dup)).to eq data
       end
     end
 
     context "when the marker is not NOTE" do
       it "doesn't convert" do
-        markdown = "> [!TIP] Tip."
-        expect(described_class.preprocess(markdown)).to eq markdown
+        data = "> [!TIP] Tip."
+        expect(described_class.preprocess(data.dup)).to eq data
       end
     end
 
     context "when not at line start" do
       it "doesn't convert" do
-        markdown = "Text before > [!NOTE] Not a note."
-        expect(described_class.preprocess(markdown)).to eq markdown
+        data = "Text before > [!NOTE] Not a note."
+        expect(described_class.preprocess(data.dup)).to eq data
       end
     end
 
     context "when no space follows the marker" do
       it "doesn't convert" do
-        markdown = "> [!NOTE]Not a note."
-        expect(described_class.preprocess(markdown)).to eq markdown
+        data = "> [!NOTE]Not a note."
+        expect(described_class.preprocess(data.dup)).to eq data
       end
     end
 
     context "when no text follows the marker" do
-      it "doesn't convert" do
-        markdown = <<~MARKDOWN
+      let(:markdown) do
+        <<~MARKDOWN
           > [!NOTE]
           > Text.
         MARKDOWN
+      end
 
-        expect(described_class.preprocess(markdown)).to eq markdown
+      it "doesn't convert" do
+        expect(described_class.preprocess(markdown.dup)).to eq markdown
       end
     end
   end
