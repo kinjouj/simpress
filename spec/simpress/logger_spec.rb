@@ -45,10 +45,7 @@ describe Simpress::Logger do
 
   describe ".clear" do
     it "resets the settings" do
-      obj = described_class.instance
-      described_class.clear
-
-      expect(obj).not_to be described_class.instance
+      expect { described_class.clear }.to change(described_class, :instance)
     end
   end
 end

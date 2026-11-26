@@ -7,7 +7,6 @@ describe Simpress::Generator::Pipeline::Base do
     allow(Simpress::Config).to receive(:mode).and_return("html")
     allow(Simpress::Writer).to receive(:write)
     allow(Simpress::Theme).to receive(:render).and_return("<html></html>")
-    allow(Simpress::JSON).to receive(:dump).and_return('{"json":true}')
   end
 
   describe ".generate" do
@@ -69,7 +68,6 @@ describe Simpress::Generator::Pipeline::Base do
   describe ".path" do
     it "returns a Path" do
       result = described_class.path("test")
-
       expect(result).to be_a(Simpress::Path)
       expect(result.to_s).to eq "test"
     end
@@ -87,11 +85,12 @@ describe Simpress::Generator::Pipeline::Base do
 
   describe ".write_json" do
     it "outputs api/data.json" do
-      data = { key: "value" }
-      described_class.write_json("api/data", data)
+      described_class.write_json("api/data", { key: "value" })
 
-      expect(Simpress::JSON).to have_received(:dump).with(data)
-      expect(Simpress::Writer).to have_received(:write).with("api/data.json", '{"json":true}')
+      expect(Simpress::Writer).to have_received(:write) do |path, json|
+        expect(path).to eq "api/data.json"
+        expect(Simpress::JSON.load(json)).to eq({ "key" => "value" })
+      end
     end
   end
 

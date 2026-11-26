@@ -7,14 +7,12 @@ describe Simpress::Plugin::InlineNote do
     it "converts to HTML" do
       markdown = "> [!NOTE] This is a note."
       expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>This is a note.</span></div>'
-
       expect(described_class.preprocess(markdown)).to eq expected
     end
 
     it "ignores space around the marker" do
       markdown = ">   [!NOTE]    Note with leading spaces."
       expected = '<div class="note"><i class="fa-solid fa-circle-exclamation"></i><span>Note with leading spaces.</span></div>'
-
       expect(described_class.preprocess(markdown)).to eq expected
     end
 

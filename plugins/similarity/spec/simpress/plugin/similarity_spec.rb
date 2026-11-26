@@ -180,6 +180,7 @@ describe Simpress::Plugin::Similarity do
 
       it "leaves similarities empty" do
         described_class.run(entries)
+
         entries.each {|entry| expect(entry.similarities).to be_empty }
       end
     end
@@ -202,6 +203,29 @@ describe Simpress::Plugin::Similarity do
           described_class.run(entries)
 
           expect(entries[0].to_h(keys: [:title])).not_to include(:similarities)
+        end
+      end
+    end
+  end
+
+  describe Simpress::Plugin::Similarity::Indexer::Cache do
+    before do
+      described_class.clear
+    end
+
+    after do
+      described_class.clear
+    end
+
+    describe ".fetch" do
+      context "when the cache file is broken" do
+        before do
+          allow(File).to receive(:exist?).with("similarity.cache").and_return(true)
+          allow(File).to receive(:binread).with("similarity.cache").and_return("\xC1".b)
+        end
+
+        it "returns the computed value" do
+          expect(described_class.fetch("key") { "value" }).to eq "value" # rubocop:disable Style/RedundantFetchBlock
         end
       end
     end

@@ -13,7 +13,6 @@ describe Simpress::Plugin::RecentEntries do
     allow(described_class).to receive(:bind_context)
     allow(Simpress::Config).to receive(:mode)
     allow(Simpress::Writer).to receive(:write)
-    allow(Simpress::JSON).to receive(:dump).and_return('{"json": true}')
   end
 
   after do
@@ -60,8 +59,12 @@ describe Simpress::Plugin::RecentEntries do
       it "outputs recent_entries.json" do
         described_class.run(entries)
 
-        expect(Simpress::JSON).to have_received(:dump).with(entries.take(5), keys: [:id, :title, :permalink])
-        expect(Simpress::Writer).to have_received(:write).with("recent_entries.json", '{"json": true}')
+        expect(Simpress::Writer).to have_received(:write) do |path, json|
+          data = Simpress::JSON.load(json)
+          expect(path).to eq "recent_entries.json"
+          expect(data.map {|entry| entry["id"] }).to eq ["entry-0", "entry-1", "entry-2", "entry-3", "entry-4"]
+          expect(data.first.keys).to contain_exactly("id", "title", "permalink")
+        end
       end
     end
 

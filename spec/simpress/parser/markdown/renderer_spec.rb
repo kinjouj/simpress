@@ -22,7 +22,6 @@ describe Simpress::Parser::Markdown::Renderer do
     it "returns the preprocessed result" do
       markdown = "# Hello"
       result = renderer.preprocess(markdown)
-
       expect(Simpress::Parser::Markdown::Filter).to have_received(:apply_preprocess).with(markdown)
       expect(result).to eq "enhanced"
     end
@@ -35,7 +34,6 @@ describe Simpress::Parser::Markdown::Renderer do
 
     it "returns the postprocessed result" do
       result = renderer.postprocess("<p>Hello</p>")
-
       expect(Simpress::Parser::Markdown::Filter).to have_received(:apply_postprocess).with("<p>Hello</p>")
       expect(result).to eq "processed"
     end
@@ -45,7 +43,6 @@ describe Simpress::Parser::Markdown::Renderer do
     context "when level is 1" do
       it "returns h1 without adding to the toc" do
         result = renderer.header("Title", 1)
-
         expect(result).to eq "<h1>Title</h1>"
         expect(renderer.toc).to be_empty
       end
@@ -54,7 +51,6 @@ describe Simpress::Parser::Markdown::Renderer do
     context "when level is 2" do
       it "returns the heading with an id" do
         result = renderer.header("SubTitle", 2)
-
         expect(result).to eq '<h2 id="section-1">SubTitle</h2>'
         expect(renderer.toc.size).to eq 1
 
@@ -77,10 +73,11 @@ describe Simpress::Parser::Markdown::Renderer do
     context "when level 3 follows level 2" do
       it "nests it under the level 2 heading" do
         renderer.header("First", 2)
-        result = renderer.header("Second", 3)
 
+        result = renderer.header("Second", 3)
         expect(result).to include('id="section-2"')
         expect(renderer.toc.size).to eq 1
+
         first = renderer.toc.first
         expect(first[:text]).to eq "First"
         expect(first[:children]).to eq [{ id: "section-2", text: "Second" }]
@@ -147,14 +144,12 @@ describe Simpress::Parser::Markdown::Renderer do
   describe "#image" do
     it "returns an img tag" do
       result = renderer.image("first.png", nil, nil)
-
       expect(result).to eq '<img src="first.png" alt="" title="" />'
       expect(renderer.primary_image).to eq "first.png"
     end
 
     it "outputs alt and title" do
       result = renderer.image("first.png", "caption", "owl")
-
       expect(result).to eq '<img src="first.png" alt="owl" title="caption" />'
     end
 
@@ -169,7 +164,6 @@ describe Simpress::Parser::Markdown::Renderer do
   describe "#block_code" do
     it "returns an escaped code block" do
       result = renderer.block_code('puts "Hello" < & >', "ruby")
-
       expect(result).to include('class="language-ruby"')
       expect(result).to include("puts &quot;Hello&quot; &lt; &amp; &gt;")
     end
@@ -177,7 +171,6 @@ describe Simpress::Parser::Markdown::Renderer do
     context "when lang is nil" do
       it "falls back to text" do
         result = renderer.block_code("code", nil)
-
         expect(result).to include('class="language-text"')
       end
     end

@@ -4,11 +4,7 @@ FactoryBot.define do
   factory :entry, class: "Simpress::Entry" do
     skip_create
 
-    transient do
-      categories { [] }
-      tags { [] }
-    end
-
+    transient { categories { [] } }
     sequence(:id) {|id| "id-#{id}" }
     sequence(:permalink) {|n| "/test#{n}.html" }
 

@@ -147,10 +147,17 @@ module Simpress
               @dirty = false
             end
 
+            def clear
+              @store = nil
+              @dirty = false
+            end
+
             private
 
             def store
               @store ||= (MessagePack.unpack(File.binread(CACHE_FILE)) if File.exist?(CACHE_FILE)) || {}
+            rescue StandardError
+              @store = {}
             end
           end
         end

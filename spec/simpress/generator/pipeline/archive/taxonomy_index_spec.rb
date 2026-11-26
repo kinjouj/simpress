@@ -6,7 +6,6 @@ require "simpress/generator/pipeline/archive/taxonomy_index"
 
 describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
   before do
-    Simpress::Taxonomy.clear
     allow(Simpress::Config).to receive(:taxonomies).and_return({ types: ["categories"] })
     allow(Simpress::Config).to receive(:logging).and_return(true)
   end
@@ -31,24 +30,27 @@ describe Simpress::Generator::Pipeline::Archive::TaxonomyIndex do
     end
 
     it "outputs /archives/categories/ruby/index.html" do
-      expect { described_class.generate_html(taxonomies) }.to output(%r{\[BUILD TAXONOMY\]: public/archives/categories/ruby/index\.html}).to_stdout_from_any_process
+      expect { described_class.generate_html(taxonomies) }.to output(%r{\[BUILD TAXONOMY\]: public/archives/categories/ruby/index\.html}).to_stdout
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/index.html", "<html>content</html>")
     end
   end
 
   describe ".generate_json" do
-    let(:expected_index_json) do
-      Simpress::JSON.dump({ entries: [entry], total_pages: 1 }, keys: described_class::DATA_JSON_KEYS)
-    end
-
     before do
-      allow(Simpress::Writer).to receive(:write).with("/archives/categories/ruby/1.json", anything).and_yield("public/archives/categories/ruby/1.json")
+      allow(Simpress::Writer).to receive(:write).and_yield("public/archives/categories/ruby/1.json")
     end
 
     it "outputs /archives/categories/ruby/1.json" do
-      expect { described_class.generate_json(taxonomies) }.to output(%r{\[BUILD TAXONOMY\]: public/archives/categories/ruby/1\.json}).to_stdout_from_any_process
-      expect(Simpress::Writer).to have_received(:write).with("/archives/categories/ruby/1.json", expected_index_json)
+      expect { described_class.generate_json(taxonomies) }.to output(%r{\[BUILD TAXONOMY\]: public/archives/categories/ruby/1\.json}).to_stdout
+      expect(Simpress::Writer).to have_received(:write) do |path, json|
+        expect(path).to eq "/archives/categories/ruby/1.json"
+
+        data = Simpress::JSON.load(json)
+        expect(data["total_pages"]).to eq 1
+        expect(data["entries"].map {|e| e["permalink"] }).to eq [entry.permalink]
+        expect(data["entries"].first.keys).to match_array(described_class::DATA_JSON_KEYS.map(&:to_s))
+      end
     end
   end
 end

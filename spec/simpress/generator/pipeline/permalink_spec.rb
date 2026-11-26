@@ -25,7 +25,7 @@ describe Simpress::Generator::Pipeline::Permalink do
     end
 
     it "outputs the HTML and sets its mtime" do
-      expect { described_class.generate_html(entry) }.to output(%r{\[BUILD PAGE\]: My Entry public/my-entry\.html}).to_stdout_from_any_process
+      expect { described_class.generate_html(entry) }.to output(%r{\[BUILD PAGE\]: My Entry public/my-entry\.html}).to_stdout
       expect(Simpress::Theme).to have_received(:render).with("page", entry: entry)
       expect(Simpress::Writer).to have_received(:write).with("my-entry.html", "<html>content</html>")
       expect(File).to have_received(:utime).with(entry.lastmod, entry.lastmod, "public/my-entry.html")
@@ -33,17 +33,19 @@ describe Simpress::Generator::Pipeline::Permalink do
   end
 
   describe ".generate_json" do
-    let(:expected_entry_json) do
-      Simpress::JSON.dump(entry, keys: described_class::DATA_JSON_KEYS)
-    end
-
     before do
-      allow(Simpress::Writer).to receive(:write).with(anything, expected_entry_json).and_yield("public/my-entry.json")
+      allow(Simpress::Writer).to receive(:write).and_yield("public/my-entry.json")
     end
 
-    it "outputs the JSON with filtered keys" do
-      expect { described_class.generate_json(entry) }.to output(%r{\[BUILD PAGE\]: My Entry public/my-entry\.json}).to_stdout_from_any_process
-      expect(Simpress::Writer).to have_received(:write).with(anything, expected_entry_json)
+    it "outputs the entry JSON" do
+      expect { described_class.generate_json(entry) }.to output(%r{\[BUILD PAGE\]: My Entry public/my-entry\.json}).to_stdout
+      expect(Simpress::Writer).to have_received(:write) do |path, json|
+        expect(path).to eq "my-entry.json"
+
+        data = Simpress::JSON.load(json)
+        expect(data["title"]).to eq "My Entry"
+        expect(data["permalink"]).to eq "my-entry"
+      end
     end
   end
 end

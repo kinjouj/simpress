@@ -22,7 +22,7 @@ describe Simpress::Theme::Helper do
 
             include Simpress::Theme::Helper
           end
-        }.to output(/DEBUG -- : REGISTER HELPER: /).to_stdout_from_any_process
+        }.to output(/DEBUG -- : REGISTER HELPER: /).to_stdout
         expect(Simpress::Theme.const_get(:Scope).new.test_helper).to eq "test_helper"
       end
     end
@@ -71,7 +71,6 @@ describe Simpress::Theme::Helper do
       it "returns it with depth 0" do
         headings = [{ id: "section-1", text: "First", children: [] }]
         result = helper.flatten_toc(headings)
-
         expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }]
       end
     end
@@ -80,7 +79,6 @@ describe Simpress::Theme::Helper do
       it "returns them in order" do
         headings = [{ id: "section-1", text: "First", children: [] }, { id: "section-2", text: "Second", children: [] }]
         result = helper.flatten_toc(headings)
-
         expect(result).to eq [{ id: "section-1", text: "First", depth: 0 }, { id: "section-2", text: "Second", depth: 0 }]
       end
     end
@@ -90,7 +88,6 @@ describe Simpress::Theme::Helper do
         child = { id: "section-2", text: "Child" }
         parent = { id: "section-1", text: "Parent", children: [child] }
         result = helper.flatten_toc([parent])
-
         expect(result).to eq [{ id: "section-1", text: "Parent", depth: 0 }, { id: "section-2", text: "Child", depth: 1 }]
       end
     end

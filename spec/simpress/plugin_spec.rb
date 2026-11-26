@@ -61,9 +61,7 @@ describe Simpress::Plugin do
       end
 
       it "doesn't register the plugin" do
-        described_class.load
-
-        expect(described_class.register_plugins).to be_empty
+        expect { described_class.load }.not_to change(described_class.register_plugins, :size)
       end
     end
   end
@@ -72,18 +70,14 @@ describe Simpress::Plugin do
     context "when a plugin" do
       it "registers the plugin" do
         klass = Class.new { extend Simpress::Plugin }
-        described_class.register(klass)
-
-        expect(described_class.register_plugins).to include(klass)
+        expect { described_class.register(klass) }.to change { described_class.register_plugins.to_a }.to([klass])
       end
     end
 
     context "when a Markdown filter" do
       it "registers the Markdown filter" do
         klass = Class.new { extend Simpress::Parser::Markdown::Filter }
-        described_class.register(klass)
-
-        expect(Simpress::Parser::Markdown::Filter.register_filters).to include(klass)
+        expect { described_class.register(klass) }.to change { Simpress::Parser::Markdown::Filter.register_filters.to_a }.to([klass])
       end
     end
 
@@ -91,10 +85,12 @@ describe Simpress::Plugin do
       it "registers plugin and filter" do
         filter = Class.new { extend Simpress::Parser::Markdown::Filter }
         klass = Class.new { extend Simpress::Plugin }.tap {|plugin| plugin.const_set(:Filter, filter) }
-        described_class.register(klass)
 
-        expect(described_class.register_plugins).to include(klass)
-        expect(Simpress::Parser::Markdown::Filter.register_filters).to include(filter)
+        expect { described_class.register(klass) }.to change {
+          described_class.register_plugins.to_a
+        }.to([klass]).and change {
+          Simpress::Parser::Markdown::Filter.register_filters.to_a
+        }.to([filter])
       end
     end
 
@@ -112,9 +108,8 @@ describe Simpress::Plugin do
     it "also clears the Markdown filters" do
       filter_class = Class.new { extend Simpress::Parser::Markdown::Filter }
       Simpress::Parser::Markdown::Filter.register_filters << filter_class
-      described_class.clear
 
-      expect(Simpress::Parser::Markdown::Filter.register_filters).to be_empty
+      expect { described_class.clear }.to change { Simpress::Parser::Markdown::Filter.register_filters.to_a }.from([filter_class]).to([])
     end
   end
 
@@ -138,8 +133,10 @@ describe Simpress::Plugin do
       before do
         high_plugin = Class.new { extend Simpress::Plugin }
         high_plugin.define_singleton_method(:priority) { 10 }
+
         low_plugin = Class.new { extend Simpress::Plugin }
         low_plugin.define_singleton_method(:priority) { 1 }
+
         stub_const("Simpress::Plugin::High", high_plugin)
         stub_const("Simpress::Plugin::Low", low_plugin)
         described_class.register_plugins << low_plugin << high_plugin
@@ -186,7 +183,6 @@ describe Simpress::Plugin do
   describe "#priority" do
     it "returns 1" do
       test_klass = Class.new { extend Simpress::Plugin }
-
       expect(test_klass.priority).to eq 1
     end
   end
@@ -194,7 +190,6 @@ describe Simpress::Plugin do
   describe "#run" do
     it "raises NotImplementedError" do
       test_klass = Class.new { extend Simpress::Plugin }
-
       expect { test_klass.run }.to raise_error(NotImplementedError)
     end
   end

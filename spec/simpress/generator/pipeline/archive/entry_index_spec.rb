@@ -23,24 +23,27 @@ describe Simpress::Generator::Pipeline::Archive::EntryIndex do
     end
 
     it "outputs /index.html" do
-      expect { described_class.generate_html([entry]) }.to output(%r{\[BUILD ARCHIVE\]: public/index\.html}).to_stdout_from_any_process
+      expect { described_class.generate_html([entry]) }.to output(%r{\[BUILD ARCHIVE\]: public/index\.html}).to_stdout
       expect(Simpress::Theme).to have_received(:render)
       expect(Simpress::Writer).to have_received(:write).with("/index.html", "<html>content</html>")
     end
   end
 
   describe ".generate_json" do
-    let(:expected_page_json) do
-      Simpress::JSON.dump({ entries: [entry], total_pages: 1 }, keys: described_class::DATA_JSON_KEYS)
-    end
-
     before do
-      allow(Simpress::Writer).to receive(:write).with("/archives/page/1.json", anything).and_yield("public/archives/page/1.json")
+      allow(Simpress::Writer).to receive(:write).and_yield("public/archives/page/1.json")
     end
 
     it "outputs /archives/page/1.json" do
-      expect { described_class.generate_json([entry]) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/page/1\.json}).to_stdout_from_any_process
-      expect(Simpress::Writer).to have_received(:write).with("/archives/page/1.json", expected_page_json)
+      expect { described_class.generate_json([entry]) }.to output(%r{\[BUILD ARCHIVE\]: public/archives/page/1\.json}).to_stdout
+      expect(Simpress::Writer).to have_received(:write) do |path, json|
+        expect(path).to eq "/archives/page/1.json"
+
+        data = Simpress::JSON.load(json)
+        expect(data["total_pages"]).to eq 1
+        expect(data["entries"].map {|e| e["permalink"] }).to eq [entry.permalink]
+        expect(data["entries"].first.keys).to match_array(described_class::DATA_JSON_KEYS.map(&:to_s))
+      end
     end
   end
 end
