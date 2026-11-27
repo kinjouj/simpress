@@ -76,22 +76,14 @@ describe Simpress::Taxonomy::Term do
 
   describe "#eql?" do
     context "when key and name match" do
-      let(:other) do
-        described_class.new("Ruby on Rails")
-      end
-
       it "returns true" do
-        expect(term.eql?(other)).to be true
+        expect(term.eql?(described_class.new("Ruby on Rails"))).to be true
       end
     end
 
     context "when key or name differs" do
-      let(:other) do
-        described_class.new("Other")
-      end
-
       it "returns false" do
-        expect(term.eql?(other)).to be false
+        expect(term.eql?(described_class.new("Other"))).to be false
       end
     end
 

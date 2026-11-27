@@ -68,15 +68,15 @@ describe Simpress::Plugin::CategoryTree do
 
     context "when category_indexes.json exists" do
       before do
+        allow(File).to receive(:exist?).and_return(true)
         allow(Simpress::Config).to receive(:mode).and_return("html")
         allow(Simpress::Theme).to receive(:render).and_return("")
         allow(Simpress::Context).to receive(:update)
-        allow(File).to receive(:exist?).with("category_indexes.json").and_return(true)
       end
 
       context "when a parent has children" do
         before do
-          allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "ruby" => ["rails"] })
+          allow(Simpress::JSON).to receive(:load_file).and_return({ "ruby" => ["rails"] })
           allow(Simpress::Taxonomy.fetch("categories")).to receive(:terms).and_return(
             {
               "ruby" => Simpress::Taxonomy::Term.new("Ruby", key: "ruby"),
@@ -88,6 +88,8 @@ describe Simpress::Plugin::CategoryTree do
         it "nests child categories under parents" do
           described_class.run
 
+          expect(File).to have_received(:exist?).with("category_indexes.json")
+          expect(Simpress::JSON).to have_received(:load_file).with("category_indexes.json")
           expect(Simpress::Theme).to have_received(:render).with(
             "sidebar_categories",
             categories: match([have_attributes(key: "ruby")])
@@ -103,7 +105,7 @@ describe Simpress::Plugin::CategoryTree do
               "tech" => Simpress::Taxonomy::Term.new("Tech", key: "tech")
             }
           )
-          allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return({ "orders" => ["tech", "life"] })
+          allow(Simpress::JSON).to receive(:load_file).and_return({ "orders" => ["tech", "life"] })
         end
 
         it "reorders the root categories" do
@@ -126,9 +128,7 @@ describe Simpress::Plugin::CategoryTree do
               "life" => Simpress::Taxonomy::Term.new("Life", key: "life")
             }
           )
-          allow(Simpress::JSON).to receive(:load_file).with("category_indexes.json").and_return(
-            { "ruby" => ["jruby", "rails"], "orders" => ["rails", "jruby"] }
-          )
+          allow(Simpress::JSON).to receive(:load_file).and_return({ "ruby" => ["jruby", "rails"], "orders" => ["rails", "jruby"] })
         end
 
         it "reorders nested children" do

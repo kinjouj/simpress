@@ -7,7 +7,7 @@ vi.mock('../../src/api/Simpress');
 const SimpressMock = vi.mocked(Simpress);
 
 describe('SidebarCategories', () => {
-  it('orders categories by count', async () => {
+  it('keeps the order of the data', async () => {
     SimpressMock.getCategories.mockResolvedValue([
       { key: 'ruby', name: 'Ruby', count: 1 },
       { key: 'js', name: 'JavaScript', count: 3 },
@@ -19,8 +19,8 @@ describe('SidebarCategories', () => {
     );
 
     const links = await screen.findAllByRole('link');
-    expect(links.map((link) => link.textContent)).toEqual(['JavaScript (3)', 'Ruby (1)']);
-    expect(links[0]).toHaveAttribute('href', '/archives/categories/js');
+    expect(links.map((link) => link.textContent)).toEqual(['Ruby (1)', 'JavaScript (3)']);
+    expect(links[0]).toHaveAttribute('href', '/archives/categories/ruby');
   });
 
   it('nests child categories', async () => {

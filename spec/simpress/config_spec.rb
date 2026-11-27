@@ -8,11 +8,11 @@ describe Simpress::Config do
   end
 
   before do
-    allow(Psych).to receive(:load_file).with(Simpress::Config::CONFIG_FILE, any_args).and_return(
+    allow(Psych).to receive(:load_file).with(described_class::CONFIG_FILE, any_args).and_return(
       { default: { mode: "html", host: "https://example.com", logging: true, paginate: 10, plugins: ["test_plugin"] } }
     )
-    allow(File).to receive(:exist?).with(Simpress::Config::TAXONOMIES_FILE).and_return(true)
-    allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE, any_args).and_return(taxonomies)
+    allow(File).to receive(:exist?).with(described_class::TAXONOMIES_FILE).and_return(true)
+    allow(Psych).to receive(:load_file).with(described_class::TAXONOMIES_FILE, any_args).and_return(taxonomies)
     described_class.clear
   end
 
@@ -29,7 +29,7 @@ describe Simpress::Config do
 
     context "when settings are omitted" do
       before do
-        allow(Psych).to receive(:load_file).with(Simpress::Config::CONFIG_FILE, any_args).and_return(
+        allow(Psych).to receive(:load_file).with(described_class::CONFIG_FILE, any_args).and_return(
           { default: { host: "https://example.com" } }
         )
       end
@@ -54,7 +54,7 @@ describe Simpress::Config do
   describe "#taxonomies" do
     context "when taxonomies.yaml doesn't exist" do
       before do
-        allow(File).to receive(:exist?).with(Simpress::Config::TAXONOMIES_FILE).and_return(false)
+        allow(File).to receive(:exist?).with(described_class::TAXONOMIES_FILE).and_return(false)
       end
 
       it "returns an empty hash" do
@@ -64,7 +64,7 @@ describe Simpress::Config do
 
     context "when taxonomies.yaml is empty" do
       before do
-        allow(Psych).to receive(:load_file).with(Simpress::Config::TAXONOMIES_FILE, any_args).and_return(nil)
+        allow(Psych).to receive(:load_file).with(described_class::TAXONOMIES_FILE, any_args).and_return(nil)
       end
 
       it "returns an empty hash" do
