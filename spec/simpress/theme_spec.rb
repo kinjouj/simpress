@@ -18,7 +18,7 @@ describe Simpress::Theme do
   describe ".render" do
     before do
       allow(Simpress::Context).to receive(:to_h).and_return({ site_title: "My Blog" })
-      allow(Tilt::ErubiTemplate).to receive(:new).with("spec/fixtures/theme/layout.erb", anything).and_return(tilt_template)
+      allow(Tilt::ErubiTemplate).to receive(:new).and_return(tilt_template)
       allow(tilt_template).to receive(:render).and_return("<html>My Blog</html>")
     end
 
@@ -31,12 +31,14 @@ describe Simpress::Theme do
 
   describe ".render_partial" do
     before do
-      allow(Tilt::ErubiTemplate).to receive(:new).with("spec/fixtures/theme/part.erb", anything).and_return(tilt_template)
+      allow(Tilt::ErubiTemplate).to receive(:new).and_return(tilt_template)
       allow(tilt_template).to receive(:render).and_return("<div>partial</div>")
     end
 
     it "returns the render result" do
-      expect(described_class.render_partial("part", { item: "value" })).to eq "<div>partial</div>"
+      result = described_class.render_partial("part", { item: "value" })
+      expect(Tilt::ErubiTemplate).to have_received(:new).with("spec/fixtures/theme/part.erb", any_args)
+      expect(result).to eq "<div>partial</div>"
     end
   end
 

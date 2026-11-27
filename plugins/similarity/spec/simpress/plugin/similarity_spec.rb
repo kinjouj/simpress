@@ -220,12 +220,15 @@ describe Simpress::Plugin::Similarity do
     describe ".fetch" do
       context "when the cache file is broken" do
         before do
-          allow(File).to receive(:exist?).with("similarity.cache").and_return(true)
-          allow(File).to receive(:binread).with("similarity.cache").and_return("\xC1".b)
+          allow(File).to receive(:exist?).and_return(true)
+          allow(File).to receive(:binread).and_return("\xC1".b)
         end
 
         it "returns the computed value" do
-          expect(described_class.fetch("key") { "value" }).to eq "value" # rubocop:disable Style/RedundantFetchBlock
+          result = described_class.fetch("key") { "value" } # rubocop:disable Style/RedundantFetchBlock
+          expect(File).to have_received(:exist?).with("similarity.cache")
+          expect(File).to have_received(:binread).with("similarity.cache")
+          expect(result).to eq "value"
         end
       end
     end

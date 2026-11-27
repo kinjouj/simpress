@@ -26,4 +26,28 @@ describe('usePage', () => {
     const { result } = renderHook(() => usePage(), { wrapper });
     expect(result.current).toBe(1);
   });
+
+  it('returns 1 if page is not a number', () => {
+    const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
+      <MemoryRouter initialEntries={['/page/abc']}>
+        <Routes>
+          <Route path="/page/:page" element={children} />
+        </Routes>
+      </MemoryRouter>
+    );
+    const { result } = renderHook(() => usePage(), { wrapper });
+    expect(result.current).toBe(1);
+  });
+
+  it('returns 1 if page is less than 1', () => {
+    const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
+      <MemoryRouter initialEntries={['/page/0']}>
+        <Routes>
+          <Route path="/page/:page" element={children} />
+        </Routes>
+      </MemoryRouter>
+    );
+    const { result } = renderHook(() => usePage(), { wrapper });
+    expect(result.current).toBe(1);
+  });
 });

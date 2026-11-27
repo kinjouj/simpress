@@ -30,17 +30,13 @@ describe Simpress::Generator::Pipeline do
       build(:entry, date: Time.new(2026, 1, 10))
     end
 
-    let(:entries) do
-      [entry1, entry2]
-    end
-
     it "generates entry pages and archives" do
-      described_class.generate(entries)
+      described_class.generate([entry1, entry2])
 
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry1)
       expect(Simpress::Generator::Pipeline::Permalink).to have_received(:generate).with(entry2)
       expect(Simpress::Generator::Pipeline::Archive::MonthlyIndex).to have_received(:generate).with({ [2026, 1] => [entry1, entry2] })
-      expect(Simpress::Generator::Pipeline::Archive::EntryIndex).to have_received(:generate).with(entries)
+      expect(Simpress::Generator::Pipeline::Archive::EntryIndex).to have_received(:generate).with([entry1, entry2])
       expect(Simpress::Generator::Pipeline::Archive::TaxonomyIndex).to have_received(:generate).with([taxonomy])
     end
   end

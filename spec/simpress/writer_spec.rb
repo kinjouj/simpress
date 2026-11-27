@@ -6,14 +6,14 @@ describe Simpress::Writer do
   describe ".write" do
     context "when the file doesn't exist" do
       before do
-        allow(File).to receive(:exist?).with("public/test/index.html").and_return(false)
-        allow(File).to receive(:dirname).with("public/test/index.html").and_return("public/test")
+        allow(File).to receive(:exist?).and_return(false)
         allow(File).to receive(:write)
         allow(FileUtils).to receive(:mkdir_p)
       end
 
       it "writes the file" do
         expect {|b| described_class.write("test/index.html", "content", &b) }.to yield_with_args("public/test/index.html")
+        expect(File).to have_received(:exist?).with("public/test/index.html")
         expect(FileUtils).to have_received(:mkdir_p).with("public/test")
         expect(File).to have_received(:write).with("public/test/index.html", "content")
       end
@@ -21,7 +21,7 @@ describe Simpress::Writer do
 
     context "when the file already exists" do
       before do
-        allow(File).to receive(:exist?).with("public/exists.txt").and_return(true)
+        allow(File).to receive(:exist?).and_return(true)
       end
 
       it "raises an error" do

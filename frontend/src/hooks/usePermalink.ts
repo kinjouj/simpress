@@ -1,12 +1,11 @@
 import { useParams } from 'react-router';
 
 export const usePermalink = (): string | null => {
-  let { '*': permalink } = useParams<{ '*': string }>();
+  const { '*': permalink } = useParams<{ '*': string }>();
 
-  if (permalink !== undefined) {
-    const jsonPath = permalink.replace(/(\.[^/.]+)?$/, '.json');
-    permalink = `/${jsonPath}`;
+  if (permalink === undefined || permalink === '' || permalink.endsWith('/')) {
+    return null;
   }
 
-  return permalink ?? null;
+  return `/${permalink.replace(/(\.[^/.]+)?$/, '.json')}`;
 };

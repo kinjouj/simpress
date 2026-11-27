@@ -18,7 +18,10 @@ describe Simpress::Sitemap do
     it "writes sitemap.xml from the block" do
       described_class.build("https://example.com") { url(file: "index.html", lastmod: "2026-01-01") }
 
-      expect(Simpress::Writer).to have_received(:write).with("sitemap.xml", anything)
+      expect(Simpress::Writer).to have_received(:write).with(
+        "sitemap.xml",
+        include("<loc>https://example.com/index.html</loc>", "<lastmod>2026-01-01</lastmod>")
+      )
     end
   end
 
@@ -40,7 +43,10 @@ describe Simpress::Sitemap do
       sitemap.url(file: "page2.html", lastmod: "2026-01-01")
       sitemap.write
 
-      expect(Simpress::Writer).to have_received(:write).with("sitemap.xml", instance_of(String))
+      expect(Simpress::Writer).to have_received(:write).with(
+        "sitemap.xml",
+        include("<?xml", "<loc>https://example.com/page1.html</loc>", "<loc>https://example.com/page2.html</loc>")
+      )
       expect(Simpress::Logger).to have_received(:debug).with("generated sitemap.xml: 2")
     end
   end

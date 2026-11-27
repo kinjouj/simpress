@@ -15,6 +15,30 @@ describe('usePermalink', () => {
     expect(result.current).toBe('/test.json');
   });
 
+  it('returns null if the path ends with a slash', () => {
+    const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
+      <MemoryRouter initialEntries={['/foo/']}>
+        <Routes>
+          <Route path="/*" element={children} />
+        </Routes>
+      </MemoryRouter>
+    );
+    const { result } = renderHook(() => usePermalink(), { wrapper });
+    expect(result.current).toBeNull();
+  });
+
+  it('returns null if the path is empty', () => {
+    const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route path="/*" element={children} />
+        </Routes>
+      </MemoryRouter>
+    );
+    const { result } = renderHook(() => usePermalink(), { wrapper });
+    expect(result.current).toBeNull();
+  });
+
   it('returns null if invalid', () => {
     const wrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
       <MemoryRouter>

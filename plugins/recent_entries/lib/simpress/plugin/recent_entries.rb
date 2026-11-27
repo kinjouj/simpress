@@ -9,7 +9,7 @@ module Simpress
     class RecentEntries
       extend Simpress::Plugin
 
-      KEYS = [:id, :title, :permalink].freeze
+      KEYS = [:id, :title, :permalink, :cover].freeze
       LIMIT = 5
 
       def self.run(entries)

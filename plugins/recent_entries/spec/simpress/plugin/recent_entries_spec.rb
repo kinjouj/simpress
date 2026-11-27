@@ -63,7 +63,7 @@ describe Simpress::Plugin::RecentEntries do
           data = Simpress::JSON.load(json)
           expect(path).to eq "recent_entries.json"
           expect(data.map {|entry| entry["id"] }).to eq ["entry-0", "entry-1", "entry-2", "entry-3", "entry-4"]
-          expect(data.first.keys).to contain_exactly("id", "title", "permalink")
+          expect(data.first.keys).to contain_exactly("id", "title", "permalink", "cover")
         end
       end
     end
